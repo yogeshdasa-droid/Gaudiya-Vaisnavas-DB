@@ -3714,3 +3714,11 @@ body.dragging-person * {
   width: 100%;
   margin-top: 6px;
 }
+.slim-list {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0;
+}
+.slim-list .check {
+  align-items: center;
+}

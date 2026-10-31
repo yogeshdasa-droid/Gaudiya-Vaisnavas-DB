@@ -176,6 +176,39 @@ async fn replace_apply(app: AppHandle, spec: replace::Spec) -> CmdResult<()> {
     })
 }
 
+/// Makes the library take less space (covers, PDF texts, original PDFs), in
+/// the background and after a copy of the database.
+#[tauri::command]
+async fn slim_library(app: AppHandle, what: store::Slim) -> CmdResult<()> {
+    let db_path = app.state::<AppState>().db_path.clone();
+    let copies = backup::copies_dir(&db_path);
+    background(&app, move |conn, app| {
+        let size = || {
+            std::fs::metadata(&db_path).map(|m| m.len()).unwrap_or(0)
+                + std::fs::metadata(db_path.with_extension("db-wal")).map(|m| m.len()).unwrap_or(0)
+        };
+        let before = size();
+        let _ = app.emit("import-progress", import::Progress { phase: "backup", done: 0, total: 1 });
+        let stamp: String =
+            conn.query_row("SELECT strftime('%Y-%m-%d %H%M', 'now', 'localtime')", [], |r| r.get(0)).map_err(err)?;
+        let target = copies.join(format!("Gaudiya Vaisnavas DB antes de ocupar menos {stamp}.db"));
+        backup::copy_to(conn, &target)?;
+        let mut done = store::slim_library(conn, what, |done, total| {
+            let _ = app.emit("import-progress", import::Progress { phase: "slim", done, total });
+        })?;
+        done.before = before;
+        done.after = size();
+        done.backup = target.to_string_lossy().to_string();
+        let _ = app.emit("slim-done", done);
+        // the search by meaning follows the new text
+        let state = app.state::<AppState>();
+        if what.pdf_text && semantic::status(&state.db_path, &state.semantic).pieces > 0 {
+            let _ = start_semantic(app);
+        }
+        Ok(())
+    })
+}
+
 /// Plain words of the library with a known spelling with diacritics.
 #[tauri::command]
 async fn diacritic_suggestions(state: State<'_, AppState>) -> CmdResult<Vec<replace::Suggestion>> {
@@ -818,7 +851,7 @@ fn main() {
                     .filter(|(p, _)| Path::new(p).is_dir())
                     .map(|(p, c)| import::Source { path: p.to_string(), collection: c.to_string() })
                     .collect();
-                let _ = start_import(app.handle(), import::Options { sources, person_per_file: false, person_id: None });
+                let _ = start_import(app.handle(), import::Options { sources, person_per_file: false, person_id: None, text_only: false });
             } else if stale_fts {
                 let _ = start_rebuild(app.handle());
             }
@@ -896,6 +929,7 @@ fn main() {
             path_kinds,
             replace_preview,
             replace_apply,
+            slim_library,
             diacritic_suggestions,
             semantic_status,
             semantic_index,

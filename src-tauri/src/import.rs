@@ -38,11 +38,14 @@ pub struct Options {
     /// attach everything to this person
     #[serde(default)]
     pub person_id: Option<i64>,
+    /// keep only the text, as a Markdown note: no original file, no cover
+    #[serde(default)]
+    pub text_only: bool,
 }
 
 #[derive(Clone, Serialize)]
 pub struct Progress {
-    pub phase: &'static str, // "scan" | "import" | "fts" | "export" | "backup" | "replace" | "done"
+    pub phase: &'static str, // "scan" | "import" | "fts" | "export" | "backup" | "replace" | "slim" | "done"
     pub done: usize,
     pub total: usize,
 }
@@ -255,7 +258,7 @@ fn first_line_title(text: &str) -> Option<String> {
     })
 }
 
-fn parse(mut item: Item) -> Result<Parsed, String> {
+fn parse(mut item: Item, text_only: bool) -> Result<Parsed, String> {
     let bytes = std::fs::read(&item.path).map_err(|e| format!("{}: {e}", item.path.display()))?;
     let raw = extract::read_document(&item.path, &bytes).ok_or_else(|| format!("{}: formato no legible", item.path.display()))?;
     let content = strip_front_matter(&raw).trim().to_string();
@@ -268,12 +271,15 @@ fn parse(mut item: Item) -> Result<Parsed, String> {
     let normalized: String = content.split_whitespace().collect::<Vec<_>>().join(" ").to_lowercase();
     let hash = if normalized.len() > 40 { fingerprint(normalized.as_bytes()) } else { fingerprint(&bytes) };
 
+    // only the text: a PDF becomes a plain note (after the fingerprint, so
+    // the same PDF imported before is still recognised)
+    let content = if text_only && extract::ext(&item.path) == "pdf" { extract::pdf_markdown(&content) } else { content };
     let mut files = Vec::new();
     let name = file_name(&item.path);
-    if keeps_original(&item.path) {
+    if keeps_original(&item.path) && !text_only {
         files.push(("original".to_string(), name.clone(), extract::mime_of(&name).to_string(), bytes));
     }
-    if let Some(c) = &item.cover {
+    if let Some(c) = item.cover.as_ref().filter(|_| !text_only) {
         if let Ok(b) = std::fs::read(c) {
             files.push(("cover".to_string(), file_name(c), extract::mime_of(&file_name(c)).to_string(), b));
         }
@@ -289,7 +295,7 @@ fn parse(mut item: Item) -> Result<Parsed, String> {
         sections.push(Section { heading: None, text: String::new() });
     }
     Ok(Parsed {
-        kind: extract::ext(&item.path),
+        kind: if text_only && keeps_original(&item.path) { "md".into() } else { extract::ext(&item.path) },
         item,
         hash,
         tags: tags.join(","),
@@ -358,7 +364,7 @@ pub fn run(conn: &mut Connection, opts: &Options, progress: impl Fn(Progress)) -
         // small batches: PDFs are parsed in parallel, results appear as they go
         let batch: Vec<Item> = iter.by_ref().take(48).collect();
         let n = batch.len();
-        let parsed: Vec<Result<Parsed, String>> = batch.into_par_iter().map(parse).collect();
+        let parsed: Vec<Result<Parsed, String>> = batch.into_par_iter().map(|i| parse(i, opts.text_only)).collect();
         let tx = conn.transaction().map_err(|e| e.to_string())?;
         for p in parsed {
             let p = match p {
@@ -462,7 +468,7 @@ Glory to Syamananda").as_deref(), Some("Glory to Syamananda"));
         .iter()
         .map(|(p, c)| Source { path: p.to_string(), collection: c.to_string() })
         .collect();
-        let opts = Options { sources, person_per_file: false, person_id: None };
+        let opts = Options { sources, person_per_file: false, person_id: None, text_only: false };
         let s = run(&mut conn, &opts, |p| {
             if p.done % 480 == 0 {
                 println!("{} {}/{}", p.phase, p.done, p.total)
@@ -517,7 +523,7 @@ Glory to Syamananda").as_deref(), Some("Glory to Syamananda"));
         let mut conn = Connection::open_in_memory().unwrap();
         crate::db::init(&conn).unwrap();
         let src = |p: &str| Source { path: dir.join(p).to_string_lossy().to_string(), collection: String::new() };
-        let opts = Options { sources: vec![src("Bio"), src("Cal")], person_per_file: false, person_id: None };
+        let opts = Options { sources: vec![src("Bio"), src("Cal")], person_per_file: false, person_id: None, text_only: false };
         let s = run(&mut conn, &opts, |_| {}).unwrap();
         assert_eq!((s.added, s.duplicates, s.persons), (3, 1, 1), "{:?}", s.failed);
         let n: i64 = conn.query_row("SELECT COUNT(*) FROM docs WHERE person_id IS NOT NULL", [], |r| r.get(0)).unwrap();

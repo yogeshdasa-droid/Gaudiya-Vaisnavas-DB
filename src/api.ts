@@ -232,11 +232,13 @@ export interface DefaultSource extends ImportSource {
 export interface ImportOptions {
   sources: ImportSource[];
   personPerFile: boolean;
+  /** only the text, as a Markdown note (no original file, no cover) */
+  textOnly?: boolean;
   personId: number | null;
 }
 
 export interface ImportProgress {
-  phase: "scan" | "import" | "fts" | "export" | "backup" | "replace" | "done";
+  phase: "scan" | "import" | "fts" | "export" | "backup" | "replace" | "slim" | "done";
   done: number;
   total: number;
 }
@@ -355,6 +357,7 @@ export const api = {
   openExternal: (target: string) => invoke<void>("open_external", { target }),
   replacePreview: (spec: ReplaceSpec) => invoke<ReplacePreview>("replace_preview", { spec }),
   replaceApply: (spec: ReplaceSpec) => invoke<void>("replace_apply", { spec }),
+  slimLibrary: (what: Slim) => invoke<void>("slim_library", { what }),
   diacriticSuggestions: () => invoke<DiacriticSuggestion[]>("diacritic_suggestions"),
   semanticStatus: () => invoke<SemanticStatus>("semantic_status"),
   semanticIndex: () => invoke<void>("semantic_index"),
@@ -418,6 +421,23 @@ export interface DiacriticSuggestion {
   others: string[];
   doubtful: boolean;
   example: string;
+}
+
+// ---- take less space
+
+export interface Slim {
+  covers: boolean;
+  pdfText: boolean;
+  originals: boolean;
+}
+
+export interface Slimmed {
+  covers: number;
+  converted: number;
+  originals: number;
+  before: number;
+  after: number;
+  backup: string;
 }
 
 // ---- search by meaning

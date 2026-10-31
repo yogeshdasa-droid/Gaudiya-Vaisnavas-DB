@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **31-10-2026** (versión **0.4.0**).
+Última actualización: **31-10-2026** (versión **0.4.1**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -180,7 +180,22 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.4.0)
+## 5. Qué hace hoy (v0.4.1)
+
+### Novedades de la 0.4.1 (31-10-2026)
+- **Personas**: tras «Otros vaiṣṇavas», un grupo plegable por cada colección cuyos textos no son de
+  ninguna ficha (p. ej. «BHAJAMS & KIRTANS», «Goswami Grantha»), con sus textos (`topics` en Sidebar.tsx;
+  empiezan plegados: en `personGroups` se guarda la clave `col:…` al abrirlos).
+- **Importar › «Guardar solo el texto (como nota Markdown)»** (marcado por defecto): no guarda el PDF
+  ni la portada; el texto pasa por `extract::pdf_markdown` (quita «## p. N», las líneas repetidas en
+  muchas páginas y los números de página; une párrafos cortados por el salto de página) y queda
+  con kind `md`. La huella para duplicados se calcula antes de limpiar.
+- **Ajustes › Copias de seguridad › Ocupar menos espacio** (`store::slim_library`, comando
+  `slim_library`, en segundo plano con copia «… antes de ocupar menos …»): portadas a miniaturas
+  JPEG de 480 px (crate `image`), texto de los PDF a Markdown (con versión anterior, kind → `md`) y
+  quitar los PDF originales salvo los que no tienen texto (size < 200) y los de la papelera; luego
+  VACUUM. Los Word originales se quedan. En una copia: 240 MB → 146 MB en 27 s (380 PDF; quedan
+  54 MB de «versiones anteriores»).
 
 ### Novedades de la 0.4.0 (31-10-2026; DATA_VERSION sigue en 4)
 - **Ajustes › Reemplazar › Buscar y reemplazar**: en textos, títulos y/o fichas; palabra completa,
@@ -315,6 +330,7 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
   (Lokanatha dasa v.1–3 → Lokanātha Gosvāmī, Sanatana v.2–4 → Sanātana Gosvāmī, Vrindavana dasa
   v.1–5 → Vṛndāvana dāsa Ṭhākura, y Radhamohana, Radhavallabha, Sundarananda, Jagadananda, Damodara);
   copia previa «biodata antes de mover PDF.db». Lo demás queda como estaba, para que lo revise él.
+- Posible: botón para vaciar las «versiones anteriores» (54 MB tras diacríticos y conversión).
 - Actualizar sin descargar el instalador: añadir el plugin updater de Tauri (necesita un par de
   claves para firmar las actualizaciones y subir un `latest.json` en cada release). No hecho.
 - OCR del único PDF escaneado («Krishna dasa babaji - v.1»): no se metió un motor de OCR en la app
@@ -329,6 +345,10 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 ---
 
 ## 8. Historial
+
+- **31-10-2026 — v0.4.1**: importar «solo el texto» (nota Markdown limpia, sin PDF ni portada);
+  Ajustes › Copias de seguridad › «Ocupar menos espacio» (portadas pequeñas, PDF a Markdown, quitar
+  los PDF originales); colecciones sin fichas (Bhajans…) también en la pestaña Personas. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.4.1
 
 - **31-10-2026 — v0.4.0**: buscar y reemplazar en toda la biblioteca; diacríticos sánscritos;
   búsqueda por significado con EmbeddingGemma (Ollama). Probado con una copia (`BIO_DB`).

@@ -978,6 +978,111 @@ pub fn replace_all(
     Ok(done)
 }
 
+/// What "take less space" does (Ajustes › Copias de seguridad).
+#[derive(Deserialize, Clone, Copy)]
+#[serde(rename_all = "camelCase")]
+pub struct Slim {
+    /// cover images made small
+    pub covers: bool,
+    /// the text of the PDFs as plain notes (Markdown)
+    pub pdf_text: bool,
+    /// the original PDFs taken out (not those without text: scanned)
+    pub originals: bool,
+}
+
+#[derive(Serialize, Default, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct Slimmed {
+    pub covers: usize,
+    pub converted: usize,
+    pub originals: usize,
+    /// size of the database before and after, bytes
+    pub before: u64,
+    pub after: u64,
+    pub backup: String,
+}
+
+/// Largest side of a cover after `slim_library`.
+const COVER_SIDE: u32 = 480;
+
+fn small_cover(data: &[u8]) -> Option<Vec<u8>> {
+    let img = image::load_from_memory(data).ok()?;
+    let small = img.thumbnail(COVER_SIDE, COVER_SIDE).to_rgb8();
+    let mut out = Vec::new();
+    image::codecs::jpeg::JpegEncoder::new_with_quality(&mut out, 82).encode_image(&small).ok()?;
+    (out.len() < data.len()).then_some(out)
+}
+
+/// Makes the library take less space. The PDF texts keep their earlier
+/// version (undo); covers and originals are only in the backup made before.
+pub fn slim_library(conn: &mut Connection, what: Slim, progress: impl Fn(usize, usize)) -> Res<Slimmed> {
+    let mut done = Slimmed::default();
+    let tx = conn.transaction().map_err(e)?;
+    if what.covers {
+        let ids: Vec<i64> = tx
+            .prepare("SELECT id FROM files WHERE role = 'cover'")
+            .map_err(e)?
+            .query_map([], |r| r.get(0))
+            .map_err(e)?
+            .collect::<Result<_, _>>()
+            .map_err(e)?;
+        for (i, id) in ids.iter().enumerate() {
+            if i % 20 == 0 {
+                progress(i, ids.len());
+            }
+            let data: Vec<u8> = tx.query_row("SELECT data FROM files WHERE id = ?1", [id], |r| r.get(0)).map_err(e)?;
+            if let Some(small) = small_cover(&data) {
+                tx.execute("UPDATE files SET data = ?1, mime = 'image/jpeg', name = 'cover.jpg' WHERE id = ?2", params![small, id])
+                    .map_err(e)?;
+                done.covers += 1;
+            }
+        }
+    }
+    // texts of PDFs that have one (the scanned ones keep everything)
+    let pdfs: Vec<i64> = tx
+        .prepare("SELECT id FROM docs WHERE kind = 'pdf' AND deleted IS NULL AND size >= 200")
+        .map_err(e)?
+        .query_map([], |r| r.get(0))
+        .map_err(e)?
+        .collect::<Result<_, _>>()
+        .map_err(e)?;
+    if what.pdf_text {
+        for (i, &id) in pdfs.iter().enumerate() {
+            if i % 20 == 0 {
+                progress(i, pdfs.len());
+            }
+            let text: String = tx
+                .query_row("SELECT group_concat(text, char(10) || char(10)) FROM (SELECT text FROM sections WHERE doc_id = ?1 ORDER BY ordinal)", [id], |r| {
+                    r.get::<_, Option<String>>(0)
+                })
+                .map_err(e)?
+                .unwrap_or_default();
+            let md = crate::extract::pdf_markdown(&text);
+            if md.trim().is_empty() {
+                continue;
+            }
+            keep_doc_version(&tx, id, true).map_err(e)?;
+            write_sections(&tx, id, &text::split_sections(&md)).map_err(e)?;
+            tx.execute("UPDATE docs SET kind = 'md', modified = datetime('now', 'localtime') WHERE id = ?1", [id]).map_err(e)?;
+            done.converted += 1;
+        }
+    }
+    if what.originals {
+        // texts in the recycle bin keep theirs, as do PDFs without text
+        done.originals = tx
+            .execute(
+                "DELETE FROM files WHERE role = 'original' AND lower(name) LIKE '%.pdf'
+                   AND doc_id IN (SELECT id FROM docs WHERE deleted IS NULL AND size >= 200)",
+                [],
+            )
+            .map_err(e)?;
+    }
+    tx.commit().map_err(e)?;
+    // give the freed pages back to the disk
+    conn.execute_batch("PRAGMA wal_checkpoint(TRUNCATE); VACUUM;").map_err(e)?;
+    Ok(done)
+}
+
 /// An image file: (file name, mime type, bytes).
 fn read_image(path: &std::path::Path) -> Res<(String, &'static str, Vec<u8>)> {
     let ext = path.extension().and_then(|x| x.to_str()).unwrap_or("").to_lowercase();
@@ -1449,4 +1554,5 @@ mod tests {
         assert_eq!(n, 0);
     }
 }
+
 

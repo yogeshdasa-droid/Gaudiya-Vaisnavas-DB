@@ -154,6 +154,9 @@ function PersonList({
   onMove,
   tag,
   onTag,
+  docs,
+  activeDocId,
+  onDoc,
 }: {
   t: T;
   lang: Lang;
@@ -163,6 +166,9 @@ function PersonList({
   onMove: (id: number, place: TreePlace) => void;
   tag: string | null;
   onTag: (tag: string | null) => void;
+  docs: DocListItem[];
+  activeDocId: number | null;
+  onDoc: (id: number) => void;
 }) {
   const [filter, setFilter] = useState("");
   const [fieldHits, setFieldHits] = useState<number[]>([]);
@@ -192,6 +198,20 @@ function PersonList({
     const extra = new Set(fieldHits);
     return tagged.filter((p) => words.every((w) => ` ${foldName(`${p.name} ${p.aka}`)}`.includes(` ${w}`)) || extra.has(p.id));
   }, [filter, tag, persons, fieldHits]);
+
+  // collections that are not about people (Bhajans & Kirtans…): a group of
+  // their own after the records, with their texts
+  const topics = useMemo(() => {
+    const by = new Map<string, DocListItem[]>();
+    for (const d of docs) {
+      const col = d.dir.split("/")[0];
+      by.set(col, [...(by.get(col) ?? []), d]);
+    }
+    return [...by]
+      .filter(([, ds]) => ds.every((d) => d.personId === null))
+      .map(([name, ds]) => [name, [...ds].sort((a, b) => a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: "base" }))] as const)
+      .sort((a, b) => a[0].localeCompare(b[0], undefined, { sensitivity: "base" }));
+  }, [docs]);
 
   // the Guru Paramparā: the disciples of each record, in their order
   const { kids, parentOf, others } = useMemo(() => {
@@ -316,9 +336,9 @@ function PersonList({
     </div>
   );
 
-  const groupHead = (key: string, label: string, n: number, drop: "root" | "out", hint?: string) => (
-    <div data-drop={drop} className={`group-head${drag?.drop?.kind === drop ? " drop-hot" : ""}`} title={hint} onClick={() => toggleGroup(key)}>
-      <ChevronRight size={14} className={`caret ${closedGroups.has(key) ? "" : "open"}`} />
+  const groupHead = (key: string, label: string, n: number, drop?: "root" | "out", hint?: string, open = !closedGroups.has(key)) => (
+    <div data-drop={drop} className={`group-head${drop && drag?.drop?.kind === drop ? " drop-hot" : ""}`} title={hint} onClick={() => toggleGroup(key)}>
+      <ChevronRight size={14} className={`caret ${open ? "open" : ""}`} />
       <span className="name">{label}</span>
       <span className="count">{n.toLocaleString(lang)}</span>
     </div>
@@ -406,6 +426,26 @@ function PersonList({
               })}
             </div>
           )}
+          {topics.map(([name, ds]) => (
+            <div key={name}>
+              {/* these start folded: the key is stored when opened */}
+              {groupHead(`col:${name}`, name, ds.length, undefined, undefined, closedGroups.has(`col:${name}`))}
+              {closedGroups.has(`col:${name}`) &&
+                ds.map((d) => (
+                  <div
+                    key={d.id}
+                    data-ctx="doc"
+                    data-id={d.id}
+                    className={`tree-row doc${activeDocId === d.id ? " active" : ""}`}
+                    onClick={() => onDoc(d.id)}
+                    title={d.title}
+                  >
+                    <FileText size={14} />
+                    <span className="name">{d.title}</span>
+                  </div>
+                ))}
+            </div>
+          ))}
         </>
       )}
       {drag && (
@@ -477,7 +517,21 @@ export function Sidebar(p: Props) {
         ))}      </nav>
 
       <div className="side-scroll" key={p.tab}>
-        {p.tab === "persons" && <PersonList t={t} lang={p.lang} persons={p.persons} activeId={p.activePersonId} onPerson={p.onPerson} onMove={p.onMovePerson} tag={p.tag} onTag={p.onTag} />}
+        {p.tab === "persons" && (
+          <PersonList
+            t={t}
+            lang={p.lang}
+            persons={p.persons}
+            activeId={p.activePersonId}
+            onPerson={p.onPerson}
+            onMove={p.onMovePerson}
+            tag={p.tag}
+            onTag={p.onTag}
+            docs={p.docs}
+            activeDocId={p.activeDocId}
+            onDoc={(id) => p.onDoc(id)}
+          />
+        )}
 
         {p.tab === "library" && (
           <div className="fade-in">

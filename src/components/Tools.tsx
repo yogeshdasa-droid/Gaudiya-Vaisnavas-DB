@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { listen } from "@tauri-apps/api/event";
-import { CheckCircle2, Download, Eye, Replace, Sparkles, Square, XCircle } from "lucide-react";
-import { api, DiacriticSuggestion, PullProgress, ReplacePreview, ReplaceScope, ReplaceSpec, SemanticStatus } from "../api";
+import { CheckCircle2, Download, Eye, Minimize2, Replace, Sparkles, Square, XCircle } from "lucide-react";
+import { api, DiacriticSuggestion, PullProgress, ReplacePreview, ReplaceScope, ReplaceSpec, SemanticStatus, Slim } from "../api";
 import { T } from "../i18n";
 
 const ALL: ReplaceScope = { texts: true, titles: true, persons: true };
@@ -269,6 +269,44 @@ function Diacritics({ t, onToast }: { t: T; onToast: (msg: string) => void }) {
           </div>
         </>
       )}
+    </>
+  );
+}
+
+/** Ajustes › Copias de seguridad › Ocupar menos espacio. */
+export function SlimSection({ t, onToast }: { t: T; onToast: (msg: string) => void }) {
+  const [what, setWhat] = useState<Slim>({ covers: true, pdfText: true, originals: true });
+  const [busy, setBusy] = useState(false);
+  const box = (k: keyof Slim, label: string) => (
+    <label className="check">
+      <input type="checkbox" checked={what[k]} onChange={(e) => setWhat({ ...what, [k]: e.target.checked })} />
+      {label}
+    </label>
+  );
+  const run = async () => {
+    if (!window.confirm(t.slimConfirm)) return;
+    setBusy(true);
+    try {
+      await api.slimLibrary(what);
+      onToast(t.slimming + "…");
+    } catch (e) {
+      onToast(String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <>
+      <h3>{t.slimTitle}</h3>
+      <div className="slim-list">
+        {box("covers", t.slimCovers)}
+        {box("pdfText", t.slimPdfText)}
+        {box("originals", t.slimOriginals)}
+      </div>
+      <p className="muted small">{t.slimHint}</p>
+      <button className="btn ghost" disabled={busy || (!what.covers && !what.pdfText && !what.originals)} onClick={run}>
+        <Minimize2 size={15} /> {t.slimButton}
+      </button>
     </>
   );
 }

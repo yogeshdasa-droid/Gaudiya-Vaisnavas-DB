@@ -2,6 +2,7 @@
 //! md, markdown and txt are read as they are; pdf, docx, html and old Word /
 //! WordPerfect .doc files are converted.
 
+use std::collections::HashMap;
 use std::path::Path;
 
 /// PDFs larger than this are imported without text (extraction would be too slow).
@@ -92,6 +93,85 @@ fn pdf(bytes: &[u8]) -> String {
         out.push_str(&format!("## p. {}\n\n{}\n\n", i + 1, body));
     }
     out
+}
+
+/// The text of a PDF as a plain note: without the "## p. N" page headings,
+/// without the lines repeated on every page (running titles, page numbers),
+/// and with the paragraphs cut by a page break joined again.
+pub fn pdf_markdown(text: &str) -> String {
+    let page_heading = |l: &str| {
+        l.strip_prefix("## p. ").is_some_and(|n| !n.is_empty() && n.trim().bytes().all(|b| b.is_ascii_digit()))
+    };
+    let mut pages: Vec<Vec<String>> = vec![vec![]];
+    let mut cur = String::new();
+    for line in text.lines() {
+        let l = line.trim();
+        if page_heading(l) {
+            if !cur.is_empty() {
+                pages.last_mut().unwrap().push(std::mem::take(&mut cur));
+            }
+            pages.push(vec![]);
+        } else if l.is_empty() {
+            if !cur.is_empty() {
+                pages.last_mut().unwrap().push(std::mem::take(&mut cur));
+            }
+        } else {
+            if !cur.is_empty() {
+                cur.push('\n');
+            }
+            cur.push_str(l);
+        }
+    }
+    if !cur.is_empty() {
+        pages.last_mut().unwrap().push(cur);
+    }
+    pages.retain(|p| !p.is_empty());
+    // a short first or last paragraph found on many pages is a running title
+    let mut seen: HashMap<String, usize> = HashMap::new();
+    for p in &pages {
+        let mut ends = vec![p[0].clone()];
+        if p.len() > 1 {
+            ends.push(p[p.len() - 1].clone());
+        }
+        for s in ends.into_iter().filter(|s| s.chars().count() <= 80) {
+            *seen.entry(fold_digits(&s)).or_default() += 1;
+        }
+    }
+    let running = |s: &str| {
+        let t = s.trim();
+        (!t.is_empty() && t.chars().all(|c| c.is_ascii_digit() || c.is_whitespace() || "-–—.|".contains(c)))
+            || (pages.len() >= 4 && t.chars().count() <= 80 && seen.get(&fold_digits(t)).is_some_and(|n| *n * 3 >= pages.len()))
+    };
+    let mut out: Vec<String> = Vec::new();
+    for (i, p) in pages.iter().enumerate() {
+        let last = p.len() - 1;
+        for (j, para) in p.iter().enumerate() {
+            if (j == 0 || j == last) && running(para) {
+                continue;
+            }
+            let joins = j == 0
+                && i > 0
+                && out.last().is_some_and(|prev: &String| !prev.ends_with(['.', '!', '?', ':', '"', '”', '’', '»', ')']))
+                && para.chars().next().is_some_and(|c| c.is_lowercase());
+            if joins {
+                let prev = out.last_mut().unwrap();
+                if prev.ends_with('-') && !prev.ends_with(" -") {
+                    prev.pop();
+                } else {
+                    prev.push(' ');
+                }
+                prev.push_str(para);
+            } else {
+                out.push(para.clone());
+            }
+        }
+    }
+    out.join("\n\n")
+}
+
+/// "Page 12" and "Page 13" count as the same running line.
+fn fold_digits(s: &str) -> String {
+    s.chars().filter(|c| !c.is_ascii_digit()).collect::<String>().trim().to_lowercase()
 }
 
 /// Joins the hard-wrapped lines of a PDF page back into paragraphs.
@@ -249,6 +329,20 @@ pub fn decode_entities(s: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn pdf_as_markdown() {
+        let mut text = String::new();
+        for i in 1..=5 {
+            text += &format!("## p. {i}\n\nJaiva Dharma\n\nThe text of page {i} goes on and\n\nis cut here\n\n{i}\n\n");
+        }
+        let md = pdf_markdown(&text);
+        assert!(!md.contains("## p.") && !md.contains("Jaiva Dharma"));
+        assert!(md.starts_with("The text of page 1 goes on and\n\nis cut here\n\nThe text of page 2"));
+        // a paragraph cut by the page break is joined again
+        let md = pdf_markdown("## p. 1\n\nHe went to Vrndavana\n\n## p. 2\n\nwith his brother.");
+        assert_eq!(md, "He went to Vrndavana with his brother.");
+    }
 
     #[test]
     fn formats() {

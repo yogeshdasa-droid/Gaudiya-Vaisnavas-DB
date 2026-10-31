@@ -1,6 +1,6 @@
 [package]
 name = "gaudiya-vaisnavas-db"
-version = "0.4.0"
+version = "0.4.1"
 description = "Gaudiya Vaisnavas DB: biografias vaisnavas"
 edition = "2021"
 
@@ -23,6 +23,8 @@ pdf-extract = "0.12"
 zip = { version = "9", default-features = false, features = ["deflate"] }
 # talks to Ollama (search by meaning), on this computer only: no TLS
 ureq = { version = "2", default-features = false, features = ["json"] }
+# shrinks the cover images ("ocupar menos espacio")
+image = { version = "0.25", default-features = false, features = ["jpeg", "png"] }
 
 [profile.release]
 opt-level = 3

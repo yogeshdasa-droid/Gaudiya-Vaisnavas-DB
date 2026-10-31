@@ -377,6 +377,22 @@ const es = {
   diaApply: (n: number) => `Aplicar las marcadas (${n.toLocaleString("es-ES")} palabras)`,
   diaConfirm: (n: number, changes: number) =>
     `¿Escribir con diacríticos ${n.toLocaleString("es-ES")} palabras (unos ${changes.toLocaleString("es-ES")} cambios)?\n\nAntes se guarda una copia de seguridad completa, y cada texto y ficha cambiados guardan su versión anterior.`,
+  // only the text / take less space
+  textOnly: "Guardar solo el texto (como nota Markdown)",
+  textOnlyHint:
+    "No se guarda el PDF ni la portada: solo el texto, limpio (sin «p. 1, p. 2…» ni los títulos que se repiten en cada página). Ocupa mucho menos. Desmárcalo si quieres poder ver el PDF original.",
+  slimTitle: "Ocupar menos espacio",
+  slimCovers: "Reducir las portadas a miniaturas (se ven igual en la app)",
+  slimPdfText: "Convertir el texto de los PDF en notas Markdown limpias",
+  slimOriginals: "Quitar los PDF originales («Ver original» deja de estar en esos textos)",
+  slimHint:
+    "Los PDF escaneados (sin texto) y los Word originales se quedan. Antes se hace una copia de seguridad completa; el texto anterior de cada PDF se guarda en «Versiones anteriores…».",
+  slimButton: "Ocupar menos espacio",
+  slimConfirm:
+    "¿Hacerlo ahora? Antes se guarda una copia de seguridad completa. Tarda un minuto o dos; mientras tanto puedes seguir usando la app.",
+  slimDone: (before: number, after: number) =>
+    `Hecho: la biblioteca pasa de ${Math.round(before / 1048576)} MB a ${Math.round(after / 1048576)} MB. Se guardó una copia antes.`,
+  slimming: "Ocupando menos espacio",
   // search by meaning
   modeMeaning: "Significado",
   modeMeaningHint: "Buscar por el sentido (EmbeddingGemma): encuentra textos del mismo tema aunque no usen las mismas palabras",
@@ -806,6 +822,21 @@ const en: Dict = {
   diaApply: (n) => `Apply the ticked ones (${n.toLocaleString("en-GB")} words)`,
   diaConfirm: (n, changes) =>
     `Write ${n.toLocaleString("en-GB")} words with diacritics (about ${changes.toLocaleString("en-GB")} changes)?\n\nA full backup is made first, and every text and record changed keeps its earlier version.`,
+  // only the text / take less space
+  textOnly: "Keep only the text (as a Markdown note)",
+  textOnlyHint:
+    "The PDF and its cover are not kept: only the text, cleaned (without “p. 1, p. 2…” or the titles repeated on every page). Takes much less space. Untick it to be able to see the original PDF.",
+  slimTitle: "Take less space",
+  slimCovers: "Make the covers small (they look the same in the app)",
+  slimPdfText: "Turn the text of the PDFs into clean Markdown notes",
+  slimOriginals: "Remove the original PDFs (“See original” goes away for those texts)",
+  slimHint:
+    "Scanned PDFs (without text) and original Word files stay. A full backup is made first; the earlier text of each PDF is kept in “Earlier versions…”.",
+  slimButton: "Take less space",
+  slimConfirm: "Do it now? A full backup is made first. It takes a minute or two; you can keep using the app meanwhile.",
+  slimDone: (before, after) =>
+    `Done: the library goes from ${Math.round(before / 1048576)} MB to ${Math.round(after / 1048576)} MB. A backup was made first.`,
+  slimming: "Taking less space",
   // search by meaning
   modeMeaning: "Meaning",
   modeMeaningHint: "Search by meaning (EmbeddingGemma): finds texts on the same subject even without the same words",

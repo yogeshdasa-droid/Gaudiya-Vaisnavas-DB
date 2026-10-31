@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, FilePen, FolderInput, GitMerge, History, Search, Trash2, Undo2, Upload, UserPlus, UserRound, X } from "lucide-react";
+import { AlertTriangle, FilePen, FileText, FolderInput, GitMerge, History, Search, Trash2, Undo2, Upload, UserPlus, UserRound, X } from "lucide-react";
 import { api, DocInfo, EMPTY_PERSON, Person, PersonFields, PersonListItem, SectionText, Version } from "../api";
 import { T } from "../i18n";
 import { Modal } from "./ui";
@@ -247,6 +247,7 @@ export function ImportDialog({
   const [kinds, setKinds] = useState<("dir" | "text" | "other")[] | null>(null);
   const [collection, setCollection] = useState("");
   const [perFile, setPerFile] = useState(false);
+  const [textOnly, setTextOnly] = useState(true);
   const [toPerson, setToPerson] = useState(!!person);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -268,6 +269,7 @@ export function ImportDialog({
       await api.importSources({
         sources: usable.map((path) => ({ path, collection })),
         personPerFile: perFile && !toPerson,
+        textOnly,
         personId: toPerson && person ? person.id : null,
       });
       onStarted();
@@ -326,6 +328,13 @@ export function ImportDialog({
               </span>
             </label>
           )}
+          <label className="check block">
+            <input type="checkbox" checked={textOnly} onChange={(e) => setTextOnly(e.target.checked)} />
+            <span>
+              <FileText size={14} /> {t.textOnly}
+              <em className="muted small">{t.textOnlyHint}</em>
+            </span>
+          </label>
           {!toPerson && (
             <label className="check block">
               <input type="checkbox" checked={perFile} onChange={(e) => setPerFile(e.target.checked)} />
