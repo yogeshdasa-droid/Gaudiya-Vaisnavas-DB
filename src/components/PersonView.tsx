@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { BookOpen, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, MoreHorizontal, Pencil, Search, TextSearch, Trash2, UserRound, X } from "lucide-react";
-import { api, fileUrl, Person, PersonListItem, SectionText } from "../api";
+import { BookOpen, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Pencil, Search, TextSearch, Trash2, UserRound, X } from "lucide-react";
+import { api, fileUrl, Person, PersonListItem, SectionText, TocEntry } from "../api";
 import { formatSize, Lang, T } from "../i18n";
-import { CollectionChip } from "./ui";
+import { ask, CollectionChip } from "./ui";
 import { ReaderStyle, SectionView } from "./Reader";
 import type { NameIndex } from "../personLinks";
 import type { Term } from "../fold";
@@ -39,7 +39,9 @@ interface Props {
   onAddText: (p: Person) => void;
   onFindMentions: (p: Person) => void;
   onSearchIn: (p: Person) => void;
-  onEditDoc: (docId: number) => void;
+  onEditDoc: (docId: number, ordinal?: number) => void;
+  onGuru: (p: Person) => void;
+  onReveal: (p: Person) => void;
   onPhotoChanged: () => void;
   onToast: (msg: string) => void;
   readerStyle: ReaderStyle;
@@ -101,17 +103,19 @@ export function PersonView(p: Props) {
 
   // A record with a single text shows it right here, no click needed.
   const single = person && person.id === p.id && person.docs.length === 1 ? person.docs[0] : null;
-  const [inline, setInline] = useState<{ docId: number; sections: SectionText[]; total: number } | null>(null);
+  // with several parts (texts joined into one): one part at a time, chosen
+  // in a bar like the reader's
+  const [inline, setInline] = useState<{ docId: number; sections: SectionText[]; total: number; toc: TocEntry[]; ord: number } | null>(null);
   useEffect(() => {
     setInline(null);
     if (!single) return;
     let cancelled = false;
     api
       .getDoc(single.id)
-      .then(async ({ doc }) => {
-        const n = Math.min(doc.sections, INLINE_SECTIONS);
+      .then(async ({ doc, toc }) => {
+        const n = doc.sections > 1 && toc.length > 1 ? 1 : Math.min(doc.sections, INLINE_SECTIONS);
         const sections = n ? await api.getSections(doc.id, 0, n - 1) : [];
-        if (!cancelled) setInline({ docId: doc.id, sections, total: doc.sections });
+        if (!cancelled) setInline({ docId: doc.id, sections, total: doc.sections, toc, ord: 0 });
       })
       .catch((e) => p.onToast(String(e)));
     return () => {
@@ -119,6 +123,11 @@ export function PersonView(p: Props) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [single?.id, p.reload]);
+  const parts = inline && inline.total > 1 && inline.toc.length > 1 ? inline : null;
+  const goPart = (ord: number) => {
+    if (!parts || ord < 0 || ord >= parts.total) return;
+    api.getSections(parts.docId, ord, ord).then((sections) => setInline((x) => x && { ...x, sections, ord }), (e) => p.onToast(String(e)));
+  };
 
   const onInlineClick = async (e: React.MouseEvent) => {
     const a = (e.target as HTMLElement).closest("a");
@@ -157,8 +166,8 @@ export function PersonView(p: Props) {
       p.onToast(String(e));
     }
   };
-  const removePhoto = () => {
-    if (!window.confirm(t.removePhotoConfirm)) return;
+  const removePhoto = async () => {
+    if (!(await ask(t.removePhotoConfirm))) return;
     api.removePersonPhoto(person.id).then(p.onPhotoChanged, (e) => p.onToast(String(e)));
   };
   // guru and disciples: the names written in the record, plus those of the Guru Paramparā
@@ -280,6 +289,12 @@ export function PersonView(p: Props) {
                 <button className="btn ghost" onClick={() => p.onFindMentions(person)} title={t.findMentions}>
                   <Search size={15} /> {t.findMentions}
                 </button>
+                <button className="btn ghost" onClick={() => p.onGuru(person)} title={t.guruTitle}>
+                  <ListTree size={15} /> {t.guruButton}
+                </button>
+                <button className="icon-btn" onClick={() => p.onReveal(person)} title={t.revealInTree}>
+                  <LocateFixed size={17} />
+                </button>
                 <div className="menu-wrap">
                   <button
                     className={`icon-btn ${menu ? "on" : ""}`}
@@ -301,9 +316,9 @@ export function PersonView(p: Props) {
                       </button>
                       {person.docs.length > 1 && (
                         <button
-                          onClick={() => {
+                          onClick={async () => {
                             setMenu(false);
-                            if (window.confirm(t.joinOneConfirm(person.name))) api.joinTexts(person.id).catch((e) => p.onToast(String(e)));
+                            if (await ask(t.joinOneConfirm(person.name))) api.joinTexts(person.id).catch((e) => p.onToast(String(e)));
                           }}
                         >
                           <Combine size={15} /> {t.joinOne}
@@ -370,11 +385,31 @@ export function PersonView(p: Props) {
                     <button className="btn ghost" onClick={() => p.onOpenDoc(single.id)}>
                       <BookOpen size={15} /> {t.openInReader}
                     </button>
-                    <button className="icon-btn" title={t.edit} onClick={() => p.onEditDoc(single.id)}>
+                    <button className="icon-btn" title={t.edit} onClick={() => p.onEditDoc(single.id, parts?.ord ?? 0)}>
                       <Pencil size={16} />
                     </button>
                   </span>
                 </div>
+                {parts && (
+                  <div className="toc-row">
+                    <button className="icon-btn" disabled={parts.ord <= 0} title={t.previous} onClick={() => goPart(parts.ord - 1)}>
+                      <ChevronLeft size={18} />
+                    </button>
+                    <select value={parts.ord} onChange={(e) => goPart(Number(e.target.value))} title={t.contents}>
+                      {parts.toc.map((e) => (
+                        <option key={e.ordinal} value={e.ordinal}>
+                          {e.ordinal + 1}. {e.heading ?? single.title}
+                        </option>
+                      ))}
+                    </select>
+                    <button className="icon-btn" disabled={parts.ord >= parts.total - 1} title={t.next} onClick={() => goPart(parts.ord + 1)}>
+                      <ChevronRight size={18} />
+                    </button>
+                    <span className="pill mono">
+                      {parts.ord + 1} / {parts.total}
+                    </span>
+                  </div>
+                )}
                 <div
                   className={`reader-body ${p.readerStyle === "editor" ? "src-view" : p.readerStyle}`}
                   style={{ fontSize: p.fontSize }}
@@ -399,7 +434,7 @@ export function PersonView(p: Props) {
                       />
                     ))
                   )}
-                  {inline && inline.total > inline.sections.length && (
+                  {inline && !parts && inline.total > inline.sections.length && (
                     <button className="link-btn" onClick={() => p.onOpenDoc(single.id)}>
                       {t.readMore}
                     </button>
@@ -460,7 +495,7 @@ export function PersonView(p: Props) {
                     <button
                       className="icon-btn danger"
                       title={t.removeImage}
-                      onClick={() => window.confirm(t.removeImageConfirm) && imageAction(() => api.removePersonImage(id))()}
+                      onClick={async () => (await ask(t.removeImageConfirm)) && imageAction(() => api.removePersonImage(id))()}
                     >
                       <Trash2 size={14} />
                     </button>

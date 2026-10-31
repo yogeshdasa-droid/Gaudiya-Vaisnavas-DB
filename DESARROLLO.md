@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **31-10-2026** (versión **0.4.2**).
+Última actualización: **31-10-2026** (versión **0.5.0**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -77,7 +77,7 @@ $env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Env
 npm install            # solo la primera vez en un equipo nuevo
 npm run app:dev        # abrir la app en modo pruebas (puerto 1421)
 npx tsc --noEmit       # comprobar errores de TypeScript
-cd src-tauri; cargo test   # pruebas automáticas de Rust (26)
+cd src-tauri; cargo test   # pruebas automáticas de Rust (31)
 npm run app:build      # generar el instalador
 ```
 
@@ -111,10 +111,16 @@ Para probar cosas que modifican datos, crear fichas de prueba (p. ej. «Zzprueba
 ### Publicar una versión nueva
 
 1. Subir el número de versión en `package.json`, `src-tauri/Cargo.toml` y `src-tauri/tauri.conf.json`.
-2. `npm run app:build` → `src-tauri/target/release/bundle/nsis/Gaudiya Vaisnavas DB_X.Y.Z_x64-setup.exe`
-   (y el programa suelto en `src-tauri/target/release/gaudiya-vaisnavas-db.exe`).
-3. Commit + push, y luego la release en GitHub:
-   `gh release create vX.Y.Z <instalador> <exe renombrado> --target main --title "Gaudiya Vaisnavas DB X.Y.Z" --notes-file notas.md`
+2. `npm run app:build` (`scripts/build.mjs`) → en `src-tauri/target/release/bundle/nsis/`:
+   `Gaudiya Vaisnavas DB_X.Y.Z_x64-setup.exe`, su firma `.sig` y **`latest.json`** (y el programa suelto
+   en `src-tauri/target/release/gaudiya-vaisnavas-db.exe`).
+   Firma con la clave privada **`%USERPROFILE%\.tauri\gaudiya-vaisnavas-db.key`** (sin contraseña;
+   la pública está en `tauri.conf.json` › `plugins.updater.pubkey`). **Esa clave no está en GitHub:
+   si se pierde, las apps instaladas ya no aceptarán actualizaciones** (habría que instalar a mano una
+   versión con clave nueva). Guardar una copia en lugar seguro.
+3. Commit + push, y luego la release en GitHub (instalador **con guiones**, como dice `latest.json`):
+   `gh release create vX.Y.Z <Gaudiya-Vaisnavas-DB_X.Y.Z_x64-setup.exe> <exe renombrado> <latest.json> --target main --title "Gaudiya Vaisnavas DB X.Y.Z" --notes-file notas.md`
+   Las apps buscan `releases/latest/download/latest.json`.
 
 ---
 
@@ -180,7 +186,52 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.4.2)
+## 5. Qué hace hoy (v0.5.0)
+
+### Novedades de la 0.5.0 (31-10-2026)
+- **Biblioteca › botón derecho en una carpeta › «Mandar a la papelera…»**: todos sus textos (y los de
+  sus subcarpetas) van a la Papelera (`store::trash_folder`, comando `trash_folder`); se recuperan
+  en Ajustes › Papelera.
+- **Buscar en el árbol**: cuadro «Buscar en el árbol…» arriba de la Biblioteca (carpetas y títulos;
+  deja solo las ramas que coinciden, abiertas). Y **«Mostrar en el árbol»** en el botón derecho de un
+  texto o una ficha: quita el filtro, abre las carpetas / los gurus de la Paramparā, baja hasta la
+  fila y la hace parpadear (`Reveal` en Sidebar.tsx).
+- **Ficha › «Paramparā…»** (también en el botón derecho de una ficha: «Lugar en la Guru Paramparā…»):
+  dice dónde está ahora, sugiere los gurus escritos en su campo «guru» y permite elegir uno
+  escribiendo su nombre → pasa a ser su último discípulo (`GuruDialog` en Dialogs.tsx). Si el guru no
+  está en la Paramparā, se añade antes al final. También «Quitar de la Paramparā». Al terminar la
+  marca en la barra lateral. Botón con la diana (al lado) = «Mostrar en el árbol» para arrastrarla.
+- **Ajustes › Rellenar fichas** (`fill.rs`, `components/Fill.tsx`): propuestas para campos vacíos,
+  que el usuario acepta (✓) o descarta (✕) una a una o «Aceptar las N que se ven». Fuentes:
+  **calendario** (`calendar::person_days`: día lunar de la fecha del .ics, escrito «Viṣṇu Kṛṣṇa Aṣṭamī
+  (Gauḍīya calendar)», que `parse_day` vuelve a leer) y **discípulos** (los nombres del campo
+  «Discípulos» de las fichas de la Paramparā → guru de esas fichas; al aceptar, la ficha pasa al árbol
+  bajo ese guru). Se guardan en **`biodata-propuestas.db`** junto a la BD (no es dato de la biblioteca;
+  no va en copias): lo descartado no vuelve. Al aceptar, solo campos vacíos, con `update_person`
+  (versión anterior). En una copia: 93 propuestas (88 fechas, 5 gurus).
+  **Siguiente paso (pendiente, lo lanza el usuario):** fuente «ia» con un modelo local de Ollama que
+  lea los textos de cada ficha y proponga fechas, lugar, guru, obras… con la frase de donde lo saca.
+- **Ficha con un texto de varios apartados** (textos unidos): se ve como en el lector, un apartado
+  cada vez con la barra ◀ lista ▶ «1 / 3»; el lápiz edita el apartado que se ve.
+- 31-10-2026: **unidos los textos de la biblioteca real** a petición del usuario (166 fichas, 476
+  textos, 12 repetidos fuera; 2.920 → 2.610 textos). Copia previa: «Gaudiya Vaisnavas DB antes de unir
+  textos 2026-10-31 2324.db» en Documentos.
+- Ajustes › Copias: ya no lista «biodata-significado.db» ni «biodata-propuestas.db» como copias.
+- **Editar texto › Colección**: lista desplegable con las colecciones que hay + «Nueva colección…».
+- **Ajustes › Copias de seguridad › Versiones anteriores**: cuántas hay y cuánto ocupan, y botón
+  «Vaciar las versiones anteriores» (`store::clear_versions` + VACUUM, en segundo plano, con copia
+  «… antes de vaciar versiones …»).
+- **Actualizar sin bajar el instalador**: plugins `tauri-plugin-updater` y `tauri-plugin-process`.
+  Si la release tiene `latest.json`, el aviso de la barra de estado y Ayuda › Buscar actualizaciones
+  ofrecen «Actualizar ahora»: descarga el instalador firmado, lo instala en modo pasivo (sin preguntas)
+  y vuelve a abrir la app. Si no (releases antiguas), como antes: abrir la descarga.
+  La 0.4.2 instalada no tiene esto: **la 0.5.0 hay que instalarla a mano**; desde ella, las siguientes se
+  instalan solas.
+- **Arreglo importante: las confirmaciones no esperaban la respuesta.** El plugin de diálogos de Tauri
+  cambia `window.confirm` por una función que devuelve una promesa; `if (!window.confirm(…)) return`
+  la tomaba siempre por «sí» y hacía la acción antes de contestar (borrar ficha, vaciar la papelera,
+  restaurar copia, reemplazar todo…). Ahora todas usan **`await ask(…)`** (`components/ui.tsx`).
+  **No usar `window.confirm` directamente nunca.** (`window.prompt` sí es el normal y espera.)
 
 ### Novedades de la 0.4.2 (31-10-2026)
 - **Un texto por ficha** (Ajustes › Copias de seguridad, y menú «…» de cada ficha: «Unir sus textos en uno
@@ -334,15 +385,27 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 7. Pendientes e ideas
 
+### Para la próxima sesión (plan acordado el 31-10-2026)
+1. **Probar la actualización automática.** El usuario instala la 0.5.0 a mano (la 0.4.2 no sabe
+   actualizarse; al desinstalar, **no marcar «Borrar los datos»**). Para probar que se actualiza sola
+   hace falta publicar después una 0.5.1 (con `npm run app:build` y subir `latest.json`): la 0.5.0
+   instalada debería ofrecer «Actualizar ahora» en la barra de estado.
+2. **Rellenar fichas con IA local** (fuente «ai» en `fill.rs`): un modelo de Ollama (p. ej. gemma3 o
+   qwen2.5 pequeño, que quepa en la RTX 3050) lee el texto de cada ficha de «Otros vaiṣṇavas» y
+   devuelve JSON {appearance, disappearance, place, guru, disciples, works, notes} + la frase de donde
+   sale cada dato (`evidence`); solo lo que diga el texto, en inglés como los textos. Va con
+   `fill::add(..., "ai", evidence, guru_id)` y sale en Ajustes › Rellenar fichas para aceptar/descartar.
+   En segundo plano, con progreso y botón de parar (como Significado), y retomable. **Lo lanza el
+   usuario, no Claude.** Fichas con textos muy cortos: saltarlas o juntarlas.
+3. Revisar en Ajustes › Rellenar fichas las 93 propuestas (88 fechas del calendario, 5 gurus; ojo con
+   «Mādhava ← Vāmana Gosvāmī», nombre corto, puede ser otra persona).
+
 - Repasar en Ajustes › Revisar: 57 grupos de fichas repetidas, 10 títulos dudosos, 15 textos vacíos.
   31-10-2026: Claude propuso 13 uniones; **el usuario dice que NO son la misma persona: no unirlas**
   (ni proponerlas otra vez). Se movieron a su ficha 16 PDF que estaban en una ficha equivocada
   (Lokanatha dasa v.1–3 → Lokanātha Gosvāmī, Sanatana v.2–4 → Sanātana Gosvāmī, Vrindavana dasa
   v.1–5 → Vṛndāvana dāsa Ṭhākura, y Radhamohana, Radhavallabha, Sundarananda, Jagadananda, Damodara);
   copia previa «biodata antes de mover PDF.db». Lo demás queda como estaba, para que lo revise él.
-- Posible: botón para vaciar las «versiones anteriores» (54 MB tras diacríticos y conversión).
-- Actualizar sin descargar el instalador: añadir el plugin updater de Tauri (necesita un par de
-  claves para firmar las actualizaciones y subir un `latest.json` en cada release). No hecho.
 - OCR del único PDF escaneado («Krishna dasa babaji - v.1»): no se metió un motor de OCR en la app
   por un solo archivo; se podría transcribir aparte.
 - Firma digital del .exe (quita el aviso de Windows): cuesta un certificado anual; no se ha hecho.
@@ -355,6 +418,12 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 ---
 
 ## 8. Historial
+
+- **31-10-2026 — v0.5.0**: actualizar desde la app (updater firmado + `latest.json`); carpeta a la
+  papelera; buscar en el árbol y «Mostrar en el árbol»; «Paramparā…» (poner como discípulo de…);
+  colección como lista al editar; vaciar versiones anteriores; Ajustes › Rellenar fichas (calendario,
+  discípulos); barra de apartados en la ficha; **arreglo de todas las confirmaciones** (`ask()`).
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.5.0
 
 - **31-10-2026 — v0.4.2**: «Un texto por ficha» (unir los textos de cada ficha en uno, con índice por
   fuente). Goswami Grantha no se toca. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.4.2

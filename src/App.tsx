@@ -19,6 +19,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   ListTree,
+  LocateFixed,
   ListX,
   Pencil,
   Quote,
@@ -52,6 +53,7 @@ import {
   SectionText,
   SemanticDone,
   Slimmed,
+  VersionsCleared,
   Joined,
   Sort,
   Status,
@@ -59,8 +61,8 @@ import {
 } from "./api";
 import { dicts, Lang } from "./i18n";
 import { buildNameIndex } from "./personLinks";
-import { checkUpdate, Update } from "./update";
-import { EditDialog, ImportDialog, MergeDialog, PersonDialog, TrashDialog, VersionsDialog } from "./components/Dialogs";
+import { checkUpdate, installUpdate, Update } from "./update";
+import { EditDialog, GuruDialog, ImportDialog, MergeDialog, PersonDialog, TrashDialog, VersionsDialog } from "./components/Dialogs";
 import { Home, RecentDoc } from "./components/Home";
 import { EMPTY_FILTERS, Filters, hasFilter, Results } from "./components/Results";
 import { Reader, ReaderStyle, ReaderTarget } from "./components/Reader";
@@ -69,8 +71,8 @@ import { DuplicatesDialog } from "./components/Review";
 import { Timeline } from "./components/Timeline";
 import { TreeView } from "./components/TreeView";
 import { Settings, SettingsTab, Skin, Theme } from "./components/Settings";
-import { SideTab, Sidebar } from "./components/Sidebar";
-import { Kbd, Splitter } from "./components/ui";
+import { Reveal, SideTab, Sidebar } from "./components/Sidebar";
+import { ask, Kbd, Splitter } from "./components/ui";
 
 const PAGE = 50;
 
@@ -105,6 +107,7 @@ type Dialog =
   | { kind: "merge"; person: Person; suggested: number[] }
   | { kind: "versions"; what: "doc" | "person"; target: number; label: string }
   | { kind: "duplicates" }
+  | { kind: "guru"; person: Person }
   | null;
 
 export default function App() {
@@ -139,6 +142,10 @@ export default function App() {
   const [homeFacets, setHomeFacets] = useState<SearchResult["facets"]>([]);
   const [progress, setProgress] = useState<ImportProgress | null>(null);
   const [docs, setDocs] = useState<DocListItem[]>([]);
+  const collections = useMemo(
+    () => [...new Set(docs.map((d) => d.dir.split("/")[0]))].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" })),
+    [docs],
+  );
   const [persons, setPersons] = useState<PersonListItem[]>([]);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [dialog, setDialog] = useState<Dialog>(null);
@@ -150,6 +157,12 @@ export default function App() {
   const [resultsOpen, setResultsOpen] = useState(false);
   const [personTag, setPersonTag] = useState<string | null>(null);
   const [update, setUpdate] = useState<Update | null>(null);
+  const [updatePct, setUpdatePct] = useState<number | null | undefined>(undefined);
+  const [reveal, setReveal] = useState<Reveal | null>(null);
+  const revealIn = (kind: Reveal["kind"], id: number) => {
+    setSideOpen(true);
+    setReveal({ kind, id, n: Date.now() });
+  };
   // a new version on GitHub? (at most once a day)
   useEffect(() => {
     const day = new Date().toISOString().slice(0, 10);
@@ -332,6 +345,9 @@ export default function App() {
         showToast(dicts[stored<Lang>("language", "es")].joinDone(j.persons, j.docs, j.repeated));
         setPersonReload((n) => n + 1);
       }),
+      listen<VersionsCleared>("versions-cleared", (e) =>
+        showToast(dicts[stored<Lang>("language", "es")].versionsCleared(e.payload.count, e.payload.before, e.payload.after)),
+      ),
       listen<Slimmed>("slim-done", (e) => showToast(dicts[stored<Lang>("language", "es")].slimDone(e.payload.before, e.payload.after))),
       listen<[number, number]>("semantic-progress", (e) => setSemProgress(e.payload)),
       listen<SemanticDone>("semantic-done", (e) => {
@@ -542,8 +558,8 @@ export default function App() {
   };
 
   const withPerson = (id: number, f: (p: Person) => unknown) => () => api.getPerson(id).then(f).catch(fail);
-  const deletePerson = (p: Person) => {
-    if (!window.confirm(t.deletePersonConfirm(p.name))) return;
+  const deletePerson = async (p: Person) => {
+    if (!(await ask(t.deletePersonConfirm(p.name)))) return;
     api
       .deletePerson(p.id)
       .then(() => {
@@ -594,6 +610,7 @@ export default function App() {
       }),
     },
     { label: t.openPerson, icon: UserRound, onClick: withDoc(docId, (d) => (d.personId ? openPerson(d.personId) : showToast(t.noPerson))) },
+    { label: t.revealInTree, icon: LocateFixed, onClick: () => revealIn("doc", docId) },
     "sep",
     { label: t.saveOriginal, icon: Download, onClick: withDoc(docId, (d) => (d.original ? saveOriginal(d) : showToast("—"))) },
     { label: t.exportText, icon: FileDown, onClick: withDoc(docId, exportDoc) },
@@ -694,9 +711,11 @@ export default function App() {
         title: p?.name,
         items: [
           { label: t.openPerson, icon: UserRound, onClick: () => openPerson(id) },
+          { label: t.revealInTree, icon: LocateFixed, onClick: () => revealIn("person", id) },
           { label: t.editPerson, icon: Pencil, onClick: withPerson(id, (person) => setDialog({ kind: "person", person })) },
           { label: t.searchInPerson, icon: TextSearch, onClick: withPerson(id, searchInPerson) },
           { label: t.findMentions, icon: Search, onClick: withPerson(id, findMentions) },
+          { label: t.guruTitle + "…", icon: ListTree, onClick: withPerson(id, (person) => setDialog({ kind: "guru", person })) },
           { label: t.mergePersons, icon: GitMerge, onClick: withPerson(id, (person) => setDialog({ kind: "merge", person, suggested: [] })) },
           { label: t.versions, icon: History, onClick: () => p && setDialog({ kind: "versions", what: "person", target: p.id, label: p.name }) },
           { label: t.importFiles, icon: Upload, onClick: () => p && pickImport({ id: p.id, name: p.name }) },
@@ -729,6 +748,21 @@ export default function App() {
             onClick: () => {
               const name = window.prompt(t.renamePrompt, label);
               if (name && name.trim() && name !== label) api.renameFolder(dir, name).then(refreshAll, fail);
+            },
+          },
+          "sep",
+          {
+            label: t.trashFolder,
+            icon: Trash2,
+            danger: true,
+            onClick: async () => {
+              const n = docs.filter((d) => d.dir === dir || d.dir.startsWith(dir + "/")).length;
+              if (!(await ask(t.trashFolderConfirm(label, n)))) return;
+              api.trashFolder(dir).then((done) => {
+                showToast(t.trashFolderDone(done));
+                setFilters((f) => (f.scope && (f.scope.dir === dir || f.scope.dir.startsWith(dir + "/")) ? { ...f, scope: null } : f));
+                refreshAll();
+              }, fail);
             },
           },
         ],
@@ -919,6 +953,7 @@ export default function App() {
               onClearHistory={() => setHistory([])}
               tag={personTag}
               onTag={setPersonTag}
+              reveal={reveal}
             />
             <Splitter onDrag={(dx) => setSideW((w) => Math.min(480, Math.max(200, w + dx)))} onDoubleClick={() => setSideW(280)} />
           </>
@@ -991,7 +1026,9 @@ export default function App() {
             onAddText={addTextFor}
             onFindMentions={findMentions}
             onSearchIn={searchInPerson}
-            onEditDoc={(docId) => editSectionOf(docId, 0)}
+            onEditDoc={(docId, ord) => editSectionOf(docId, ord ?? 0)}
+            onGuru={(person) => setDialog({ kind: "guru", person })}
+            onReveal={(person) => revealIn("person", person.id)}
             onPhotoChanged={() => {
               reloadPerson();
               refreshAll();
@@ -1072,11 +1109,32 @@ export default function App() {
         )}
         <span className="spacer" />
         {update && (
-          <span className="update-note" title={t.updateHint}>
+          <span className="update-note" title={update.installable ? undefined : t.updateHint}>
             <Download size={13} /> {t.updateAvailable(update.version)} ·{" "}
-            <button className="link-btn" onClick={() => api.openExternal(update.url).catch(fail)}>
-              {t.updateDownload}
-            </button>{" "}
+            {update.installable ? (
+              updatePct !== undefined ? (
+                <span>{t.updateInstalling(updatePct)}</span>
+              ) : (
+                <button
+                  className="link-btn"
+                  onClick={async () => {
+                    const u = update.installable!;
+                    if (!(await ask(t.updateInstallConfirm(update.version)))) return;
+                    setUpdatePct(null);
+                    installUpdate(u, (f) => setUpdatePct(f === null ? null : Math.round(f * 100))).catch((e) => {
+                      setUpdatePct(undefined);
+                      fail(e);
+                    });
+                  }}
+                >
+                  {t.updateInstall}
+                </button>
+              )
+            ) : (
+              <button className="link-btn" onClick={() => api.openExternal(update.url).catch(fail)}>
+                {t.updateDownload}
+              </button>
+            )}{" "}
             ·{" "}
             <button className="link-btn" onClick={() => api.openExternal(update.page).catch(fail)}>
               {t.updateNotes}
@@ -1121,9 +1179,33 @@ export default function App() {
           }}
           persons={persons}
           onDuplicates={() => setDialog({ kind: "duplicates" })}
+          onOpenPerson={(id) => {
+            setDialog(null);
+            openPerson(id);
+          }}
           onOpenDoc={(id) => {
             setDialog(null);
             openDoc(id);
+          }}
+        />
+      )}
+      {dialog?.kind === "guru" && (
+        <GuruDialog
+          t={t}
+          person={dialog.person}
+          persons={persons}
+          onClose={() => setDialog(null)}
+          onDone={(msg) => {
+            const id = dialog.person.id;
+            setDialog(null);
+            showToast(msg);
+            api
+              .listPersons()
+              .then((list) => {
+                setPersons(list);
+                revealIn("person", id);
+              })
+              .catch(fail);
           }}
         />
       )}
@@ -1133,6 +1215,7 @@ export default function App() {
           doc={dialog.doc}
           section={dialog.section}
           persons={persons}
+          collections={collections}
           onClose={() => setDialog(null)}
           onSaved={(docId, ordinal) => {
             setDialog(null);

@@ -5,6 +5,7 @@ mod calendar;
 mod db;
 mod export;
 mod extract;
+mod fill;
 mod fold;
 mod import;
 mod replace;
@@ -237,6 +238,72 @@ async fn join_texts(app: AppHandle, person_id: Option<i64>) -> CmdResult<()> {
     })
 }
 
+/// How many earlier versions there are, and their size in bytes.
+#[tauri::command]
+async fn versions_size(state: State<'_, AppState>) -> CmdResult<(i64, i64)> {
+    store::versions_size(&state.conn.lock().unwrap())
+}
+
+#[derive(Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+struct VersionsCleared {
+    count: usize,
+    before: u64,
+    after: u64,
+    backup: String,
+}
+
+/// Empties the earlier versions, in the background and after a copy of the database.
+#[tauri::command]
+async fn clear_versions(app: AppHandle) -> CmdResult<()> {
+    let db_path = app.state::<AppState>().db_path.clone();
+    let copies = backup::copies_dir(&db_path);
+    background(&app, move |conn, app| {
+        let size = || {
+            std::fs::metadata(&db_path).map(|m| m.len()).unwrap_or(0)
+                + std::fs::metadata(db_path.with_extension("db-wal")).map(|m| m.len()).unwrap_or(0)
+        };
+        let before = size();
+        let _ = app.emit("import-progress", import::Progress { phase: "backup", done: 0, total: 1 });
+        let stamp: String =
+            conn.query_row("SELECT strftime('%Y-%m-%d %H%M', 'now', 'localtime')", [], |r| r.get(0)).map_err(err)?;
+        let target = copies.join(format!("Gaudiya Vaisnavas DB antes de vaciar versiones {stamp}.db"));
+        backup::copy_to(conn, &target)?;
+        let count = store::clear_versions(conn)?;
+        let _ = app.emit(
+            "versions-cleared",
+            VersionsCleared { count, before, after: size(), backup: target.to_string_lossy().to_string() },
+        );
+        Ok(())
+    })
+}
+
+// ---------------------------------------------------------------- rellenar fichas
+
+/// Looks for new proposals (calendar, disciples) and returns how many.
+#[tauri::command]
+async fn fill_gather(state: State<'_, AppState>) -> CmdResult<usize> {
+    let side = fill::open(&state.db_path)?;
+    fill::gather(&state.conn.lock().unwrap(), &side)
+}
+
+#[tauri::command]
+async fn fill_list(state: State<'_, AppState>) -> CmdResult<Vec<fill::Proposal>> {
+    let side = fill::open(&state.db_path)?;
+    fill::list(&state.conn.lock().unwrap(), &side)
+}
+
+#[tauri::command]
+async fn fill_accept(state: State<'_, AppState>, ids: Vec<i64>) -> CmdResult<usize> {
+    let side = fill::open(&state.db_path)?;
+    fill::accept(&mut state.conn.lock().unwrap(), &side, &ids)
+}
+
+#[tauri::command]
+async fn fill_reject(state: State<'_, AppState>, ids: Vec<i64>) -> CmdResult<()> {
+    fill::reject(&fill::open(&state.db_path)?, &ids)
+}
+
 /// Plain words of the library with a known spelling with diacritics.
 #[tauri::command]
 async fn diacritic_suggestions(state: State<'_, AppState>) -> CmdResult<Vec<replace::Suggestion>> {
@@ -448,6 +515,11 @@ async fn update_doc(state: State<'_, AppState>, doc_id: i64, meta: store::DocMet
 #[tauri::command]
 async fn rename_folder(state: State<'_, AppState>, dir: String, name: String) -> CmdResult<()> {
     store::rename_folder(&mut state.conn.lock().unwrap(), &dir, &name)
+}
+
+#[tauri::command]
+async fn trash_folder(state: State<'_, AppState>, dir: String) -> CmdResult<usize> {
+    store::trash_folder(&mut state.conn.lock().unwrap(), &dir)
 }
 
 #[tauri::command]
@@ -782,6 +854,8 @@ fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
         .register_uri_scheme_protocol("bio", |ctx, req| serve_file(ctx.app_handle(), &req.uri().to_string()))
         .setup(|app| {
             let dir = app.path().app_data_dir()?;
@@ -918,6 +992,7 @@ fn main() {
             save_section,
             update_doc,
             rename_folder,
+            trash_folder,
             trash_doc,
             restore_doc,
             list_trash,
@@ -938,6 +1013,12 @@ fn main() {
             restore_copy,
             list_versions,
             restore_version,
+            versions_size,
+            clear_versions,
+            fill_gather,
+            fill_list,
+            fill_accept,
+            fill_reject,
             upcoming,
             lunar_label,
             import_calendar,

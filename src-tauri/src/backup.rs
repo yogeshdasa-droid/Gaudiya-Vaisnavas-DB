@@ -141,13 +141,15 @@ pub struct Copy {
 pub fn list_copies(db_path: &Path) -> Vec<Copy> {
     let mut out = Vec::new();
     let main = db_path.file_name().map(|n| n.to_os_string());
+    // the files of the search by meaning and of the proposals are not copies
+    let side = [crate::semantic::vectors_path(db_path), crate::fill::proposals_path(db_path)];
     let mut dirs = vec![copies_dir(db_path), old_copies_dir(db_path), db_path.parent().unwrap_or(Path::new(".")).to_path_buf()];
     dirs.dedup();
     for dir in dirs {
         let Ok(rd) = std::fs::read_dir(&dir) else { continue };
         for entry in rd.flatten() {
             let p = entry.path();
-            if p.extension().and_then(|x| x.to_str()) != Some("db") || Some(p.file_name().unwrap().to_os_string()) == main {
+            if p.extension().and_then(|x| x.to_str()) != Some("db") || Some(p.file_name().unwrap().to_os_string()) == main || side.contains(&p) {
                 continue;
             }
             let Ok(md) = entry.metadata() else { continue };

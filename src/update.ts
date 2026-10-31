@@ -1,4 +1,6 @@
 import { getVersion } from "@tauri-apps/api/app";
+import { relaunch } from "@tauri-apps/plugin-process";
+import { check, Update as Installable } from "@tauri-apps/plugin-updater";
 
 /** Where new versions are published. */
 const LATEST = "https://api.github.com/repos/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/latest";
@@ -8,6 +10,8 @@ export interface Update {
   /** the installer (or the release page when it has none) */
   url: string;
   page: string;
+  /** can be installed from the app itself (the release has a signed latest.json) */
+  installable: Installable | null;
 }
 
 /** "0.10.2" > "0.9.9" */
@@ -29,5 +33,23 @@ export async function checkUpdate(): Promise<Update | null> {
   const version = r.tag_name.replace(/^v/, "");
   if (!newer(version, current)) return null;
   const setup = r.assets.find((a) => a.name.toLowerCase().endsWith("-setup.exe")) ?? r.assets.find((a) => a.name.endsWith(".exe"));
-  return { version, url: setup?.browser_download_url ?? r.html_url, page: r.html_url };
+  // releases made before the updater have no latest.json: then only the download
+  const installable = await check().catch(() => null);
+  return { version, url: setup?.browser_download_url ?? r.html_url, page: r.html_url, installable };
+}
+
+/** Downloads the new version, installs it and starts the program again.
+ *  `onProgress` gets a fraction 0–1 (null while the size is unknown). */
+export async function installUpdate(u: Installable, onProgress: (f: number | null) => void): Promise<void> {
+  let total = 0;
+  let got = 0;
+  await u.downloadAndInstall((ev) => {
+    if (ev.event === "Started") total = ev.data.contentLength ?? 0;
+    else if (ev.event === "Progress") {
+      got += ev.data.chunkLength;
+      onProgress(total ? got / total : null);
+    }
+  });
+  // on Windows the installer closes the program by itself; elsewhere:
+  await relaunch();
 }

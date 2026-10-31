@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Gaudiya Vaisnavas DB",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "identifier": "com.whispers.biodata",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -23,12 +23,17 @@
     ],
     "security": {
       "csp": null,
-      "assetProtocol": { "enable": true, "scope": [] }
+      "assetProtocol": {
+        "enable": true,
+        "scope": []
+      }
     }
   },
   "bundle": {
     "active": true,
-    "targets": ["nsis"],
+    "targets": [
+      "nsis"
+    ],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -38,7 +43,25 @@
     ],
     "shortDescription": "Gaudiya Vaisnavas DB: biografias vaisnavas",
     "windows": {
-      "nsis": { "languages": ["Spanish", "English"], "displayLanguageSelector": true }
+      "nsis": {
+        "languages": [
+          "Spanish",
+          "English"
+        ],
+        "displayLanguageSelector": true
+      }
+    },
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEEzQzY0RDJDOURFRTIyMDAKUldRQUl1NmRMRTNHbytQM3I3U2FHellFeml3Wnl3MWJSaGFmU1BVSnpHbC9FbHFWTmtmV3ZaY0oK",
+      "endpoints": [
+        "https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
     }
   }
 }

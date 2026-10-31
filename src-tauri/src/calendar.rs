@@ -560,6 +560,40 @@ impl PersonIndex {
     }
 }
 
+/// An appearance or disappearance day of a record, from the imported calendar.
+pub struct PersonDay {
+    pub person_id: i64,
+    /// "appearance" | "disappearance"
+    pub kind: &'static str,
+    /// YYYY-MM-DD, as observed in the calendar
+    pub date: String,
+    pub summary: String,
+    /// the lunar day written so that `parse_day` reads it back ("Viṣṇu Kṛṣṇa Aṣṭamī")
+    pub lunar: String,
+}
+
+/// The first day the calendar gives for each record and kind.
+pub fn person_days(conn: &rusqlite::Connection) -> rusqlite::Result<Vec<PersonDay>> {
+    let index = PersonIndex::load(conn)?;
+    let mut st = conn.prepare("SELECT date, summary FROM calendar_events ORDER BY date, rowid")?;
+    let rows = st.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))?;
+    let mut seen = std::collections::HashSet::new();
+    let mut out = Vec::new();
+    for row in rows {
+        let (date, summary) = row?;
+        let Some((kind, name)) = event_person(&summary) else { continue };
+        let Some(person_id) = index.find(&name) else { continue };
+        if !seen.insert((person_id, kind)) {
+            continue;
+        }
+        let ymd: Vec<i64> = date.split('-').filter_map(|x| x.parse().ok()).collect();
+        let [y, m, d] = ymd[..] else { continue };
+        let lunar = label(day(y as i32, m as u32, d as u32)[0]).replace(" · ", " ");
+        out.push(PersonDay { person_id, kind, date, summary, lunar });
+    }
+    Ok(out)
+}
+
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CalendarInfo {

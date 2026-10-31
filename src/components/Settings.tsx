@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ArchiveRestore, CalendarDays, ClipboardCheck, Database, FileDown, DatabaseBackup, FolderInput, FolderOpen, HelpCircle, RefreshCw, Replace, Settings as Gear, Sparkles, Trash2, Undo2 } from "lucide-react";
+import { ArchiveRestore, CalendarDays, UserCheck, ClipboardCheck, Database, FileDown, DatabaseBackup, FolderInput, FolderOpen, HelpCircle, RefreshCw, Replace, Settings as Gear, Sparkles, Trash2, Undo2 } from "lucide-react";
 import { api, BackupCopy, BackupSettings, CalendarInfo, DefaultSource, PersonListItem, Status, Trashed } from "../api";
 import { ReviewPane } from "./Review";
-import { JoinSection, MeaningPane, ReplacePane, SlimSection } from "./Tools";
-import { checkUpdate } from "../update";
+import { FillPane } from "./Fill";
+import { ClearVersionsSection, JoinSection, MeaningPane, ReplacePane, SlimSection } from "./Tools";
+import { checkUpdate, installUpdate } from "../update";
 import { getVersion } from "@tauri-apps/api/app";
 import { Lang, T } from "../i18n";
-import { Kbd, Modal } from "./ui";
+import { ask, Kbd, Modal } from "./ui";
 import type { ReaderStyle } from "./Reader";
 
 export type Theme = "system" | "light" | "dark";
 export type Skin = "vscode" | "classic";
-export type SettingsTab = "general" | "backups" | "review" | "replace" | "meaning" | "sources" | "trash" | "help";
+export type SettingsTab = "general" | "backups" | "review" | "fill" | "replace" | "meaning" | "sources" | "trash" | "help";
 
 const when = (secs: number, lang: Lang) =>
   new Date(secs * 1000).toLocaleString(lang === "es" ? "es-ES" : "en-GB", { dateStyle: "medium", timeStyle: "short" });
@@ -21,19 +22,28 @@ const when = (secs: number, lang: Lang) =>
 function UpdateCheck({ t, onToast }: { t: T; onToast: (msg: string) => void }) {
   const [version, setVersion] = useState("");
   const [busy, setBusy] = useState(false);
+  const [pct, setPct] = useState<number | null | undefined>(undefined);
   useEffect(() => void getVersion().then(setVersion), []);
   const check = async () => {
     setBusy(true);
     try {
       const u = await checkUpdate();
       if (!u) onToast(t.updateNone);
-      else if (window.confirm(`${t.updateAvailable(u.version)}
+      else if (u.installable) {
+        if (await ask(`${t.updateAvailable(u.version)}
+
+${t.updateInstallConfirm(u.version)}`)) {
+          setPct(null);
+          await installUpdate(u.installable, (f) => setPct(f === null ? null : Math.round(f * 100)));
+        }
+      } else if (await ask(`${t.updateAvailable(u.version)}
 
 ${t.updateHint}
 
 ${t.updateDownload}?`)) await api.openExternal(u.url);
     } catch (e) {
       onToast(String(e));
+      setPct(undefined);
     } finally {
       setBusy(false);
     }
@@ -42,7 +52,7 @@ ${t.updateDownload}?`)) await api.openExternal(u.url);
     <div className="btn-row">
       <span className="muted">{t.versionLabel(version)}</span>
       <button className="btn ghost" disabled={busy} onClick={check}>
-        {busy ? <span className="spinner" /> : <RefreshCw size={15} />} {t.checkUpdates}
+        {busy ? <span className="spinner" /> : <RefreshCw size={15} />} {pct !== undefined ? t.updateInstalling(pct) : t.checkUpdates}
       </button>
     </div>
   );
@@ -65,7 +75,7 @@ function CalendarSettings({ t, onToast, onChanged }: { t: T; onToast: (msg: stri
     }
   };
   const clear = async () => {
-    if (!window.confirm(t.calendarClearConfirm)) return;
+    if (!(await ask(t.calendarClearConfirm))) return;
     await api.clearCalendar().catch((e) => onToast(String(e)));
     load();
     onChanged();
@@ -127,7 +137,7 @@ function Backups({ t, lang, onToast }: { t: T; lang: Lang; onToast: (msg: string
     api.setBackupSettings(days, keep).then(() => setSettings((s) => s && { ...s, days, keep }), (e) => onToast(String(e)));
 
   const restore = async (path: string, name: string) => {
-    if (!window.confirm(t.restoreConfirm(name))) return;
+    if (!(await ask(t.restoreConfirm(name)))) return;
     await api.restoreCopy(path);
     // everything on screen belongs to the old data: start again
     window.alert(t.restoredCopy);
@@ -208,7 +218,7 @@ function Backups({ t, lang, onToast }: { t: T; lang: Lang; onToast: (msg: string
               title={t.delete}
               disabled={busy}
               onClick={run(async () => {
-                if (window.confirm(t.deleteCopyConfirm(c.name))) await api.deleteCopy(c.path);
+                if (await ask(t.deleteCopyConfirm(c.name))) await api.deleteCopy(c.path);
               })}
             >
               <Trash2 size={15} />
@@ -222,6 +232,7 @@ function Backups({ t, lang, onToast }: { t: T; lang: Lang; onToast: (msg: string
       {busy && <p className="muted small">{t.working}</p>}
       <JoinSection t={t} onToast={onToast} />
       <SlimSection t={t} onToast={onToast} />
+      <ClearVersionsSection t={t} onToast={onToast} />
     </>
   );
 }
@@ -245,6 +256,7 @@ interface Props {
   persons: PersonListItem[];
   onDuplicates: () => void;
   onOpenDoc: (id: number) => void;
+  onOpenPerson: (id: number) => void;
 }
 
 export function Settings(p: Props) {
@@ -271,6 +283,7 @@ export function Settings(p: Props) {
     ["general", Gear, t.general],
     ["backups", DatabaseBackup, t.backups],
     ["review", ClipboardCheck, t.review],
+    ["fill", UserCheck, t.fillTab],
     ["replace", Replace, t.replaceTab],
     ["meaning", Sparkles, t.meaningTab],
     ["sources", FolderInput, t.sourcesTitle],
@@ -376,6 +389,8 @@ export function Settings(p: Props) {
             />
           )}
 
+          {tab === "fill" && <FillPane t={t} onToast={p.onToast} onChanged={p.onChanged} onOpenPerson={p.onOpenPerson} />}
+
           {tab === "replace" && <ReplacePane t={t} onToast={p.onToast} onOpenDoc={p.onOpenDoc} />}
 
           {tab === "meaning" && <MeaningPane t={t} onToast={p.onToast} />}
@@ -436,7 +451,7 @@ export function Settings(p: Props) {
                         className="icon-btn danger"
                         title={t.purge}
                         onClick={guard(async () => {
-                          if (!window.confirm(t.purgeConfirm(x.title))) return;
+                          if (!(await ask(t.purgeConfirm(x.title)))) return;
                           await api.purgeDocs([x.id]);
                           setTrash((list) => list.filter((y) => y !== x));
                           p.onChanged();
@@ -450,7 +465,7 @@ export function Settings(p: Props) {
                 <button
                   className="btn ghost"
                   onClick={guard(async () => {
-                    if (!window.confirm(t.emptyTrashConfirm(trash.length))) return;
+                    if (!(await ask(t.emptyTrashConfirm(trash.length)))) return;
                     await api.purgeDocs(trash.map((x) => x.id));
                     setTrash([]);
                     p.onChanged();

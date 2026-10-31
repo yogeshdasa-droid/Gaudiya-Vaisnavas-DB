@@ -3722,3 +3722,82 @@ body.dragging-person * {
 .slim-list .check {
   align-items: center;
 }
+
+/* "show in the tree": the row found blinks once */
+.tree-row.flash {
+  animation: flash 1.4s ease-out;
+}
+@keyframes flash {
+  0%,
+  35% {
+    background: color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+/* Lugar en la Guru Paramparā: the gurus named in the record */
+.guru-suggest {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0 12px;
+}
+.guru-suggest .chip {
+  border: 1px solid transparent;
+  font-size: 12px;
+}
+.guru-suggest .chip.on {
+  border-color: var(--accent);
+}
+
+/* Ajustes › Rellenar fichas */
+.fill-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 14px 0 8px;
+}
+.fill-bar .chip.on,
+.fill-bar .chip {
+  border: 1px solid transparent;
+  font-size: 12px;
+}
+.fill-bar .chip.on {
+  border-color: var(--accent);
+}
+.fill-person {
+  padding: 8px 0;
+  border-top: 1px solid var(--border);
+}
+.fill-name {
+  font-weight: 600;
+}
+.fill-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 3px 0 3px 12px;
+}
+.fill-what {
+  flex: 1;
+  min-width: 0;
+}
+.fill-field {
+  color: var(--muted);
+  margin-right: 6px;
+}
+.fill-field::after {
+  content: ":";
+}
+.fill-value {
+  margin-right: 8px;
+}
+.fill-evidence {
+  color: var(--muted);
+  font-size: 11.5px;
+  overflow-wrap: anywhere;
+}

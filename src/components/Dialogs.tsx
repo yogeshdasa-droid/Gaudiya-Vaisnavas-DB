@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, FilePen, FileText, FolderInput, GitMerge, History, Search, Trash2, Undo2, Upload, UserPlus, UserRound, X } from "lucide-react";
+import { AlertTriangle, ListTree, ListX, FilePen, FileText, FolderInput, GitMerge, History, Search, Trash2, Undo2, Upload, UserPlus, UserRound, X } from "lucide-react";
 import { api, DocInfo, EMPTY_PERSON, Person, PersonFields, PersonListItem, SectionText, Version } from "../api";
 import { T } from "../i18n";
-import { Modal } from "./ui";
+import { ask, Modal } from "./ui";
 import { foldName } from "./Sidebar";
 
 function useCtrlS(enabled: boolean, save: () => void) {
@@ -101,11 +101,36 @@ async function resolveChoice(c: PersonChoice): Promise<number | null> {
 
 // ---------------------------------------------------------------- edit text
 
+const NEW_COLLECTION = "__new_collection__";
+
+/** The collections there are, and a new one. */
+function CollectionPicker({ t, collections, value, onChange }: { t: T; collections: string[]; value: string; onChange: (v: string) => void }) {
+  const list = collections.includes(value) || !value ? collections : [...collections, value];
+  return (
+    <select
+      value={value}
+      onChange={(e) => {
+        if (e.target.value !== NEW_COLLECTION) return onChange(e.target.value);
+        const name = window.prompt(t.newCollectionPrompt, "")?.trim().split("/").join("-");
+        if (name) onChange(name);
+      }}
+    >
+      {list.map((c) => (
+        <option key={c} value={c}>
+          {c}
+        </option>
+      ))}
+      <option value={NEW_COLLECTION}>{t.newCollection}</option>
+    </select>
+  );
+}
+
 export function EditDialog({
   t,
   doc,
   section,
   persons,
+  collections,
   onClose,
   onSaved,
 }: {
@@ -113,6 +138,7 @@ export function EditDialog({
   doc: DocInfo;
   section: SectionText;
   persons: PersonListItem[];
+  collections: string[];
   onClose: () => void;
   onSaved: (docId: number, ordinal: number) => void;
 }) {
@@ -125,8 +151,8 @@ export function EditDialog({
   const metaDirty = title !== doc.title || collection !== doc.collection || person.id !== doc.personId || !!person.newName;
   const dirty = metaDirty || text !== section.text;
 
-  const close = () => {
-    if (!dirty || window.confirm(t.unsaved)) onClose();
+  const close = async () => {
+    if (!dirty || (await ask(t.unsaved))) onClose();
   };
 
   const save = async () => {
@@ -177,7 +203,7 @@ export function EditDialog({
         </label>
         <label>
           <span>{t.collectionLabel}</span>
-          <input value={collection} onChange={(e) => setCollection(e.target.value)} />
+          <CollectionPicker t={t} collections={collections} value={collection} onChange={setCollection} />
         </label>
       </div>
       <label className="text-label">
@@ -187,6 +213,108 @@ export function EditDialog({
         </span>
         <textarea className="editor" value={text} spellCheck={false} onChange={(e) => setText(e.target.value)} autoFocus={!doc.size} />
       </label>
+      {error && <div className="error-box">{error}</div>}
+    </Modal>
+  );
+}
+
+// ---------------------------------------------------------------- place in the Guru Paramparā
+
+/** Puts a record under its guru in the Guru Paramparā (the guru is added
+ *  too, at the end, when he is not there yet). */
+export function GuruDialog({
+  t,
+  person,
+  persons,
+  onClose,
+  onDone,
+}: {
+  t: T;
+  person: Person;
+  persons: PersonListItem[];
+  onClose: () => void;
+  onDone: (msg: string) => void;
+}) {
+  const me = persons.find((x) => x.id === person.id);
+  const byId = (id: number | null | undefined) => (id ? persons.find((x) => x.id === id) : undefined);
+  const guruNow = byId(me?.tree?.parent);
+  const [guru, setGuru] = useState<PersonChoice>({ id: guruNow?.id ?? null });
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  // the names written in the record's «guru» field
+  const suggested = useMemo(() => {
+    const out: PersonListItem[] = [];
+    for (const part of person.guru.replace(/\([^)]*\)/g, " ").split(/[;,\n]|\band\b|\by\b/)) {
+      const m = filterPersons(persons, part.trim(), 2).filter((x) => x.id !== person.id);
+      for (const x of m.slice(0, 1)) if (!out.some((o) => o.id === x.id)) out.push(x);
+    }
+    return out.slice(0, 5);
+  }, [person, persons]);
+
+  const run = (job: () => Promise<string>) => async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      onDone(await job());
+    } catch (e) {
+      setError(String(e));
+      setBusy(false);
+    }
+  };
+  const place = run(async () => {
+    const id = await resolveChoice(guru);
+    if (!id) throw new Error(t.guruPick);
+    if (!byId(id)?.tree) await api.movePerson(id, { parent: null, before: null });
+    await api.movePerson(person.id, { parent: id, before: null });
+    return t.guruDone(person.name, byId(id)?.name ?? guru.newName ?? "");
+  });
+  const remove = run(async () => {
+    await api.movePerson(person.id, null);
+    return t.guruRemoved(person.name);
+  });
+
+  return (
+    <Modal
+      title={t.guruTitle}
+      icon={<ListTree size={18} />}
+      onClose={onClose}
+      footer={
+        <>
+          {me?.tree && (
+            <button className="btn ghost danger" disabled={busy} onClick={remove}>
+              <ListX size={15} /> {t.removeFromParampara}
+            </button>
+          )}
+          <span className="grow" />
+          <button className="btn ghost" onClick={onClose}>
+            {t.cancel}
+          </button>
+          <button className="btn" disabled={busy || (!guru.id && !guru.newName) || guru.id === guruNow?.id} onClick={place}>
+            {busy ? <span className="spinner light" /> : null} {t.guruSet}
+          </button>
+        </>
+      }
+    >
+      <p>
+        <strong>{person.name}</strong>
+        <br />
+        <span className="muted">{!me?.tree ? t.guruNotInTree : guruNow ? t.guruNowOf(guruNow.name) : t.guruAtTop}</span>
+      </p>
+      {suggested.length > 0 && (
+        <div className="guru-suggest">
+          <span className="muted small">{t.guruFromRecord}</span>
+          {suggested.map((x) => (
+            <button key={x.id} className={`chip clickable${guru.id === x.id ? " on" : ""}`} onClick={() => setGuru({ id: x.id })}>
+              {x.name}
+            </button>
+          ))}
+        </div>
+      )}
+      <label>
+        <span>{t.guruPick}</span>
+        <PersonPicker key={guru.id ?? guru.newName ?? ""} t={t} persons={persons.filter((x) => x.id !== person.id)} value={guru} onChange={setGuru} />
+      </label>
+      <p className="muted small">{t.guruHint}</p>
       {error && <div className="error-box">{error}</div>}
     </Modal>
   );
@@ -385,8 +513,8 @@ export function PersonDialog({
   const dirty = keys.some((k) => f[k] !== (initial[k] ?? ""));
   const set = (k: keyof PersonFields) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setF({ ...f, [k]: e.target.value });
 
-  const close = () => {
-    if (!dirty || window.confirm(t.unsaved)) onClose();
+  const close = async () => {
+    if (!dirty || (await ask(t.unsaved))) onClose();
   };
   const save = async () => {
     setBusy(true);
@@ -508,7 +636,7 @@ export function VersionsDialog({
   const text = useMemo(() => (cur ? versionText(t, kind, cur.data) : ""), [cur, kind, t]);
 
   const restore = async () => {
-    if (!cur || !window.confirm(t.restoreVersionConfirm)) return;
+    if (!cur || !(await ask(t.restoreVersionConfirm))) return;
     setBusy(true);
     try {
       await api.restoreVersion(cur.id);

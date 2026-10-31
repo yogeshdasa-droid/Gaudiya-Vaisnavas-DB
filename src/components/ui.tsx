@@ -2,6 +2,10 @@ import { ReactNode, useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { hueOf } from "../api";
 
+/** Asks yes / no and waits for the answer. The dialog plugin turns
+ *  window.confirm into a promise: used directly, it always reads as "yes". */
+export const ask = (message: string): Promise<boolean> => Promise.resolve(window.confirm(message) as boolean | Promise<boolean>);
+
 export function Modal({
   title,
   icon,

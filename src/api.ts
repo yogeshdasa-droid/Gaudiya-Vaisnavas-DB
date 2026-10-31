@@ -316,6 +316,7 @@ export const api = {
   saveSection: (docId: number, ordinal: number, text: string) => invoke<void>("save_section", { docId, ordinal, text }),
   updateDoc: (docId: number, meta: DocMeta) => invoke<void>("update_doc", { docId, meta }),
   renameFolder: (dir: string, name: string) => invoke<void>("rename_folder", { dir, name }),
+  trashFolder: (dir: string) => invoke<number>("trash_folder", { dir }),
   trashDoc: (docId: number) => invoke<void>("trash_doc", { docId }),
   restoreDoc: (docId: number) => invoke<void>("restore_doc", { docId }),
   listTrash: () => invoke<Trashed[]>("list_trash"),
@@ -339,6 +340,12 @@ export const api = {
   restoreCopy: (path: string) => invoke<string>("restore_copy", { path }),
   listVersions: (kind: "doc" | "person", target: number) => invoke<Version[]>("list_versions", { kind, target }),
   restoreVersion: (id: number) => invoke<void>("restore_version", { id }),
+  versionsSize: () => invoke<[number, number]>("versions_size"),
+  clearVersions: () => invoke<void>("clear_versions"),
+  fillGather: () => invoke<number>("fill_gather"),
+  fillList: () => invoke<Proposal[]>("fill_list"),
+  fillAccept: (ids: number[]) => invoke<number>("fill_accept", { ids }),
+  fillReject: (ids: number[]) => invoke<void>("fill_reject", { ids }),
   upcoming: (date: Date, count: number) =>
     invoke<CalDay[]>("upcoming", { y: date.getFullYear(), m: date.getMonth() + 1, d: date.getDate(), count }),
   lunarLabel: (text: string) => invoke<string | null>("lunar_label", { text }),
@@ -437,6 +444,24 @@ export interface Slimmed {
   covers: number;
   converted: number;
   originals: number;
+  before: number;
+  after: number;
+  backup: string;
+}
+
+export interface Proposal {
+  id: number;
+  personId: number;
+  person: string;
+  field: string;
+  value: string;
+  source: string;
+  evidence: string;
+  toTree: boolean;
+}
+
+export interface VersionsCleared {
+  count: number;
   before: number;
   after: number;
   backup: string;

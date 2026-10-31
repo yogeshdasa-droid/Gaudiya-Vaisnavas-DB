@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { listen } from "@tauri-apps/api/event";
-import { CheckCircle2, Combine, Download, Eye, Minimize2, Replace, Sparkles, Square, XCircle } from "lucide-react";
+import { CheckCircle2, Combine, Download, Eye, History, Minimize2, Replace, Sparkles, Square, XCircle } from "lucide-react";
 import { api, DiacriticSuggestion, PullProgress, ReplacePreview, ReplaceScope, ReplaceSpec, SemanticStatus, Slim } from "../api";
 import { T } from "../i18n";
+import { ask } from "./ui";
 
 const ALL: ReplaceScope = { texts: true, titles: true, persons: true };
 
@@ -70,7 +71,7 @@ function FindReplace({ t, onToast, onOpenDoc }: { t: T; onToast: (msg: string) =
   const show = () => run(async () => setPreview(await api.replacePreview(spec)));
   const apply = () =>
     run(async () => {
-      if (!preview || !window.confirm(t.replaceConfirm(preview.total))) return;
+      if (!preview || !(await ask(t.replaceConfirm(preview.total)))) return;
       await api.replaceApply(spec);
       setPreview(null);
       onToast(t.replaceStarted);
@@ -192,7 +193,7 @@ function Diacritics({ t, onToast }: { t: T; onToast: (msg: string) => void }) {
     setRows((rs) => rs && rs.map((r, i) => (ids.has(i) ? { ...r, on } : r)));
   };
   const apply = async () => {
-    if (!window.confirm(t.diaConfirm(ticked.length, changes))) return;
+    if (!(await ask(t.diaConfirm(ticked.length, changes)))) return;
     setBusy(true);
     try {
       const words: [string, string][] = ticked.map((r) => [r.s.word.toLowerCase(), r.value.trim()]);
@@ -284,7 +285,7 @@ export function SlimSection({ t, onToast }: { t: T; onToast: (msg: string) => vo
     </label>
   );
   const run = async () => {
-    if (!window.confirm(t.slimConfirm)) return;
+    if (!(await ask(t.slimConfirm))) return;
     setBusy(true);
     try {
       await api.slimLibrary(what);
@@ -311,11 +312,45 @@ export function SlimSection({ t, onToast }: { t: T; onToast: (msg: string) => vo
   );
 }
 
+/** Ajustes › Copias de seguridad › Versiones anteriores: empty them all. */
+export function ClearVersionsSection({ t, onToast }: { t: T; onToast: (msg: string) => void }) {
+  const [size, setSize] = useState<[number, number] | null>(null);
+  const [busy, setBusy] = useState(false);
+  const load = () => api.versionsSize().then(setSize, () => setSize(null));
+  useEffect(() => {
+    load();
+    const un = listen("versions-cleared", () => load());
+    return () => void un.then((f) => f());
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const run = async () => {
+    if (!(await ask(t.clearVersionsConfirm))) return;
+    setBusy(true);
+    try {
+      await api.clearVersions();
+      onToast(t.clearingVersions + "…");
+    } catch (e) {
+      onToast(String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <>
+      <h3>{t.clearVersionsTitle}</h3>
+      {size && <p>{t.clearVersionsInfo(size[0], size[1])}</p>}
+      <p className="muted small">{t.clearVersionsHint}</p>
+      <button className="btn ghost" disabled={busy || !size || size[0] === 0} onClick={run}>
+        <History size={15} /> {t.clearVersionsButton}
+      </button>
+    </>
+  );
+}
+
 /** Ajustes › Copias de seguridad › Un texto por ficha. */
 export function JoinSection({ t, onToast }: { t: T; onToast: (msg: string) => void }) {
   const [busy, setBusy] = useState(false);
   const run = async () => {
-    if (!window.confirm(t.joinConfirm)) return;
+    if (!(await ask(t.joinConfirm))) return;
     setBusy(true);
     try {
       await api.joinTexts(null);

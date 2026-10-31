@@ -349,6 +349,29 @@ pub fn rename_folder(conn: &mut Connection, dir: &str, new_name: &str) -> Res<()
 
 // ---------------------------------------------------------------- recycle bin
 
+/// Sends every text of a collection (or of a folder inside it) to the
+/// recycle bin; returns how many.
+pub fn trash_folder(conn: &mut Connection, dir: &str) -> Res<usize> {
+    if dir.is_empty() {
+        return Err("Carpeta vacía".into());
+    }
+    let ids: Vec<i64> = conn
+        .prepare("SELECT id FROM docs WHERE deleted IS NULL AND (dir = ?1 OR substr(dir, 1, length(?1) + 1) = ?1 || '/')")
+        .map_err(e)?
+        .query_map([dir], |r| r.get(0))
+        .map_err(e)?
+        .collect::<Result<_, _>>()
+        .map_err(e)?;
+    let tx = conn.transaction().map_err(e)?;
+    for id in &ids {
+        fts_sections_remove(&tx, *id).map_err(e)?;
+        tx.execute("DELETE FROM docs_fts WHERE rowid = ?1", [id]).map_err(e)?;
+        tx.execute("UPDATE docs SET deleted = datetime('now', 'localtime') WHERE id = ?1", [id]).map_err(e)?;
+    }
+    tx.commit().map_err(e)?;
+    Ok(ids.len())
+}
+
 pub fn trash_doc(conn: &mut Connection, doc_id: i64) -> Res<()> {
     let tx = conn.transaction().map_err(e)?;
     fts_sections_remove(&tx, doc_id).map_err(e)?;
@@ -658,6 +681,22 @@ pub fn restore_version(conn: &mut Connection, id: i64) -> Res<()> {
     tx.commit().map_err(e)
 }
 
+/// How many earlier versions there are and how much they take (bytes).
+pub fn versions_size(conn: &Connection) -> Res<(i64, i64)> {
+    conn.query_row("SELECT count(*), COALESCE(sum(length(data) + length(label)), 0) FROM history", [], |r| {
+        Ok((r.get(0)?, r.get(1)?))
+    })
+    .map_err(e)
+}
+
+/// Deletes all the earlier versions of texts and records, and gives the
+/// space back to the disk. Returns how many were deleted.
+pub fn clear_versions(conn: &mut Connection) -> Res<usize> {
+    let n = conn.execute("DELETE FROM history", []).map_err(e)?;
+    conn.execute_batch("PRAGMA wal_checkpoint(TRUNCATE); VACUUM; PRAGMA wal_checkpoint(TRUNCATE);").map_err(e)?;
+    Ok(n)
+}
+
 // ---------------------------------------------------------------- persons
 
 #[derive(Serialize, Deserialize, Clone, Default)]
@@ -770,7 +809,7 @@ pub fn delete_person(conn: &mut Connection, id: i64) -> Res<()> {
     tx.commit().map_err(e)
 }
 
-fn get_fields(tx: &Connection, id: i64) -> rusqlite::Result<PersonFields> {
+pub fn get_fields(tx: &Connection, id: i64) -> rusqlite::Result<PersonFields> {
     tx.query_row(
         "SELECT name, aka, appearance, disappearance, place, guru, disciples, works, notes,
                 COALESCE((SELECT group_concat(tag, ', ') FROM person_tags WHERE person_id = ?1), '')
@@ -1079,7 +1118,7 @@ pub fn slim_library(conn: &mut Connection, what: Slim, progress: impl Fn(usize, 
     }
     tx.commit().map_err(e)?;
     // give the freed pages back to the disk
-    conn.execute_batch("PRAGMA wal_checkpoint(TRUNCATE); VACUUM;").map_err(e)?;
+    conn.execute_batch("PRAGMA wal_checkpoint(TRUNCATE); VACUUM; PRAGMA wal_checkpoint(TRUNCATE);").map_err(e)?;
     Ok(done)
 }
 
@@ -1625,6 +1664,29 @@ mod tests {
         assert!(list_versions(&conn, "doc", d).unwrap().is_empty(), "deleted for good with the text");
         delete_person(&mut conn, p).unwrap();
         assert!(list_versions(&conn, "person", p).unwrap().is_empty());
+
+        // emptying them all
+        let d2 = create_doc(&mut conn, None, "Otro", "c").unwrap();
+        save_section(&mut conn, d2, 0, "uno").unwrap();
+        assert!(versions_size(&conn).unwrap().0 > 0);
+        clear_versions(&mut conn).unwrap();
+        assert_eq!(versions_size(&conn).unwrap(), (0, 0));
+        assert!(crate::search::full_text(&conn, d2).unwrap().contains("uno"), "the text stays");
+    }
+
+    #[test]
+    fn trash_a_folder() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        crate::db::init(&conn).unwrap();
+        let a = create_doc(&mut conn, None, "A", "Bhajans").unwrap();
+        let b = create_doc(&mut conn, None, "B", "Bhajans").unwrap();
+        let c = create_doc(&mut conn, None, "C", "Bhajans 2").unwrap();
+        conn.execute("UPDATE docs SET dir = 'Bhajans/Sub' WHERE id = ?1", [b]).unwrap();
+        assert_eq!(trash_folder(&mut conn, "Bhajans").unwrap(), 2);
+        let live: Vec<i64> = crate::search::list_docs(&conn).unwrap().into_iter().map(|d| d.id).collect();
+        assert_eq!(live, vec![c], "only the other collection stays (not a mere prefix)");
+        restore_doc(&mut conn, a).unwrap();
+        assert_eq!(crate::search::list_docs(&conn).unwrap().len(), 2, "back from the bin");
     }
 
     #[test]

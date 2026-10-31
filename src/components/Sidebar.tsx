@@ -6,6 +6,23 @@ import { Lang, T } from "../i18n";
 
 export type SideTab = "persons" | "library" | "bookmarks" | "history";
 
+/** A text or record to show in its tree (`n` tells two requests apart). */
+export type Reveal = { kind: "doc" | "person"; id: number; n: number };
+// the last request handled: the lists are mounted again on each tab change
+let revealed = 0;
+
+/** Scrolls the sidebar to a row and makes it blink, once it is drawn. */
+function scrollToRow(selector: string) {
+  window.setTimeout(() => {
+    const row = document.querySelector<HTMLElement>(`.sidebar ${selector}`);
+    if (!row) return;
+    row.scrollIntoView({ block: "center" });
+    row.classList.remove("flash");
+    void row.offsetWidth;
+    row.classList.add("flash");
+  }, 60);
+}
+
 export const foldName = (s: string) =>
   s
     .split(/[\s,.;:()\-–—]+/)
@@ -157,6 +174,7 @@ function PersonList({
   docs,
   activeDocId,
   onDoc,
+  reveal,
 }: {
   t: T;
   lang: Lang;
@@ -169,6 +187,7 @@ function PersonList({
   docs: DocListItem[];
   activeDocId: number | null;
   onDoc: (id: number) => void;
+  reveal: Reveal | null;
 }) {
   const [filter, setFilter] = useState("");
   const [fieldHits, setFieldHits] = useState<number[]>([]);
@@ -240,6 +259,19 @@ function PersonList({
     walk(null, 0);
     return out;
   }, [kids, closed]);
+
+  // "show in the tree": no filter, its group and its gurus open
+  useEffect(() => {
+    if (!reveal || reveal.kind !== "person" || reveal.n === revealed) return;
+    revealed = reveal.n;
+    setFilter("");
+    if (tag) onTag(null);
+    if (parentOf.has(reveal.id)) {
+      toggleGroup("tree", false);
+      for (let x = parentOf.get(reveal.id); x != null; x = parentOf.get(x)) toggleNode(x, false);
+    } else toggleGroup("other", false);
+    scrollToRow(`[data-ctx="person"][data-id="${reveal.id}"]`);
+  }, [reveal, parentOf]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const isWithin = (id: number, ancestor: number) => {
     for (let x: number | null | undefined = id; x != null; x = parentOf.get(x)) if (x === ancestor) return true;
@@ -484,12 +516,48 @@ interface Props {
   onClearHistory: () => void;
   tag: string | null;
   onTag: (tag: string | null) => void;
+  reveal: Reveal | null;
 }
 
 export function Sidebar(p: Props) {
   const { t } = p;
   const tree = useMemo(() => buildTree(p.docs), [p.docs]);
   const [open, setOpen] = useState<Set<string>>(new Set());
+  // find in the library tree: only the branches with matching folders or titles, all open
+  const [libFilter, setLibFilter] = useState("");
+  const found = useMemo(() => {
+    const words = foldName(libFilter).split(" ").filter(Boolean);
+    if (!words.length) return null;
+    const docs = p.docs.filter((d) => {
+      const hay = ` ${foldName(`${d.title} ${d.dir.split("/").join(" ")}`)}`;
+      return words.every((w) => hay.includes(` ${w}`));
+    });
+    const nodes = buildTree(docs);
+    const keys = new Set<string>();
+    const all = (ns: Node[]) => ns.forEach((n) => (keys.add(n.key), all(n.folders)));
+    all(nodes);
+    return { nodes, keys };
+  }, [libFilter, p.docs]);
+
+  useEffect(() => {
+    const r = p.reveal;
+    if (!r || r.kind !== "doc" || r.n === revealed) return;
+    const d = p.docs.find((x) => x.id === r.id);
+    if (!d) return;
+    revealed = r.n;
+    setLibFilter("");
+    setOpen((s) => {
+      const n = new Set(s);
+      const parts = d.dir.split("/");
+      parts.forEach((_, i) => n.add(parts.slice(0, i + 1).join("/")));
+      return n;
+    });
+    if (p.tab !== "library") p.onTab("library");
+    scrollToRow(`[data-ctx="doc"][data-id="${d.id}"]`);
+  }, [p.reveal]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (p.reveal?.kind === "person" && p.reveal.n !== revealed && p.tab !== "persons") p.onTab("persons");
+  }, [p.reveal]); // eslint-disable-line react-hooks/exhaustive-deps
   const [editing, setEditing] = useState<number | null>(null);
   const toggle = (k: string) =>
     setOpen((s) => {
@@ -530,16 +598,27 @@ export function Sidebar(p: Props) {
             docs={p.docs}
             activeDocId={p.activeDocId}
             onDoc={(id) => p.onDoc(id)}
+            reveal={p.reveal}
           />
         )}
 
         {p.tab === "library" && (
           <div className="fade-in">
+            <div className="person-filter">
+              <Search size={14} />
+              <input value={libFilter} placeholder={t.filterLibrary} title={t.filterLibraryHint} spellCheck={false} onChange={(e) => setLibFilter(e.target.value)} />
+              {libFilter && (
+                <button className="icon-btn" onClick={() => setLibFilter("")}>
+                  <X size={13} />
+                </button>
+              )}
+            </div>
+            {found && found.nodes.length === 0 && <div className="side-empty">{t.noLibMatches}</div>}
             <Tree
-              nodes={tree}
+              nodes={found ? found.nodes : tree}
               depth={0}
-              open={open}
-              toggle={toggle}
+              open={found ? found.keys : open}
+              toggle={found ? () => {} : toggle}
               activeDir={p.activeDir}
               activeDocId={p.activeDocId}
               onFolder={p.onFolder}
