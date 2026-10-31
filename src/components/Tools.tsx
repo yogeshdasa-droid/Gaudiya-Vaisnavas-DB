@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { listen } from "@tauri-apps/api/event";
-import { CheckCircle2, Download, Eye, Minimize2, Replace, Sparkles, Square, XCircle } from "lucide-react";
+import { CheckCircle2, Combine, Download, Eye, Minimize2, Replace, Sparkles, Square, XCircle } from "lucide-react";
 import { api, DiacriticSuggestion, PullProgress, ReplacePreview, ReplaceScope, ReplaceSpec, SemanticStatus, Slim } from "../api";
 import { T } from "../i18n";
 
@@ -306,6 +306,32 @@ export function SlimSection({ t, onToast }: { t: T; onToast: (msg: string) => vo
       <p className="muted small">{t.slimHint}</p>
       <button className="btn ghost" disabled={busy || (!what.covers && !what.pdfText && !what.originals)} onClick={run}>
         <Minimize2 size={15} /> {t.slimButton}
+      </button>
+    </>
+  );
+}
+
+/** Ajustes › Copias de seguridad › Un texto por ficha. */
+export function JoinSection({ t, onToast }: { t: T; onToast: (msg: string) => void }) {
+  const [busy, setBusy] = useState(false);
+  const run = async () => {
+    if (!window.confirm(t.joinConfirm)) return;
+    setBusy(true);
+    try {
+      await api.joinTexts(null);
+      onToast(t.joining + "…");
+    } catch (e) {
+      onToast(String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <>
+      <h3>{t.joinTitle}</h3>
+      <p className="muted small">{t.joinHint}</p>
+      <button className="btn ghost" disabled={busy} onClick={run}>
+        <Combine size={15} /> {t.joinButton}
       </button>
     </>
   );

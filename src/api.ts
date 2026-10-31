@@ -238,7 +238,7 @@ export interface ImportOptions {
 }
 
 export interface ImportProgress {
-  phase: "scan" | "import" | "fts" | "export" | "backup" | "replace" | "slim" | "done";
+  phase: "scan" | "import" | "fts" | "export" | "backup" | "replace" | "slim" | "join" | "done";
   done: number;
   total: number;
 }
@@ -358,6 +358,8 @@ export const api = {
   replacePreview: (spec: ReplaceSpec) => invoke<ReplacePreview>("replace_preview", { spec }),
   replaceApply: (spec: ReplaceSpec) => invoke<void>("replace_apply", { spec }),
   slimLibrary: (what: Slim) => invoke<void>("slim_library", { what }),
+  /** one text per record: all records (null) or one */
+  joinTexts: (personId: number | null) => invoke<void>("join_texts", { personId }),
   diacriticSuggestions: () => invoke<DiacriticSuggestion[]>("diacritic_suggestions"),
   semanticStatus: () => invoke<SemanticStatus>("semantic_status"),
   semanticIndex: () => invoke<void>("semantic_index"),
@@ -437,6 +439,13 @@ export interface Slimmed {
   originals: number;
   before: number;
   after: number;
+  backup: string;
+}
+
+export interface Joined {
+  persons: number;
+  docs: number;
+  repeated: number;
   backup: string;
 }
 

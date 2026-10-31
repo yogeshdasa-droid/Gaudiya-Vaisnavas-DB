@@ -45,7 +45,7 @@ pub struct Options {
 
 #[derive(Clone, Serialize)]
 pub struct Progress {
-    pub phase: &'static str, // "scan" | "import" | "fts" | "export" | "backup" | "replace" | "slim" | "done"
+    pub phase: &'static str, // "scan" | "import" | "fts" | "export" | "backup" | "replace" | "slim" | "join" | "done"
     pub done: usize,
     pub total: usize,
 }

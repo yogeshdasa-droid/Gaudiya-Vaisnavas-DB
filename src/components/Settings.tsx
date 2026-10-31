@@ -3,7 +3,7 @@ import { open, save } from "@tauri-apps/plugin-dialog";
 import { ArchiveRestore, CalendarDays, ClipboardCheck, Database, FileDown, DatabaseBackup, FolderInput, FolderOpen, HelpCircle, RefreshCw, Replace, Settings as Gear, Sparkles, Trash2, Undo2 } from "lucide-react";
 import { api, BackupCopy, BackupSettings, CalendarInfo, DefaultSource, PersonListItem, Status, Trashed } from "../api";
 import { ReviewPane } from "./Review";
-import { MeaningPane, ReplacePane, SlimSection } from "./Tools";
+import { JoinSection, MeaningPane, ReplacePane, SlimSection } from "./Tools";
 import { checkUpdate } from "../update";
 import { getVersion } from "@tauri-apps/api/app";
 import { Lang, T } from "../i18n";
@@ -220,6 +220,7 @@ function Backups({ t, lang, onToast }: { t: T; lang: Lang; onToast: (msg: string
         <ArchiveRestore size={15} /> {t.restoreFromFile}
       </button>
       {busy && <p className="muted small">{t.working}</p>}
+      <JoinSection t={t} onToast={onToast} />
       <SlimSection t={t} onToast={onToast} />
     </>
   );

@@ -393,6 +393,17 @@ const es = {
   slimDone: (before: number, after: number) =>
     `Hecho: la biblioteca pasa de ${Math.round(before / 1048576)} MB a ${Math.round(after / 1048576)} MB. Se guardó una copia antes.`,
   slimming: "Ocupando menos espacio",
+  joinTitle: "Un texto por ficha",
+  joinHint:
+    "Las fichas con varios textos (la nota, el Goswami Grantha, los PDF v.1, v.2…) pasan a tener uno solo, con el nombre de la ficha y en la colección «Fichas». Cada texto anterior es un apartado con su título, y el índice del lector salta de uno a otro. Los PDF quedan como texto limpio; si un texto repite palabra por palabra lo que ya dice otro, se deja fuera. Los textos anteriores van a la Papelera (se pueden recuperar) y antes se hace una copia de seguridad.",
+  joinButton: "Unir los textos de cada ficha",
+  joinConfirm:
+    "¿Unir los textos de todas las fichas que tienen más de uno? Antes se guarda una copia de seguridad completa y los textos anteriores van a la Papelera.",
+  joinOne: "Unir sus textos en uno solo",
+  joinOneConfirm: (n: string) => `¿Unir todos los textos de «${n}» en uno solo? Los textos anteriores van a la Papelera (se pueden recuperar).`,
+  joinDone: (p: number, d: number, r: number) =>
+    `Hecho: ${p.toLocaleString("es-ES")} fichas con un solo texto (${d.toLocaleString("es-ES")} textos unidos${r ? `, ${r} repetidos dejados fuera` : ""}). Los anteriores están en la Papelera.`,
+  joining: "Uniendo textos",
   // search by meaning
   modeMeaning: "Significado",
   modeMeaningHint: "Buscar por el sentido (EmbeddingGemma): encuentra textos del mismo tema aunque no usen las mismas palabras",
@@ -837,6 +848,16 @@ const en: Dict = {
   slimDone: (before, after) =>
     `Done: the library goes from ${Math.round(before / 1048576)} MB to ${Math.round(after / 1048576)} MB. A backup was made first.`,
   slimming: "Taking less space",
+  joinTitle: "One text per record",
+  joinHint:
+    "Records with several texts (the note, Goswami Grantha, the PDFs v.1, v.2…) end up with only one, named after the record and in the “Fichas” collection. Each former text is a part with its title, and the reader's contents list jumps from one to another. PDFs become clean text; a text that repeats word for word what another says is left out. The former texts go to the Recycle bin (they can be restored) and a backup is made first.",
+  joinButton: "Join the texts of each record",
+  joinConfirm: "Join the texts of every record that has more than one? A full backup is made first and the former texts go to the Recycle bin.",
+  joinOne: "Join its texts into one",
+  joinOneConfirm: (n) => `Join all the texts of “${n}” into one? The former texts go to the Recycle bin (they can be restored).`,
+  joinDone: (p, d, r) =>
+    `Done: ${p.toLocaleString("en-GB")} records with a single text (${d.toLocaleString("en-GB")} texts joined${r ? `, ${r} repeated ones left out` : ""}). The former ones are in the Recycle bin.`,
+  joining: "Joining texts",
   // search by meaning
   modeMeaning: "Meaning",
   modeMeaningHint: "Search by meaning (EmbeddingGemma): finds texts on the same subject even without the same words",

@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **31-10-2026** (versión **0.4.1**).
+Última actualización: **31-10-2026** (versión **0.4.2**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -180,7 +180,17 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.4.1)
+## 5. Qué hace hoy (v0.4.2)
+
+### Novedades de la 0.4.2 (31-10-2026)
+- **Un texto por ficha** (Ajustes › Copias de seguridad, y menú «…» de cada ficha: «Unir sus textos en uno
+  solo»): `store::join_person_texts`, comando `join_texts` (con copia previa si es para todas). Cada
+  ficha con ≥2 textos pasa a tener uno, título = nombre de la ficha, colección «Fichas»; cada texto
+  anterior es un apartado `# título` y sus trozos se llaman «título · 2», «· 3» en el índice. PDF →
+  `pdf_markdown`; un texto cuyas palabras ya están en otro apartado se deja fuera. Los anteriores van a
+  la Papelera; los marcadores pasan al texto nuevo; la primera portada pasa a ser la foto de la ficha
+  si no tenía. **Solo toca textos con ficha: Goswami Grantha (103, sin ficha) no se toca** — el
+  usuario quiere revisarlo él (hay libros por capítulos). En una copia: 164 fichas, 472 textos, 3,7 s.
 
 ### Novedades de la 0.4.1 (31-10-2026)
 - **Personas**: tras «Otros vaiṣṇavas», un grupo plegable por cada colección cuyos textos no son de
@@ -345,6 +355,9 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 ---
 
 ## 8. Historial
+
+- **31-10-2026 — v0.4.2**: «Un texto por ficha» (unir los textos de cada ficha en uno, con índice por
+  fuente). Goswami Grantha no se toca. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.4.2
 
 - **31-10-2026 — v0.4.1**: importar «solo el texto» (nota Markdown limpia, sin PDF ni portada);
   Ajustes › Copias de seguridad › «Ocupar menos espacio» (portadas pequeñas, PDF a Markdown, quitar

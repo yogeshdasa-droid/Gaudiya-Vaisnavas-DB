@@ -209,6 +209,34 @@ async fn slim_library(app: AppHandle, what: store::Slim) -> CmdResult<()> {
     })
 }
 
+/// One text per record (all records, or only `person_id`), in the
+/// background; for all of them a copy of the database is made first.
+#[tauri::command]
+async fn join_texts(app: AppHandle, person_id: Option<i64>) -> CmdResult<()> {
+    let copies = backup::copies_dir(&app.state::<AppState>().db_path);
+    background(&app, move |conn, app| {
+        let mut backup_path = String::new();
+        if person_id.is_none() {
+            let _ = app.emit("import-progress", import::Progress { phase: "backup", done: 0, total: 1 });
+            let stamp: String =
+                conn.query_row("SELECT strftime('%Y-%m-%d %H%M', 'now', 'localtime')", [], |r| r.get(0)).map_err(err)?;
+            let target = copies.join(format!("Gaudiya Vaisnavas DB antes de unir textos {stamp}.db"));
+            backup::copy_to(conn, &target)?;
+            backup_path = target.to_string_lossy().to_string();
+        }
+        let mut done = store::join_person_texts(conn, person_id, |done, total| {
+            let _ = app.emit("import-progress", import::Progress { phase: "join", done, total });
+        })?;
+        done.backup = backup_path;
+        let _ = app.emit("join-done", done);
+        let state = app.state::<AppState>();
+        if semantic::status(&state.db_path, &state.semantic).pieces > 0 {
+            let _ = start_semantic(app);
+        }
+        Ok(())
+    })
+}
+
 /// Plain words of the library with a known spelling with diacritics.
 #[tauri::command]
 async fn diacritic_suggestions(state: State<'_, AppState>) -> CmdResult<Vec<replace::Suggestion>> {
@@ -930,6 +958,7 @@ fn main() {
             replace_preview,
             replace_apply,
             slim_library,
+            join_texts,
             diacritic_suggestions,
             semantic_status,
             semantic_index,

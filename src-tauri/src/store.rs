@@ -1083,6 +1083,164 @@ pub fn slim_library(conn: &mut Connection, what: Slim, progress: impl Fn(usize, 
     Ok(done)
 }
 
+#[derive(Serialize, Default, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct Joined {
+    /// records that now have one text
+    pub persons: usize,
+    /// texts joined (now in the recycle bin)
+    pub docs: usize,
+    /// texts left out because another one already says the same
+    pub repeated: usize,
+    pub backup: String,
+}
+
+/// Collection of the texts made by `join_person_texts`.
+pub const JOINED_COLLECTION: &str = "Fichas";
+
+/// Words only, for telling whether two texts say the same.
+fn bare(text: &str) -> String {
+    crate::fold::fold_text(text)
+}
+
+/// One text per record: the texts of each record with two or more (all
+/// records, or only `only`) become one Markdown text named after the record,
+/// each former text a part with its title as heading (the contents list goes
+/// from one to the next). PDFs become plain text; a text whose words are
+/// already in another part is left out. The former texts go to the recycle
+/// bin (they can be restored); their bookmarks follow; a cover becomes the
+/// record's picture if it has none.
+pub fn join_person_texts(conn: &mut Connection, only: Option<i64>, progress: impl Fn(usize, usize)) -> Res<Joined> {
+    let mut done = Joined::default();
+    let tx = conn.transaction().map_err(e)?;
+    let persons: Vec<(i64, String)> = tx
+        .prepare(
+            "SELECT p.id, p.name FROM persons p
+             WHERE (?1 IS NULL OR p.id = ?1)
+               AND (SELECT COUNT(*) FROM docs d WHERE d.person_id = p.id AND d.deleted IS NULL) >= 2",
+        )
+        .map_err(e)?
+        .query_map([only], |r| Ok((r.get(0)?, r.get(1)?)))
+        .map_err(e)?
+        .collect::<Result<_, _>>()
+        .map_err(e)?;
+    for (i, (pid, name)) in persons.iter().enumerate() {
+        if i % 10 == 0 {
+            progress(i, persons.len());
+        }
+        // the notes first (they were written as biographies), then Goswami
+        // Grantha, then the books
+        let docs: Vec<(i64, String, String, String, bool)> = tx
+            .prepare(
+                "SELECT id, title, kind, tags, collection = ?2 FROM docs WHERE person_id = ?1 AND deleted IS NULL
+                 ORDER BY collection = ?2 DESC,
+                          CASE WHEN kind IN ('md', 'new', 'txt') AND collection <> 'Calibre' THEN 0
+                               WHEN kind IN ('doc', 'docx') THEN 1 ELSE 2 END,
+                          title COLLATE NOCASE",
+            )
+            .map_err(e)?
+            .query_map(params![pid, JOINED_COLLECTION], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?, r.get(4)?)))
+            .map_err(e)?
+            .collect::<Result<_, _>>()
+            .map_err(e)?;
+        let mut sections: Vec<Section> = Vec::new();
+        let mut kept: Vec<String> = Vec::new();
+        // (former text, ordinal where its part starts)
+        let mut starts: Vec<(i64, i64)> = Vec::new();
+        let mut tags: Vec<String> = Vec::new();
+        for (did, title, kind, dtags, joined) in &docs {
+            let text: String = tx
+                .query_row(
+                    "SELECT group_concat(text, char(10) || char(10)) FROM (SELECT text FROM sections WHERE doc_id = ?1 ORDER BY ordinal)",
+                    [did],
+                    |r| r.get::<_, Option<String>>(0),
+                )
+                .map_err(e)?
+                .unwrap_or_default();
+            let text = if kind == "pdf" { crate::extract::pdf_markdown(&text) } else { text.trim().to_string() };
+            let words = bare(&text);
+            if words.is_empty() || kept.iter().any(|k| k.contains(&words)) {
+                done.repeated += 1;
+                starts.push((*did, sections.len().saturating_sub(1) as i64));
+                continue;
+            }
+            kept.push(words);
+            for t in dtags.split(',').map(str::trim).filter(|t| !t.is_empty()) {
+                if !tags.iter().any(|x| x.eq_ignore_ascii_case(t)) {
+                    tags.push(t.to_string());
+                }
+            }
+            starts.push((*did, sections.len() as i64));
+            if *joined {
+                // joined before: its parts stay as they are
+                let old: Vec<Section> = tx
+                    .prepare("SELECT heading, text FROM sections WHERE doc_id = ?1 ORDER BY ordinal")
+                    .map_err(e)?
+                    .query_map([did], |r| Ok(Section { heading: r.get(0)?, text: r.get(1)? }))
+                    .map_err(e)?
+                    .collect::<Result<_, _>>()
+                    .map_err(e)?;
+                sections.extend(old);
+                continue;
+            }
+            let mut part = text::split_sections(&format!("# {title}\n\n{text}"));
+            // the contents list names each piece after its part ("v.1 · 2"),
+            // unless the piece starts with a heading of its own
+            for (k, s) in part.iter_mut().enumerate() {
+                let own = s.text.trim_start().starts_with('#');
+                if k == 0 || !own {
+                    s.heading = Some(if k == 0 { title.clone() } else { format!("{title} · {}", k + 1) });
+                }
+            }
+            sections.extend(part);
+        }
+        if sections.is_empty() {
+            continue;
+        }
+        let new_id = insert_doc(
+            &tx,
+            &NewDoc {
+                person_id: Some(*pid),
+                collection: JOINED_COLLECTION.into(),
+                dir: JOINED_COLLECTION.into(),
+                title: name.clone(),
+                date: None,
+                tags: tags.join(","),
+                kind: "md".into(),
+                source: String::new(),
+                hash: String::new(),
+                sections,
+                files: vec![],
+            },
+        )
+        .map_err(e)?;
+        // the record keeps a picture: the first cover, if it has none
+        let has_photo: bool =
+            tx.query_row("SELECT EXISTS(SELECT 1 FROM person_photos WHERE person_id = ?1)", [pid], |r| r.get(0)).map_err(e)?;
+        if !has_photo {
+            tx.execute(
+                "INSERT OR IGNORE INTO person_photos(person_id, mime, data)
+                 SELECT ?1, f.mime, f.data FROM files f JOIN docs d ON d.id = f.doc_id
+                 WHERE d.person_id = ?1 AND d.deleted IS NULL AND f.role = 'cover' ORDER BY d.title LIMIT 1",
+                [pid],
+            )
+            .map_err(e)?;
+        }
+        for (did, start) in starts {
+            tx.execute("UPDATE bookmarks SET doc_id = ?1, ordinal = ?2 WHERE doc_id = ?3", params![new_id, start, did])
+                .map_err(e)?;
+            fts_sections_remove(&tx, did).map_err(e)?;
+            tx.execute("DELETE FROM docs_fts WHERE rowid = ?1", [did]).map_err(e)?;
+            tx.execute("UPDATE docs SET deleted = datetime('now', 'localtime') WHERE id = ?1", [did]).map_err(e)?;
+            done.docs += 1;
+        }
+        done.persons += 1;
+    }
+    tx.commit().map_err(e)?;
+    progress(persons.len(), persons.len());
+    Ok(done)
+}
+
 /// An image file: (file name, mime type, bytes).
 fn read_image(path: &std::path::Path) -> Res<(String, &'static str, Vec<u8>)> {
     let ext = path.extension().and_then(|x| x.to_str()).unwrap_or("").to_lowercase();
@@ -1554,5 +1712,6 @@ mod tests {
         assert_eq!(n, 0);
     }
 }
+
 
 

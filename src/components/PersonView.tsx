@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { BookOpen, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, MoreHorizontal, Pencil, Search, TextSearch, Trash2, UserRound, X } from "lucide-react";
+import { BookOpen, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, MoreHorizontal, Pencil, Search, TextSearch, Trash2, UserRound, X } from "lucide-react";
 import { api, fileUrl, Person, PersonListItem, SectionText } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { CollectionChip } from "./ui";
@@ -299,6 +299,16 @@ export function PersonView(p: Props) {
                       <button onClick={() => (setMenu(false), p.onAddText(person))}>
                         <FilePlus2 size={15} /> {t.addText}
                       </button>
+                      {person.docs.length > 1 && (
+                        <button
+                          onClick={() => {
+                            setMenu(false);
+                            if (window.confirm(t.joinOneConfirm(person.name))) api.joinTexts(person.id).catch((e) => p.onToast(String(e)));
+                          }}
+                        >
+                          <Combine size={15} /> {t.joinOne}
+                        </button>
+                      )}
                       <button onClick={() => (setMenu(false), p.onMerge(person, similar.map((s) => s.id)))}>
                         <GitMerge size={15} /> {t.mergePersons}
                       </button>

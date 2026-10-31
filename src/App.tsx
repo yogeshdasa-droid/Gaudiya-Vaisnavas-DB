@@ -52,6 +52,7 @@ import {
   SectionText,
   SemanticDone,
   Slimmed,
+  Joined,
   Sort,
   Status,
   TreePlace,
@@ -325,6 +326,11 @@ export default function App() {
       listen<Replaced>("replace-done", (e) => {
         const r = e.payload;
         showToast(dicts[stored<Lang>("language", "es")].replaceDone(r.total, r.texts, r.titles, r.persons));
+      }),
+      listen<Joined>("join-done", (e) => {
+        const j = e.payload;
+        showToast(dicts[stored<Lang>("language", "es")].joinDone(j.persons, j.docs, j.repeated));
+        setPersonReload((n) => n + 1);
       }),
       listen<Slimmed>("slim-done", (e) => showToast(dicts[stored<Lang>("language", "es")].slimDone(e.payload.before, e.payload.after))),
       listen<[number, number]>("semantic-progress", (e) => setSemProgress(e.payload)),
@@ -1041,7 +1047,9 @@ export default function App() {
                           ? t.replacing
                           : progress.phase === "slim"
                             ? t.slimming
-                            : t.importing
+                            : progress.phase === "join"
+                              ? t.joining
+                              : t.importing
                   } ${progress.done.toLocaleString(lang)} / ${progress.total.toLocaleString(lang)}`}
             {pct !== null && (
               <span className="bar">
