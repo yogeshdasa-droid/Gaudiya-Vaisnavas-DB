@@ -365,6 +365,45 @@ pub fn search(conn: &Connection, p: &SearchParams) -> rusqlite::Result<SearchRes
     })
 }
 
+/// Ids of the texts the search filters let through (for the search by meaning).
+pub fn allowed_docs(conn: &Connection, p: &SearchParams) -> rusqlite::Result<std::collections::HashSet<i64>> {
+    let f = filters(p, true);
+    let mut st = conn.prepare(&format!("SELECT d.id FROM docs d WHERE 1{}", f.sql))?;
+    let rows = st.query_map(params_from_iter(f.args), |r| r.get(0))?;
+    rows.collect()
+}
+
+/// A result for one section (without snippet), and the section's text.
+pub fn hit_for_section(conn: &Connection, doc_id: i64, ordinal: i64) -> rusqlite::Result<Option<(Hit, String)>> {
+    conn.query_row(
+        &format!(
+            "SELECT {HIT_COLS}, s.text FROM sections s JOIN docs d ON d.id = s.doc_id
+             LEFT JOIN persons p ON p.id = d.person_id WHERE s.doc_id = ?1 AND s.ordinal = ?2 AND d.deleted IS NULL"
+        ),
+        [doc_id, ordinal],
+        |r| {
+            Ok((
+                Hit {
+                    section_id: r.get(0)?,
+                    doc_id: r.get(1)?,
+                    ordinal: r.get(2)?,
+                    sections: r.get(3)?,
+                    heading: r.get(4)?,
+                    title: r.get(5)?,
+                    collection: r.get(6)?,
+                    dir: r.get(7)?,
+                    person_id: r.get(8)?,
+                    person: r.get(9)?,
+                    snippet: String::new(),
+                    hits: 0,
+                },
+                r.get(10)?,
+            ))
+        },
+    )
+    .optional()
+}
+
 // ---------------------------------------------------------------- documents
 
 #[derive(Serialize)]

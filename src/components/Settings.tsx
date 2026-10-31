@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ArchiveRestore, CalendarDays, ClipboardCheck, Database, FileDown, DatabaseBackup, FolderInput, FolderOpen, HelpCircle, RefreshCw, Settings as Gear, Trash2, Undo2 } from "lucide-react";
+import { ArchiveRestore, CalendarDays, ClipboardCheck, Database, FileDown, DatabaseBackup, FolderInput, FolderOpen, HelpCircle, RefreshCw, Replace, Settings as Gear, Sparkles, Trash2, Undo2 } from "lucide-react";
 import { api, BackupCopy, BackupSettings, CalendarInfo, DefaultSource, PersonListItem, Status, Trashed } from "../api";
 import { ReviewPane } from "./Review";
+import { MeaningPane, ReplacePane } from "./Tools";
 import { checkUpdate } from "../update";
 import { getVersion } from "@tauri-apps/api/app";
 import { Lang, T } from "../i18n";
@@ -11,7 +12,7 @@ import type { ReaderStyle } from "./Reader";
 
 export type Theme = "system" | "light" | "dark";
 export type Skin = "vscode" | "classic";
-export type SettingsTab = "general" | "backups" | "review" | "sources" | "trash" | "help";
+export type SettingsTab = "general" | "backups" | "review" | "replace" | "meaning" | "sources" | "trash" | "help";
 
 const when = (secs: number, lang: Lang) =>
   new Date(secs * 1000).toLocaleString(lang === "es" ? "es-ES" : "en-GB", { dateStyle: "medium", timeStyle: "short" });
@@ -268,6 +269,8 @@ export function Settings(p: Props) {
     ["general", Gear, t.general],
     ["backups", DatabaseBackup, t.backups],
     ["review", ClipboardCheck, t.review],
+    ["replace", Replace, t.replaceTab],
+    ["meaning", Sparkles, t.meaningTab],
     ["sources", FolderInput, t.sourcesTitle],
     ["trash", Trash2, `${t.trash}${status?.trash ? ` (${status.trash})` : ""}`],
     ["help", HelpCircle, t.help],
@@ -370,6 +373,10 @@ export function Settings(p: Props) {
               onToast={p.onToast}
             />
           )}
+
+          {tab === "replace" && <ReplacePane t={t} onToast={p.onToast} onOpenDoc={p.onOpenDoc} />}
+
+          {tab === "meaning" && <MeaningPane t={t} onToast={p.onToast} />}
 
           {tab === "sources" && (
             <>

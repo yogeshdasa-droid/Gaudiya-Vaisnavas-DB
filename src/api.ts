@@ -236,7 +236,7 @@ export interface ImportOptions {
 }
 
 export interface ImportProgress {
-  phase: "scan" | "import" | "fts" | "export" | "done";
+  phase: "scan" | "import" | "fts" | "export" | "backup" | "replace" | "done";
   done: number;
   total: number;
 }
@@ -353,7 +353,97 @@ export const api = {
   markDistinct: (ids: number[]) => invoke<void>("mark_distinct", { ids }),
   listDistinct: () => invoke<[number, number][]>("list_distinct"),
   openExternal: (target: string) => invoke<void>("open_external", { target }),
+  replacePreview: (spec: ReplaceSpec) => invoke<ReplacePreview>("replace_preview", { spec }),
+  replaceApply: (spec: ReplaceSpec) => invoke<void>("replace_apply", { spec }),
+  diacriticSuggestions: () => invoke<DiacriticSuggestion[]>("diacritic_suggestions"),
+  semanticStatus: () => invoke<SemanticStatus>("semantic_status"),
+  semanticIndex: () => invoke<void>("semantic_index"),
+  semanticStop: () => invoke<void>("semantic_stop"),
+  semanticPull: () => invoke<void>("semantic_pull"),
+  semanticSearch: (params: SearchParams) => invoke<SearchResult>("semantic_search", { params }),
 };
+
+// ---- find and replace / diacritics
+
+export interface ReplaceScope {
+  texts: boolean;
+  titles: boolean;
+  persons: boolean;
+}
+
+export interface ReplaceSpec {
+  find: string;
+  replace: string;
+  regex: boolean;
+  caseSensitive: boolean;
+  wholeWord: boolean;
+  /** whole words instead of find/replace: [plain, with diacritics] */
+  words: [string, string][];
+  scope: ReplaceScope;
+}
+
+export interface ReplaceSample {
+  docId: number | null;
+  personId: number | null;
+  ordinal: number;
+  label: string;
+  before: string;
+  old: string;
+  new: string;
+  after: string;
+}
+
+export interface ReplacePreview {
+  total: number;
+  texts: number;
+  titles: number;
+  persons: number;
+  samples: ReplaceSample[];
+}
+
+export interface Replaced {
+  total: number;
+  texts: number;
+  titles: number;
+  persons: number;
+  backup: string;
+}
+
+export interface DiacriticSuggestion {
+  word: string;
+  proposed: string;
+  count: number;
+  texts: number;
+  source: "dict" | "library";
+  others: string[];
+  doubtful: boolean;
+  example: string;
+}
+
+// ---- search by meaning
+
+export interface SemanticStatus {
+  ollama: boolean;
+  model: boolean;
+  pieces: number;
+  indexed: string;
+  busy: boolean;
+  done: number;
+  total: number;
+}
+
+export interface SemanticDone {
+  added: number;
+  pieces: number;
+  millis: number;
+  stopped: boolean;
+}
+
+export interface PullProgress {
+  status: string;
+  completed: number;
+  total: number;
+}
 
 /** URL of a file stored in the database (cover image, original PDF, or a record's picture by person id). */
 export function fileUrl(role: "cover" | "original" | "photo" | "image", docId: number): string {

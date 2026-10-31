@@ -47,8 +47,10 @@ import {
   ImportSummary,
   Person,
   PersonListItem,
+  Replaced,
   SearchResult,
   SectionText,
+  SemanticDone,
   Sort,
   Status,
   TreePlace,
@@ -110,6 +112,9 @@ export default function App() {
   const [readerStyle, setReaderStyle] = usePersisted<ReaderStyle>("readerStyle", "editor");
   const [fontSize, setFontSize] = usePersisted("fontSize", 18);
   const [titlesOnly, setTitlesOnly] = usePersisted("titlesOnly", false);
+  // search by meaning (EmbeddingGemma); starts off each time
+  const [meaning, setMeaning] = useState(false);
+  const [semProgress, setSemProgress] = useState<[number, number] | null>(null);
   const [prefix, setPrefix] = usePersisted("prefix", false);
   const [sort, setSort] = usePersisted<Sort>("sort", "relevance");
   const [history, setHistory] = usePersisted<string[]>("history", []);
@@ -316,6 +321,19 @@ export default function App() {
         else showToast(d.importDone(s.added, s.duplicates, s.persons, s.millis / 1000) + (s.failed.length ? ` · ${d.importFailed(s.failed.length)}` : ""));
       }),
       listen<string>("import-error", (e) => showToast(`Error: ${e.payload}`)),
+      listen<Replaced>("replace-done", (e) => {
+        const r = e.payload;
+        showToast(dicts[stored<Lang>("language", "es")].replaceDone(r.total, r.texts, r.titles, r.persons));
+      }),
+      listen<[number, number]>("semantic-progress", (e) => setSemProgress(e.payload)),
+      listen<SemanticDone>("semantic-done", (e) => {
+        setSemProgress(null);
+        if (e.payload.added && !e.payload.stopped) showToast(dicts[stored<Lang>("language", "es")].meaningDone(e.payload.added));
+      }),
+      listen<string>("semantic-error", (e) => {
+        setSemProgress(null);
+        showToast(e.payload);
+      }),
       listen<[number, number, string]>("export-done", (e) => {
         const d = dicts[stored<Lang>("language", "es")];
         showToast(d.exportDone(e.payload[0], e.payload[1]));
@@ -353,7 +371,7 @@ export default function App() {
       const id = ++reqId.current;
       setLoading(true);
       try {
-        const r = await api.search({
+        const r = await (meaning && query.trim() ? api.semanticSearch : api.search)({
           query,
           titlesOnly,
           prefix,
@@ -380,13 +398,14 @@ export default function App() {
         if (id === reqId.current) setLoading(false);
       }
     },
-    [query, titlesOnly, prefix, sort, filters, showToast],
+    [query, titlesOnly, prefix, sort, filters, showToast, meaning],
   );
 
   useEffect(() => {
-    const h = window.setTimeout(() => runSearch(0), query ? 160 : 0);
+    // asking the model takes longer: wait until the typing stops
+    const h = window.setTimeout(() => runSearch(0), query ? (meaning ? 600 : 160) : 0);
     return () => window.clearTimeout(h);
-  }, [runSearch, dataTick, query]);
+  }, [runSearch, dataTick, query, meaning]);
 
   const remember = useCallback(() => {
     const q = query.trim();
@@ -824,13 +843,16 @@ export default function App() {
           )}
         </div>
         <div className="search-opts">
-          <div className="seg small" data-on={titlesOnly ? 1 : 0}>
+          <div className="seg small" data-n={3} data-on={meaning ? 2 : titlesOnly ? 1 : 0}>
             <span className="seg-ink" />
-            <button className={!titlesOnly ? "on" : ""} onClick={() => setTitlesOnly(false)}>
+            <button className={!meaning && !titlesOnly ? "on" : ""} onClick={() => (setTitlesOnly(false), setMeaning(false))}>
               {t.modeText}
             </button>
-            <button className={titlesOnly ? "on" : ""} onClick={() => setTitlesOnly(true)}>
+            <button className={!meaning && titlesOnly ? "on" : ""} onClick={() => (setTitlesOnly(true), setMeaning(false))}>
               {t.modeTitles}
+            </button>
+            <button className={meaning ? "on" : ""} onClick={() => setMeaning(true)} title={t.modeMeaningHint}>
+              {t.modeMeaning}
             </button>
           </div>
           <label className={`toggle ${prefix ? "on" : ""}`} title={t.prefixHint}>
@@ -1006,7 +1028,17 @@ export default function App() {
             <span className="spinner" />
             {progress.phase === "scan"
               ? t.scanning
-              : `${progress.phase === "fts" ? t.rebuilding : progress.phase === "export" ? t.exporting : t.importing} ${progress.done.toLocaleString(lang)} / ${progress.total.toLocaleString(lang)}`}
+              : progress.phase === "backup"
+                ? t.backingUp
+                : `${
+                    progress.phase === "fts"
+                      ? t.rebuilding
+                      : progress.phase === "export"
+                        ? t.exporting
+                        : progress.phase === "replace"
+                          ? t.replacing
+                          : t.importing
+                  } ${progress.done.toLocaleString(lang)} / ${progress.total.toLocaleString(lang)}`}
             {pct !== null && (
               <span className="bar">
                 <span style={{ width: `${pct}%` }} />
@@ -1018,6 +1050,12 @@ export default function App() {
           <span className="progress">
             <span className="spinner" />
             {t.busy}
+          </span>
+        )}
+        {semProgress && (
+          <span className="progress" title={t.meaningTitle}>
+            <span className="spinner" />
+            {t.meaningPreparing} {semProgress[0].toLocaleString(lang)} / {semProgress[1].toLocaleString(lang)}
           </span>
         )}
         <span className="spacer" />

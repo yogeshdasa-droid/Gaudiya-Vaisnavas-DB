@@ -3550,3 +3550,167 @@ body.dragging-person * {
   padding: 0;
   font-size: inherit;
 }
+
+/* ================================================================ replace / meaning (Ajustes) */
+/* three-button segmented control (Texto / Títulos / Significado) */
+.seg[data-n="3"] .seg-ink {
+  width: calc(33.333% - 3px);
+}
+.seg[data-n="3"][data-on="2"] .seg-ink {
+  transform: translateX(calc(200% + 4px));
+}
+.rep-opts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  margin: 10px 0;
+}
+.rep-opts .check {
+  align-items: center;
+}
+.rep-samples {
+  max-height: 340px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 12px;
+}
+.rep-sample {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+.rep-sample:last-child {
+  border-bottom: 0;
+}
+.rep-sample .link,
+.rep-sample strong {
+  align-self: flex-start;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-text);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+.rep-sample strong {
+  cursor: default;
+}
+.rep-sample del {
+  background: rgba(220, 60, 60, 0.18);
+  color: inherit;
+}
+.rep-sample ins {
+  background: rgba(40, 170, 90, 0.22);
+  color: inherit;
+  text-decoration: none;
+}
+.dia-filter {
+  width: 200px;
+}
+.dia-table {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  max-height: 420px;
+  overflow: auto;
+  margin-bottom: 8px;
+}
+.dia-row {
+  display: grid;
+  grid-template-columns: 28px minmax(110px, 1fr) minmax(160px, 1.6fr) 64px 84px;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.dia-row.head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--panel-solid);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.dia-row.off .dia-word,
+.dia-row.off .dia-new input {
+  opacity: 0.55;
+}
+.dia-row input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 15px;
+  height: 15px;
+}
+.dia-word {
+  font-family: "Cascadia Code", Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+.dia-new {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+.dia-new input {
+  flex: 1 1 110px;
+  min-width: 0;
+  padding: 3px 7px;
+  font-size: 13px;
+}
+.dia-new .chip {
+  border: 0;
+  cursor: pointer;
+}
+.dia-n {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.dia-src {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+.dia-src.library {
+  color: var(--accent-text);
+}
+.sem-list {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0;
+}
+.sem-list > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.sem-list strong {
+  min-width: 170px;
+}
+.sem-ok,
+.sem-bad {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.sem-ok {
+  color: #2e9e5b;
+}
+.sem-bad {
+  color: #d0503c;
+}
+.bar.wide {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+}

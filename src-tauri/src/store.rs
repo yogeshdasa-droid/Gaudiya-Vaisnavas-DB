@@ -859,6 +859,125 @@ pub fn clean_callouts(conn: &mut Connection) -> Res<usize> {
     Ok(changed)
 }
 
+#[derive(Serialize, Default, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct Replaced {
+    pub total: usize,
+    pub texts: usize,
+    pub titles: usize,
+    pub persons: usize,
+    /// the copy of the database made first
+    pub backup: String,
+}
+
+/// `text` after the replacement; `n` counts the changes.
+fn replaced(r: &crate::replace::Replacer, text: &str, n: &mut usize) -> String {
+    match r.apply(text) {
+        Some((t, k)) => {
+            *n += k;
+            t
+        }
+        None => text.to_string(),
+    }
+}
+
+/// Find and replace over the library (see `replace.rs`). The state before is
+/// kept as a version of each text and record changed, so each one can also
+/// be undone on its own.
+pub fn replace_all(
+    conn: &mut Connection,
+    r: &crate::replace::Replacer,
+    scope: crate::replace::Scope,
+    progress: impl Fn(usize, usize),
+) -> Res<Replaced> {
+    let tx = conn.transaction().map_err(e)?;
+    let mut done = Replaced::default();
+    let ids: Vec<i64> = tx
+        .prepare("SELECT id FROM docs WHERE deleted IS NULL ORDER BY id")
+        .map_err(e)?
+        .query_map([], |r| r.get(0))
+        .map_err(e)?
+        .collect::<Result<_, _>>()
+        .map_err(e)?;
+    let pids: Vec<i64> = if scope.persons {
+        tx.prepare("SELECT id FROM persons").map_err(e)?.query_map([], |r| r.get(0)).map_err(e)?.collect::<Result<_, _>>().map_err(e)?
+    } else {
+        vec![]
+    };
+    let total = ids.len() + pids.len();
+    for (i, &id) in ids.iter().enumerate() {
+        if i % 50 == 0 {
+            progress(i, total);
+        }
+        if scope.titles {
+            let title: String = tx.query_row("SELECT title FROM docs WHERE id = ?1", [id], |r| r.get(0)).map_err(e)?;
+            if let Some((t, n)) = r.apply(&title).filter(|(t, _)| !t.trim().is_empty()) {
+                keep_doc_version(&tx, id, true).map_err(e)?;
+                tx.execute("UPDATE docs SET title = ?1, stem = ?2 WHERE id = ?3", params![t, t.to_lowercase(), id])
+                    .map_err(e)?;
+                fts_doc(&tx, id).map_err(e)?;
+                fts_sections_remove(&tx, id).map_err(e)?;
+                fts_sections_add(&tx, id).map_err(e)?;
+                done.titles += 1;
+                done.total += n;
+            }
+        }
+        if scope.texts {
+            let old: Vec<Section> = tx
+                .prepare_cached("SELECT heading, text FROM sections WHERE doc_id = ?1 ORDER BY ordinal")
+                .map_err(e)?
+                .query_map([id], |r| Ok(Section { heading: r.get(0)?, text: r.get(1)? }))
+                .map_err(e)?
+                .collect::<Result<_, _>>()
+                .map_err(e)?;
+            let mut n = 0;
+            let new: Vec<Section> = old
+                .iter()
+                .map(|s| Section {
+                    heading: s.heading.as_ref().map(|h| replaced(r, h, &mut n)),
+                    text: replaced(r, &s.text, &mut n),
+                })
+                .collect();
+            if n > 0 {
+                keep_doc_version(&tx, id, true).map_err(e)?;
+                write_sections(&tx, id, &new).map_err(e)?;
+                tx.execute("UPDATE docs SET modified = datetime('now', 'localtime') WHERE id = ?1", [id]).map_err(e)?;
+                done.texts += 1;
+                done.total += n;
+            }
+        }
+    }
+    for (i, &id) in pids.iter().enumerate() {
+        if i % 50 == 0 {
+            progress(ids.len() + i, total);
+        }
+        let f = get_fields(&tx, id).map_err(e)?;
+        let mut n = 0;
+        let mut ch = |s: &String| replaced(r, s, &mut n);
+        let new = PersonFields {
+            name: ch(&f.name),
+            aka: ch(&f.aka),
+            appearance: ch(&f.appearance),
+            disappearance: ch(&f.disappearance),
+            place: ch(&f.place),
+            guru: ch(&f.guru),
+            disciples: ch(&f.disciples),
+            works: ch(&f.works),
+            notes: ch(&f.notes),
+            tags: f.tags.clone(),
+        };
+        if n > 0 && !new.name.trim().is_empty() {
+            keep_person_version(&tx, id, true).map_err(e)?;
+            write_person(&tx, id, &new)?;
+            done.persons += 1;
+            done.total += n;
+        }
+    }
+    tx.commit().map_err(e)?;
+    progress(total, total);
+    Ok(done)
+}
+
 /// An image file: (file name, mime type, bytes).
 fn read_image(path: &std::path::Path) -> Res<(String, &'static str, Vec<u8>)> {
     let ext = path.extension().and_then(|x| x.to_str()).unwrap_or("").to_lowercase();
@@ -1330,3 +1449,4 @@ mod tests {
         assert_eq!(n, 0);
     }
 }
+

@@ -1,0 +1,121 @@
+//! Sanskrit / Bengali words of the Gauḍīya tradition with their diacritics
+//! (IAST), for the helper that writes them back into the texts
+//! ("Krishna" → "Kṛṣṇa", "Sri" → "Śrī", "Thakur" → "Ṭhākur").
+//!
+//! Each form is found through its folded spelling (`fold::fold_word`), so one
+//! entry covers the usual variants: kṛṣṇa = krishna = krsna, gosvāmī = goswami.
+//! Words that are also plain English or that have two meanings with different
+//! marks (rasa / rāsa, bhava / bhāva, brahma / brahmā, kali / kālī) are left
+//! out on purpose.
+
+pub const WORDS: &[&str] = &[
+    // titles and honorifics
+    "śrī", "śrīla", "śrīmad", "śrīmatī", "śrīman", "śrīpāda", "śrīpād", "śrīyukta", "prabhupāda", "prabhupād",
+    "gosvāmī", "gosvāmin", "gosvāmīs", "gosāñi", "gosāi", "ṭhākura", "ṭhākur", "ṭhākurāṇī", "mahārāja",
+    "mahārāj", "mahāśaya", "mahāśay", "mahāprabhu", "ācārya", "ācāryadeva", "bābājī", "svāmī", "svāmīji", "paṇḍita",
+    "paṇḍit", "kavirāja", "kavirāj", "bhaṭṭa", "bhaṭṭācārya", "cakravartī", "vidyābhūṣaṇa", "vidyāvinoda",
+    "vidyānidhi", "vidyāvācaspati", "sārvabhauma", "paramahaṁsa", "tridaṇḍi", "tridaṇḍisvāmī",
+    "bhaktivedānta", "bhaktisiddhānta", "bhaktivinoda", "bhaktirakṣaka", "bhaktiprajñāna", "sarasvatī", "dāsa", "dās",
+    "dāsī", "devī", "mātā", "mātājī", "adhikārī", "brahmacārī", "gṛhastha", "vānaprastha", "sannyāsa",
+    "sannyāsī", "sannyāsin", "avadhūta", "vaiṣṇava", "vaiṣṇavī", "vaiṣṇavism", "gauḍīya", "maṭha", "āśrama",
+    "mahānta", "mahājana", "bhāgavata", "bhāgavatam", "gurudeva", "prabhupādera", "tīrtha", "purī", "bhāratī",
+    "araṇya", "vana", "giri",
+    // Kṛṣṇa, His associates and avatāras
+    "kṛṣṇa", "rādhā", "rādhikā", "rādhārāṇī", "rādhāramaṇa", "rādhāvallabha", "rādhāvinoda", "rādhāmohana",
+    "rādhākānta", "rādhāgovinda", "rādhāmādhava", "rādhāśyāmasundara", "govinda", "gopīnātha", "gopīnāth",
+    "madanamohana", "madanagopāla", "dāmodara", "mādhava", "mukunda", "keśava", "murāri", "giridhārī", "gopāla",
+    "gopāl", "śyāma", "śyāmasundara", "nandanandana", "yaśodānandana", "vrajendranandana", "vāsudeva", "saṅkarṣaṇa",
+    "pradyumna", "aniruddha", "balarāma", "baladeva", "nārāyaṇa", "viṣṇu", "jagannātha", "jagannāth", "subhadrā",
+    "nṛsiṁha", "nṛsiṁhadeva", "varāha", "vāmana", "vāmanadeva", "kūrma", "matsya", "paraśurāma", "rāma", "rāmacandra",
+    "sītā", "lakṣmaṇa", "hanumān", "bharata", "lakṣmī", "lakṣmīdevī", "śiva", "pārvatī", "durgā", "gaṇeśa",
+    "sarasvatī", "indra", "nārada", "vyāsa", "vyāsadeva", "śukadeva", "śuka", "parīkṣit", "prahlāda", "dhruva",
+    "ambarīṣa", "bhīṣma", "yudhiṣṭhira", "draupadī", "kuntī", "uddhava", "akrūra", "nanda", "yaśodā", "rohiṇī",
+    "devakī", "vasudeva", "kaṁsa", "pūtanā", "lalitā", "viśākhā", "candrāvalī", "vṛndā", "vṛndādevī", "paurṇamāsī",
+    "sudāmā", "śrīdāmā", "rukmiṇī", "satyabhāmā", "dvārakādhīśa", "kṛṣṇacandra", "gopī", "gopa", "sakhī", "sakhā",
+    "mañjarī", "yogamāyā", "mahāmāyā", "kāmadeva", "anaṅga", "madana", "yamarāja",
+    // Śrī Caitanya and His associates
+    "caitanya", "gaurāṅga", "gaura", "gaurahari", "gaurasundara", "gauracandra", "gaurakiśora", "gaurakiśor",
+    "nimāi", "viśvambhara", "nityānanda", "nitāi", "advaita", "gadādhara", "śrīvāsa", "śrīnivāsa", "rūpa", "sanātana",
+    "jīva", "raghunātha", "raghunāth", "kṛṣṇadāsa", "kṛṣṇadās", "narottama", "narottam", "śyāmānanda", "rasikānanda",
+    "viśvanātha", "jāhnavā", "jāhnavī", "vīrabhadra", "vīracandra", "vasudhā", "śacī", "śacīmātā", "jagannātha",
+    "miśra", "viṣṇupriyā", "lakṣmīpriyā", "vakreśvara", "puṇḍarīka", "murāri", "haridāsa", "haridās", "svarūpa",
+    "rāmānanda", "rāya", "prakāśānanda", "mādhavendra", "īśvara", "keśava", "kāśī", "kāśīśvara", "kāśīnātha",
+    "abhirāma", "uddhāraṇa", "gaurīdāsa", "vāsudeva", "ghoṣa", "sena", "śivānanda", "kavikarṇapūra", "karṇapūra",
+    "jagadānanda", "dāmodara", "pradyumna", "gopīnātha", "parameśvara", "paramānanda", "govindānanda", "sundarānanda",
+    "puruṣottama", "kālidāsa", "raghunandana", "narahari", "sarakāra", "locana", "locanadāsa", "vṛndāvanadāsa",
+    "kṛṣṇadāsa", "kavirāja", "lokanātha", "bhūgarbha", "kāśīśvara", "gopālabhaṭṭa", "raghupati", "anupama",
+    "vallabha", "vallabhācārya", "rāmacandra", "jāhnavā", "hemalatā", "gaṅgānārāyaṇa", "rāmakṛṣṇa", "kṛṣṇacaraṇa",
+    "rādhāramaṇa", "baladeva", "uddhava", "jagannātha", "madhusūdana", "bhagavān", "bhagavat", "gaurakiśora",
+    "bhaktivinoda", "kedāranātha", "vimalā", "vimalāprasāda", "ṭhākurāṇī", "sītā", "sītādevī", "śrīdhara",
+    "kholāvecā", "śuklāmbara", "brahmacārī", "mukunda", "datta", "dvija", "kṛṣṇānanda", "kamalākānta",
+    "kamalākṣa", "mādhavī", "śikhi", "māhiti", "rāmānuja", "rāmānujācārya", "madhva", "madhvācārya", "nimbārka",
+    "nimbārkācārya", "viṣṇusvāmī", "śaṅkara", "śaṅkarācārya", "jayadeva", "caṇḍīdāsa", "vidyāpati", "bilvamaṅgala",
+    "līlāśuka", "yāmunācārya", "yāmuna", "vedavyāsa", "parāśara", "vālmīki", "kapila", "dattātreya",
+    // places
+    "vṛndāvana", "vṛndāvan", "vraja", "vrajabhūmi", "navadvīpa", "māyāpura", "māyāpur", "nadīyā", "śāntipura",
+    "śāntipur", "kheturī", "nīlācala", "kṣetra", "kuṇḍa", "rādhākuṇḍa", "śyāmakuṇḍa", "govardhana", "mathurā",
+    "gokula", "nandagrāma", "varṣāṇā", "yamunā", "gaṅgā", "kāśī", "vārāṇasī", "prayāga", "gayā", "śrīraṅgam",
+    "raṅgam", "kurukṣetra", "dvārakā", "ayodhyā", "gauḍa", "gauḍadeśa", "deśa", "utkala", "remuṇā", "ekacakrā",
+    "khaḍadaha", "pānihāṭi", "ambikā", "kālnā", "śrīkhaṇḍa", "kaṇṭaka", "kāṭoyā", "śrīhaṭṭa", "dhāma", "grāma",
+    "ghāṭa", "sevākuñja", "nidhuvana", "kuñja", "nikuñja", "rādhākuṇḍa", "jāvaṭa", "rādhānagara", "kulīna",
+    "kulīnagrāma", "godrumadvīpa", "svānanda", "sukhada", "kuñja", "yogapīṭha", "gambhīrā", "ṭoṭā", "siddhabakula",
+    "jagannāthapurī", "puṣkara", "naimiṣāraṇya", "haridvāra", "ṛṣikeśa", "badarikāśrama", "vaikuṇṭha", "goloka",
+    "kailāsa", "dakṣiṇa", "bhārata", "bhāratavarṣa",
+    // books
+    "caritāmṛta", "bhāgavata", "gītā", "bhagavad", "purāṇa", "upaniṣad", "vedānta", "sūtra", "saṁhitā",
+    "maṅgala", "vilāsa", "ratnākara", "rasāmṛta", "sindhu", "ujjvala", "nīlamaṇi", "sandarbha", "stava", "stotra",
+    "aṣṭaka", "aṣṭakam", "gaṇoddeśa", "dīpikā", "līlāmṛta", "vidagdha", "padāvalī", "padyāvalī",
+    "kalpataru", "vandanā", "karṇānanda", "karṇāmṛta", "mahābhārata", "rāmāyaṇa", "harivaṁśa", "candrikā",
+    "cintāmaṇi", "kaumudī", "darśinī", "ṭīkā", "bhāṣya", "kārikā", "śikṣāṣṭaka", "śikṣāṣṭakam", "upadeśāmṛta",
+    "manaḥśikṣā", "vilāpa", "kusumāñjali", "mādhurya", "kādambinī", "kiraṇa", "bindu", "sāra", "saṅgraha",
+    "dīpikā", "nāṭaka", "campū", "gītāvalī", "kalyāṇa", "kalpataru", "śaraṇāgati", "jaiva", "prārthanā",
+    "premabhakti", "sajjana", "toṣaṇī", "tattva", "sūtra", "brahmasūtra", "nāradīya", "pañcarātra",
+    // practice and ideas
+    "līlā", "prema", "bhakti", "bhakta", "bhaktas", "mahābhāva", "rāga", "rāgānugā", "vaidhī", "sādhana",
+    "sādhaka", "sādhu", "siddha", "siddhi", "sevā", "sevaka", "dīkṣā", "śikṣā", "kīrtana", "saṅkīrtana",
+    "nāma", "harināma", "mahāmantra", "japa", "mālā", "tilaka", "tulasī", "prasāda", "prasādam", "mahāprasāda",
+    "ekādaśī", "pūrṇimā", "amāvasyā", "tithi", "āvirbhāva", "tirobhāva", "samādhi", "śāstra", "ātmā", "paramātmā",
+    "māyā", "jñāna", "jñānī", "yogī", "vairāgya", "tyāga", "mukti", "mokṣa", "varṇāśrama", "brāhmaṇa", "kṣatriya",
+    "vaiśya", "śūdra", "ṛṣi", "muni", "devatā", "avatāra", "yuga", "tretā", "dvāpara", "ārati", "ārātrika", "pūjā",
+    "pūjārī", "abhiṣeka", "vigraha", "mūrti", "saṁsāra", "saṁskāra", "ācāra", "sampradāya", "paramparā", "śiṣya",
+    "siddhānta", "rasika", "nyāya", "vyākaraṇa", "alaṅkāra", "kāvya", "śloka", "bheka", "sevāita", "sevāyat",
+    "parikramā", "darśana", "darśan", "mṛdaṅga", "karatāla", "kartāla", "śaraṇāgata", "aparādha", "nāmāparādha",
+    "vaiṣṇavāparādha", "śraddhā", "ruci", "āsakti", "niṣṭhā", "anartha", "anarthas", "mādhurya", "aiśvarya",
+    "vātsalya", "sakhya", "dāsya", "śānta", "śṛṅgāra", "vipralambha", "sambhoga", "viraha", "abhisāra", "māna",
+    "mañjarī", "svarūpa", "svabhāva", "tattva", "acintya", "bhedābheda", "ahaṅkāra", "guṇa", "sattva", "rajas",
+    "tamas", "karma", "jīvātmā", "kṛpā", "dayā", "mahimā", "praṇāma", "daṇḍavat", "śikhā", "upanayana",
+    "gāyatrī", "mantra", "yajña", "homa", "vrata", "cāturmāsya", "kārttika", "dāmodara", "vyāsapūjā", "janmāṣṭamī",
+    "rathayātrā", "yātrā", "gauraparṇimā", "gaurapūrṇimā", "rādhāṣṭamī", "nṛsiṁhacaturdaśī", "śivarātri",
+    "māgha", "phālguna", "caitra", "vaiśākha", "jyeṣṭha", "āṣāḍha", "śrāvaṇa", "bhādra", "āśvina", "mārgaśīrṣa",
+    "pauṣa", "śukla", "pakṣa", "dvādaśī", "trayodaśī", "caturdaśī", "pañcamī", "ṣaṣṭhī", "saptamī", "aṣṭamī",
+    "navamī", "daśamī", "pratipat", "dvitīyā", "tṛtīyā", "caturthī", "śaka", "śakābda", "gaurābda",
+];
+
+/// Common English (and a few Spanish) words: never changed, even when a
+/// Sanskrit word folds the same way ("man" ~ "mān").
+pub const PLAIN: &[&str] = &[
+    "the", "and", "for", "are", "but", "not", "you", "all", "any", "can", "had", "her", "was", "one", "our", "out",
+    "day", "get", "has", "him", "his", "how", "man", "men", "new", "now", "old", "see", "two", "way", "who", "boy",
+    "did", "its", "let", "put", "say", "she", "too", "use", "may", "sat", "set", "per", "par", "car", "far", "bar",
+    "tan", "pat", "pad", "sad", "bat", "rag", "ran", "run", "sun", "son", "sin", "pan", "nan", "nay", "yes", "yet",
+    "own", "off", "kin", "kind", "mind", "path", "data", "same", "name", "game", "came", "made", "make", "take",
+    "mana", "manas", "mama", "papa", "sana", "rana", "rata", "nada", "dada", "data", "gate", "date", "late",
+    "rate", "mate", "male", "sale", "tale", "pale", "rice", "nice", "mice", "dice", "vice", "price", "spice", "slice",
+    "bring", "string", "thing", "things", "ring", "sing", "king", "kings", "wing", "rings", "sings", "with", "from",
+    "this", "that", "they", "them", "then", "than", "there", "their", "these", "those", "what", "when", "where",
+    "which", "while", "will", "would", "could", "should", "shall", "have", "having", "been", "being", "were", "said",
+    "says", "each", "such", "some", "many", "much", "more", "most", "very", "also", "only", "into", "over", "upon",
+    "after", "before", "about", "other", "others", "again", "every", "never", "always", "here", "just", "like",
+    "well", "even", "back", "come", "comes", "came", "went", "gone", "give", "gave", "given", "life", "live",
+    "lived", "time", "times", "year", "years", "home", "house", "land", "hand", "head", "heart", "love", "lord",
+    "lords", "god", "gods", "holy", "great", "good", "true", "pure", "son", "sons", "mother", "father",
+    "brother", "sister", "wife", "temple", "village", "river", "book", "books", "verse", "verses", "song", "songs",
+    "tara", "sara", "mira", "lima", "mama", "santa", "sola", "casa", "cosa", "para", "pero", "como", "sino", "cara",
+    "mesa", "luna", "vida", "dios", "madre", "padre", "hijo", "nada", "todo", "toda", "gran", "gracia", "amor",
+    "ser", "fue", "era", "son", "dar", "dia", "las", "los", "una", "uno", "del", "que", "por", "con", "sin", "sus",
+    "drama", "panda", "lama", "llama", "salsa", "visa", "pizza", "gala", "koala", "india", "indian", "bengal",
+    "bengali", "orissa", "assam", "delhi", "calcutta", "bombay", "madras", "dhaka", "english", "british",
+    "muslim", "muslims", "hindu", "hindus", "hinduism", "sanskrit", "christian", "america", "american", "europe",
+    "london", "iskcon", "math", "maths", "mutt", "yoga", "guru", "gurus", "karma", "dharma",
+    "mantra", "mantras", "brahman", "hari", "manana", "veda", "vedas", "vedic", "bhakti", "nirvana", "avatar", "avatars", "ashram",
+];

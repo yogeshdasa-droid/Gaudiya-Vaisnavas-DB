@@ -1,6 +1,6 @@
 [package]
 name = "gaudiya-vaisnavas-db"
-version = "0.3.1"
+version = "0.4.0"
 description = "Gaudiya Vaisnavas DB: biografias vaisnavas"
 edition = "2021"
 
@@ -21,6 +21,8 @@ unicode-normalization = "0.1"
 encoding_rs = "0.8"
 pdf-extract = "0.12"
 zip = { version = "9", default-features = false, features = ["deflate"] }
+# talks to Ollama (search by meaning), on this computer only: no TLS
+ureq = { version = "2", default-features = false, features = ["json"] }
 
 [profile.release]
 opt-level = 3

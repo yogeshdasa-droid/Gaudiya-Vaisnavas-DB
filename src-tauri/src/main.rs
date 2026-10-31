@@ -7,7 +7,10 @@ mod export;
 mod extract;
 mod fold;
 mod import;
+mod replace;
+mod sanskrit;
 mod search;
+mod semantic;
 mod store;
 mod text;
 
@@ -36,6 +39,8 @@ struct AppState {
     backing_up: Arc<AtomicBool>,
     /// the database could not be opened (e.g. it belongs to a newer version)
     startup_error: Option<String>,
+    /// the search by meaning (its own file and thread)
+    semantic: Arc<semantic::Shared>,
 }
 
 type CmdResult<T> = Result<T, String>;
@@ -136,6 +141,114 @@ fn start_rebuild(app: &AppHandle) -> CmdResult<()> {
         let _ = app.emit("import-done", import::Summary::default());
         Ok(())
     })
+}
+
+// ---------------------------------------------------------------- find and replace
+
+#[tauri::command]
+async fn replace_preview(state: State<'_, AppState>, spec: replace::Spec) -> CmdResult<replace::Preview> {
+    let r = replace::Replacer::new(&spec)?;
+    replace::preview(&db::open(&state.db_path).map_err(err)?, &r, spec.scope)
+}
+
+/// Makes the replacement in the background, after a copy of the database.
+#[tauri::command]
+async fn replace_apply(app: AppHandle, spec: replace::Spec) -> CmdResult<()> {
+    let r = replace::Replacer::new(&spec)?;
+    let copies = backup::copies_dir(&app.state::<AppState>().db_path);
+    background(&app, move |conn, app| {
+        let _ = app.emit("import-progress", import::Progress { phase: "backup", done: 0, total: 1 });
+        let stamp: String =
+            conn.query_row("SELECT strftime('%Y-%m-%d %H%M', 'now', 'localtime')", [], |r| r.get(0)).map_err(err)?;
+        let target = copies.join(format!("Gaudiya Vaisnavas DB antes de reemplazar {stamp}.db"));
+        backup::copy_to(conn, &target)?;
+        let mut done = store::replace_all(conn, &r, spec.scope, |done, total| {
+            let _ = app.emit("import-progress", import::Progress { phase: "replace", done, total });
+        })?;
+        done.backup = target.to_string_lossy().to_string();
+        let _ = app.emit("replace-done", done);
+        // the search by meaning follows the new text
+        let state = app.state::<AppState>();
+        if semantic::status(&state.db_path, &state.semantic).pieces > 0 {
+            let _ = start_semantic(app);
+        }
+        Ok(())
+    })
+}
+
+/// Plain words of the library with a known spelling with diacritics.
+#[tauri::command]
+async fn diacritic_suggestions(state: State<'_, AppState>) -> CmdResult<Vec<replace::Suggestion>> {
+    replace::suggestions(&db::open(&state.db_path).map_err(err)?)
+}
+
+// ---------------------------------------------------------------- search by meaning
+
+/// Brings the vectors up to date in a thread of their own (nothing if it is
+/// already running).
+fn start_semantic(app: &AppHandle) -> CmdResult<()> {
+    let state = app.state::<AppState>();
+    if state.startup_error.is_some() {
+        return Err("La base de datos no está disponible".into());
+    }
+    let shared = state.semantic.clone();
+    if shared.busy.swap(true, Ordering::SeqCst) {
+        return Ok(());
+    }
+    shared.stop.store(false, Ordering::SeqCst);
+    let (db_path, app) = (state.db_path.clone(), app.clone());
+    std::thread::spawn(move || {
+        let r = semantic::update_index(&db_path, &shared, |done, total| {
+            *shared.progress.lock().unwrap() = (done, total);
+            let _ = app.emit("semantic-progress", (done, total));
+        });
+        *shared.progress.lock().unwrap() = (0, 0);
+        shared.busy.store(false, Ordering::SeqCst);
+        match r {
+            Ok(done) => {
+                let _ = app.emit("semantic-done", done);
+            }
+            Err(e) => {
+                let _ = app.emit("semantic-error", e);
+            }
+        }
+    });
+    Ok(())
+}
+
+#[tauri::command]
+async fn semantic_status(state: State<'_, AppState>) -> CmdResult<semantic::Status> {
+    Ok(semantic::status(&state.db_path, &state.semantic))
+}
+
+#[tauri::command]
+async fn semantic_index(app: AppHandle) -> CmdResult<()> {
+    start_semantic(&app)
+}
+
+#[tauri::command]
+async fn semantic_stop(state: State<'_, AppState>) -> CmdResult<()> {
+    state.semantic.stop.store(true, Ordering::SeqCst);
+    Ok(())
+}
+
+/// Downloads the model through Ollama; progress in "semantic-pull" events.
+#[tauri::command]
+async fn semantic_pull(app: AppHandle) -> CmdResult<()> {
+    std::thread::spawn(move || {
+        let r = semantic::pull(|p| {
+            let _ = app.emit("semantic-pull", p);
+        });
+        let _ = app.emit("semantic-pull-done", r.err());
+    });
+    Ok(())
+}
+
+#[tauri::command]
+async fn semantic_search(state: State<'_, AppState>, params: search::SearchParams) -> CmdResult<search::SearchResult> {
+    // its own connection: asking the model must not hold up the rest
+    let conn = db::open(&state.db_path).map_err(err)?;
+    semantic::search(&conn, &state.db_path, &state.semantic, &params)
 }
 
 #[tauri::command]
@@ -687,6 +800,17 @@ fn main() {
                 busy: Arc::new(AtomicBool::new(false)),
                 backing_up,
                 startup_error,
+                semantic: Arc::new(semantic::Shared::default()),
+            });
+            // the search by meaning catches up with the changes, once it has
+            // been prepared and Ollama is there
+            let handle = app.handle().clone();
+            std::thread::spawn(move || {
+                std::thread::sleep(std::time::Duration::from_secs(60));
+                let state = handle.state::<AppState>();
+                if semantic::status(&state.db_path, &state.semantic).pieces > 0 && semantic::ollama_state().1 {
+                    let _ = start_semantic(&handle);
+                }
             });
             if first_run {
                 let sources = DEFAULT_SOURCES
@@ -769,7 +893,15 @@ fn main() {
             mark_distinct,
             list_distinct,
             open_external,
-            path_kinds
+            path_kinds,
+            replace_preview,
+            replace_apply,
+            diacritic_suggestions,
+            semantic_status,
+            semantic_index,
+            semantic_stop,
+            semantic_pull,
+            semantic_search
         ])
         .run(tauri::generate_context!())
         .expect("error while running Gaudiya Vaisnavas DB");

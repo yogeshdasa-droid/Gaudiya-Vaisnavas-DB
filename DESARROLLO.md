@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **26-10-2026** (versión **0.3.1**).
+Última actualización: **31-10-2026** (versión **0.4.0**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -77,7 +77,7 @@ $env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Env
 npm install            # solo la primera vez en un equipo nuevo
 npm run app:dev        # abrir la app en modo pruebas (puerto 1421)
 npx tsc --noEmit       # comprobar errores de TypeScript
-cd src-tauri; cargo test   # pruebas automáticas de Rust (22)
+cd src-tauri; cargo test   # pruebas automáticas de Rust (26)
 npm run app:build      # generar el instalador
 ```
 
@@ -126,6 +126,13 @@ src-tauri/src/                       (Rust: datos y lógica)
               importación inicial (DEFAULT_SOURCES); trabajos en segundo plano; copia automática
               (20 s después de arrancar); limpiezas únicas al arrancar (notas, títulos, claves)
   db.rs       esquema de tablas, DATA_VERSION / FTS_VERSION
+  replace.rs  buscar y reemplazar en toda la biblioteca (texto / regex / lista de palabras,
+              respetando mayúsculas) y sugerencias de diacríticos (diccionario + lo aprendido
+              de los textos que ya tienen IAST); store::replace_all escribe guardando versiones
+  sanskrit.rs diccionario IAST de palabras gauḍīya (WORDS) y palabras inglesas que no se tocan (PLAIN)
+  semantic.rs búsqueda por significado: trozos de ~1–1,6 KB → vectores de EmbeddingGemma por Ollama
+              (http://127.0.0.1:11434, ureq), en su propio archivo «biodata-significado.db»
+              junto a la base de datos (derivado: no va en las copias; se rehace solo)
   backup.rs   copias de seguridad: automáticas (meta backup_days/keep/last), lista, restaurar
   calendar.rs calendario vaiṣṇava: tithi y mes calculados (Sol y Luna al amanecer en Māyāpur,
               Meeus), lectura de fechas de las fichas («Bhadra Sukla Dvadasi», «8 October 1898»),
@@ -161,6 +168,7 @@ src/                                 (React: la interfaz)
     Settings.tsx    Ajustes: General (+ calendario, exportar), Copias de seguridad, Revisar,
                     Carpetas de origen, Papelera, Ayuda (+ buscar actualizaciones)
     Calendar.tsx    calendario de Inicio (hoy y próximos 30 días)
+    Tools.tsx       pestañas Reemplazar (y Diacríticos sánscritos) y Significado
     Review.tsx      pestaña Revisar y ayudante de fichas repetidas (dupKey estricto)
     Timeline.tsx, TreeView.tsx   línea de tiempo y árbol dibujado de la Paramparā
     Home.tsx, Results.tsx, ContextMenu.tsx, ui.tsx
@@ -172,7 +180,28 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.3.1)
+## 5. Qué hace hoy (v0.4.0)
+
+### Novedades de la 0.4.0 (31-10-2026; DATA_VERSION sigue en 4)
+- **Ajustes › Reemplazar › Buscar y reemplazar**: en textos, títulos y/o fichas; palabra completa,
+  distinguir mayúsculas (si no, respeta las del texto: sri→Śrī, SRI→ŚRĪ), expresión regular ($1).
+  «Ver los cambios» enseña los 300 primeros; «Reemplazar todo» hace antes una copia
+  («Gaudiya Vaisnavas DB antes de reemplazar …db» en la carpeta de copias) y guarda la versión
+  anterior de cada texto/ficha cambiados. Trabajo en segundo plano (fase «replace»).
+- **Ajustes › Reemplazar › Diacríticos sánscritos**: lista las palabras sin diacríticos que tienen
+  forma IAST conocida (Krishna/Krsna→Kṛṣṇa, Thakur→Ṭhākur, Vaishnavas→Vaiṣṇavas,
+  Krsnadasa→Kṛṣṇadāsa). Las de «Diccionario» (sanskrit.rs) salen marcadas; las de «Biblioteca»
+  (aprendidas de los textos con IAST, solo letras IAST válidas) sin marcar. Se pueden corregir.
+  En la copia de prueba: 2.027 palabras, 1.957 marcadas → 332.836 cambios en ~20 s. La búsqueda no
+  cambia (el plegado ignora los diacríticos) y los nombres de fichas siguen enlazando.
+- **Búsqueda por significado** (botón «Significado» en la barra de búsqueda, Ajustes › Significado):
+  necesita **Ollama** instalado (`winget install Ollama.Ollama`) y el modelo `embeddinggemma`
+  (botón «Descargar el modelo» o `ollama pull embeddinggemma`). Prompts de EmbeddingGemma:
+  documentos «title: … | text: …», preguntas «task: search result | query: …». ~21.000 trozos;
+  con la RTX 3050 ~9 min la primera vez; luego solo lo nuevo (hash FNV de cada trozo). Se pone al
+  día 60 s después de arrancar (si ya se preparó y Ollama responde) y después de cada reemplazo.
+  Resultados: el mejor trozo de cada texto, 100 como mucho, con los mismos filtros.
+
 
 La 0.3.1 solo cambia el nombre a **Gaudiya Vaisnavas DB** y lleva las copias automáticas a
 Documentos (ver Historial). Novedades de la 0.3.0 (formato de base de datos 4):
@@ -281,6 +310,13 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 ## 7. Pendientes e ideas
 
 - Repasar en Ajustes › Revisar: 57 grupos de fichas repetidas, 10 títulos dudosos, 15 textos vacíos.
+  31-10-2026: Claude propuso 13 uniones; **el usuario dice que NO son la misma persona: no unirlas**
+  (ni proponerlas otra vez). Se movieron a su ficha 16 PDF que estaban en una ficha equivocada
+  (Lokanatha dasa v.1–3 → Lokanātha Gosvāmī, Sanatana v.2–4 → Sanātana Gosvāmī, Vrindavana dasa
+  v.1–5 → Vṛndāvana dāsa Ṭhākura, y Radhamohana, Radhavallabha, Sundarananda, Jagadananda, Damodara);
+  copia previa «biodata antes de mover PDF.db». Lo demás queda como estaba, para que lo revise él.
+- Actualizar sin descargar el instalador: añadir el plugin updater de Tauri (necesita un par de
+  claves para firmar las actualizaciones y subir un `latest.json` en cada release). No hecho.
 - OCR del único PDF escaneado («Krishna dasa babaji - v.1»): no se metió un motor de OCR en la app
   por un solo archivo; se podría transcribir aparte.
 - Firma digital del .exe (quita el aviso de Windows): cuesta un certificado anual; no se ha hecho.
@@ -293,6 +329,10 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 ---
 
 ## 8. Historial
+
+- **31-10-2026 — v0.4.0**: buscar y reemplazar en toda la biblioteca; diacríticos sánscritos;
+  búsqueda por significado con EmbeddingGemma (Ollama). Probado con una copia (`BIO_DB`).
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.4.0
 
 - **26-10-2026 — v0.3.1**: la app pasa a llamarse **Gaudiya Vaisnavas DB** (antes Bio-Data): ventana,
   instalador, programa (`gaudiya-vaisnavas-db`), repositorio de GitHub (renombrado; los enlaces
