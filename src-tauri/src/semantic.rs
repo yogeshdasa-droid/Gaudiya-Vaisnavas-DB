@@ -102,6 +102,12 @@ pub fn ollama_state() -> (bool, bool) {
     ollama_has(MODEL)
 }
 
+/// The models downloaded in Ollama (None: Ollama does not answer).
+pub fn ollama_models() -> Option<Vec<String>> {
+    let r = agent(5).get(&format!("{OLLAMA}/api/tags")).call().ok()?;
+    Some(r.into_json::<Tags>().map(|t| t.models.into_iter().map(|m| m.name).collect()).unwrap_or_default())
+}
+
 /// (Ollama answers, this model is downloaded)
 pub fn ollama_has(model_name: &str) -> (bool, bool) {
     match agent(5).get(&format!("{OLLAMA}/api/tags")).call() {

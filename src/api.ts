@@ -369,6 +369,7 @@ export const api = {
   aiStart: (limit: number | null) => invoke<void>("ai_start", { limit }),
   aiStop: () => invoke<void>("ai_stop"),
   aiPull: () => invoke<void>("ai_pull"),
+  aiSetModel: (name: string) => invoke<void>("ai_set_model", { name }),
   upcoming: (date: Date, count: number) =>
     invoke<CalDay[]>("upcoming", { y: date.getFullYear(), m: date.getMonth() + 1, d: date.getDate(), count }),
   lunarLabel: (text: string) => invoke<string | null>("lunar_label", { text }),
@@ -522,6 +523,10 @@ export interface AiStatus {
   ollama: boolean;
   model: boolean;
   modelName: string;
+  /** downloaded language models */
+  installed: string[];
+  /** suggested models: [name, size] */
+  suggested: [string, string][];
   busy: boolean;
   done: number;
   total: number;

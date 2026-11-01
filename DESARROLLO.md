@@ -186,7 +186,14 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.6.0)
+## 5. Qué hace hoy (v0.6.1)
+
+### Novedades de la 0.6.1 (01-11-2026)
+- «Rellenar fichas con IA»: **el modelo se elige** en Ajustes › Rellenar fichas (meta `ai_model`);
+  por defecto **`qwen3.5:4b`** (el doble de rápido que `qwen2.5:7b` y sin inventar; ver §7).
+  Al cambiar de modelo las fichas se vuelven a leer (el hash incluye el nombre del modelo).
+- `ai::keep`: lugar, guru, discípulos y obras se aceptan sin frase de prueba si el nombre está
+  en el texto; fechas y notas siguen necesitándola; una edad («106 years old») no es una fecha.
 
 ### Novedades de la 0.6.0 (01-11-2026; DATA_VERSION sigue en 5)
 - **Estilo «Windows 11»** (`data-skin="fluent"`), inspirado en K-Desktop; **es el estilo por defecto**
@@ -471,6 +478,14 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
    en una copia) y comparar aciertos, errores (fechas confundidas, discípulos inventados) y tiempo.
    Whisper elige. Hacer el modelo **elegible en Ajustes** en vez de la constante `ai::MODEL`.
    Con la RTX 3050 (8 GB): hasta ~8B cabe entero; 12–14B no cabe y con el i5-7500 sería muy lento.
+   **Hecho el 01-11-2026 (publicado en la 0.6.1; Whisper eligió qwen3.5:4b):** el modelo se elige en Ajustes › Rellenar fichas (meta
+   `ai_model`, por defecto `qwen2.5:7b`; `ai::SUGGESTED`; `"think": false` para los qwen3).
+   Comparación (BIO_MODEL en `ai_real`): qwen2.5:7b ~13 s/ficha, copia párrafos enteros como prueba,
+   inventó discípulos en 1089 (Bhakta y Menaka solo vivían en el templo), puso la misma fecha de
+   aparición y desaparición, y en 332 la respuesta se cortó (JSON roto). qwen3.5:4b ~6 s/ficha,
+   respuestas cortas y correctas (332 muy bien), sin inventar discípulos, pero a menudo deja la
+   prueba («evidence») vacía y entonces el filtro descarta el dato; en 1089 puso «106 years old»
+   como desaparición (una edad, no una fecha).
 3. Luego Whisper lanza «Probar con 10 fichas» y, si le convence, «Leer todas las fichas».
 4. **Estilo «Windows 11»** (publicado en la 0.6.0): tercer estilo de la app
    (`data-skin="fluent"`, junto a «VS Code» y «Clásico»), inspirado en K-Desktop
@@ -526,6 +541,8 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 8. Historial
 
+- **01-11-2026 — v0.6.1**: modelo de IA elegible (por defecto qwen3.5:4b); nombres sin frase de
+  prueba aceptados si están en el texto. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.6.1
 - **01-11-2026 — v0.6.0**: estilo «Windows 11» (por defecto) con barra de la izquierda, página del
   calendario y Ajustes a pantalla completa.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.6.0

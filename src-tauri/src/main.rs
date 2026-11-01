@@ -352,11 +352,18 @@ async fn ai_stop(state: State<'_, AppState>) -> CmdResult<()> {
     Ok(())
 }
 
+/// The model the AI reads with (chosen in Ajustes › Rellenar fichas).
+#[tauri::command]
+async fn ai_set_model(state: State<'_, AppState>, name: String) -> CmdResult<()> {
+    ai::set_model(&db::open(&state.db_path).map_err(err)?, &name)
+}
+
 /// Downloads the model of the AI through Ollama; progress in "ai-pull" events.
 #[tauri::command]
 async fn ai_pull(app: AppHandle) -> CmdResult<()> {
+    let name = ai::model(&db::open(&app.state::<AppState>().db_path).map_err(err)?);
     std::thread::spawn(move || {
-        let r = semantic::pull_model(ai::MODEL, |p| {
+        let r = semantic::pull_model(&name, |p| {
             let _ = app.emit("ai-pull", p);
         });
         let _ = app.emit("ai-pull-done", r.err());
@@ -1105,6 +1112,7 @@ fn main() {
             ai_start,
             ai_stop,
             ai_pull,
+            ai_set_model,
             upcoming,
             lunar_label,
             import_calendar,

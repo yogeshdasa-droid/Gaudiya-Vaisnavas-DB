@@ -29,8 +29,19 @@ fn e(x: impl std::fmt::Display) -> String {
     x.to_string()
 }
 
-/// ≈ 4,7 GB; fits in the 8 GB of the RTX 3050 with room for the texts.
-pub const MODEL: &str = "qwen2.5:7b";
+/// ≈ 3,3 GB and twice as fast as qwen2.5:7b, with cleaner answers (compared 01-11-2026).
+pub const DEFAULT_MODEL: &str = "qwen3.5:4b";
+/// Models offered in Ajustes (name, size); any other downloaded one can be chosen too.
+pub const SUGGESTED: &[(&str, &str)] = &[("qwen3.5:4b", "3,3 GB"), ("qwen2.5:7b", "4,7 GB")];
+
+/// The model chosen in Ajustes (meta "ai_model").
+pub fn model(conn: &Connection) -> String {
+    crate::db::get_meta(conn, "ai_model").ok().flatten().filter(|m| !m.trim().is_empty()).unwrap_or_else(|| DEFAULT_MODEL.into())
+}
+
+pub fn set_model(conn: &Connection, name: &str) -> Res<()> {
+    crate::db::set_meta(conn, "ai_model", name.trim()).map_err(e)
+}
 /// letters of text sent for one record (≈ 4.000 words)
 const MAX_TEXT: usize = 16_000;
 /// records with less text than this have nothing to tell
@@ -55,6 +66,10 @@ pub struct Status {
     pub ollama: bool,
     pub model: bool,
     pub model_name: String,
+    /// downloaded language models (not the ones for search by meaning)
+    pub installed: Vec<String>,
+    /// suggested models: (name, size)
+    pub suggested: Vec<(String, String)>,
     pub busy: bool,
     pub done: usize,
     pub total: usize,
@@ -64,13 +79,17 @@ pub struct Status {
 }
 
 pub fn status(db_path: &Path, shared: &Shared) -> Status {
-    let (ollama, model) = semantic::ollama_has(MODEL);
+    let name = crate::db::open(db_path).map(|c| model(&c)).unwrap_or_else(|_| DEFAULT_MODEL.into());
+    let models = semantic::ollama_models();
+    let installed: Vec<String> = models.clone().unwrap_or_default().into_iter().filter(|m| !m.contains("embed")).collect();
+    let (ollama, model) = (models.is_some(), installed.iter().any(|m| *m == name || m.starts_with(&format!("{name}:"))));
     let (done, total, current) = shared.progress.lock().unwrap().clone();
     let read = fill::open(db_path)
         .and_then(|side| init(&side).map(|_| side))
         .and_then(|side| side.query_row("SELECT COUNT(*) FROM ai_read", [], |r| r.get::<_, i64>(0)).map_err(e))
         .unwrap_or(0) as usize;
-    Status { ollama, model, model_name: MODEL.into(), busy: shared.busy.load(Ordering::SeqCst), done, total, current, read }
+    let suggested = SUGGESTED.iter().map(|(n, s)| (n.to_string(), s.to_string())).collect();
+    Status { ollama, model, model_name: name, installed, suggested, busy: shared.busy.load(Ordering::SeqCst), done, total, current, read }
 }
 
 fn init(side: &Connection) -> Res<()> {
@@ -188,7 +207,7 @@ fn records(conn: &Connection) -> Res<Vec<Record>> {
 }
 
 /// Asks the model about the empty fields of one record: (field, value, evidence).
-fn ask(r: &Record, empty: &[&str]) -> Res<Vec<(String, String, String)>> {
+fn ask(r: &Record, empty: &[&str], model: &str) -> Res<Vec<(String, String, String)>> {
     let mut props = Map::new();
     let mut wanted = String::new();
     for &(f, what) in ASK.iter().filter(|(f, _)| empty.contains(f)) {
@@ -206,8 +225,10 @@ fn ask(r: &Record, empty: &[&str]) -> Res<Vec<(String, String, String)>> {
         r.text.trim()
     );
     let body = json!({
-        "model": MODEL,
+        "model": model,
         "stream": false,
+        // newer models (qwen3…) think aloud first: slow, and not needed to copy facts
+        "think": false,
         "format": schema,
         "keep_alive": "10m",
         // a cut answer is not valid JSON: the record counts as failed and is asked again next time
@@ -262,6 +283,29 @@ fn found_in(part: &str, words: &HashSet<String>) -> bool {
     !w.is_empty() && w.iter().filter(|x| words.contains(*x)).count() * 10 >= w.len() * 8
 }
 
+/// An age is not a date ("106 years old", "at the age of 80").
+fn is_age(value: &str) -> bool {
+    let v = value.to_lowercase();
+    v.contains("years old") || v.contains("age of") || v.starts_with("aged ")
+}
+
+/// Whether an answer becomes a proposal. Its evidence must be in the text;
+/// names and titles must be in the text too, and then the evidence may be
+/// missing (newer models often leave it empty). Dates and notes may be
+/// reworded, so they always need their evidence.
+fn keep(field: &str, value: &str, evidence: &str, words: &HashSet<String>) -> bool {
+    if is_nothing(value) {
+        return false;
+    }
+    if (field == "appearance" || field == "disappearance") && is_age(value) {
+        return false;
+    }
+    if ["place", "guru", "disciples", "works"].contains(&field) {
+        return found_in(&strip_brackets(value), words) && (evidence.trim().is_empty() || found_in(evidence, words));
+    }
+    found_in(evidence, words)
+}
+
 /// Reads the records (all, or the first `limit` still to read) and adds the
 /// answers as proposals.
 pub fn run(db_path: &Path, shared: &Shared, limit: Option<usize>, progress: impl Fn(usize, usize, &str)) -> Res<Done> {
@@ -269,19 +313,20 @@ pub fn run(db_path: &Path, shared: &Shared, limit: Option<usize>, progress: impl
     let side = fill::open(db_path)?;
     init(&side)?;
     let index = PersonIndex::load(&conn).map_err(e)?;
-    let (ollama, model) = semantic::ollama_has(MODEL);
+    let name = model(&conn);
+    let (ollama, has) = semantic::ollama_has(&name);
     if !ollama {
         return Err("No se puede hablar con Ollama: comprueba que está instalado y abierto (icono junto al reloj).".into());
     }
-    if !model {
-        return Err(format!("Falta el modelo {MODEL}: pulsa «Descargar el modelo»."));
+    if !has {
+        return Err(format!("Falta el modelo {name}: pulsa «Descargar el modelo»."));
     }
 
     // what is still to read
     let mut todo = Vec::new();
     for r in records(&conn)? {
         let empty: Vec<&str> = ASK.iter().map(|(f, _)| *f).filter(|f| slot(&r.fields, f).trim().is_empty()).collect();
-        let hash = semantic::hash(&format!("{MODEL}\n{}\n{}", empty.join(","), r.text));
+        let hash = semantic::hash(&format!("{name}\n{}\n{}", empty.join(","), r.text));
         let seen: Option<String> =
             side.query_row("SELECT hash FROM ai_read WHERE person_id = ?1", [r.id], |x| x.get(0)).optional().map_err(e)?;
         if seen.as_deref() != Some(hash.as_str()) {
@@ -302,11 +347,11 @@ pub fn run(db_path: &Path, shared: &Shared, limit: Option<usize>, progress: impl
         progress(i, total, &r.name);
         // an answer cut short is usually long notes: once more without them
         let short: Vec<&str> = empty.iter().copied().filter(|f| *f != "notes").collect();
-        let answers = match ask(&r, &empty) {
+        let answers = match ask(&r, &empty, &name) {
             Ok(a) => Ok(a),
             Err(x) if x.starts_with("No se puede hablar") => return Err(x),
             Err(x) if short.is_empty() || short.len() == empty.len() => Err(x),
-            Err(_) => ask(&r, &short),
+            Err(_) => ask(&r, &short, &name),
         };
         let answers = match answers {
             Ok(a) => a,
@@ -324,11 +369,7 @@ pub fn run(db_path: &Path, shared: &Shared, limit: Option<usize>, progress: impl
             if same_dates && (field == "appearance" || field == "disappearance") {
                 continue;
             }
-            if is_nothing(&value) || !found_in(&evidence, &words) {
-                continue;
-            }
-            // names and titles must be in the text too (dates and notes may be reworded)
-            if ["place", "guru", "disciples", "works"].contains(&field.as_str()) && !found_in(&strip_brackets(&value), &words) {
+            if !keep(&field, &value, &evidence, &words) {
                 continue;
             }
             let guru_id = if field == "guru" {
@@ -359,10 +400,16 @@ mod tests {
             fold_text("He was born in the village of Kulina-grama in 1486 Saka, son of Sri Raghava.").split(' ').map(String::from).collect();
         assert!(found_in("He was born in the village of Kulīna-grāma", &words));
         assert!(!found_in("He wrote the Caitanya-bhāgavata in Navadvīpa", &words));
+        // a name in the text needs no evidence; a date does, and an age is no date
+        assert!(keep("place", "Kulīna-grāma", "", &words));
+        assert!(!keep("place", "Navadvīpa", "", &words));
+        assert!(!keep("appearance", "1486 Saka", "", &words));
+        assert!(keep("appearance", "1486 Saka", "born in the village of Kulina-grama in 1486 Saka", &words));
+        assert!(!keep("disappearance", "106 years old", "born in the village of Kulina-grama in 1486 Saka", &words));
     }
 
     /// Asks the real model about one real record (needs Ollama + the model):
-    /// cargo test ai_real -- --ignored --nocapture   (BIO_DB=<copy>\biodata.db, BIO_ID=<record>)
+    /// cargo test ai_real -- --ignored --nocapture   (BIO_DB=<copy>\biodata.db, BIO_ID=<record>, BIO_MODEL=<model>)
     #[test]
     #[ignore]
     fn ai_real() {
@@ -382,8 +429,10 @@ mod tests {
         let empty: Vec<&str> = ASK.iter().map(|(f, _)| *f).filter(|f| slot(&r.fields, f).trim().is_empty()).collect();
         let t = std::time::Instant::now();
         let words: HashSet<String> = fold_text(&r.text).split(' ').map(String::from).collect();
-        for (f, v, ev) in ask(&r, &empty).unwrap() {
-            let ok = !is_nothing(&v) && found_in(&ev, &words);
+        let model = std::env::var("BIO_MODEL").unwrap_or_else(|_| DEFAULT_MODEL.into());
+        println!("== {} ({id}) · {model}", r.name);
+        for (f, v, ev) in ask(&r, &empty, &model).unwrap() {
+            let ok = keep(&f, &v, &ev, &words);
             println!("{f}: {v}\n    [{}] {ev}", if ok { "ok" } else { "--" });
         }
         println!("{} letters, {:?}", r.text.len(), t.elapsed());

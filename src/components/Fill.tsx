@@ -192,7 +192,25 @@ function AiSection({ t, onToast, onFound }: { t: T; onToast: (msg: string) => vo
           )}
         </div>
         <div>
-          <strong>{t.aiModel(st.modelName)}</strong>
+          <strong>{t.aiModelLabel}</strong>
+          <select
+            value={st.modelName}
+            disabled={st.busy || !!pull}
+            title={t.aiModelHint}
+            onChange={(e) => api.aiSetModel(e.target.value).then(load, (x) => onToast(String(x)))}
+          >
+            {[...new Set([...st.suggested.map(([n]) => n), ...st.installed, st.modelName])].map((n) => {
+              const size = st.suggested.find(([m]) => m === n)?.[1];
+              const has = st.installed.some((m) => m === n || m.startsWith(n + ":"));
+              return (
+                <option key={n} value={n}>
+                  {n}
+                  {size ? ` · ${size}` : ""}
+                  {has ? "" : ` · ${t.aiNotDownloaded}`}
+                </option>
+              );
+            })}
+          </select>
           {ok(st.model, t.meaningModelOk, t.aiModelNo)}
           {st.ollama && !st.model && !pull && (
             <button className="btn ghost" onClick={() => api.aiPull().then(() => setPull({ status: "", completed: 0, total: 0 }), (e) => onToast(String(e)))}>
