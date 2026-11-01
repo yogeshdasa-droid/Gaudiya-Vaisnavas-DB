@@ -42,7 +42,7 @@ export function TreeView({ t, persons, onPerson }: { t: T; persons: PersonListIt
     return { boxes, width, height };
   }, [persons]);
 
-  const short = (s: string) => (s.length > 28 ? s.slice(0, 27) + "…" : s);
+  const short = (s: string, n: number) => (s.length > n ? s.slice(0, n - 1) + "…" : s);
 
   return (
     <div className="reader">
@@ -68,15 +68,21 @@ export function TreeView({ t, persons, onPerson }: { t: T; persons: PersonListIt
                     const x2 = b.x;
                     const y2 = b.y + H / 2;
                     const mx = (x1 + x2) / 2;
-                    return <path key={`l${b.p.id}`} className="tree-link" d={`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`} />;
+                    return <path key={`l${b.p.id}`} className={`tree-link ${b.p.tree!.kind}`} d={`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`} />;
                   })}
                 {boxes.map((b) => (
                   <g key={b.p.id} className="tree-node" transform={`translate(${b.x},${b.y})`} onClick={() => onPerson(b.p.id)}>
-                    <title>{b.p.name}</title>
+                    <title>{b.parent ? `${b.p.name} · ${t.treeKinds[b.p.tree!.kind]}` : b.p.name}</title>
                     <rect width={W} height={H} rx={5} />
                     <text x={10} y={H / 2 + 4}>
-                      {short(b.p.name)}
+                      {short(b.p.name, b.parent ? 22 : 28)}
                     </text>
+                    {/* how they are related to the guru on the left */}
+                    {b.parent && (
+                      <text className={`tree-kind ${b.p.tree!.kind}`} x={W - 8} y={H / 2 + 4} textAnchor="end">
+                        {t.treeKindShort[b.p.tree!.kind]}
+                      </text>
+                    )}
                   </g>
                 ))}
               </svg>

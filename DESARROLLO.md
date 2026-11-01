@@ -186,7 +186,13 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.6.1)
+## 5. Qué hace hoy (v0.6.2)
+
+### Novedades de la 0.6.2 (01-11-2026)
+- El tipo de relación se ve **siempre** (lo pidió Whisper): etiqueta «dīkṣā» / «śikṣā» / «pārṣada»
+  junto a cada discípulo en el árbol del panel (śikṣā y pārṣada en el color de acento) y en el árbol
+  dibujado (`TreeView.tsx`: etiqueta en el cuadro y línea de rayas / puntos como en el panel).
+  Nota: el 01-11-2026 las 46 relaciones de la BD eran dīkṣā; no se había perdido nada.
 
 ### Novedades de la 0.6.1 (01-11-2026)
 - «Rellenar fichas con IA»: **el modelo se elige** en Ajustes › Rellenar fichas (meta `ai_model`);
@@ -541,6 +547,8 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 8. Historial
 
+- **01-11-2026 — v0.6.2**: etiqueta del tipo de relación siempre visible, también en el árbol dibujado.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.6.2
 - **01-11-2026 — v0.6.1**: modelo de IA elegible (por defecto qwen3.5:4b); nombres sin frase de
   prueba aceptados si están en el texto. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.6.1
 - **01-11-2026 — v0.6.0**: estilo «Windows 11» (por defecto) con barra de la izquierda, página del

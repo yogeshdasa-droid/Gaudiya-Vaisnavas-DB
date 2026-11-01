@@ -2344,9 +2344,14 @@ button.logo {
 }
 .tree-kind {
   flex-shrink: 0;
-  font-size: 10.5px;
+  font-size: 11px;
   color: var(--muted);
   font-style: italic;
+}
+/* śikṣā and pārṣada stand out from the usual dīkṣā */
+.tree-kind.siksa,
+.tree-kind.associate {
+  color: var(--accent-text);
 }
 .tl-across {
   top: 50%;
@@ -3602,6 +3607,20 @@ body.dragging-person * {
 .tree-node text {
   fill: var(--text);
   font-size: 13px;
+}
+.tree-link.siksa {
+  stroke-dasharray: 6 4;
+}
+.tree-link.associate {
+  stroke-dasharray: 2 4;
+}
+.tree-node text.tree-kind {
+  fill: var(--muted);
+  font-size: 11px;
+}
+.tree-node text.tree-kind.siksa,
+.tree-node text.tree-kind.associate {
+  fill: var(--accent-text);
 }
 .tree-node:hover rect {
   fill: var(--accent-soft);
