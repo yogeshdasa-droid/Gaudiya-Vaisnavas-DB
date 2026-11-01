@@ -493,7 +493,32 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 7. Pendientes e ideas
 
-### Para la próxima sesión (01-11-2026, tarde)
+### Para la próxima sesión (02-11-2026) — dónde nos quedamos
+Publicada la **0.7.3** (DATA_VERSION 6). En una tarde se publicaron 0.6.0 → 0.7.3 (ver §8). Estado:
+1. **Rellenar fichas con IA**: Whisper la lanzó con qwen3.5:4b («Leer todas las fichas»); iba por
+   ~600 de 986. Al actualizar la app se para: volver a pulsar «Leer todas las fichas» y sigue donde
+   iba (hash por ficha). Luego Whisper revisa las propuestas en Ajustes › Rellenar fichas y cuenta
+   qué salió bien / mal para afinar `ai.rs` (prompt, `keep`).
+2. **Árbol de la Paramparā** (Whisper lo está ordenando): corregido en sus datos el 01-11-2026 (punto
+   12). Le toca a Whisper: añadir los gurus de śikṣā que faltan para que la «Línea de śikṣā» llegue
+   hasta hoy (Narottama ← Kṛṣṇadāsa Kavirāja ya lo hizo, junto a Jīva; faltan Viśvanātha ← Narottama,
+   Bhaktisiddhānta ← Bhaktivinoda, Nārāyaṇa M. ← Prabhupāda y Vāmana M., y los contemporáneos);
+   decidir Lokanātha y Śrīvāsa (¿pārṣadas de Caitanya?); unir las fichas repetidas (lista en la
+   conversación del 01-11: Advaita ×2, Nityānanda ×2, Vīrabhadra ×3, Abhirāma ×2, Kṛṣṇadāsa Kavirāja
+   ×2, Dayita Mādhava ×2, Vaibhava Purī ×2, Śrīdhara ×2, Prabhupāda ×2, Nārāyaṇa M. ×2) — **las une
+   Whisper**; arreglar campos raros (Guru de Mādhavendra Purī y de Trivikrama M.; fichas que son
+   trozos de libro: «Bābājī Mahārāja: Two Beyond Duality:», «He translated Līlāmṛta-rāsa-pūra.»;
+   «Viśvanātha Cakravartī Ṭhākura’s»).
+   Orden de los «otros gurus»: el primero de la lista es el que coloca a la persona en la «Línea de
+   śikṣā»; los demás salen como línea de rayas (Whisper preguntó por Narottama: Jīva y Kṛṣṇadāsa son
+   los dos correctos).
+3. Ideas apuntadas sin hacer: marcar en otro color las fichas que podrían estar repetidas (punto 6);
+   tipo de relación «sannyāsa» (Keśava Bhāratī → Caitanya está como «otro guru» dīkṣā); un guru de
+   dīkṣā fuera del árbol (p. ej. Bipin Bihārī para Bhaktivinoda) no se dibuja: habría que meterlo
+   en el árbol.
+4. Para probar la interfaz con la app de Whisper abierta: `WEBVIEW2_USER_DATA_FOLDER` (ver CLAUDE.md).
+
+### Hecho el 01-11-2026 (tarde)
 1. Whisper actualiza a la 0.5.2 (comprueba que la actualización automática desde la 0.5.1 funciona) y la
    revisa: árbol con tipos de relación, arrastrar bajo otro guru, Digdarśanī en la línea de tiempo,
    propuestas del Digdarśanī en Rellenar fichas.
@@ -504,7 +529,7 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
    Whisper elige. Hacer el modelo **elegible en Ajustes** en vez de la constante `ai::MODEL`.
    Con la RTX 3050 (8 GB): hasta ~8B cabe entero; 12–14B no cabe y con el i5-7500 sería muy lento.
    **Hecho el 01-11-2026 (publicado en la 0.6.1; Whisper eligió qwen3.5:4b):** el modelo se elige en Ajustes › Rellenar fichas (meta
-   `ai_model`, por defecto `qwen2.5:7b`; `ai::SUGGESTED`; `"think": false` para los qwen3).
+   `ai_model`, por defecto `qwen3.5:4b` desde la 0.6.1; `ai::SUGGESTED`; `"think": false` para los qwen3).
    Comparación (BIO_MODEL en `ai_real`): qwen2.5:7b ~13 s/ficha, copia párrafos enteros como prueba,
    inventó discípulos en 1089 (Bhakta y Menaka solo vivían en el templo), puso la misma fecha de
    aparición y desaparición, y en 332 la respuesta se cortó (JSON roto). qwen3.5:4b ~6 s/ficha,
