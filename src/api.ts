@@ -556,6 +556,13 @@ export function fileUrl(role: "cover" | "original" | "photo" | "image", docId: n
   return navigator.userAgent.includes("Windows") ? `http://bio.localhost/${role}/${docId}` : `bio://localhost/${role}/${docId}`;
 }
 
+/** The disciples of each guru in the order shown in the trees: first those
+ *  without disciples, then those whose line goes on; each group in the order
+ *  given by dragging. `kids` has an entry only for records with disciples. */
+export function sortDisciples(kids: Map<number | null, PersonListItem[]>) {
+  for (const list of kids.values()) list.sort((a, b) => Number(kids.has(a.id)) - Number(kids.has(b.id)) || a.tree!.pos - b.tree!.pos);
+}
+
 /** Stable pastel hue per collection name. */
 export function hueOf(name: string): number {
   let h = 0;

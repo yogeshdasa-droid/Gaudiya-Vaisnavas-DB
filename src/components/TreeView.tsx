@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Network } from "lucide-react";
-import { PersonListItem, TreeKind } from "../api";
+import { PersonListItem, sortDisciples, TreeKind } from "../api";
 import { T } from "../i18n";
 
 const W = 200; // box width
@@ -37,7 +37,7 @@ export function TreeView({ t, persons, onPerson }: { t: T; persons: PersonListIt
       const parent = p.tree.parent !== null && ids.has(p.tree.parent) ? p.tree.parent : null;
       kids.set(parent, [...(kids.get(parent) ?? []), p]);
     }
-    for (const list of kids.values()) list.sort((a, b) => a.tree!.pos - b.tree!.pos);
+    sortDisciples(kids);
     const boxes: Box[] = [];
     let line = 0;
     // leaves take the next line; a guru sits in the middle of their disciples

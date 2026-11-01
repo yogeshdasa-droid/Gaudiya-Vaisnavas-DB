@@ -208,15 +208,22 @@ export function PersonView(p: Props) {
   const gurus = nameList(person.guru, treeGuru);
   const disciples = nameList(person.disciples, treeDisciples);
 
-  const facts: [string, React.ReactNode, boolean][] = [
-    [t.appearance, dated(person.appearance, person.appearanceDay), !!person.appearance.trim()],
-    [t.disappearance, dated(person.disappearance, person.disappearanceDay), !!person.disappearance.trim()],
-    [t.place, person.place, !!person.place.trim()],
-    [t.guru, names(gurus), gurus.length > 0],
-    [t.disciples, names(disciples), disciples.length > 0],
-    [t.works, person.works, !!person.works.trim()],
+  // three columns: the line (guru, disciples), the dates, place and works
+  const facts: [string, React.ReactNode, boolean][][] = [
+    [
+      [t.guru, names(gurus), gurus.length > 0],
+      [t.disciples, names(disciples), disciples.length > 0],
+    ],
+    [
+      [t.appearance, dated(person.appearance, person.appearanceDay), !!person.appearance.trim()],
+      [t.disappearance, dated(person.disappearance, person.disappearanceDay), !!person.disappearance.trim()],
+    ],
+    [
+      [t.place, person.place, !!person.place.trim()],
+      [t.works, person.works, !!person.works.trim()],
+    ],
   ];
-  const hasFacts = facts.some(([, , show]) => show) || person.notes.trim();
+  const hasFacts = facts.flat().some(([, , show]) => show) || person.notes.trim();
   const tags = person.tags
     .split(",")
     .map((s) => s.trim())
@@ -350,15 +357,20 @@ export function PersonView(p: Props) {
           {hasFacts ? (
             <dl className="facts">
               {facts
-                .filter(([, , show]) => show)
-                .map(([label, value]) => (
-                  <div key={label}>
-                    <dt>{label}</dt>
-                    <dd>{value}</dd>
+                .map((col) => col.filter(([, , show]) => show))
+                .filter((col) => col.length > 0)
+                .map((col) => (
+                  <div key={col[0][0]} className="facts-col">
+                    {col.map(([label, value]) => (
+                      <div key={label} className="fact">
+                        <dt>{label}</dt>
+                        <dd>{value}</dd>
+                      </div>
+                    ))}
                   </div>
                 ))}
               {person.notes.trim() && (
-                <div className="wide">
+                <div className="fact wide">
                   <dt>{t.notes}</dt>
                   <dd className="notes">{person.notes}</dd>
                 </div>

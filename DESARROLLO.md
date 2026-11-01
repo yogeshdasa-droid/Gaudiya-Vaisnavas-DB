@@ -186,7 +186,12 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.7.0)
+## 5. Qué hace hoy (v0.7.1)
+
+### Novedades de la 0.7.1 (01-11-2026)
+- Árboles: primero los discípulos sin discípulos, después los que siguen la línea (§7, punto 7).
+- Ficha: datos en tres columnas, Guru / Discípulos · Aparición / Desaparición · Lugar / Obras
+  (§7, punto 8); los nombres largos del guru ya no se salen de la tarjeta.
 
 ### Novedades de la 0.7.0 (01-11-2026) — **DATA_VERSION 6**
 - **Varios gurus en el árbol**: tabla `person_links` (gurus de śikṣā / asociados además del guru
@@ -539,6 +544,14 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
    brillo): a la izquierda solo la Paramparā de dīkṣā; al moverlo, el árbol de dīkṣā se aclara
    (opacidad) y van apareciendo las líneas de śikṣā (de rayas, en color de acento) hasta quedar
    resaltadas. En el centro se ven las dos.
+7. **Orden en los árboles — publicado en la 0.7.1** (idea de Whisper): primero los
+   discípulos sin discípulos y después los que tienen (sus ramas siguen debajo); dentro de cada grupo,
+   el orden de arrastrar. Solo cambia cómo se muestra (`sortDisciples` en `api.ts`, usado por
+   `Sidebar.tsx` y `TreeView.tsx`); no toca `person_tree.pos`.
+8. **Datos de la ficha en tres columnas — publicado en la 0.7.1** (lo pidió Whisper):
+   Guru / Discípulos · Aparición / Desaparición · Lugar / Obras; Notas a lo ancho debajo
+   (`PersonView.tsx`: `facts` por columnas, clases `.facts-col` y `.fact`). Los nombres largos del
+   guru ya no se salen de su tarjeta (`.facts dd .chip` con salto de línea).
 6. **Fichas repetidas de la misma persona** (Whisper, 01-11-2026): 1809 / 995 (Nārāyaṇa Gosvāmī
    Mahārāja) y 125 / 1516 (Prabhupāda) son la misma persona; **las une Whisper**. Idea para más
    adelante: marcar en otro color las fichas que podrían estar repetidas (p. ej. «Apellido, Nombre»
@@ -579,6 +592,8 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 8. Historial
 
+- **01-11-2026 — v0.7.1**: orden de los árboles (hojas primero) y ficha en tres columnas.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.1
 - **01-11-2026 — v0.7.0** (DATA_VERSION 6): varios gurus en el árbol (`person_links`), deslizador
   Dīkṣā ↔ Śikṣā en el árbol dibujado. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.0
 - **01-11-2026 — v0.6.2**: etiqueta del tipo de relación siempre visible, también en el árbol dibujado.

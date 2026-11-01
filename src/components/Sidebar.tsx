@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { BookMarked, ChevronRight, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
-import { api, Bookmark, DocListItem, hueOf, PersonListItem, TreePlace } from "../api";
+import { api, Bookmark, DocListItem, hueOf, PersonListItem, sortDisciples, TreePlace } from "../api";
 import { foldWord } from "../fold";
 import { Lang, T } from "../i18n";
 
@@ -243,7 +243,7 @@ function PersonList({
       parentOf.set(p.id, parent);
       kids.set(parent, [...(kids.get(parent) ?? []), p]);
     }
-    for (const list of kids.values()) list.sort((a, b) => a.tree!.pos - b.tree!.pos);
+    sortDisciples(kids);
     return { kids, parentOf, others: persons.filter((p) => !p.tree) };
   }, [persons]);
 

@@ -2555,7 +2555,18 @@ body.dragging-person * {
   gap: 10px;
   margin: 26px 0 0;
 }
-.facts > div {
+.facts-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+/* a long list of names wraps inside its card */
+.facts dd .chip {
+  max-width: 100%;
+  white-space: normal;
+}
+.fact {
   padding: 12px 14px;
   border-radius: 12px;
   background: var(--surface);
@@ -2563,7 +2574,7 @@ body.dragging-person * {
   box-shadow: var(--shadow-sm);
   animation: pop 0.35s var(--ease) both;
 }
-.facts > div.wide {
+.fact.wide {
   grid-column: 1 / -1;
 }
 .facts dt {
@@ -4522,11 +4533,11 @@ body.dragging-person * {
   height: 18px;
   color: var(--accent-text);
 }
-:root[data-skin="fluent"] :is(.facts > div, .inline-doc, .text-card) {
+:root[data-skin="fluent"] :is(.fact, .inline-doc, .text-card) {
   border-radius: 8px;
   box-shadow: none;
 }
-:root[data-skin="fluent"] .facts > div {
+:root[data-skin="fluent"] .fact {
   padding: 14px 18px;
 }
 :root[data-skin="fluent"] .facts dt {
