@@ -186,7 +186,13 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.6.2)
+## 5. Qué hace hoy (v0.7.0)
+
+### Novedades de la 0.7.0 (01-11-2026) — **DATA_VERSION 6**
+- **Varios gurus en el árbol**: tabla `person_links` (gurus de śikṣā / asociados además del guru
+  bajo el que está la ficha). Editar ficha › «Otros gurus en el árbol (śikṣā)»; «+ śikṣā» en el panel;
+  líneas extra en el árbol dibujado con el **deslizador Dīkṣā ↔ Śikṣā** (idea de Whisper). Detalle
+  en §7, punto 5. La 0.6.x no abre una base de datos de formato 6.
 
 ### Novedades de la 0.6.2 (01-11-2026)
 - El tipo de relación se ve **siempre** (lo pidió Whisper): etiqueta «dīkṣā» / «śikṣā» / «pārṣada»
@@ -512,6 +518,32 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
    sombras ni brillos; resultado elegido con raya amarilla). El estilo «Windows 11» cubre ya toda
    la app y es el estilo por defecto desde la 0.6.0. **Siguiente:** que Whisper lo use y diga qué
    retocar.
+5. **Varios gurus en el árbol — HECHO y publicado en la 0.7.0 (DATA_VERSION 6).** Tabla
+   `person_links`, `store::set_links` (sustituye la lista; ignora al guru del árbol), al unir fichas
+   pasan a la que queda, al borrar se quitan; `PersonListItem.links`; Editar ficha › «Otros gurus en
+   el árbol (śikṣā)» (componente `MoreGurus`, solo personas del árbol); panel: «+ śikṣā» con los
+   nombres al pasar el ratón; árbol dibujado: líneas extra y **deslizador Dīkṣā ↔ Śikṣā** (`mix`):
+   la Paramparā de dīkṣā y los cuadros que no están en una relación de śikṣā se aclaran; si el guru
+   está en la misma columna o más a la derecha, la curva va por la izquierda. Probado en una copia
+   (Nārāyaṇa Mahārāja 1809 ← Prabhupāda 125 y Vāmana 1810). Publicado en la 0.7.0 (Whisper lo pidió
+   con la IA en 600 de 986 fichas). Texto original de la idea:
+   **Idea aplazada (Whisper: «todavía no», 01-11-2026): varios gurus en el árbol.** Hoy cada ficha
+   está bajo un solo guru (`person_tree`). Ejemplo: Śrī Bhaktivedānta Nārāyaṇa Gosvāmī Mahārāja
+   (1809): dīkṣā de Bhakti Prajñāna Keśava, śikṣā de Bhaktivedānta Svāmī Prabhupāda (125) y de
+   Vāmana Mahārāja. Propuesta: tabla nueva `person_links(person_id, guru_id, kind)` (DATA_VERSION 6
+   + migración), apartado «Gurus de śikṣā en el árbol» en Editar ficha (elegir de la lista) y/o
+   menú contextual; línea de rayas extra en `TreeView.tsx`, «+ śikṣā» con los nombres al pasar el
+   ratón en el panel. Opcional: proponer los śikṣā leyendo el campo «Guru» (es prosa libre:
+   «śikṣā: A and B», «(śikṣā guru)», «studied under…»), que Whisper acepte uno a uno.
+   **Idea de Whisper para mostrarlo:** en el árbol dibujado, un **deslizador** (como el de volumen o
+   brillo): a la izquierda solo la Paramparā de dīkṣā; al moverlo, el árbol de dīkṣā se aclara
+   (opacidad) y van apareciendo las líneas de śikṣā (de rayas, en color de acento) hasta quedar
+   resaltadas. En el centro se ven las dos.
+6. **Fichas repetidas de la misma persona** (Whisper, 01-11-2026): 1809 / 995 (Nārāyaṇa Gosvāmī
+   Mahārāja) y 125 / 1516 (Prabhupāda) son la misma persona; **las une Whisper**. Idea para más
+   adelante: marcar en otro color las fichas que podrían estar repetidas (p. ej. «Apellido, Nombre»
+   al revés de otra) para que Whisper las examine y las una. Nunca unir sin que lo decida Whisper
+   (ver las 13 «uniones claras» rechazadas el 31-10-2026).
 
 ### Plan acordado el 31-10-2026
 1. **Probar la actualización automática** (01-11-2026: publicada la 0.5.1 para ello). El usuario instala la 0.5.0 a mano (la 0.4.2 no sabe
@@ -547,6 +579,8 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 8. Historial
 
+- **01-11-2026 — v0.7.0** (DATA_VERSION 6): varios gurus en el árbol (`person_links`), deslizador
+  Dīkṣā ↔ Śikṣā en el árbol dibujado. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.0
 - **01-11-2026 — v0.6.2**: etiqueta del tipo de relación siempre visible, también en el árbol dibujado.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.6.2
 - **01-11-2026 — v0.6.1**: modelo de IA elegible (por defecto qwen3.5:4b); nombres sin frase de

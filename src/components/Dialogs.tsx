@@ -566,6 +566,80 @@ export function ImportDialog({
 /** The lunar day the program reads in a date field (for the calendar). */
 /** A list of names («Rupa Gosvami (diksa); Jiva Gosvami») with the records
  *  as suggestions: the part under the cursor is completed from the list. */
+/** Other gurus of a record in the tree besides the one it is under (its
+ *  śikṣā gurus): drawn as extra lines in the tree. Only records in the tree. */
+function MoreGurus({
+  t,
+  links,
+  onChange,
+  persons,
+  inTree,
+  exclude,
+}: {
+  t: T;
+  links: [number, TreeKind][];
+  onChange: (l: [number, TreeKind][]) => void;
+  persons: PersonListItem[];
+  inTree: boolean;
+  exclude: number[];
+}) {
+  const [q, setQ] = useState("");
+  const inTreeList = useMemo(() => persons.filter((p) => p.tree), [persons]);
+  const matches = useMemo(
+    () => filterPersons(inTreeList, q, 12).filter((p) => !exclude.includes(p.id) && !links.some(([g]) => g === p.id)),
+    [inTreeList, q, exclude, links],
+  );
+  const name = (id: number) => persons.find((p) => p.id === id)?.name ?? "?";
+  return (
+    <div className="more-gurus">
+      <span className="more-gurus-title">{t.moreGurus}</span>
+      {!inTree ? (
+        <em className="lunar-hint">{t.moreGurusNotInTree}</em>
+      ) : (
+        <>
+          {links.map(([g, k], i) => (
+            <div key={g} className="more-guru">
+              <UserRound size={14} />
+              <span className="grow">{name(g)}</span>
+              <select value={k} onChange={(e) => onChange(links.map((l, j) => (j === i ? [g, e.target.value as TreeKind] : l)))}>
+                {(["siksa", "associate", "diksa"] as TreeKind[]).map((kk) => (
+                  <option key={kk} value={kk}>
+                    {t.treeKinds[kk]}
+                  </option>
+                ))}
+              </select>
+              <button className="icon-btn" title={t.delete} onClick={() => onChange(links.filter((_, j) => j !== i))}>
+                <X size={14} />
+              </button>
+            </div>
+          ))}
+          <div className="picker">
+            <input value={q} placeholder={t.moreGurusAdd} onChange={(e) => setQ(e.target.value)} />
+            {q.trim() && matches.length > 0 && (
+              <div className="picker-list">
+                {matches.map((m) => (
+                  <button
+                    key={m.id}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      onChange([...links, [m.id, "siksa"]]);
+                      setQ("");
+                    }}
+                  >
+                    <UserRound size={13} /> {m.name}
+                    {m.aka && <em>{m.aka}</em>}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <em className="lunar-hint">{t.moreGurusHint}</em>
+        </>
+      )}
+    </div>
+  );
+}
+
 function NamesInput({
   t,
   value,
@@ -718,7 +792,11 @@ export function PersonDialog({
   const [, setPicks] = useState(0);
   const keys = Object.keys(EMPTY_PERSON) as (keyof PersonFields)[];
   const kindNow = persons.find((x) => x.id === person?.id)?.tree?.kind ?? "diksa";
-  const dirty = keys.some((k) => f[k] !== (initial[k] ?? "")) || kind !== kindNow;
+  // more gurus besides its place in the tree (its śikṣā gurus)
+  const [linksNow] = useState<[number, TreeKind][]>(() => (persons.find((x) => x.id === person?.id)?.links ?? []).map((l) => [l.guru, l.kind]));
+  const [links, setLinks] = useState<[number, TreeKind][]>(linksNow);
+  const linksChanged = JSON.stringify(links) !== JSON.stringify(linksNow);
+  const dirty = keys.some((k) => f[k] !== (initial[k] ?? "")) || kind !== kindNow || linksChanged;
   const set = (k: keyof PersonFields) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setF({ ...f, [k]: e.target.value });
   const others = useMemo(() => persons.filter((x) => x.id !== person?.id), [persons, person]);
   const byId = (id: number | null | undefined) => (id ? persons.find((x) => x.id === id) : undefined);
@@ -791,6 +869,7 @@ export function PersonDialog({
       const moved = await place(id, f.name.trim());
       // the relation with the guru, once the record is in the tree
       if (kind !== kindNow || (moved && kind !== "diksa")) await api.setTreeKind(id, kind).catch(() => {});
+      if (linksChanged) await api.setLinks(id, links);
       onSaved(id, moved);
     } catch (e) {
       setError(String(e));
@@ -853,6 +932,16 @@ export function PersonDialog({
           </label>
         )}
       </div>
+      {person && (
+        <MoreGurus
+          t={t}
+          links={links}
+          onChange={setLinks}
+          persons={persons}
+          inTree={!!me?.tree || !!plan.guru}
+          exclude={[person.id, me?.tree?.parent ?? plan.guru ?? -1]}
+        />
+      )}
       <div className="form-grid one">
         <label>
           <span>{t.disciples}</span>

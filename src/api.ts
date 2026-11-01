@@ -133,6 +133,8 @@ export interface PersonListItem {
   tree: { parent: number | null; pos: number; kind: TreeKind } | null;
   /** labels, comma separated */
   tags: string;
+  /** more gurus besides its place in the tree (its śikṣā gurus) */
+  links: { guru: number; kind: TreeKind }[];
 }
 
 /** Where a record goes in the Guru Paramparā (null = take it out). */
@@ -326,6 +328,7 @@ export const api = {
   movePerson: (id: number, place: TreePlace) => invoke<void>("move_person", { id, place }),
   setTreeKind: (id: number, kind: TreeKind) => invoke<void>("set_tree_kind", { id, kind }),
   /** writes guru and disciple in both records; returns how many changed */
+  setLinks: (id: number, links: [number, TreeKind][]) => invoke<void>("set_links", { id, links }),
   relate: (disciple: number, guru: number, kind: TreeKind, oldGuru: number | null) => invoke<number>("relate", { disciple, guru, kind, oldGuru }),
   setPersonPhoto: (id: number, path: string) => invoke<void>("set_person_photo", { id, path }),
   removePersonPhoto: (id: number) => invoke<void>("remove_person_photo", { id }),

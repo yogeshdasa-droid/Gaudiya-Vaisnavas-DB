@@ -14,7 +14,9 @@ use std::path::Path;
 ///    calendar_events (the user's .ics calendar); all created empty on open.
 /// 5: + person_tree.kind (dīkṣā / śikṣā disciple or associate; 'diksa' for
 ///    the records already in the tree).
-pub const DATA_VERSION: u32 = 5;
+/// 6: + person_links (more gurus of a record besides its place in the tree,
+///    e.g. its śikṣā gurus; created empty on open).
+pub const DATA_VERSION: u32 = 6;
 /// Bump when the folding rules or the FTS layout change: the search tables
 /// are rebuilt from `sections` / `docs` / `persons` (no data is lost).
 pub const FTS_VERSION: &str = "1";
@@ -110,6 +112,16 @@ CREATE TABLE IF NOT EXISTS person_tree(
     kind TEXT NOT NULL DEFAULT 'diksa' -- diksa | siksa | associate (format 5)
 );
 CREATE INDEX IF NOT EXISTS person_tree_parent ON person_tree(parent_id, pos);
+
+-- more gurus of a record (format 6), besides the one it is placed under in
+-- person_tree: usually its śikṣā gurus; drawn as extra lines in the tree
+CREATE TABLE IF NOT EXISTS person_links(
+    person_id INTEGER NOT NULL,     -- the disciple
+    guru_id INTEGER NOT NULL,
+    kind TEXT NOT NULL DEFAULT 'siksa', -- diksa | siksa | associate
+    PRIMARY KEY(person_id, guru_id)
+);
+CREATE INDEX IF NOT EXISTS person_links_guru ON person_links(guru_id);
 
 -- earlier versions (format 4): the state of a text or a record before it was
 -- changed, as JSON; kept so a change can be undone
@@ -261,5 +273,15 @@ mod tests {
             conn.prepare("SELECT kind FROM person_tree ORDER BY person_id").unwrap().query_map([], |r| r.get(0)).unwrap().map(|x| x.unwrap()).collect();
         assert_eq!(kinds, ["diksa", "diksa"]);
         init(&conn).unwrap(); // a second open changes nothing
+    }
+
+    #[test]
+    fn format_5_gets_links() {
+        let conn = Connection::open_in_memory().unwrap();
+        conn.execute_batch("CREATE TABLE meta(key TEXT PRIMARY KEY, value TEXT NOT NULL); INSERT INTO meta VALUES('data', '5');").unwrap();
+        init(&conn).unwrap();
+        let n: i64 = conn.query_row("SELECT COUNT(*) FROM person_links", [], |r| r.get(0)).unwrap();
+        assert_eq!(n, 0);
+        assert_eq!(get_meta(&conn, "data").unwrap().as_deref(), Some("6"));
     }
 }

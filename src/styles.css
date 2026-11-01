@@ -3614,6 +3614,72 @@ body.dragging-person * {
 .tree-link.associate {
   stroke-dasharray: 2 4;
 }
+/* the śikṣā side brought out by the slider */
+.tree-link.strong {
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+.tree-mix {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 12px;
+}
+.tree-mix > span:not(.muted) {
+  font-weight: 600;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+.tree-mix > span.on {
+  color: var(--accent-text);
+}
+.tree-mix input[type="range"] {
+  width: 220px;
+  height: auto;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  accent-color: var(--accent);
+}
+/* other gurus of a record, in Edit record */
+.more-gurus {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+}
+.more-gurus-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+:root[data-skin="fluent"] .more-gurus-title {
+  font-size: 12.5px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-2);
+}
+.more-guru {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--sunken);
+}
+.more-guru > svg {
+  color: var(--accent-text);
+}
+.more-guru select {
+  height: 30px;
+}
+.more-gurus .picker input:not([type="checkbox"]) {
+  width: 100%;
+}
 .tree-node text.tree-kind {
   fill: var(--muted);
   font-size: 11px;

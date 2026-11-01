@@ -1,6 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Network } from "lucide-react";
-import { PersonListItem } from "../api";
+import { PersonListItem, TreeKind } from "../api";
 import { T } from "../i18n";
 
 const W = 200; // box width
@@ -15,9 +15,21 @@ interface Box {
   parent: Box | null;
 }
 
-/** The Guru Paramparā drawn left to right: guru → disciples. */
+/** A line from a guru to a disciple: its place in the tree, or one of its other gurus. */
+interface Link {
+  key: string;
+  from: Box;
+  to: Box;
+  kind: TreeKind;
+  extra: boolean;
+}
+
+/** The Guru Paramparā drawn left to right: guru → disciples. A slider fades
+ *  the dīkṣā line and brings out the śikṣā (and associate) relations. */
 export function TreeView({ t, persons, onPerson }: { t: T; persons: PersonListItem[]; onPerson: (id: number) => void }) {
-  const { boxes, width, height } = useMemo(() => {
+  // 0 = only the dīkṣā Paramparā … 100 = the śikṣā relations stand out
+  const [mix, setMix] = useState(0);
+  const { boxes, links, width, height } = useMemo(() => {
     const ids = new Set(persons.filter((p) => p.tree).map((p) => p.id));
     const kids = new Map<number | null, PersonListItem[]>();
     for (const p of persons) {
@@ -37,12 +49,43 @@ export function TreeView({ t, persons, onPerson }: { t: T; persons: PersonListIt
       return box;
     };
     for (const root of kids.get(null) ?? []) place(root, 0, null);
+    const byId = new Map(boxes.map((b) => [b.p.id, b]));
+    const links: Link[] = [];
+    for (const b of boxes) {
+      if (b.parent) links.push({ key: `t${b.p.id}`, from: b.parent, to: b, kind: b.p.tree!.kind, extra: false });
+      for (const l of b.p.links) {
+        const g = byId.get(l.guru);
+        if (g) links.push({ key: `x${b.p.id}-${l.guru}`, from: g, to: b, kind: l.kind, extra: true });
+      }
+    }
     const width = Math.max(...boxes.map((b) => b.x), 0) + W + 20;
     const height = Math.max(line, 1) * DY + 20;
-    return { boxes, width, height };
+    return { boxes, links, width, height };
   }, [persons]);
 
   const short = (s: string, n: number) => (s.length > n ? s.slice(0, n - 1) + "…" : s);
+  // the śikṣā side: śikṣā / associate lines, and the records they join
+  const siksa = (l: Link) => l.extra || l.kind !== "diksa";
+  const inSiksa = useMemo(() => new Set(links.filter(siksa).flatMap((l) => [l.from.p.id, l.to.p.id])), [links]);
+  const hasSiksa = inSiksa.size > 0;
+  const m = mix / 100;
+  const diksaOpacity = 1 - 0.8 * m;
+  const siksaOpacity = hasSiksa ? Math.max(m, 0) : 0;
+  const nodeOpacity = (id: number) => (inSiksa.has(id) ? 1 : 1 - 0.7 * m);
+  const path = (l: Link) => {
+    const y1 = l.from.y + H / 2;
+    const x2 = l.to.x;
+    const y2 = l.to.y + H / 2;
+    // a guru in the same column as the disciple, or further right: an arc on the left
+    if (l.from.x >= l.to.x) {
+      const x1 = l.from.x;
+      const bend = 40 + Math.min(80, Math.abs(y2 - y1) / 4);
+      return `M${x1},${y1} C${x1 - bend},${y1} ${x2 - bend},${y2} ${x2},${y2}`;
+    }
+    const x1 = l.from.x + W;
+    const bend = Math.max(40, (x2 - x1) / 2);
+    return `M${x1},${y1} C${x1 + bend},${y1} ${x2 - bend},${y2} ${x2},${y2}`;
+  };
 
   return (
     <div className="reader">
@@ -53,25 +96,46 @@ export function TreeView({ t, persons, onPerson }: { t: T; persons: PersonListIt
               <Network size={22} /> {t.treeView}
             </h1>
             <p className="muted small">{t.treeViewHint}</p>
+            <div className="tree-mix" title={t.treeSliderHint}>
+              <span className={mix < 50 ? "on" : ""}>{t.treeSliderDiksa}</span>
+              <input type="range" min={0} max={100} value={mix} onChange={(e) => setMix(Number(e.target.value))} />
+              <span className={mix >= 50 ? "on" : ""}>{t.treeSliderSiksa}</span>
+              <span className="muted small">{hasSiksa ? t.treeSliderHint : t.treeNoLinks}</span>
+            </div>
           </header>
           {boxes.length === 0 ? (
             <p className="muted">{t.paramparaEmpty}</p>
           ) : (
             <div className="tree-canvas">
               <svg width={width} height={height} viewBox={`-10 -10 ${width} ${height}`}>
-                {boxes
-                  .filter((b) => b.parent)
-                  .map((b) => {
-                    const a = b.parent!;
-                    const x1 = a.x + W;
-                    const y1 = a.y + H / 2;
-                    const x2 = b.x;
-                    const y2 = b.y + H / 2;
-                    const mx = (x1 + x2) / 2;
-                    return <path key={`l${b.p.id}`} className={`tree-link ${b.p.tree!.kind}`} d={`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`} />;
-                  })}
+                <g opacity={diksaOpacity}>
+                  {links
+                    .filter((l) => !siksa(l))
+                    .map((l) => (
+                      <path key={l.key} className="tree-link diksa" d={path(l)} />
+                    ))}
+                </g>
+                {/* a record placed under a śikṣā guru keeps its line always */}
+                {links
+                  .filter((l) => !l.extra && l.kind !== "diksa")
+                  .map((l) => (
+                    <path key={l.key} className={`tree-link ${l.kind}`} d={path(l)} />
+                  ))}
+                {siksaOpacity > 0 && (
+                  <g opacity={siksaOpacity}>
+                    {links.filter(siksa).map((l) => (
+                      <path key={l.key} className={`tree-link ${l.kind} strong`} d={path(l)} />
+                    ))}
+                  </g>
+                )}
                 {boxes.map((b) => (
-                  <g key={b.p.id} className="tree-node" transform={`translate(${b.x},${b.y})`} onClick={() => onPerson(b.p.id)}>
+                  <g
+                    key={b.p.id}
+                    className="tree-node"
+                    transform={`translate(${b.x},${b.y})`}
+                    opacity={nodeOpacity(b.p.id)}
+                    onClick={() => onPerson(b.p.id)}
+                  >
                     <title>{b.parent ? `${b.p.name} · ${t.treeKinds[b.p.tree!.kind]}` : b.p.name}</title>
                     <rect width={W} height={H} rx={5} />
                     <text x={10} y={H / 2 + 4}>

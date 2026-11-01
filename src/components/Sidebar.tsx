@@ -369,6 +369,14 @@ function PersonList({
       {caret}
       <span className="name">{p.name}</span>
       {inTree && p.tree && p.tree.parent !== null && <span className={`tree-kind ${p.tree.kind}`}>{t.treeKindShort[p.tree.kind]}</span>}
+      {inTree && p.links.length > 0 && (
+        <span
+          className="tree-kind siksa"
+          title={t.moreGurusOf(p.links.map((l) => `${persons.find((x) => x.id === l.guru)?.name ?? "?"} (${t.treeKindShort[l.kind]})`).join(", "))}
+        >
+          + {[...new Set(p.links.map((l) => t.treeKindShort[l.kind]))].join(", ")}
+        </span>
+      )}
       {p.docs > 1 && <span className="count">{p.docs.toLocaleString(lang)}</span>}
     </div>
   );

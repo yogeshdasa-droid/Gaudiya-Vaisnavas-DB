@@ -552,6 +552,15 @@ pub struct PersonListItem {
     pub tree: Option<TreeNode>,
     /// labels, comma separated
     pub tags: String,
+    /// more gurus besides its place in the tree (its śikṣā gurus)
+    pub links: Vec<TreeLink>,
+}
+
+#[derive(Serialize, Clone)]
+pub struct TreeLink {
+    pub guru: i64,
+    /// diksa | siksa | associate
+    pub kind: String,
 }
 
 #[derive(Serialize)]
@@ -563,6 +572,12 @@ pub struct TreeNode {
 }
 
 pub fn list_persons(conn: &Connection) -> rusqlite::Result<Vec<PersonListItem>> {
+    let mut links: std::collections::HashMap<i64, Vec<TreeLink>> = std::collections::HashMap::new();
+    let mut ls = conn.prepare("SELECT person_id, guru_id, kind FROM person_links ORDER BY rowid")?;
+    for l in ls.query_map([], |r| Ok((r.get::<_, i64>(0)?, TreeLink { guru: r.get(1)?, kind: r.get(2)? })))? {
+        let (p, l) = l?;
+        links.entry(p).or_default().push(l);
+    }
     let mut st = conn.prepare(
         "SELECT p.id, p.name, p.aka,
                 (SELECT COUNT(*) FROM docs d WHERE d.person_id = p.id AND d.deleted IS NULL),
@@ -590,6 +605,7 @@ pub fn list_persons(conn: &Connection) -> rusqlite::Result<Vec<PersonListItem>> 
             has_photo: r.get(5)?,
             tree,
             tags: r.get(9)?,
+            links: links.get(&r.get::<_, i64>(0)?).cloned().unwrap_or_default(),
         })
     })?;
     rows.collect()

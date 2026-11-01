@@ -801,6 +801,7 @@ pub fn delete_person(conn: &mut Connection, id: i64) -> Res<()> {
     tx.execute("DELETE FROM person_tags WHERE person_id = ?1", [id]).map_err(e)?;
     tx.execute("DELETE FROM person_images WHERE person_id = ?1", [id]).map_err(e)?;
     tx.execute("DELETE FROM person_distinct WHERE a = ?1 OR b = ?1", [id]).map_err(e)?;
+    tx.execute("DELETE FROM person_links WHERE person_id = ?1 OR guru_id = ?1", [id]).map_err(e)?;
     tx.execute("DELETE FROM persons WHERE id = ?1", [id]).map_err(e)?;
     tx.execute("DELETE FROM persons_fts WHERE rowid = ?1", [id]).map_err(e)?;
     for d in docs {
@@ -1402,6 +1403,10 @@ pub fn merge_persons(conn: &mut Connection, into: i64, from: &[i64]) -> Res<()> 
         tx.execute("UPDATE person_images SET person_id = ?1 WHERE person_id = ?2", params![into, other]).map_err(e)?;
         tx.execute("DELETE FROM person_tags WHERE person_id = ?1", [other]).map_err(e)?;
         tx.execute("DELETE FROM person_distinct WHERE a = ?1 OR b = ?1", [other]).map_err(e)?;
+        // the other gurus of the merged record (and its disciples' links to it) pass to this one
+        tx.execute("UPDATE OR IGNORE person_links SET person_id = ?1 WHERE person_id = ?2", params![into, other]).map_err(e)?;
+        tx.execute("UPDATE OR IGNORE person_links SET guru_id = ?1 WHERE guru_id = ?2", params![into, other]).map_err(e)?;
+        tx.execute("DELETE FROM person_links WHERE person_id = ?1 OR guru_id = ?1 OR person_id = guru_id", [other]).map_err(e)?;
         tx.execute("DELETE FROM history WHERE kind = 'person' AND target = ?1", [other]).map_err(e)?;
         tx.execute("DELETE FROM persons WHERE id = ?1", [other]).map_err(e)?;
         tx.execute("DELETE FROM persons_fts WHERE rowid = ?1", [other]).map_err(e)?;
@@ -1431,6 +1436,26 @@ pub fn set_tree_kind(conn: &Connection, id: i64, kind: &str) -> Res<()> {
     }
     conn.execute("UPDATE person_tree SET kind = ?2 WHERE person_id = ?1", params![id, kind]).map_err(e)?;
     Ok(())
+}
+
+/// The other gurus of a record besides its place in the tree (its śikṣā
+/// gurus): the list replaces the one there was. Its own guru in the tree is
+/// left out (that line is already drawn).
+pub fn set_links(conn: &mut Connection, id: i64, links: &[(i64, String)]) -> Res<()> {
+    let tx = conn.transaction().map_err(e)?;
+    let parent = tree_parent(&tx, id).map_err(e)?.flatten();
+    tx.execute("DELETE FROM person_links WHERE person_id = ?1", [id]).map_err(e)?;
+    for (guru, kind) in links {
+        if !TREE_KINDS.contains(&kind.as_str()) {
+            return Err(format!("Tipo de relación desconocido: {kind}"));
+        }
+        if *guru == id || Some(*guru) == parent {
+            continue;
+        }
+        tx.execute("INSERT OR REPLACE INTO person_links(person_id, guru_id, kind) VALUES(?1, ?2, ?3)", params![id, guru, kind])
+            .map_err(e)?;
+    }
+    tx.commit().map_err(e)
 }
 
 fn tree_parent(tx: &Connection, id: i64) -> rusqlite::Result<Option<Option<i64>>> {
@@ -1755,6 +1780,35 @@ mod tests {
         assert_eq!(kids(&conn, Some(cai)), vec![sanatana, x]);
         delete_person(&mut conn, cai).unwrap();
         assert_eq!(kids(&conn, None), vec![sanatana, x]);
+    }
+
+    #[test]
+    fn more_gurus() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        crate::db::init(&conn).unwrap();
+        let tx = conn.transaction().unwrap();
+        let [kesava, prabhupada, vamana, narayana, twin] =
+            ["Kesava Maharaja", "Prabhupada", "Vamana Maharaja", "Narayana Maharaja", "Svami Prabhupada"].map(|n| create_person(&tx, n).unwrap());
+        tx.commit().unwrap();
+        for id in [kesava, prabhupada] {
+            move_person(&mut conn, id, Some(TreePlace { parent: None, before: None })).unwrap();
+        }
+        move_person(&mut conn, narayana, Some(TreePlace { parent: Some(kesava), before: None })).unwrap();
+        let links = |c: &Connection, id: i64| -> Vec<(i64, String)> {
+            let list = crate::search::list_persons(c).unwrap();
+            list.into_iter().find(|p| p.id == id).unwrap().links.into_iter().map(|l| (l.guru, l.kind)).collect()
+        };
+        // his guru in the tree is not repeated; the list replaces the one there was
+        let s = |k: &str| k.to_string();
+        set_links(&mut conn, narayana, &[(kesava, s("siksa")), (twin, s("siksa")), (vamana, s("associate"))]).unwrap();
+        assert_eq!(links(&conn, narayana), vec![(twin, s("siksa")), (vamana, s("associate"))]);
+        assert!(set_links(&mut conn, narayana, &[(twin, s("otro"))]).is_err());
+        // merging the twin into Prabhupada: the link passes to Prabhupada
+        merge_persons(&mut conn, prabhupada, &[twin]).unwrap();
+        assert_eq!(links(&conn, narayana), vec![(prabhupada, s("siksa")), (vamana, s("associate"))]);
+        // a deleted guru leaves no line behind
+        delete_person(&mut conn, vamana).unwrap();
+        assert_eq!(links(&conn, narayana), vec![(prabhupada, s("siksa"))]);
     }
 
     #[test]

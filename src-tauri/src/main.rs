@@ -563,6 +563,12 @@ async fn set_tree_kind(state: State<'_, AppState>, id: i64, kind: String) -> Cmd
     store::set_tree_kind(&state.conn.lock().unwrap(), id, &kind)
 }
 
+/// The other gurus of a record besides its place in the tree (its śikṣā gurus).
+#[tauri::command]
+async fn set_links(state: State<'_, AppState>, id: i64, links: Vec<(i64, String)>) -> CmdResult<()> {
+    store::set_links(&mut state.conn.lock().unwrap(), id, &links)
+}
+
 /// Writes guru and disciple in both records (see store::relate).
 #[tauri::command]
 async fn relate(state: State<'_, AppState>, disciple: i64, guru: i64, kind: String, old_guru: Option<i64>) -> CmdResult<usize> {
@@ -1074,6 +1080,7 @@ fn main() {
             merge_persons,
             move_person,
             set_tree_kind,
+            set_links,
             relate,
             set_person_photo,
             remove_person_photo,
