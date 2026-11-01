@@ -13,6 +13,7 @@ export function Modal({
   children,
   footer,
   wide,
+  className,
 }: {
   title: string;
   icon?: ReactNode;
@@ -20,6 +21,7 @@ export function Modal({
   children: ReactNode;
   footer?: ReactNode;
   wide?: boolean;
+  className?: string;
 }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -28,7 +30,7 @@ export function Modal({
   }, [onClose]);
   return (
     <div className="modal-backdrop" onMouseDown={onClose}>
-      <div className={`modal ${wide ? "wide" : ""}`} onMouseDown={(e) => e.stopPropagation()}>
+      <div className={`modal ${wide ? "wide" : ""} ${className ?? ""}`} onMouseDown={(e) => e.stopPropagation()}>
         <header className="modal-head">
           {icon && <span className="modal-icon">{icon}</span>}
           <h2>{title}</h2>

@@ -186,7 +186,19 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.5.2)
+## 5. Qué hace hoy (v0.6.0)
+
+### Novedades de la 0.6.0 (01-11-2026; DATA_VERSION sigue en 5)
+- **Estilo «Windows 11»** (`data-skin="fluent"`), inspirado en K-Desktop; **es el estilo por defecto**
+  (al actualizar se cambia una vez, `bio.skinFluentOnce`; luego se respeta lo que elija el usuario).
+  Acento amarillo `#f5c542` con letra oscura (`--on-accent`); «VS Code» y «Clásico» siguen en Ajustes.
+- Barra de la izquierda (`components/Rail.tsx`): Inicio, Calendario, Guru Paramparā, Línea de tiempo;
+  paneles Personas / Biblioteca / Marcadores / Historial; Ajustes y Ayuda abajo. Solo iconos con
+  ventana < 1200 px.
+- **Calendario** con página propia (90 días, todos los eventos).
+- **Ajustes** a pantalla completa: secciones con icono y explicación, bloques con filas
+  (`Card` / `Row` en `Settings.tsx`; en los otros estilos se ven como antes pero en filas).
+- Ficha, lector, Inicio, resultados, menús y diálogos en tarjetas, títulos en letra normal.
 
 ### Novedades de la 0.5.2 (01-11-2026) — **DATA_VERSION 5**
 - **Tipo de relación en el árbol** (`person_tree.kind`: `diksa` por defecto | `siksa` | `associate`;
@@ -449,7 +461,38 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 7. Pendientes e ideas
 
-### Para la próxima sesión (plan acordado el 31-10-2026)
+### Para la próxima sesión (01-11-2026, tarde)
+1. Whisper actualiza a la 0.5.2 (comprueba que la actualización automática desde la 0.5.1 funciona) y la
+   revisa: árbol con tipos de relación, arrastrar bajo otro guru, Digdarśanī en la línea de tiempo,
+   propuestas del Digdarśanī en Rellenar fichas.
+2. **Comparar dos modelos para «Rellenar fichas con IA»**: `qwen2.5:7b` (el actual, 4,7 GB, ~14 s por
+   ficha) y **`qwen3.5:4b`** (más pequeño y más nuevo; comprobar el nombre exacto en Ollama antes de
+   descargarlo). Pasar **las mismas fichas** por los dos (p. ej. 974, 332, 556, 1089 con `ai_real`,
+   en una copia) y comparar aciertos, errores (fechas confundidas, discípulos inventados) y tiempo.
+   Whisper elige. Hacer el modelo **elegible en Ajustes** en vez de la constante `ai::MODEL`.
+   Con la RTX 3050 (8 GB): hasta ~8B cabe entero; 12–14B no cabe y con el i5-7500 sería muy lento.
+3. Luego Whisper lanza «Probar con 10 fichas» y, si le convence, «Leer todas las fichas».
+4. **Estilo «Windows 11»** (publicado en la 0.6.0): tercer estilo de la app
+   (`data-skin="fluent"`, junto a «VS Code» y «Clásico»), inspirado en K-Desktop
+   (github.com/Kobayashi82/K-Desktop, C#/WPF: solo se copia el aspecto). Acento amarillo `#f5c542`
+   con letra oscura (`--on-accent`). Hecho: Ajustes ocupa la ventana; columna de secciones con icono
+   en cuadro y una línea de explicación (`t.settingsHints`); bloques (`Card`) con filas (`Row`:
+   nombre + explicación a la izquierda, control a la derecha) en `Settings.tsx`; CSS al final de
+   `styles.css`. Whisper lo aprobó. Hecho también: barra de la izquierda (`components/Rail.tsx`,
+   solo en este estilo): Inicio / Guru Paramparā / Línea de tiempo, luego los paneles Personas /
+   Biblioteca / Marcadores / Historial (pulsar el abierto lo cierra) y abajo Ajustes / Ayuda;
+   solo iconos si la ventana mide menos de 1200 px (`railW` en `App.tsx` resta su ancho al
+   repartir los paneles). En este estilo se ocultan las pestañas de la barra lateral y el logo
+   de arriba. Hecho también: «Calendario» en la barra (vista `main.kind = "calendar"`: el mismo
+   `Calendar.tsx` con `page`, 90 días y todos los eventos); ficha y lector en tarjetas sobre el
+   fondo gris (títulos de apartado grandes, foto vacía en amarillo suave, títulos Markdown del
+   estilo «Editor» en amarillo). Whisper lo aprobó. Hecho también: Inicio, resultados, menú
+   contextual y diálogos (títulos en letra normal en vez de versalitas, esquinas de 6–8 px, sin
+   sombras ni brillos; resultado elegido con raya amarilla). El estilo «Windows 11» cubre ya toda
+   la app y es el estilo por defecto desde la 0.6.0. **Siguiente:** que Whisper lo use y diga qué
+   retocar.
+
+### Plan acordado el 31-10-2026
 1. **Probar la actualización automática** (01-11-2026: publicada la 0.5.1 para ello). El usuario instala la 0.5.0 a mano (la 0.4.2 no sabe
    actualizarse; al desinstalar, **no marcar «Borrar los datos»**). Para probar que se actualiza sola
    hace falta publicar después una 0.5.1 (con `npm run app:build` y subir `latest.json`): la 0.5.0
@@ -483,6 +526,9 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 8. Historial
 
+- **01-11-2026 — v0.6.0**: estilo «Windows 11» (por defecto) con barra de la izquierda, página del
+  calendario y Ajustes a pantalla completa.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.6.0
 - **01-11-2026 — v0.5.2** (DATA_VERSION 5): tipo de relación en el árbol (dīkṣā / śikṣā / asociado);
   arrastrar bajo otro guru escribe guru y discípulo en las dos fichas; sucesos del Digdarśanī en la
   línea de tiempo y como propuestas de fecha en Rellenar fichas.

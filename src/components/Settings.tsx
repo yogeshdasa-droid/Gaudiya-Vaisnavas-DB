@@ -1,6 +1,23 @@
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ArchiveRestore, CalendarDays, UserCheck, ClipboardCheck, Database, FileDown, DatabaseBackup, FolderInput, FolderOpen, HelpCircle, RefreshCw, Replace, Settings as Gear, Sparkles, Trash2, Undo2 } from "lucide-react";
+import {
+  ArchiveRestore,
+  CalendarDays,
+  UserCheck,
+  ClipboardCheck,
+  Database,
+  FileDown,
+  DatabaseBackup,
+  FolderInput,
+  FolderOpen,
+  HelpCircle,
+  RefreshCw,
+  Replace,
+  Settings as Gear,
+  Sparkles,
+  Trash2,
+  Undo2,
+} from "lucide-react";
 import { api, BackupCopy, BackupSettings, CalendarInfo, DefaultSource, PersonListItem, Status, Trashed } from "../api";
 import { ReviewPane } from "./Review";
 import { FillPane } from "./Fill";
@@ -12,11 +29,10 @@ import { ask, Kbd, Modal } from "./ui";
 import type { ReaderStyle } from "./Reader";
 
 export type Theme = "system" | "light" | "dark";
-export type Skin = "vscode" | "classic";
+export type Skin = "vscode" | "fluent" | "classic";
 export type SettingsTab = "general" | "backups" | "review" | "fill" | "replace" | "meaning" | "sources" | "trash" | "help";
 
-const when = (secs: number, lang: Lang) =>
-  new Date(secs * 1000).toLocaleString(lang === "es" ? "es-ES" : "en-GB", { dateStyle: "medium", timeStyle: "short" });
+const when = (secs: number, lang: Lang) => new Date(secs * 1000).toLocaleString(lang === "es" ? "es-ES" : "en-GB", { dateStyle: "medium", timeStyle: "short" });
 
 /** This program's version and a check for a newer one. */
 function UpdateCheck({ t, onToast }: { t: T; onToast: (msg: string) => void }) {
@@ -30,17 +46,22 @@ function UpdateCheck({ t, onToast }: { t: T; onToast: (msg: string) => void }) {
       const u = await checkUpdate();
       if (!u) onToast(t.updateNone);
       else if (u.installable) {
-        if (await ask(`${t.updateAvailable(u.version)}
+        if (
+          await ask(`${t.updateAvailable(u.version)}
 
-${t.updateInstallConfirm(u.version)}`)) {
+${t.updateInstallConfirm(u.version)}`)
+        ) {
           setPct(null);
           await installUpdate(u.installable, (f) => setPct(f === null ? null : Math.round(f * 100)));
         }
-      } else if (await ask(`${t.updateAvailable(u.version)}
+      } else if (
+        await ask(`${t.updateAvailable(u.version)}
 
 ${t.updateHint}
 
-${t.updateDownload}?`)) await api.openExternal(u.url);
+${t.updateDownload}?`)
+      )
+        await api.openExternal(u.url);
     } catch (e) {
       onToast(String(e));
       setPct(undefined);
@@ -81,8 +102,7 @@ function CalendarSettings({ t, onToast, onChanged }: { t: T; onToast: (msg: stri
     onChanged();
   };
   return (
-    <>
-      <h3>{t.calendarTitle}</h3>
+    <Card title={t.calendarTitle}>
       <p className="muted small">
         {info && info.count > 0 && info.from && info.to ? t.calendarRange(info.count, info.from, info.to) : t.calendarNone} {t.calendarImportHint}
       </p>
@@ -106,7 +126,30 @@ function CalendarSettings({ t, onToast, onChanged }: { t: T; onToast: (msg: stri
           </ul>
         </details>
       )}
-    </>
+    </Card>
+  );
+}
+
+/** A block of settings with a title (a card in the Windows 11 style). */
+function Card({ title, children }: { title?: string; children: ReactNode }) {
+  return (
+    <section className="set-card">
+      {title && <h3>{title}</h3>}
+      {children}
+    </section>
+  );
+}
+
+/** One setting: its name and what it does on the left, the control on the right. */
+function Row({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
+  return (
+    <div className="set-row">
+      <div className="set-label">
+        <b>{label}</b>
+        {hint && <small>{hint}</small>}
+      </div>
+      <div className="set-control">{children}</div>
+    </div>
   );
 }
 
@@ -117,8 +160,14 @@ function Backups({ t, lang, onToast }: { t: T; lang: Lang; onToast: (msg: string
   const [busy, setBusy] = useState(false);
 
   const load = () => {
-    api.backupSettings().then(setSettings).catch((e) => onToast(String(e)));
-    api.listCopies().then(setCopies).catch((e) => onToast(String(e)));
+    api
+      .backupSettings()
+      .then(setSettings)
+      .catch((e) => onToast(String(e)));
+    api
+      .listCopies()
+      .then(setCopies)
+      .catch((e) => onToast(String(e)));
   };
   useEffect(load, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -134,7 +183,10 @@ function Backups({ t, lang, onToast }: { t: T; lang: Lang; onToast: (msg: string
     }
   };
   const change = (days: number, keep: number) =>
-    api.setBackupSettings(days, keep).then(() => setSettings((s) => s && { ...s, days, keep }), (e) => onToast(String(e)));
+    api.setBackupSettings(days, keep).then(
+      () => setSettings((s) => s && { ...s, days, keep }),
+      (e) => onToast(String(e)),
+    );
 
   const restore = async (path: string, name: string) => {
     if (!(await ask(t.restoreConfirm(name)))) return;
@@ -266,8 +318,16 @@ export function Settings(p: Props) {
   const [sources, setSources] = useState<DefaultSource[]>([]);
 
   useEffect(() => {
-    if (tab === "trash") api.listTrash().then(setTrash).catch((e) => p.onToast(String(e)));
-    if (tab === "sources") api.defaultSources().then(setSources).catch((e) => p.onToast(String(e)));
+    if (tab === "trash")
+      api
+        .listTrash()
+        .then(setTrash)
+        .catch((e) => p.onToast(String(e)));
+    if (tab === "sources")
+      api
+        .defaultSources()
+        .then(setSources)
+        .catch((e) => p.onToast(String(e)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab]);
 
@@ -292,12 +352,18 @@ export function Settings(p: Props) {
   ];
 
   return (
-    <Modal wide title={t.settings} icon={<Gear size={18} />} onClose={p.onClose}>
+    <Modal wide className="settings-modal" title={t.settings} icon={<Gear size={18} />} onClose={p.onClose}>
       <div className="settings">
         <nav className="settings-nav">
           {tabs.map(([k, I, label]) => (
             <button key={k} className={tab === k ? "active" : ""} onClick={() => setTab(k)}>
-              <I size={16} /> {label}
+              <span className="nav-ic">
+                <I size={16} />
+              </span>
+              <span className="nav-txt">
+                <b>{label}</b>
+                <small>{t.settingsHints[k]}</small>
+              </span>
             </button>
           ))}
         </nav>
@@ -305,207 +371,223 @@ export function Settings(p: Props) {
         <div className="settings-pane fade-in" key={tab}>
           {tab === "general" && (
             <>
-              <h3>{t.language}</h3>
-              <div className="seg">
-                <button className={lang === "es" ? "on" : ""} onClick={() => p.onLang("es")}>
-                  Español
-                </button>
-                <button className={lang === "en" ? "on" : ""} onClick={() => p.onLang("en")}>
-                  English
-                </button>
-              </div>
-              <h3>{t.theme}</h3>
-              <div className="seg">
-                {(["system", "light", "dark"] as Theme[]).map((th) => (
-                  <button key={th} className={p.theme === th ? "on" : ""} onClick={() => p.onTheme(th)}>
-                    {th === "system" ? t.themeSystem : th === "light" ? t.themeLight : t.themeDark}
-                  </button>
-                ))}
-              </div>
-              <h3>{t.skin}</h3>
-              <div className="seg">
-                {(["vscode", "classic"] as Skin[]).map((s) => (
-                  <button key={s} className={p.skin === s ? "on" : ""} onClick={() => p.onSkin(s)}>
-                    {s === "vscode" ? t.skinVscode : t.skinClassic}
-                  </button>
-                ))}
-              </div>
-              <h3>{t.readerFont}</h3>
-              <div className="seg">
-                {(["editor", "serif", "sans"] as ReaderStyle[]).map((st) => (
-                  <button key={st} className={`font-${st} ${p.readerStyle === st ? "on" : ""}`} onClick={() => p.onReaderStyle(st)}>
-                    {st === "editor" ? t.editorStyle : st === "serif" ? t.serif : t.sans} · Kṛṣṇa uvāca
-                  </button>
-                ))}
-              </div>
-              <CalendarSettings t={t} onToast={p.onToast} onChanged={p.onChanged} />
-              <h3>{t.database}</h3>
-              {status && (
-                <p className="muted small">
-                  {t.dbInfo(status.docs, status.persons, status.filesMb)}
-                  <br />
-                  <code>{status.dbPath}</code> · {(status.dbSize / 1048576).toFixed(0)} MB
-                </p>
-              )}
-              <div className="btn-row">
-                <button className="btn" onClick={() => setTab("backups")}>
-                  <DatabaseBackup size={15} /> {t.backups}
-                </button>
-                <button className="btn ghost" disabled={status?.busy} onClick={guard(async () => (await api.rebuildSearch(), p.onImportStarted()))} title={t.rebuildHint}>
-                  <RefreshCw size={15} /> {t.rebuild}
-                </button>
-              </div>
-              <p className="muted small">{t.backupHint}</p>
-              <div className="btn-row">
-                <button
-                  className="btn ghost"
-                  disabled={status?.busy}
-                  title={t.exportAllHint}
-                  onClick={guard(async () => {
-                    const dir = await open({ directory: true });
-                    if (typeof dir !== "string") return;
-                    await api.exportMarkdown(dir);
-                    p.onImportStarted();
-                  })}
-                >
-                  <FileDown size={15} /> {t.exportAll}
-                </button>
-              </div>
-              <p className="muted small">{t.exportAllHint}</p>
-            </>
-          )}
-
-          {tab === "backups" && <Backups t={t} lang={lang} onToast={p.onToast} />}
-
-          {tab === "review" && (
-            <ReviewPane
-              t={t}
-              lang={lang}
-              persons={p.persons}
-              onDuplicates={p.onDuplicates}
-              onOpenDoc={p.onOpenDoc}
-              onChanged={p.onChanged}
-              onToast={p.onToast}
-            />
-          )}
-
-          {tab === "fill" && <FillPane t={t} onToast={p.onToast} onChanged={p.onChanged} onOpenPerson={p.onOpenPerson} />}
-
-          {tab === "replace" && <ReplacePane t={t} onToast={p.onToast} onOpenDoc={p.onOpenDoc} />}
-
-          {tab === "meaning" && <MeaningPane t={t} onToast={p.onToast} />}
-
-          {tab === "sources" && (
-            <>
-              <p className="muted small">{t.sourcesHint}</p>
-              <div className="lib-list">
-                {sources.map((s) => (
-                  <div key={s.path} className={`lib-item ${s.exists ? "" : "stale"}`}>
-                    <FolderInput size={20} />
-                    <div className="lib-info">
-                      <strong>{s.collection}</strong>
-                      <code title={s.path}>{s.path}</code>
-                      {!s.exists && <span className="muted small">{t.missing}</span>}
-                    </div>
-                    <button className="btn ghost" disabled={!s.exists || status?.busy} onClick={reimport([s])}>
-                      <RefreshCw size={15} /> {t.reimport}
+              <Card title={t.looksTitle}>
+                <Row label={t.language} hint={t.languageHint}>
+                  <div className="seg">
+                    <button className={lang === "es" ? "on" : ""} onClick={() => p.onLang("es")}>
+                      Español
+                    </button>
+                    <button className={lang === "en" ? "on" : ""} onClick={() => p.onLang("en")}>
+                      English
                     </button>
                   </div>
-                ))}
-              </div>
-              <button className="btn" disabled={status?.busy || !sources.some((s) => s.exists)} onClick={reimport(sources)}>
-                <RefreshCw size={15} /> {t.reimport}
-              </button>
+                </Row>
+                <Row label={t.theme} hint={t.themeHint}>
+                  <div className="seg">
+                    {(["system", "light", "dark"] as Theme[]).map((th) => (
+                      <button key={th} className={p.theme === th ? "on" : ""} onClick={() => p.onTheme(th)}>
+                        {th === "system" ? t.themeSystem : th === "light" ? t.themeLight : t.themeDark}
+                      </button>
+                    ))}
+                  </div>
+                </Row>
+                <Row label={t.skin} hint={t.skinHint}>
+                  <div className="seg">
+                    {(["vscode", "fluent", "classic"] as Skin[]).map((s) => (
+                      <button key={s} className={p.skin === s ? "on" : ""} onClick={() => p.onSkin(s)}>
+                        {s === "vscode" ? t.skinVscode : s === "fluent" ? t.skinFluent : t.skinClassic}
+                      </button>
+                    ))}
+                  </div>
+                </Row>
+                <Row label={t.readerFont} hint={t.readerFontHint}>
+                  <div className="seg">
+                    {(["editor", "serif", "sans"] as ReaderStyle[]).map((st) => (
+                      <button key={st} className={`font-${st} ${p.readerStyle === st ? "on" : ""}`} onClick={() => p.onReaderStyle(st)}>
+                        {st === "editor" ? t.editorStyle : st === "serif" ? t.serif : t.sans} · Kṛṣṇa uvāca
+                      </button>
+                    ))}
+                  </div>
+                </Row>
+              </Card>
+              <CalendarSettings t={t} onToast={p.onToast} onChanged={p.onChanged} />
+              <Card title={t.database}>
+                {status && (
+                  <p className="muted small">
+                    {t.dbInfo(status.docs, status.persons, status.filesMb)}
+                    <br />
+                    <code>{status.dbPath}</code> · {(status.dbSize / 1048576).toFixed(0)} MB
+                  </p>
+                )}
+                <div className="btn-row">
+                  <button className="btn" onClick={() => setTab("backups")}>
+                    <DatabaseBackup size={15} /> {t.backups}
+                  </button>
+                  <button
+                    className="btn ghost"
+                    disabled={status?.busy}
+                    onClick={guard(async () => (await api.rebuildSearch(), p.onImportStarted()))}
+                    title={t.rebuildHint}
+                  >
+                    <RefreshCw size={15} /> {t.rebuild}
+                  </button>
+                </div>
+                <p className="muted small">{t.backupHint}</p>
+                <div className="btn-row">
+                  <button
+                    className="btn ghost"
+                    disabled={status?.busy}
+                    title={t.exportAllHint}
+                    onClick={guard(async () => {
+                      const dir = await open({ directory: true });
+                      if (typeof dir !== "string") return;
+                      await api.exportMarkdown(dir);
+                      p.onImportStarted();
+                    })}
+                  >
+                    <FileDown size={15} /> {t.exportAll}
+                  </button>
+                </div>
+                <p className="muted small">{t.exportAllHint}</p>
+              </Card>
             </>
           )}
 
-          {tab === "trash" &&
-            (trash.length === 0 ? (
-              <p className="muted">{t.noTrash}</p>
-            ) : (
-              <>
-                <div className="lib-list">
-                  {trash.map((x) => (
-                    <div key={x.id} className="lib-item">
-                      <Trash2 size={18} />
-                      <div className="lib-info">
-                        <strong>{x.title}</strong>
-                        <code>
-                          {x.collection}
-                          {x.person ? ` · ${x.person}` : ""}
-                        </code>
-                        <span className="muted small">{x.deleted}</span>
-                      </div>
-                      <button
-                        className="btn ghost"
-                        onClick={guard(async () => {
-                          await api.restoreDoc(x.id);
-                          setTrash((list) => list.filter((y) => y !== x));
-                          p.onToast(t.restored);
-                          p.onChanged();
-                        })}
-                      >
-                        <Undo2 size={15} /> {t.restore}
-                      </button>
-                      <button
-                        className="icon-btn danger"
-                        title={t.purge}
-                        onClick={guard(async () => {
-                          if (!(await ask(t.purgeConfirm(x.title)))) return;
-                          await api.purgeDocs([x.id]);
-                          setTrash((list) => list.filter((y) => y !== x));
-                          p.onChanged();
-                        })}
-                      >
-                        <Trash2 size={15} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                <button
-                  className="btn ghost"
-                  onClick={guard(async () => {
-                    if (!(await ask(t.emptyTrashConfirm(trash.length)))) return;
-                    await api.purgeDocs(trash.map((x) => x.id));
-                    setTrash([]);
-                    p.onChanged();
-                  })}
-                >
-                  <Trash2 size={15} /> {t.emptyTrash}
-                </button>
-              </>
-            ))}
+          {tab !== "general" && (
+            <Card>
+              {tab === "backups" && <Backups t={t} lang={lang} onToast={p.onToast} />}
 
-          {tab === "help" && (
-            <>
-              <UpdateCheck t={t} onToast={p.onToast} />
-              <h3>{t.syntax}</h3>
-              <table className="syntax">
-                <tbody>
-                  {t.syntaxRows.map(([q, d]) => (
-                    <tr key={q}>
-                      <td>
-                        <code>{q}</code>
-                      </td>
-                      <td>{d}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <h3>{t.shortcutsTitle}</h3>
-              <table className="syntax">
-                <tbody>
-                  {t.shortcuts.map(([k, d]) => (
-                    <tr key={k}>
-                      <td>
-                        <Kbd>{k}</Kbd>
-                      </td>
-                      <td>{d}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </>
+              {tab === "review" && (
+                <ReviewPane
+                  t={t}
+                  lang={lang}
+                  persons={p.persons}
+                  onDuplicates={p.onDuplicates}
+                  onOpenDoc={p.onOpenDoc}
+                  onChanged={p.onChanged}
+                  onToast={p.onToast}
+                />
+              )}
+
+              {tab === "fill" && <FillPane t={t} onToast={p.onToast} onChanged={p.onChanged} onOpenPerson={p.onOpenPerson} />}
+
+              {tab === "replace" && <ReplacePane t={t} onToast={p.onToast} onOpenDoc={p.onOpenDoc} />}
+
+              {tab === "meaning" && <MeaningPane t={t} onToast={p.onToast} />}
+
+              {tab === "sources" && (
+                <>
+                  <p className="muted small">{t.sourcesHint}</p>
+                  <div className="lib-list">
+                    {sources.map((s) => (
+                      <div key={s.path} className={`lib-item ${s.exists ? "" : "stale"}`}>
+                        <FolderInput size={20} />
+                        <div className="lib-info">
+                          <strong>{s.collection}</strong>
+                          <code title={s.path}>{s.path}</code>
+                          {!s.exists && <span className="muted small">{t.missing}</span>}
+                        </div>
+                        <button className="btn ghost" disabled={!s.exists || status?.busy} onClick={reimport([s])}>
+                          <RefreshCw size={15} /> {t.reimport}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <button className="btn" disabled={status?.busy || !sources.some((s) => s.exists)} onClick={reimport(sources)}>
+                    <RefreshCw size={15} /> {t.reimport}
+                  </button>
+                </>
+              )}
+
+              {tab === "trash" &&
+                (trash.length === 0 ? (
+                  <p className="muted">{t.noTrash}</p>
+                ) : (
+                  <>
+                    <div className="lib-list">
+                      {trash.map((x) => (
+                        <div key={x.id} className="lib-item">
+                          <Trash2 size={18} />
+                          <div className="lib-info">
+                            <strong>{x.title}</strong>
+                            <code>
+                              {x.collection}
+                              {x.person ? ` · ${x.person}` : ""}
+                            </code>
+                            <span className="muted small">{x.deleted}</span>
+                          </div>
+                          <button
+                            className="btn ghost"
+                            onClick={guard(async () => {
+                              await api.restoreDoc(x.id);
+                              setTrash((list) => list.filter((y) => y !== x));
+                              p.onToast(t.restored);
+                              p.onChanged();
+                            })}
+                          >
+                            <Undo2 size={15} /> {t.restore}
+                          </button>
+                          <button
+                            className="icon-btn danger"
+                            title={t.purge}
+                            onClick={guard(async () => {
+                              if (!(await ask(t.purgeConfirm(x.title)))) return;
+                              await api.purgeDocs([x.id]);
+                              setTrash((list) => list.filter((y) => y !== x));
+                              p.onChanged();
+                            })}
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      className="btn ghost"
+                      onClick={guard(async () => {
+                        if (!(await ask(t.emptyTrashConfirm(trash.length)))) return;
+                        await api.purgeDocs(trash.map((x) => x.id));
+                        setTrash([]);
+                        p.onChanged();
+                      })}
+                    >
+                      <Trash2 size={15} /> {t.emptyTrash}
+                    </button>
+                  </>
+                ))}
+
+              {tab === "help" && (
+                <>
+                  <UpdateCheck t={t} onToast={p.onToast} />
+                  <h3>{t.syntax}</h3>
+                  <table className="syntax">
+                    <tbody>
+                      {t.syntaxRows.map(([q, d]) => (
+                        <tr key={q}>
+                          <td>
+                            <code>{q}</code>
+                          </td>
+                          <td>{d}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <h3>{t.shortcutsTitle}</h3>
+                  <table className="syntax">
+                    <tbody>
+                      {t.shortcuts.map(([k, d]) => (
+                        <tr key={k}>
+                          <td>
+                            <Kbd>{k}</Kbd>
+                          </td>
+                          <td>{d}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
+              )}
+            </Card>
           )}
         </div>
       </div>

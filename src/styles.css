@@ -3909,3 +3909,633 @@ body.dragging-person * {
   font-size: 11.5px;
   overflow-wrap: anywhere;
 }
+
+/* ================================================================ settings: cards and rows
+   Settings are blocks (cards) of rows: name + what it does on the left, the control on the right. */
+.settings-nav .nav-ic {
+  display: contents;
+}
+.settings-nav .nav-txt b {
+  font-weight: inherit;
+}
+.settings-nav .nav-txt small {
+  display: none;
+}
+.set-card + .set-card {
+  margin-top: 18px;
+}
+.set-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 7px 0;
+}
+.set-label {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.set-label b {
+  font-weight: 550;
+}
+.set-label small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.set-control {
+  flex-shrink: 0;
+}
+
+/* ================================================================ skin: Windows 11
+   Like the Windows 11 settings (and K-Desktop): grey surfaces, cards with rounded
+   corners, Segoe UI Variable, yellow accent. Only looks change. */
+:root[data-skin="fluent"] {
+  --bg: #f3f3f3;
+  --bg-grad: none;
+  --panel: #ebebeb;
+  --panel-solid: #f9f9f9;
+  --surface: #fbfbfb;
+  --sunken: #eeeeee;
+  --border: #e3e3e3;
+  --border-strong: #d1d1d1;
+  --text: #1b1b1b;
+  --text-2: #3a3a3a;
+  --muted: #6b6b6b;
+  --accent: #f5c542;
+  --accent-2: #e2ad20;
+  --accent-grad: #f5c542;
+  --accent-soft: #fbedc4;
+  --accent-text: #8a6100;
+  --ring: rgba(201, 150, 20, 0.3);
+  --mark: rgba(245, 197, 66, 0.45);
+  --mark-text: inherit;
+  --mark-current: #f5a742;
+  --hover: rgba(0, 0, 0, 0.04);
+  --selected: #e6e6e6;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.28);
+  --radius: 8px;
+  --font-ui: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --on-accent: #1b1b1b;
+  --card-inner: #f3f3f3;
+}
+:root[data-skin="fluent"][data-theme="dark"] {
+  --bg: #202020;
+  --panel: #1c1c1c;
+  --panel-solid: #2b2b2b;
+  --surface: #2b2b2b;
+  --sunken: #1f1f1f;
+  --border: #333333;
+  --border-strong: #404040;
+  --text: #ffffff;
+  --text-2: #e4e4e4;
+  --muted: #b4b4b4;
+  --accent: #f5c542;
+  --accent-2: #ffd463;
+  --accent-grad: #f5c542;
+  --accent-soft: rgba(245, 197, 66, 0.15);
+  --accent-text: #f5c542;
+  --ring: rgba(245, 197, 66, 0.35);
+  --mark: rgba(245, 197, 66, 0.32);
+  --mark-text: #fff6da;
+  --mark-current: rgba(245, 150, 40, 0.75);
+  --hover: rgba(255, 255, 255, 0.05);
+  --selected: rgba(255, 255, 255, 0.08);
+  --shadow-sm: none;
+  --shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 24px 70px rgba(0, 0, 0, 0.6);
+  --card-inner: #323232;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-skin="fluent"]:not([data-theme="light"]) {
+    --bg: #202020;
+    --panel: #1c1c1c;
+    --panel-solid: #2b2b2b;
+    --surface: #2b2b2b;
+    --sunken: #1f1f1f;
+    --border: #333333;
+    --border-strong: #404040;
+    --text: #ffffff;
+    --text-2: #e4e4e4;
+    --muted: #b4b4b4;
+    --accent: #f5c542;
+    --accent-2: #ffd463;
+    --accent-grad: #f5c542;
+    --accent-soft: rgba(245, 197, 66, 0.15);
+    --accent-text: #f5c542;
+    --ring: rgba(245, 197, 66, 0.35);
+    --mark: rgba(245, 197, 66, 0.32);
+    --mark-text: #fff6da;
+    --mark-current: rgba(245, 150, 40, 0.75);
+    --hover: rgba(255, 255, 255, 0.05);
+    --selected: rgba(255, 255, 255, 0.08);
+    --shadow-sm: none;
+    --shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 24px 70px rgba(0, 0, 0, 0.6);
+    --card-inner: #323232;
+  }
+}
+
+:root[data-skin="fluent"] body {
+  font-size: 14px;
+  font-feature-settings: normal;
+}
+:root[data-skin="fluent"] :is(.logo, .hero h1, .reader-title h1, .person-title h1, .aa, .facts dd.notes) {
+  font-family: var(--font-ui);
+  letter-spacing: 0;
+}
+
+/* buttons and controls: yellow with dark letters, like the Windows 11 accent buttons */
+:root[data-skin="fluent"] .btn {
+  height: 34px;
+  border-radius: 6px;
+  color: var(--on-accent);
+  box-shadow: none;
+  font-weight: 550;
+}
+:root[data-skin="fluent"] .btn:hover:not(:disabled) {
+  box-shadow: none;
+  filter: brightness(1.07);
+}
+:root[data-skin="fluent"] .btn.ghost {
+  background: var(--card-inner);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+}
+:root[data-skin="fluent"] .btn.ghost:hover:not(:disabled) {
+  filter: none;
+  background: var(--selected);
+}
+:root[data-skin="fluent"] :is(select, input:not([type="checkbox"]), textarea) {
+  border-radius: 6px;
+  box-shadow: none;
+}
+:root[data-skin="fluent"] .icon-btn {
+  border-radius: 6px;
+}
+:root[data-skin="fluent"] .seg {
+  border-radius: 8px;
+}
+:root[data-skin="fluent"] .seg button {
+  border-radius: 6px;
+}
+:root[data-skin="fluent"] .seg:not([data-on]) button.on {
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: none;
+}
+:root[data-skin="fluent"] .switch {
+  width: 40px;
+  height: 20px;
+  background: transparent;
+  border: 1px solid var(--muted);
+}
+:root[data-skin="fluent"] .switch::after {
+  top: 3px;
+  left: 3px;
+  width: 12px;
+  height: 12px;
+  background: var(--muted);
+  box-shadow: none;
+}
+:root[data-skin="fluent"] .toggle.on .switch {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+:root[data-skin="fluent"] .toggle.on .switch::after {
+  transform: translateX(20px);
+  background: var(--on-accent);
+}
+
+/* Settings fills the window, like a page of its own */
+:root[data-skin="fluent"] .modal {
+  border-radius: 8px;
+}
+:root[data-skin="fluent"] .modal.settings-modal {
+  width: calc(100vw - 40px);
+  height: calc(100vh - 40px);
+  max-height: none;
+  background: var(--bg);
+}
+:root[data-skin="fluent"] .settings-modal .modal-head {
+  border-bottom: 0;
+  padding: 18px 18px 6px 26px;
+}
+:root[data-skin="fluent"] .settings-modal .modal-head h2 {
+  font-size: 26px;
+  font-weight: 600;
+}
+:root[data-skin="fluent"] .settings-modal .modal-icon {
+  display: none;
+}
+:root[data-skin="fluent"] .settings-modal .modal-body {
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+:root[data-skin="fluent"] .settings {
+  grid-template-columns: minmax(280px, 340px) 1fr;
+  gap: 0;
+  height: 100%;
+}
+:root[data-skin="fluent"] .settings-nav {
+  overflow: auto;
+  padding: 10px 14px 20px 20px;
+  gap: 4px;
+}
+:root[data-skin="fluent"] .settings-nav button {
+  position: relative;
+  gap: 14px;
+  padding: 9px 12px;
+  border-radius: 6px;
+  color: var(--text);
+}
+:root[data-skin="fluent"] .settings-nav button.active {
+  background: var(--selected);
+  color: var(--text);
+  box-shadow: none;
+}
+:root[data-skin="fluent"] .settings-nav button.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 18px;
+  margin-top: -9px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+:root[data-skin="fluent"] .settings-nav .nav-ic {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+:root[data-skin="fluent"] .settings-nav .nav-ic svg {
+  width: 20px;
+  height: 20px;
+}
+:root[data-skin="fluent"] .settings-nav .nav-txt {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+:root[data-skin="fluent"] .settings-nav .nav-txt b {
+  font-size: 15px;
+  font-weight: 600;
+}
+:root[data-skin="fluent"] .settings-nav .nav-txt small {
+  display: block;
+  color: var(--text-2);
+  font-size: 12.5px;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+:root[data-skin="fluent"] .settings-pane {
+  overflow: auto;
+  padding: 10px 26px 26px 12px;
+}
+:root[data-skin="fluent"] .set-card {
+  padding: 18px 24px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+:root[data-skin="fluent"] .set-card + .set-card {
+  margin-top: 16px;
+}
+:root[data-skin="fluent"] .settings-pane h3 {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text);
+}
+:root[data-skin="fluent"] .set-card > h3 {
+  margin: 22px 0 10px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 18px;
+}
+:root[data-skin="fluent"] .set-card > h3:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+:root[data-skin="fluent"] .set-row {
+  padding: 10px 0;
+}
+:root[data-skin="fluent"] .set-label b {
+  font-size: 15px;
+  font-weight: 600;
+}
+:root[data-skin="fluent"] .set-label small {
+  color: var(--text-2);
+  font-size: 13px;
+}
+:root[data-skin="fluent"] .set-card .seg {
+  background: var(--card-inner);
+}
+:root[data-skin="fluent"] .lib-item {
+  border-radius: 8px;
+  box-shadow: none;
+  background: var(--card-inner);
+}
+/* white letters on yellow do not read: dark ones instead */
+:root[data-skin="fluent"] :is(.logo, .hero-icon, .facet:first-child.on, .hit-pill button, kbd.kbd.on-accent) {
+  color: var(--on-accent);
+}
+:root[data-skin="fluent"] .spinner.light {
+  border-top-color: var(--on-accent);
+}
+
+/* the bar on the left: big icons with their names (only icons in a narrow window) */
+:root[data-skin="fluent"] .app {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+:root[data-skin="fluent"] .app > :not(.rail) {
+  grid-column: 2;
+}
+.rail {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 210px;
+  min-height: 0;
+  overflow: auto;
+  padding: 10px 8px 12px;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+}
+.rail.compact {
+  width: 60px;
+}
+.rail-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 6px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.rail-brand .logo {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  box-shadow: none;
+}
+.rail button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 42px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.rail button svg {
+  flex-shrink: 0;
+  color: var(--accent-text);
+}
+.rail button span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rail button:hover {
+  background: var(--hover);
+}
+.rail button.on {
+  background: var(--selected);
+  font-weight: 600;
+}
+.rail button.on::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 18px;
+  margin-top: -9px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.rail hr {
+  width: calc(100% - 16px);
+  margin: 6px 8px;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+.rail-end {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: auto;
+  padding-top: 10px;
+}
+.rail.compact :is(.rail-brand span:not(.logo), button span) {
+  display: none;
+}
+.rail.compact .rail-brand {
+  padding: 2px 7px 14px;
+}
+.rail.compact button {
+  justify-content: center;
+  padding: 0;
+}
+/* the bar takes over: no logo, panel button or panel tabs repeated elsewhere */
+:root[data-skin="fluent"] .brand > .icon-btn:first-child,
+:root[data-skin="fluent"] .brand > .logo,
+:root[data-skin="fluent"] .brand-name,
+:root[data-skin="fluent"] .sidebar > .tabs {
+  display: none;
+}
+:root[data-skin="fluent"] .topbar {
+  background: var(--bg);
+  backdrop-filter: none;
+}
+:root[data-skin="fluent"] .searchbox {
+  border-radius: 6px;
+  box-shadow: none;
+}
+:root[data-skin="fluent"] .sidebar {
+  backdrop-filter: none;
+  border-right: 1px solid var(--border);
+}
+:root[data-skin="fluent"] .statusbar {
+  backdrop-filter: none;
+}
+/* the bar leaves less room: the search hint goes away sooner */
+@media (max-width: 1600px) {
+  :root[data-skin="fluent"] .search-hint {
+    display: none;
+  }
+}
+
+/* record and reader: the page is the grey background, the content goes on cards */
+:root[data-skin="fluent"] .reader {
+  background: var(--bg);
+}
+:root[data-skin="fluent"] .reader-head {
+  border-bottom: 0;
+}
+:root[data-skin="fluent"] .reader-scroll > .reader-body {
+  margin: 4px auto 40px;
+  padding: 26px 40px 60px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+:root[data-skin="fluent"] .reader-body {
+  color: var(--text-2);
+}
+/* the "Editor" style keeps its look; headings and bullets take the yellow */
+:root[data-skin="fluent"] .reader-body.src-view {
+  --md-head: var(--accent-text);
+  --md-bullet: var(--accent-text);
+}
+:root[data-skin="fluent"] .person-cover {
+  border-radius: 8px;
+  color: var(--accent-text);
+  background: var(--accent-soft);
+  box-shadow: none;
+}
+:root[data-skin="fluent"] .person-view h2 {
+  gap: 9px;
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text);
+}
+:root[data-skin="fluent"] .person-view h2 svg {
+  width: 18px;
+  height: 18px;
+  color: var(--accent-text);
+}
+:root[data-skin="fluent"] :is(.facts > div, .inline-doc, .text-card) {
+  border-radius: 8px;
+  box-shadow: none;
+}
+:root[data-skin="fluent"] .facts > div {
+  padding: 14px 18px;
+}
+:root[data-skin="fluent"] .facts dt {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-2);
+}
+:root[data-skin="fluent"] .facts dd.notes {
+  font-size: 14.5px;
+}
+:root[data-skin="fluent"] .inline-head {
+  background: var(--card-inner);
+}
+:root[data-skin="fluent"] .text-card:hover {
+  border-color: var(--accent);
+}
+
+/* Home, results, menus and dialogs */
+:root[data-skin="fluent"] .home {
+  background: var(--bg);
+  backdrop-filter: none;
+}
+:root[data-skin="fluent"] .hero-icon {
+  border-radius: 8px;
+  box-shadow: none;
+}
+:root[data-skin="fluent"] :is(.stat, .facet, .cal-event, .ctx-menu) {
+  border-radius: 8px;
+  box-shadow: none;
+}
+:root[data-skin="fluent"] .cal-event {
+  border-radius: 6px;
+}
+:root[data-skin="fluent"] .facet:hover {
+  transform: none;
+  background: var(--selected);
+}
+/* headings in normal letters, not small capitals */
+:root[data-skin="fluent"] .home h2 {
+  gap: 9px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text);
+}
+:root[data-skin="fluent"] .home h2 svg {
+  width: 18px;
+  height: 18px;
+  color: var(--accent-text);
+}
+:root[data-skin="fluent"] :is(.cal-list h3, .timeline section h2) {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text);
+}
+:root[data-skin="fluent"] .group-head {
+  border-radius: 6px;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+:root[data-skin="fluent"] :is(.ctx-title, .form-grid label > span, .text-label > span) {
+  font-size: 12.5px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-2);
+}
+:root[data-skin="fluent"] .ctx-menu button {
+  border-radius: 4px;
+}
+/* search results: quiet rows; the chosen one with a yellow edge */
+:root[data-skin="fluent"] .hit {
+  border-radius: 6px;
+}
+:root[data-skin="fluent"] .hit:hover {
+  background: var(--hover);
+  border-color: transparent;
+  box-shadow: none;
+}
+:root[data-skin="fluent"] .hit.selected {
+  background: var(--selected);
+  border-color: transparent;
+  box-shadow: none;
+}
+:root[data-skin="fluent"] .hit.selected::before {
+  background: var(--accent);
+}
+:root[data-skin="fluent"] .modal-backdrop {
+  backdrop-filter: none;
+  background: rgba(0, 0, 0, 0.45);
+}

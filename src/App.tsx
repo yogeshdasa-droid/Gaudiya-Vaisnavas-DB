@@ -72,6 +72,8 @@ import { Timeline } from "./components/Timeline";
 import { TreeView } from "./components/TreeView";
 import { Settings, SettingsTab, Skin, Theme } from "./components/Settings";
 import { Reveal, SideTab, Sidebar } from "./components/Sidebar";
+import { Rail } from "./components/Rail";
+import { Calendar } from "./components/Calendar";
 import { ask, Kbd, Splitter } from "./components/ui";
 
 const PAGE = 50;
@@ -96,7 +98,7 @@ function usePersisted<T>(key: string, fallback: T) {
   return [v, setV] as const;
 }
 
-type Main = { kind: "home" } | { kind: "timeline" } | { kind: "tree" } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number };
+type Main = { kind: "home" } | { kind: "timeline" } | { kind: "calendar" } | { kind: "tree" } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number };
 
 type Dialog =
   | { kind: "settings"; tab: SettingsTab }
@@ -114,7 +116,17 @@ type Dialog =
 export default function App() {
   const [lang, setLang] = usePersisted<Lang>("language", "es");
   const [theme, setTheme] = usePersisted<Theme>("theme", "system");
-  const [skin, setSkin] = usePersisted<Skin>("skin", "vscode");
+  const [skin, setSkin] = usePersisted<Skin>("skin", "fluent");
+  // 0.6.0: the Windows 11 style becomes the default, once (a later choice stays)
+  useEffect(() => {
+    if (stored("skinFluentOnce", false)) return;
+    try {
+      localStorage.setItem("bio.skinFluentOnce", "true");
+    } catch {
+      /* storage unavailable */
+    }
+    setSkin("fluent");
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const [readerStyle, setReaderStyle] = usePersisted<ReaderStyle>("readerStyle", "editor");
   const [fontSize, setFontSize] = usePersisted("fontSize", 18);
   const [titlesOnly, setTitlesOnly] = usePersisted("titlesOnly", false);
@@ -825,9 +837,12 @@ export default function App() {
     return () => window.removeEventListener("resize", on);
   }, []);
   const MAIN_MIN = 380;
+  // the Windows 11 style has a bar on the left (only icons in a narrow window)
+  const railCompact = winW < 1200;
+  const railW = skin === "fluent" ? (railCompact ? 60 : 210) : 0;
   let side = sideOpen ? sideW : 0;
   let res = resultsOpen ? resW : 0;
-  const spare = winW - MAIN_MIN - (sideOpen ? 5 : 0) - (resultsOpen ? 5 : 0);
+  const spare = winW - railW - MAIN_MIN - (sideOpen ? 5 : 0) - (resultsOpen ? 5 : 0);
   if (side + res > spare) {
     if (resultsOpen) res = Math.max(260, spare - side);
     if (sideOpen && side + res > spare) side = Math.max(190, spare - res);
@@ -847,6 +862,25 @@ export default function App() {
 
   return (
     <div className="app">
+      {skin === "fluent" && (
+        <Rail
+          t={t}
+          compact={railCompact}
+          view={main.kind}
+          sideTab={sideTab}
+          sideOpen={sideOpen}
+          onView={(kind) => setMain({ kind })}
+          onSide={(tab) => {
+            if (sideOpen && sideTab === tab) setSideOpen(false);
+            else {
+              setSideTab(tab);
+              setSideOpen(true);
+            }
+          }}
+          onSettings={() => setDialog({ kind: "settings", tab: "general" })}
+          onHelp={() => setDialog({ kind: "settings", tab: "help" })}
+        />
+      )}
       <header className="topbar">
         <div className="brand">
           <button className="icon-btn" onClick={() => setSideOpen((o) => !o)} title={sideOpen ? t.collapse : t.expand}>
@@ -1064,6 +1098,7 @@ export default function App() {
           />
         )}
         {main.kind === "timeline" && <Timeline t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} onOpenDoc={openDoc} />}
+        {main.kind === "calendar" && <Calendar t={t} lang={lang} reload={dataTick} onPerson={openPerson} page />}
         {main.kind === "tree" && <TreeView t={t} persons={persons} onPerson={openPerson} />}
       </main>
 

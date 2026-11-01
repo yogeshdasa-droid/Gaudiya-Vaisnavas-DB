@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { CalendarDays, Clock, Moon, Sparkles, UserRound } from "lucide-react";
 import { api, CalDay, CalEvent, fileUrl } from "../api";
 import { Lang, T } from "../i18n";
 
-/** Days looked at ahead (today included). */
+/** Days looked at ahead (today included): on Home and on the calendar's own page. */
 const AHEAD = 30;
+const AHEAD_PAGE = 90;
 
 function dayName(date: string, lang: Lang, t: T, i: number): string {
   if (i === 0) return t.today;
@@ -13,16 +14,17 @@ function dayName(date: string, lang: Lang, t: T, i: number): string {
   return new Date(y, m - 1, d).toLocaleDateString(lang === "es" ? "es-ES" : "en-GB", { weekday: "short", day: "numeric", month: "short" });
 }
 
-/** Today's lunar day and the events of today and the coming days. */
-export function Calendar({ t, lang, reload, onPerson }: { t: T; lang: Lang; reload: number; onPerson: (id: number) => void }) {
+/** Today's lunar day and the events of today and the coming days.
+ *  As a page (`page`): more days and every event, not only people and Ekādaśīs. */
+export function Calendar({ t, lang, reload, onPerson, page }: { t: T; lang: Lang; reload: number; onPerson: (id: number) => void; page?: boolean }) {
   const [days, setDays] = useState<CalDay[] | null>(null);
   useEffect(() => {
-    api.upcoming(new Date(), AHEAD).then(setDays, () => setDays([]));
-  }, [reload]);
-  if (!days?.length) return null;
+    api.upcoming(new Date(), page ? AHEAD_PAGE : AHEAD).then(setDays, () => setDays([]));
+  }, [reload, page]);
+  if (!days?.length) return page ? <CalendarPage t={t}>{days && <p className="muted">{t.nothingToday}</p>}</CalendarPage> : null;
   const [today, ...rest] = days;
-  // the coming days: people and Ekādaśīs (the rest only today, to keep it short)
-  const worth = (e: CalEvent) => e.personId !== null || e.kind === "ekadasi";
+  // the coming days on Home: people and Ekādaśīs (the rest only today, to keep it short)
+  const worth = (e: CalEvent) => page || e.personId !== null || e.kind === "ekadasi";
   const coming = rest.map((d, i) => ({ d, i: i + 1 })).filter(({ d }) => d.events.some(worth));
 
   const chip = (e: CalEvent, k: number) => {
@@ -55,11 +57,13 @@ export function Calendar({ t, lang, reload, onPerson }: { t: T; lang: Lang; relo
     );
   };
 
-  return (
+  const body = (
     <section className="calendar">
-      <h2 title={t.calendarHint}>
-        <CalendarDays size={14} /> {t.calendarTitle}
-      </h2>
+      {!page && (
+        <h2 title={t.calendarHint}>
+          <CalendarDays size={14} /> {t.calendarTitle}
+        </h2>
+      )}
       <div className="cal-today">
         <div className="cal-day">
           <strong>{t.today}</strong>
@@ -85,7 +89,27 @@ export function Calendar({ t, lang, reload, onPerson }: { t: T; lang: Lang; relo
           ))}
         </div>
       )}
-      <p className="muted small">{t.calendarHint}</p>
+      {!page && <p className="muted small">{t.calendarHint}</p>}
     </section>
+  );
+  return page ? <CalendarPage t={t}>{body}</CalendarPage> : body;
+}
+
+/** The calendar as a view of its own (from the bar on the left). */
+function CalendarPage({ t, children }: { t: T; children: ReactNode }) {
+  return (
+    <div className="reader">
+      <div className="reader-scroll">
+        <div className="timeline calendar-page">
+          <header className="view-head">
+            <h1>
+              <CalendarDays size={22} /> {t.calendarTitle}
+            </h1>
+            <p className="muted small">{t.calendarHint}</p>
+          </header>
+          {children}
+        </div>
+      </div>
+    </div>
   );
 }
