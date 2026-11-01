@@ -3,6 +3,7 @@
 mod ai;
 mod backup;
 mod calendar;
+mod chronicle;
 mod db;
 mod export;
 mod extract;
@@ -549,6 +550,18 @@ async fn set_person_photo(state: State<'_, AppState>, id: i64, path: String) -> 
     store::set_person_photo(&state.conn.lock().unwrap(), id, std::path::Path::new(&path))
 }
 
+/// dīkṣā / śikṣā disciple or associate of the guru above in the tree.
+#[tauri::command]
+async fn set_tree_kind(state: State<'_, AppState>, id: i64, kind: String) -> CmdResult<()> {
+    store::set_tree_kind(&state.conn.lock().unwrap(), id, &kind)
+}
+
+/// Writes guru and disciple in both records (see store::relate).
+#[tauri::command]
+async fn relate(state: State<'_, AppState>, disciple: i64, guru: i64, kind: String, old_guru: Option<i64>) -> CmdResult<usize> {
+    store::relate(&mut state.conn.lock().unwrap(), disciple, guru, &kind, old_guru)
+}
+
 #[tauri::command]
 async fn remove_person_photo(state: State<'_, AppState>, id: i64) -> CmdResult<()> {
     store::remove_person_photo(&state.conn.lock().unwrap(), id)
@@ -754,6 +767,13 @@ async fn upcoming(state: State<'_, AppState>, y: i32, m: u32, d: u32, count: i64
 #[tauri::command]
 async fn timeline(state: State<'_, AppState>) -> CmdResult<Vec<calendar::LifeSpan>> {
     calendar::timeline(&state.conn.lock().unwrap()).map_err(err)
+}
+
+/// The dated entries of the chronologies of the library (Digdarśanī).
+#[tauri::command]
+async fn chronicle(state: State<'_, AppState>) -> CmdResult<Vec<chronicle::Entry>> {
+    // its own connection: reading the whole book must not hold up the rest
+    chronicle::timeline(&db::open(&state.db_path).map_err(err)?)
 }
 
 /// Everything out as Markdown files into `dir` (in the background).
@@ -1046,6 +1066,8 @@ fn main() {
             delete_person,
             merge_persons,
             move_person,
+            set_tree_kind,
+            relate,
             set_person_photo,
             remove_person_photo,
             create_doc,
@@ -1087,6 +1109,7 @@ fn main() {
             lunar_label,
             import_calendar,
             timeline,
+            chronicle,
             export_markdown,
             export_person,
             calendar_info,

@@ -143,6 +143,8 @@ pub fn gather(conn: &Connection, side: &Connection) -> Res<usize> {
             added += add(side, id, "guru", &guru, "disciples", &evidence, Some(guru_id))? as usize;
         }
     }
+    // births and passings in the chronologies of the library (Digdarśanī)
+    added += crate::chronicle::gather(conn, side)?;
     Ok(added)
 }
 

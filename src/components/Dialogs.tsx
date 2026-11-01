@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, ListTree, ListX, FilePen, FileText, FolderInput, GitMerge, History, Search, Trash2, Undo2, Upload, UserPlus, UserRound, X } from "lucide-react";
-import { api, DocInfo, EMPTY_PERSON, Person, PersonFields, PersonListItem, SectionText, Version } from "../api";
+import { api, DocInfo, EMPTY_PERSON, Person, PersonFields, PersonListItem, SectionText, TreeKind, Version } from "../api";
 import { T } from "../i18n";
 import { ask, Modal } from "./ui";
 import { foldName } from "./Sidebar";
@@ -266,6 +266,8 @@ export function GuruDialog({
     if (!id) throw new Error(t.guruPick);
     if (!byId(id)?.tree) await api.movePerson(id, { parent: null, before: null });
     await api.movePerson(person.id, { parent: id, before: null });
+    // the names in both records too (only added)
+    await api.relate(person.id, id, me?.tree?.kind ?? "diksa", null);
     return t.guruDone(person.name, byId(id)?.name ?? guru.newName ?? "");
   });
   const remove = run(async () => {
@@ -315,6 +317,86 @@ export function GuruDialog({
         <PersonPicker key={guru.id ?? guru.newName ?? ""} t={t} persons={persons.filter((x) => x.id !== person.id)} value={guru} onChange={setGuru} />
       </label>
       <p className="muted small">{t.guruHint}</p>
+      {error && <div className="error-box">{error}</div>}
+    </Modal>
+  );
+}
+
+// ---------------------------------------------------------------- dropped under another guru
+
+/** A record dragged under another guru in the tree: how they are related,
+ *  written in both records (and taken out of the earlier guru's list). */
+export function RelateDialog({
+  t,
+  id,
+  place,
+  persons,
+  onClose,
+  onDone,
+}: {
+  t: T;
+  id: number;
+  place: { parent: number | null; before: number | null };
+  persons: PersonListItem[];
+  onClose: () => void;
+  onDone: (msg: string) => void;
+}) {
+  const me = persons.find((x) => x.id === id);
+  const guru = persons.find((x) => x.id === place.parent);
+  const oldGuru = persons.find((x) => x.id === me?.tree?.parent);
+  const [kind, setKind] = useState<TreeKind>(me?.tree?.kind ?? "diksa");
+  const [unlink, setUnlink] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  if (!me || !guru) return null;
+
+  const go = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      await api.movePerson(id, place);
+      await api.setTreeKind(id, kind);
+      const n = await api.relate(id, guru.id, kind, unlink && oldGuru ? oldGuru.id : null);
+      onDone(t.relateDone(me.name, guru.name, n));
+    } catch (e) {
+      setError(String(e));
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Modal
+      title={t.relateTitle}
+      icon={<ListTree size={18} />}
+      onClose={onClose}
+      footer={
+        <>
+          <span className="grow" />
+          <button className="btn ghost" onClick={onClose}>
+            {t.cancel}
+          </button>
+          <button className="btn" disabled={busy} onClick={go}>
+            {busy ? <span className="spinner light" /> : null} {t.save}
+          </button>
+        </>
+      }
+    >
+      <p>
+        <strong>{t.relateAsk(me.name, guru.name)}</strong>
+      </p>
+      <div className="relate-kinds">
+        {(["diksa", "siksa", "associate"] as TreeKind[]).map((k) => (
+          <label key={k} className="check">
+            <input type="radio" name="relate-kind" checked={kind === k} onChange={() => setKind(k)} /> {t.treeKinds[k]}
+          </label>
+        ))}
+      </div>
+      {oldGuru && (
+        <label className="check">
+          <input type="checkbox" checked={unlink} onChange={(e) => setUnlink(e.target.checked)} /> {t.relateUnlink(oldGuru.name)}
+        </label>
+      )}
+      <p className="muted small">{t.relateHint}</p>
       {error && <div className="error-box">{error}</div>}
     </Modal>
   );
@@ -631,10 +713,12 @@ export function PersonDialog({
   const [f, setF] = useState<PersonFields>(initial);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [kind, setKind] = useState<TreeKind>(() => persons.find((x) => x.id === person?.id)?.tree?.kind ?? "diksa");
   const [picked] = useState(() => new Map<string, number>([...tree.kids, ...(tree.guru ? [tree.guru] : [])].map((x) => [x.name, x.id])));
   const [, setPicks] = useState(0);
   const keys = Object.keys(EMPTY_PERSON) as (keyof PersonFields)[];
-  const dirty = keys.some((k) => f[k] !== (initial[k] ?? ""));
+  const kindNow = persons.find((x) => x.id === person?.id)?.tree?.kind ?? "diksa";
+  const dirty = keys.some((k) => f[k] !== (initial[k] ?? "")) || kind !== kindNow;
   const set = (k: keyof PersonFields) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setF({ ...f, [k]: e.target.value });
   const others = useMemo(() => persons.filter((x) => x.id !== person?.id), [persons, person]);
   const byId = (id: number | null | undefined) => (id ? persons.find((x) => x.id === id) : undefined);
@@ -674,6 +758,8 @@ export function PersonDialog({
         if (!inTree(g.id)) await api.movePerson(g.id, { parent: null, before: null });
         await api.movePerson(id, { parent: g.id, before: null });
         meInTree = true;
+        // his name in the guru's Disciples too (only added: the fields written here are left as they are)
+        await api.relate(id, g.id, kind, null);
         lines.push(t.guruDone(name, g.name));
       } catch (e) {
         lines.push(String(e));
@@ -685,6 +771,7 @@ export function PersonDialog({
         if (!meInTree) await api.movePerson(id, { parent: null, before: null });
         meInTree = true;
         await api.movePerson(d, { parent: id, before: null });
+        await api.relate(d, id, p.tree?.kind ?? "diksa", null);
         lines.push(t.guruDone(p.name, name));
       } catch (e) {
         lines.push(`${p.name}: ${String(e)}`);
@@ -701,7 +788,10 @@ export function PersonDialog({
       const fields = { ...f, guru: tidy(f.guru), disciples: tidy(f.disciples) };
       const id = person ? person.id : await api.newPerson(fields);
       if (person) await api.updatePerson(person.id, fields);
-      onSaved(id, await place(id, f.name.trim()));
+      const moved = await place(id, f.name.trim());
+      // the relation with the guru, once the record is in the tree
+      if (kind !== kindNow || (moved && kind !== "diksa")) await api.setTreeKind(id, kind).catch(() => {});
+      onSaved(id, moved);
     } catch (e) {
       setError(String(e));
       setBusy(false);
@@ -749,6 +839,19 @@ export function PersonDialog({
           <NamesInput t={t} value={f.guru} onChange={(v) => setF((x) => ({ ...x, guru: v }))} persons={others} multi={false} onPick={remember} />
           {plan.guru && <em className="lunar-hint ok">{t.treeWillPlace(f.name.trim() || "…", byId(plan.guru)!.name)}</em>}
         </label>
+        {(me?.tree?.parent || plan.guru) && (
+          <label>
+            <span>{t.treeKind}</span>
+            <select value={kind} title={t.treeKindsHint} onChange={(e) => setKind(e.target.value as TreeKind)}>
+              {(["diksa", "siksa", "associate"] as TreeKind[]).map((k) => (
+                <option key={k} value={k}>
+                  {t.treeKinds[k]}
+                </option>
+              ))}
+            </select>
+            <em className="lunar-hint">{t.treeKindsHint}</em>
+          </label>
+        )}
       </div>
       <div className="form-grid one">
         <label>

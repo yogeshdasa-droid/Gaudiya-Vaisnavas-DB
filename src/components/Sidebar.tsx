@@ -368,6 +368,7 @@ function PersonList({
       {lines}
       {caret}
       <span className="name">{p.name}</span>
+      {inTree && p.tree && p.tree.kind !== "diksa" && <span className="tree-kind">{t.treeKindShort[p.tree.kind]}</span>}
       {p.docs > 1 && <span className="count">{p.docs.toLocaleString(lang)}</span>}
     </div>
   );
@@ -437,7 +438,7 @@ function PersonList({
                       <span className="caret-space" />
                     ),
                     depth,
-                    depth > 0 && treeLines(guides, last),
+                    depth > 0 && treeLines(guides, last, p.tree?.kind ?? "diksa"),
                   )}
                 </div>
               ))}
@@ -529,14 +530,16 @@ const INDENT = 16;
 
 /** The lines from a guru down to his disciples: │ for each guru above whose
  *  disciples go on below, and ├ or └ joining the row to its own guru. */
-function treeLines(guides: boolean[], last: boolean) {
+function treeLines(guides: boolean[], last: boolean, kind: string) {
   // the middle of the caret of a guru at level i
   const x = (i: number) => 4 + i * INDENT + 6;
   return (
     <span className="tree-lines" aria-hidden>
       {guides.map((on, i) => (on ? <span key={i} className="tl-down" style={{ left: x(i) }} /> : null))}
-      <span className={`tl-down${last ? " tl-half" : ""}`} style={{ left: x(guides.length) }} />
-      <span className="tl-across" style={{ left: x(guides.length), width: INDENT - 6 }} />
+      {/* up to this row: drawn as its relation (solid / dashed / dotted); on down: the next disciples */}
+      <span className={`tl-down tl-half tl-${kind}`} style={{ left: x(guides.length) }} />
+      {!last && <span className="tl-down tl-rest" style={{ left: x(guides.length) }} />}
+      <span className={`tl-across tl-${kind}`} style={{ left: x(guides.length), width: INDENT - 6 }} />
     </span>
   );
 }

@@ -119,6 +119,9 @@ export const EMPTY_PERSON: PersonFields = {
   tags: "",
 };
 
+/** relation with the guru above in the Guru Paramparā */
+export type TreeKind = "diksa" | "siksa" | "associate";
+
 export interface PersonListItem {
   id: number;
   name: string;
@@ -127,7 +130,7 @@ export interface PersonListItem {
   coverDoc: number | null;
   hasPhoto: boolean;
   /** place in the Guru Paramparā; null = "Other Vaiṣṇavas" */
-  tree: { parent: number | null; pos: number } | null;
+  tree: { parent: number | null; pos: number; kind: TreeKind } | null;
   /** labels, comma separated */
   tags: string;
 }
@@ -183,6 +186,19 @@ export interface LifeSpan {
   died: number | null;
   parampara: boolean;
   hasPhoto: boolean;
+}
+
+/** a dated event of a chronology of the library (Digdarśanī) */
+export interface ChronicleEntry {
+  year: number;
+  saka: number | null;
+  lunar: string;
+  text: string;
+  kind: "birth" | "death" | "other";
+  personId: number | null;
+  person: string | null;
+  docId: number;
+  ordinal: number;
 }
 
 export interface CalendarInfo {
@@ -308,6 +324,9 @@ export const api = {
   deletePerson: (id: number) => invoke<void>("delete_person", { id }),
   mergePersons: (into: number, from: number[]) => invoke<void>("merge_persons", { into, from }),
   movePerson: (id: number, place: TreePlace) => invoke<void>("move_person", { id, place }),
+  setTreeKind: (id: number, kind: TreeKind) => invoke<void>("set_tree_kind", { id, kind }),
+  /** writes guru and disciple in both records; returns how many changed */
+  relate: (disciple: number, guru: number, kind: TreeKind, oldGuru: number | null) => invoke<number>("relate", { disciple, guru, kind, oldGuru }),
   setPersonPhoto: (id: number, path: string) => invoke<void>("set_person_photo", { id, path }),
   removePersonPhoto: (id: number) => invoke<void>("remove_person_photo", { id }),
 
@@ -357,6 +376,7 @@ export const api = {
   calendarInfo: () => invoke<CalendarInfo>("calendar_info"),
   clearCalendar: () => invoke<void>("clear_calendar"),
   timeline: () => invoke<LifeSpan[]>("timeline"),
+  chronicle: () => invoke<ChronicleEntry[]>("chronicle"),
   exportMarkdown: (dir: string) => invoke<void>("export_markdown", { dir }),
   exportPerson: (id: number, path: string) => invoke<void>("export_person", { id, path }),
   addPersonImages: (id: number, paths: string[]) => invoke<number>("add_person_images", { id, paths }),

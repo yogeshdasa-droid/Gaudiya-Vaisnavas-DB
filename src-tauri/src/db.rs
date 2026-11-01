@@ -12,7 +12,9 @@ use std::path::Path;
 /// 4: + history (earlier versions of texts and records), person_tags,
 ///    person_images (more pictures of a record), person_distinct,
 ///    calendar_events (the user's .ics calendar); all created empty on open.
-pub const DATA_VERSION: u32 = 4;
+/// 5: + person_tree.kind (dīkṣā / śikṣā disciple or associate; 'diksa' for
+///    the records already in the tree).
+pub const DATA_VERSION: u32 = 5;
 /// Bump when the folding rules or the FTS layout change: the search tables
 /// are rebuilt from `sections` / `docs` / `persons` (no data is lost).
 pub const FTS_VERSION: &str = "1";
@@ -104,7 +106,8 @@ CREATE TABLE IF NOT EXISTS person_photos(
 CREATE TABLE IF NOT EXISTS person_tree(
     person_id INTEGER PRIMARY KEY,
     parent_id INTEGER,              -- NULL = first level
-    pos INTEGER NOT NULL DEFAULT 0  -- order among the disciples of the same guru
+    pos INTEGER NOT NULL DEFAULT 0, -- order among the disciples of the same guru
+    kind TEXT NOT NULL DEFAULT 'diksa' -- diksa | siksa | associate (format 5)
 );
 CREATE INDEX IF NOT EXISTS person_tree_parent ON person_tree(parent_id, pos);
 
@@ -205,6 +208,11 @@ pub fn init(conn: &Connection) -> Result<bool, String> {
 
 fn init_schema(conn: &Connection) -> rusqlite::Result<bool> {
     conn.execute_batch(DATA_SCHEMA)?;
+    // format 5: the tree of an older file gets the kind of each place
+    let has_kind: bool = conn.query_row("SELECT COUNT(*) FROM pragma_table_info('person_tree') WHERE name = 'kind'", [], |r| r.get(0))?;
+    if !has_kind {
+        conn.execute_batch("ALTER TABLE person_tree ADD COLUMN kind TEXT NOT NULL DEFAULT 'diksa';")?;
+    }
     set_meta(conn, "data", &DATA_VERSION.to_string())?;
     let stale = get_meta(conn, "fts")?.as_deref() != Some(FTS_VERSION);
     if stale {
@@ -233,4 +241,25 @@ pub fn set_meta(conn: &Connection, key: &str, value: &str) -> rusqlite::Result<(
         [key, value],
     )?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn old_tree_gets_kind() {
+        // a format-4 file: person_tree without the kind column
+        let conn = Connection::open_in_memory().unwrap();
+        conn.execute_batch(
+            "CREATE TABLE person_tree(person_id INTEGER PRIMARY KEY, parent_id INTEGER, pos INTEGER NOT NULL DEFAULT 0);
+             INSERT INTO person_tree VALUES(1, NULL, 0), (2, 1, 0);",
+        )
+        .unwrap();
+        init(&conn).unwrap();
+        let kinds: Vec<String> =
+            conn.prepare("SELECT kind FROM person_tree ORDER BY person_id").unwrap().query_map([], |r| r.get(0)).unwrap().map(|x| x.unwrap()).collect();
+        assert_eq!(kinds, ["diksa", "diksa"]);
+        init(&conn).unwrap(); // a second open changes nothing
+    }
 }

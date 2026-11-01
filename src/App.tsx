@@ -62,7 +62,7 @@ import {
 import { dicts, Lang } from "./i18n";
 import { buildNameIndex } from "./personLinks";
 import { checkUpdate, installUpdate, Update } from "./update";
-import { EditDialog, GuruDialog, ImportDialog, MergeDialog, PersonDialog, TrashDialog, VersionsDialog } from "./components/Dialogs";
+import { EditDialog, GuruDialog, RelateDialog, ImportDialog, MergeDialog, PersonDialog, TrashDialog, VersionsDialog } from "./components/Dialogs";
 import { Home, RecentDoc } from "./components/Home";
 import { EMPTY_FILTERS, Filters, hasFilter, Results } from "./components/Results";
 import { Reader, ReaderStyle, ReaderTarget } from "./components/Reader";
@@ -108,6 +108,7 @@ type Dialog =
   | { kind: "versions"; what: "doc" | "person"; target: number; label: string }
   | { kind: "duplicates" }
   | { kind: "guru"; person: Person }
+  | { kind: "relate"; id: number; place: NonNullable<TreePlace> }
   | null;
 
 export default function App() {
@@ -569,11 +570,15 @@ export default function App() {
       })
       .catch(fail);
   };
-  const movePerson = (id: number, place: TreePlace) =>
-    api
+  const movePerson = (id: number, place: TreePlace) => {
+    // under another guru: ask how they are related, and write it in both records
+    const now = persons.find((p) => p.id === id)?.tree;
+    if (place && place.parent != null && (!now || now.parent !== place.parent)) return setDialog({ kind: "relate", id, place });
+    return api
       .movePerson(id, place)
       .then(() => api.listPersons().then(setPersons))
       .catch(fail);
+  };
   const findMentions = (p: Person) => {
     setFilters(EMPTY_FILTERS);
     setTitlesOnly(false);
@@ -1058,7 +1063,7 @@ export default function App() {
             onTree={() => setMain({ kind: "tree" })}
           />
         )}
-        {main.kind === "timeline" && <Timeline t={t} lang={lang} reload={dataTick} onPerson={openPerson} />}
+        {main.kind === "timeline" && <Timeline t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} onOpenDoc={openDoc} />}
         {main.kind === "tree" && <TreeView t={t} persons={persons} onPerson={openPerson} />}
       </main>
 
@@ -1186,6 +1191,21 @@ export default function App() {
           onOpenDoc={(id) => {
             setDialog(null);
             openDoc(id);
+          }}
+        />
+      )}
+      {dialog?.kind === "relate" && (
+        <RelateDialog
+          t={t}
+          id={dialog.id}
+          place={dialog.place}
+          persons={persons}
+          onClose={() => setDialog(null)}
+          onDone={(msg) => {
+            setDialog(null);
+            showToast(msg);
+            reloadPerson();
+            refreshAll();
           }}
         />
       )}

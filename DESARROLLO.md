@@ -186,7 +186,39 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.5.1)
+## 5. Qué hace hoy (v0.5.2)
+
+### Novedades de la 0.5.2 (01-11-2026) — **DATA_VERSION 5**
+- **Tipo de relación en el árbol** (`person_tree.kind`: `diksa` por defecto | `siksa` | `associate`;
+  `db::init_schema` añade la columna a los archivos viejos; `store::set_tree_kind`, comando
+  `set_tree_kind`). Editar ficha › «En el árbol, con su guru» (si la ficha está en el árbol o va a
+  estarlo). En la barra lateral: línea continua / de rayas / de puntos hasta su guru y etiqueta
+  «śikṣā» / «pārṣada» a la derecha. Mover la ficha conserva su tipo. Motivo: el usuario quiere que
+  los asociados de Mahāprabhu (Śrīvāsa, Svarūpa Dāmodara…) no parezcan discípulos iniciados. **La
+  colocación de cada uno la decide el usuario.** Pendiente: el árbol dibujado (TreeView.tsx) aún no
+  distingue los tipos.
+- **Guru ↔ discípulo en las dos fichas** (`store::relate`, comando `relate`): al soltar una ficha bajo
+  otro guru (encima o antes/después de un discípulo de otro guru) sale `RelateDialog` (dīkṣā / śikṣā /
+  asociado + «quitarlo de los discípulos de su guru anterior», marcada). Escribe el guru en la ficha
+  del discípulo («X (dīkṣā)» si ya había otro, «X (śikṣā)»), el discípulo en «Discípulos» del guru
+  («Y (śikṣā)»), y con la casilla quita a ambos lados al guru anterior. Un asociado no se escribe.
+  Reconoce el nombre aunque esté escrito distinto (plegado o `PersonIndex::find`): no lo repite.
+  Desde Editar ficha y «Paramparā…» solo **añade** en la otra ficha (no quita nada). Cada ficha guarda
+  su versión anterior (`update_person`).
+- **Cronologías de la biblioteca → línea de tiempo y Rellenar fichas** (`chronicle.rs`, comando
+  `chronicle`). Se leen **del texto cada vez** (nada se copia; sin cambio de formato): un texto con ≥ 20
+  entradas «1534 AD / 1456 S' Jaiṣṭha--…» o «1455 S Pansi … (1533 AD).» es una cronología (hoy solo el
+  **Vaiṣṇava Digdarśanī**, texto 2155). Lo de antes de «--» (≤ 45 letras) es el día lunar. Si el año AD y
+  el Śaka (+78) no cuadran, gana el que encaja con la entrada anterior (el libro tiene erratas en los
+  dos). Nacimiento / desaparición: «Birth of X», «disappearance / passing of X», «X passes away / is
+  born» al principio de la entrada; X → ficha con `find_person` (el principio más largo del nombre, o
+  sin la primera palabra: «Gopāla Gaurīdāsa», «Yavana Haridāsa»). Repetidos (la lista y el relato del
+  mismo suceso) → uno. En la copia: 757 sucesos, 244 nacimientos/desapariciones, 130 con ficha, < 1 s.
+  Línea de tiempo: interruptor «Sucesos del Digdarśanī», año, día lunar, texto con nombres enlazados
+  (`linkNames`), botón de la ficha y del libro (abre la sección). Rellenar fichas: fuente `chronicle`,
+  valor «Jaiṣṭha, 1534 AD / 1456 Śaka (Digdarśanī)», solo si el campo está vacío; si el libro da dos
+  fechas (Gopāla Bhaṭṭa: 1578 y 1585) salen las dos. Prueba real: `cargo test chronicle_real -- --ignored
+  --nocapture` con `BIO_DB`.
 
 ### Novedades de la 0.5.1 (01-11-2026)
 - **Líneas en el árbol de la Paramparā** (barra lateral): cada discípulo queda unido a su guru con
@@ -451,6 +483,9 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 8. Historial
 
+- **01-11-2026 — v0.5.2** (DATA_VERSION 5): tipo de relación en el árbol (dīkṣā / śikṣā / asociado);
+  arrastrar bajo otro guru escribe guru y discípulo en las dos fichas; sucesos del Digdarśanī en la
+  línea de tiempo y como propuestas de fecha en Rellenar fichas.
 - **01-11-2026 — v0.5.1**: líneas guru → discípulos en el árbol; Guru y Discípulos con la lista de
   fichas al editar (y la ficha se coloca sola en el árbol); panel «Con IA local» en Rellenar fichas
   (qwen2.5:7b; aún sin lanzar sobre la biblioteca real). Primera versión para probar la

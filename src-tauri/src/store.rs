@@ -1420,6 +1420,19 @@ pub struct TreePlace {
     pub before: Option<i64>,
 }
 
+/// How a record in the Guru Paramparā is related to the guru above it.
+pub const TREE_KINDS: &[&str] = &["diksa", "siksa", "associate"];
+
+/// Sets whether a record is the dīkṣā or śikṣā disciple of the guru above
+/// it in the tree, or an associate (pārṣada) placed beside him.
+pub fn set_tree_kind(conn: &Connection, id: i64, kind: &str) -> Res<()> {
+    if !TREE_KINDS.contains(&kind) {
+        return Err(format!("Tipo de relación desconocido: {kind}"));
+    }
+    conn.execute("UPDATE person_tree SET kind = ?2 WHERE person_id = ?1", params![id, kind]).map_err(e)?;
+    Ok(())
+}
+
 fn tree_parent(tx: &Connection, id: i64) -> rusqlite::Result<Option<Option<i64>>> {
     tx.query_row("SELECT parent_id FROM person_tree WHERE person_id = ?1", [id], |r| r.get(0))
         .optional()
@@ -1481,6 +1494,89 @@ pub fn move_person(conn: &mut Connection, id: i64, place: Option<TreePlace>) -> 
         }
     }
     tx.commit().map_err(e)
+}
+
+// ---------------------------------------------------------------- guru ↔ disciple in the records
+
+/// The entries of a «guru» / «disciples» field: "A (dīkṣā); B, C".
+fn list_entries(field: &str) -> Vec<&str> {
+    field.split([';', ',', '\n']).map(str::trim).filter(|s| !s.is_empty()).collect()
+}
+
+/// An entry names this record: the same name (notes in brackets apart), or
+/// the name the calendar would take for it.
+fn names_record(entry: &str, id: i64, name: &str, index: &crate::calendar::PersonIndex) -> bool {
+    let plain: String = entry.split('(').next().unwrap_or(entry).trim().to_string();
+    fold_text(&plain) == fold_text(name) || index.find(&plain) == Some(id)
+}
+
+/// Adds a name to a list field (nothing if it is there already).
+fn add_entry(field: &str, entry: &str, id: i64, name: &str, index: &crate::calendar::PersonIndex) -> String {
+    if list_entries(field).iter().any(|x| names_record(x, id, name, index)) {
+        return field.to_string();
+    }
+    let field = field.trim().trim_end_matches([',', ';']).trim_end();
+    if field.is_empty() {
+        entry.to_string()
+    } else if field.contains(';') {
+        format!("{field}; {entry}")
+    } else {
+        format!("{field}, {entry}")
+    }
+}
+
+/// Takes a name out of a list field.
+fn remove_entry(field: &str, id: i64, name: &str, index: &crate::calendar::PersonIndex) -> String {
+    let sep = if field.contains(';') { "; " } else { ", " };
+    let kept: Vec<&str> = list_entries(field).into_iter().filter(|x| !names_record(x, id, name, index)).collect();
+    if kept.len() == list_entries(field).len() {
+        return field.to_string();
+    }
+    kept.join(sep)
+}
+
+/// Writes in both records that `disciple` is the dīkṣā / śikṣā disciple of
+/// `guru` (an associate is not written as disciple), and, with `old_guru`,
+/// takes away the earlier guru from both sides. Only the names change; each
+/// record keeps its earlier version. Returns how many records changed.
+pub fn relate(conn: &mut Connection, disciple: i64, guru: i64, kind: &str, old_guru: Option<i64>) -> Res<usize> {
+    if !TREE_KINDS.contains(&kind) {
+        return Err(format!("Tipo de relación desconocido: {kind}"));
+    }
+    let index = crate::calendar::PersonIndex::load(conn).map_err(e)?;
+    let mut d = get_fields(conn, disciple).map_err(e)?;
+    let mut g = get_fields(conn, guru).map_err(e)?;
+    let (d0, g0) = (d.clone(), g.clone());
+    let mut changed = 0;
+    if let Some(o) = old_guru.filter(|&o| o != guru && o != disciple) {
+        let mut of = get_fields(conn, o).map_err(e)?;
+        let before = of.disciples.clone();
+        of.disciples = remove_entry(&of.disciples, disciple, &d.name, &index);
+        d.guru = remove_entry(&d.guru, o, &of.name, &index);
+        if of.disciples != before {
+            update_person(conn, o, &of)?;
+            changed += 1;
+        }
+    }
+    if kind != "associate" {
+        let label = |field: &str| match kind {
+            "siksa" => " (śikṣā)",
+            _ if !field.trim().is_empty() => " (dīkṣā)",
+            _ => "",
+        };
+        d.guru = add_entry(&d.guru, &format!("{}{}", g.name, label(&d.guru)), guru, &g.name, &index);
+        let tag = if kind == "siksa" { " (śikṣā)" } else { "" };
+        g.disciples = add_entry(&g.disciples, &format!("{}{tag}", d.name), disciple, &d.name, &index);
+    }
+    if d.guru != d0.guru {
+        update_person(conn, disciple, &d)?;
+        changed += 1;
+    }
+    if g.disciples != g0.disciples {
+        update_person(conn, guru, &g)?;
+        changed += 1;
+    }
+    Ok(changed)
 }
 
 /// The usual line of the Gauḍīya Guru Paramparā, starting from Śrī Caitanya
@@ -1589,6 +1685,34 @@ mod tests {
     use super::*;
 
     #[test]
+    fn relate_writes_both_records() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        crate::db::init(&conn).unwrap();
+        let p = |c: &mut Connection, name: &str, guru: &str, disciples: &str| {
+            new_person(c, &PersonFields { name: name.into(), guru: guru.into(), disciples: disciples.into(), ..Default::default() }).unwrap()
+        };
+        let cai = p(&mut conn, "Śrī Caitanya Mahāprabhu", "", "Nityānanda, Śrī Jīva Gosvāmī");
+        let rupa = p(&mut conn, "Śrī Rūpa Gosvāmī", "", "Raghunātha Dāsa Gosvāmī");
+        let jiva = p(&mut conn, "Śrī Jīva Gosvāmī", "Sri Caitanya Mahaprabhu", "");
+        let f = |c: &Connection, id: i64| get_fields(c, id).unwrap();
+
+        // Jīva under Rūpa (dīkṣā), out of Mahāprabhu's list
+        assert_eq!(relate(&mut conn, jiva, rupa, "diksa", Some(cai)).unwrap(), 3);
+        assert_eq!(f(&conn, jiva).guru, "Śrī Rūpa Gosvāmī");
+        assert_eq!(f(&conn, rupa).disciples, "Raghunātha Dāsa Gosvāmī, Śrī Jīva Gosvāmī");
+        assert_eq!(f(&conn, cai).disciples, "Nityānanda");
+        assert_eq!(relate(&mut conn, jiva, rupa, "diksa", None).unwrap(), 0, "not twice");
+
+        // a second, śikṣā guru is added with its label
+        relate(&mut conn, jiva, cai, "siksa", None).unwrap();
+        assert_eq!(f(&conn, jiva).guru, "Śrī Rūpa Gosvāmī, Śrī Caitanya Mahāprabhu (śikṣā)");
+        assert_eq!(f(&conn, cai).disciples, "Nityānanda, Śrī Jīva Gosvāmī (śikṣā)");
+        // an associate is not written as disciple
+        let srivasa = p(&mut conn, "Śrīvāsa Paṇḍita", "", "");
+        assert_eq!(relate(&mut conn, srivasa, cai, "associate", None).unwrap(), 0);
+    }
+
+    #[test]
     fn parampara() {
         let mut conn = Connection::open_in_memory().unwrap();
         crate::db::init(&conn).unwrap();
@@ -1608,6 +1732,14 @@ mod tests {
         // reorder, add, and refuse a guru under his own disciple
         move_person(&mut conn, sanatana, Some(TreePlace { parent: Some(cai), before: Some(rupa) })).unwrap();
         assert_eq!(kids(&conn, Some(cai)), vec![sanatana, rupa]);
+        // kind of relation: dīkṣā by default, kept when the record moves
+        let kind = |c: &Connection, id: i64| crate::search::list_persons(c).unwrap().into_iter().find(|p| p.id == id).unwrap().tree.unwrap().kind;
+        assert_eq!(kind(&conn, rupa), "diksa");
+        set_tree_kind(&conn, rupa, "associate").unwrap();
+        assert!(set_tree_kind(&conn, rupa, "otro").is_err());
+        move_person(&mut conn, rupa, Some(TreePlace { parent: Some(cai), before: None })).unwrap();
+        assert_eq!(kind(&conn, rupa), "associate");
+        set_tree_kind(&conn, rupa, "diksa").unwrap();
         move_person(&mut conn, x, Some(TreePlace { parent: Some(jiva), before: None })).unwrap();
         assert!(move_person(&mut conn, rupa, Some(TreePlace { parent: Some(x), before: None })).is_err());
         // taking Rupa out: his disciples take his place

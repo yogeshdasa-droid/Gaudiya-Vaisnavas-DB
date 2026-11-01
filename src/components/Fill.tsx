@@ -66,7 +66,7 @@ export function FillPane({ t, onToast, onChanged, onOpenPerson }: { t: T; onToas
   });
 
   const fieldLabel = (f: string) => (t as unknown as Record<string, string>)[f] ?? f;
-  const sourceLabel = (s: string) => (s === "calendar" ? t.fillSourceCalendar : s === "disciples" ? t.fillSourceDisciples : s === "ai" ? t.fillSourceAi : s);
+  const sourceLabel = (s: string) => (s === "calendar" ? t.fillSourceCalendar : s === "disciples" ? t.fillSourceDisciples : s === "ai" ? t.fillSourceAi : s === "chronicle" ? t.fillSourceChronicle : s);
 
   return (
     <>

@@ -558,6 +558,8 @@ pub struct PersonListItem {
 pub struct TreeNode {
     pub parent: Option<i64>,
     pub pos: i64,
+    /// relation with the guru above: diksa | siksa | associate
+    pub kind: String,
 }
 
 pub fn list_persons(conn: &Connection) -> rusqlite::Result<Vec<PersonListItem>> {
@@ -568,12 +570,17 @@ pub fn list_persons(conn: &Connection) -> rusqlite::Result<Vec<PersonListItem>> 
                  WHERE d.person_id = p.id AND d.deleted IS NULL AND f.role = 'cover' ORDER BY d.title LIMIT 1),
                 EXISTS(SELECT 1 FROM person_photos ph WHERE ph.person_id = p.id),
                 t.person_id IS NOT NULL, t.parent_id, t.pos,
-                COALESCE((SELECT group_concat(tag, ', ') FROM person_tags g WHERE g.person_id = p.id), '')
+                COALESCE((SELECT group_concat(tag, ', ') FROM person_tags g WHERE g.person_id = p.id), ''),
+                t.kind
          FROM persons p LEFT JOIN person_tree t ON t.person_id = p.id
          ORDER BY p.name COLLATE NOCASE",
     )?;
     let rows = st.query_map([], |r| {
-        let tree = if r.get::<_, bool>(6)? { Some(TreeNode { parent: r.get(7)?, pos: r.get(8)? }) } else { None };
+        let tree = if r.get::<_, bool>(6)? {
+            Some(TreeNode { parent: r.get(7)?, pos: r.get(8)?, kind: r.get(10)? })
+        } else {
+            None
+        };
         Ok(PersonListItem {
             id: r.get(0)?,
             name: r.get(1)?,
