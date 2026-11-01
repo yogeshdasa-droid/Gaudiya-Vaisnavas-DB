@@ -2303,6 +2303,37 @@ button.logo {
 }
 .parampara .tree-row.person {
   gap: 4px;
+  position: relative;
+}
+/* lines from each guru down to his disciples */
+.tree-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.tl-down,
+.tl-across {
+  position: absolute;
+  border-color: var(--tree-line, color-mix(in srgb, var(--muted) 45%, transparent));
+  border-style: solid;
+  border-width: 0;
+}
+/* the row has 1px of margin above and below: the lines go over it */
+.tl-down {
+  top: -1px;
+  bottom: -1px;
+  border-left-width: 1px;
+}
+.tl-down.tl-half {
+  bottom: 50%;
+}
+.tl-across {
+  top: 50%;
+  border-top-width: 1px;
+}
+.parampara .tree-row.person:hover .tree-lines,
+.parampara .tree-row.person.active .tree-lines {
+  --tree-line: var(--muted);
 }
 .side-empty.small {
   padding: 14px 10px;
@@ -3754,6 +3785,18 @@ body.dragging-person * {
 }
 
 /* Ajustes › Rellenar fichas */
+.fill-ai {
+  margin: 14px 0 6px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.fill-ai h4 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 4px;
+}
 .fill-bar {
   display: flex;
   flex-wrap: wrap;

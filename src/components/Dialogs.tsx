@@ -482,6 +482,113 @@ export function ImportDialog({
 // ---------------------------------------------------------------- person record
 
 /** The lunar day the program reads in a date field (for the calendar). */
+/** A list of names («Rupa Gosvami (diksa); Jiva Gosvami») with the records
+ *  as suggestions: the part under the cursor is completed from the list. */
+function NamesInput({
+  t,
+  value,
+  onChange,
+  persons,
+  multi,
+  onPick,
+}: {
+  t: T;
+  value: string;
+  onChange: (v: string) => void;
+  persons: PersonListItem[];
+  multi: boolean;
+  onPick: (p: PersonListItem) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [caret, setCaret] = useState(0);
+  // the name being written: between the separators around the cursor
+  const start = Math.max(value.lastIndexOf(",", caret - 1), value.lastIndexOf(";", caret - 1), value.lastIndexOf("\n", caret - 1)) + 1;
+  const ends = [",", ";", "\n"].map((s) => value.indexOf(s, caret)).filter((i) => i >= 0);
+  const end = ends.length ? Math.min(...ends) : value.length;
+  const part = value.slice(start, end).replace(/\([^)]*\)?/g, "").trim();
+  const sorted = useMemo(() => [...persons].sort((a, b) => foldName(a.name).localeCompare(foldName(b.name))), [persons]);
+  const matches = useMemo(() => {
+    const already = new Set(splitNames(value).map(foldName));
+    const list = part ? filterPersons(sorted, part, 200) : sorted;
+    return list.filter((p) => foldName(p.name) === foldName(part) || !already.has(foldName(p.name)));
+  }, [sorted, part, value]);
+  const track = (e: React.SyntheticEvent<HTMLInputElement>) => setCaret(e.currentTarget.selectionStart ?? 0);
+  const pick = (p: PersonListItem) => {
+    const before = value.slice(0, start).replace(/\s*$/, start ? " " : "");
+    const rest = value.slice(end);
+    const next = `${before}${p.name}${multi && !rest.trim() ? ", " : ""}${rest}`;
+    onPick(p);
+    onChange(next);
+    setCaret((before + p.name).length + (multi && !rest.trim() ? 2 : 0));
+    if (!multi) setOpen(false);
+  };
+  return (
+    <div className="picker">
+      <input
+        value={value}
+        placeholder={t.namesHint}
+        onFocus={(e) => {
+          track(e);
+          setOpen(true);
+        }}
+        onBlur={() => window.setTimeout(() => setOpen(false), 150)}
+        onClick={track}
+        onKeyUp={track}
+        onChange={(e) => {
+          onChange(e.target.value);
+          track(e);
+          setOpen(true);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Escape" && open) {
+            e.stopPropagation();
+            setOpen(false);
+          }
+        }}
+      />
+      {open && matches.length > 0 && (
+        <div className="picker-list">
+          {matches.map((m) => (
+            <button key={m.id} onMouseDown={(e) => e.preventDefault()} onClick={() => pick(m)}>
+              {m.tree ? <ListTree size={13} /> : <UserRound size={13} />} {m.name}
+              {m.aka && <em>{m.aka}</em>}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** The names of a «guru» / «disciples» field, without the notes in brackets. */
+function splitNames(field: string): string[] {
+  return field
+    .replace(/\([^)]*\)/g, " ")
+    .split(/[;,\n]/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+/** The records named in a field, in order: the ones chosen from the list,
+ *  and names written that are exactly the name of one record. */
+function namedIds(field: string, persons: PersonListItem[], picked: Map<string, number>): number[] {
+  const out: number[] = [];
+  const found: { at: number; id: number }[] = [];
+  for (const [name, id] of picked) {
+    const at = field.indexOf(name);
+    if (at >= 0) found.push({ at, id });
+  }
+  let from = 0;
+  for (const name of splitNames(field)) {
+    const at = field.indexOf(name, from);
+    from = at + name.length;
+    const same = persons.filter((p) => foldName(p.name) === foldName(name));
+    if (same.length === 1) found.push({ at, id: same[0].id });
+  }
+  for (const { id } of found.sort((a, b) => a.at - b.at)) if (!out.includes(id)) out.push(id);
+  return out;
+}
+
 function LunarHint({ t, text }: { t: T; text: string }) {
   const [label, setLabel] = useState<string | null | undefined>(undefined);
   useEffect(() => {
@@ -496,34 +603,105 @@ function LunarHint({ t, text }: { t: T; text: string }) {
 export function PersonDialog({
   t,
   person,
+  persons,
   onClose,
   onSaved,
 }: {
   t: T;
   /** null = new record */
   person: Person | null;
+  persons: PersonListItem[];
   onClose: () => void;
-  onSaved: (id: number) => void;
+  /** moved = something changed place in the Guru Paramparā (message) */
+  onSaved: (id: number, moved: string | null) => void;
 }) {
-  const initial: PersonFields = person ?? EMPTY_PERSON;
-  const [f, setF] = useState<PersonFields>({ ...EMPTY_PERSON, ...initial });
+  // empty guru / disciples: the ones of the Guru Paramparā, so that they can be changed here
+  const [tree] = useState(() => {
+    const parent = persons.find((x) => x.id === person?.id)?.tree?.parent;
+    const guru = parent ? persons.find((x) => x.id === parent) : undefined;
+    const kids = person ? persons.filter((x) => x.tree?.parent === person.id).sort((a, b) => a.tree!.pos - b.tree!.pos) : [];
+    return { guru, kids };
+  });
+  const [initial] = useState<PersonFields>(() => {
+    const base = { ...EMPTY_PERSON, ...(person ?? {}) };
+    if (!base.guru.trim() && tree.guru) base.guru = tree.guru.name;
+    if (!base.disciples.trim() && tree.kids.length) base.disciples = tree.kids.map((k) => k.name).join(", ");
+    return base;
+  });
+  const [f, setF] = useState<PersonFields>(initial);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [picked] = useState(() => new Map<string, number>([...tree.kids, ...(tree.guru ? [tree.guru] : [])].map((x) => [x.name, x.id])));
+  const [, setPicks] = useState(0);
   const keys = Object.keys(EMPTY_PERSON) as (keyof PersonFields)[];
   const dirty = keys.some((k) => f[k] !== (initial[k] ?? ""));
   const set = (k: keyof PersonFields) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setF({ ...f, [k]: e.target.value });
+  const others = useMemo(() => persons.filter((x) => x.id !== person?.id), [persons, person]);
+  const byId = (id: number | null | undefined) => (id ? persons.find((x) => x.id === id) : undefined);
+  const remember = (p: PersonListItem) => {
+    picked.set(p.name, p.id);
+    setPicks((n) => n + 1);
+  };
+
+  // what changes place in the tree on saving: the first guru named (when it
+  // is a new one) takes the record as disciple, and so do the new disciples
+  const me = byId(person?.id);
+  const plan = useMemo(() => {
+    const oldGuru = namedIds(initial.guru, others, picked)[0];
+    const newGuru = namedIds(f.guru, others, picked)[0];
+    const guru = newGuru && newGuru !== oldGuru && newGuru !== me?.tree?.parent ? newGuru : null;
+    const oldDisciples = namedIds(initial.disciples, others, picked);
+    const disciples = namedIds(f.disciples, others, picked).filter(
+      (d) => d !== guru && !oldDisciples.includes(d) && (!person || byId(d)?.tree?.parent !== person.id),
+    );
+    // taken out of the list but still under this record in the tree
+    const named = namedIds(f.disciples, others, picked);
+    const removed = tree.kids.filter((k) => !named.includes(k.id));
+    return { guru, disciples, removed };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [f.guru, f.disciples, others, me, picked.size]);
 
   const close = async () => {
     if (!dirty || (await ask(t.unsaved))) onClose();
+  };
+  const place = async (id: number, name: string): Promise<string | null> => {
+    const lines: string[] = [];
+    const inTree = (pid: number) => !!byId(pid)?.tree;
+    let meInTree = !!me?.tree;
+    if (plan.guru) {
+      const g = byId(plan.guru)!;
+      try {
+        if (!inTree(g.id)) await api.movePerson(g.id, { parent: null, before: null });
+        await api.movePerson(id, { parent: g.id, before: null });
+        meInTree = true;
+        lines.push(t.guruDone(name, g.name));
+      } catch (e) {
+        lines.push(String(e));
+      }
+    }
+    for (const d of plan.disciples) {
+      const p = byId(d)!;
+      try {
+        if (!meInTree) await api.movePerson(id, { parent: null, before: null });
+        meInTree = true;
+        await api.movePerson(d, { parent: id, before: null });
+        lines.push(t.guruDone(p.name, name));
+      } catch (e) {
+        lines.push(`${p.name}: ${String(e)}`);
+      }
+    }
+    return lines.length ? lines.join(" · ") : null;
   };
   const save = async () => {
     setBusy(true);
     setError(null);
     try {
-      if (person) {
-        await api.updatePerson(person.id, f);
-        onSaved(person.id);
-      } else onSaved(await api.newPerson(f));
+      // without the «, » left after the last name chosen from the list
+      const tidy = (s: string) => s.replace(/[\s,;]+$/, "");
+      const fields = { ...f, guru: tidy(f.guru), disciples: tidy(f.disciples) };
+      const id = person ? person.id : await api.newPerson(fields);
+      if (person) await api.updatePerson(person.id, fields);
+      onSaved(id, await place(id, f.name.trim()));
     } catch (e) {
       setError(String(e));
       setBusy(false);
@@ -566,10 +744,21 @@ export function PersonDialog({
         {field("appearance", t.appearance, undefined, <LunarHint t={t} text={f.appearance} />)}
         {field("disappearance", t.disappearance, undefined, <LunarHint t={t} text={f.disappearance} />)}
         {field("place", t.place)}
-        {field("guru", t.guru, t.listHint)}
+        <label>
+          <span>{t.guru}</span>
+          <NamesInput t={t} value={f.guru} onChange={(v) => setF((x) => ({ ...x, guru: v }))} persons={others} multi={false} onPick={remember} />
+          {plan.guru && <em className="lunar-hint ok">{t.treeWillPlace(f.name.trim() || "…", byId(plan.guru)!.name)}</em>}
+        </label>
       </div>
       <div className="form-grid one">
-        {field("disciples", t.disciples, t.listHint)}
+        <label>
+          <span>{t.disciples}</span>
+          <NamesInput t={t} value={f.disciples} onChange={(v) => setF((x) => ({ ...x, disciples: v }))} persons={others} multi onPick={remember} />
+          {plan.disciples.length > 0 && (
+            <em className="lunar-hint ok">{t.treeWillTake(plan.disciples.map((d) => byId(d)!.name).join(", "))}</em>
+          )}
+          {plan.removed.length > 0 && <em className="lunar-hint">{t.treeStays(plan.removed.map((d) => d.name).join(", "))}</em>}
+        </label>
         {field("works", t.works, t.listHint)}
         {field("tags", t.tags, t.tagsHint)}
         <label>

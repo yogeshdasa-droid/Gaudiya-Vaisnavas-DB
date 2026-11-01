@@ -346,6 +346,10 @@ export const api = {
   fillList: () => invoke<Proposal[]>("fill_list"),
   fillAccept: (ids: number[]) => invoke<number>("fill_accept", { ids }),
   fillReject: (ids: number[]) => invoke<void>("fill_reject", { ids }),
+  aiStatus: () => invoke<AiStatus>("ai_status"),
+  aiStart: (limit: number | null) => invoke<void>("ai_start", { limit }),
+  aiStop: () => invoke<void>("ai_stop"),
+  aiPull: () => invoke<void>("ai_pull"),
   upcoming: (date: Date, count: number) =>
     invoke<CalDay[]>("upcoming", { y: date.getFullYear(), m: date.getMonth() + 1, d: date.getDate(), count }),
   lunarLabel: (text: string) => invoke<string | null>("lunar_label", { text }),
@@ -490,6 +494,26 @@ export interface SemanticDone {
   added: number;
   pieces: number;
   millis: number;
+  stopped: boolean;
+}
+
+/** filling in records with the local AI */
+export interface AiStatus {
+  ollama: boolean;
+  model: boolean;
+  modelName: string;
+  busy: boolean;
+  done: number;
+  total: number;
+  current: string;
+  /** records already read */
+  read: number;
+}
+
+export interface AiDone {
+  records: number;
+  proposals: number;
+  failed: number;
   stopped: boolean;
 }
 

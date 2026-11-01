@@ -9,3 +9,6 @@ CLAUDE.md
 *.db
 *.db-wal
 *.db-shm
+
+# private signing key of the updater: never in git
+*.key

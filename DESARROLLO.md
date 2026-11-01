@@ -186,7 +186,39 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.5.0)
+## 5. Qué hace hoy (v0.5.1)
+
+### Novedades de la 0.5.1 (01-11-2026)
+- **Líneas en el árbol de la Paramparā** (barra lateral): cada discípulo queda unido a su guru con
+  ├ / └ y una línea │ baja por cada guru que tiene más discípulos debajo (`treeLines` en Sidebar.tsx,
+  sangría `INDENT` = 16 px; estilos `.tree-lines` en styles.css).
+- **Editar ficha › Guru / Discípulos vacíos**: se rellenan al abrir con los del árbol (antes la ficha
+  los mostraba desde el árbol pero el campo estaba vacío y no se podían cambiar). Si se quita de la
+  lista uno que está debajo en el árbol, avisa de que sigue ahí (para moverlo: ponerlo en los Discípulos
+  de su guru, o arrastrarlo).
+- **Editar ficha › Guru y Discípulos con la lista de fichas** (`NamesInput` en Dialogs.tsx): al
+  escribir o pinchar en el campo sale la lista de todas las fichas (las de la Paramparā con el icono del
+  árbol), filtrada por el nombre que se está escribiendo (lo que hay entre comas / punto y coma).
+  En Discípulos se pueden elegir varios seguidos. Debajo avisa de lo que pasará al guardar, y al
+  guardar: si **el primer guru** es una ficha y es nuevo, la ficha pasa en el árbol a su último
+  discípulo (si el guru no estaba en la Paramparā, se añade al final); y cada **discípulo nuevo** que sea
+  una ficha pasa a discípulo de esta (si esta no estaba en la Paramparā, se añade al final). Luego la
+  marca en la barra lateral. Un nombre cuenta como ficha si se eligió de la lista o si es exactamente el
+  nombre de una sola ficha. No cambia los campos de la otra ficha (el guru no recibe al discípulo en su
+  campo «Discípulos»).
+- **Rellenar fichas con IA local** (`ai.rs`, panel «Con IA local» en `components/Fill.tsx`): modelo
+  **`qwen2.5:7b`** de Ollama (4,7 GB, cabe entero en la RTX 3050; descargado el 01-11-2026). Por cada ficha
+  con texto (≥ 250 letras) y algún campo vacío manda sus textos (los más cortos primero, hasta 16.000
+  letras; contexto 8192, respuesta ≤ 900 tokens, temperatura 0) con un esquema JSON de los campos vacíos
+  `{value, evidence}`. Se descarta lo que dice «unknown / not mentioned…», lo que tiene una prueba
+  (`evidence`) cuyas palabras no están en el texto (≥ 80 %), y lugar / guru / discípulos / obras cuyos
+  nombres no están en el texto. Lo demás va a `fill::add(…, "ai", …)` (con `guru_id` si el guru es una
+  ficha). Recuerda lo ya leído en la tabla `ai_read` de `biodata-propuestas.db` (hash de modelo + texto +
+  campos pedidos): se puede parar y seguir. Comandos `ai_status / ai_start(limit) / ai_stop / ai_pull`,
+  eventos `ai-progress / ai-done / ai-error / ai-pull / ai-pull-done`. Botones «Probar con 10 fichas» y
+  «Leer todas las fichas» (991 fichas en la copia del 01-11-2026). Prueba suelta de una ficha:
+  `cargo test ai_real -- --ignored --nocapture` con `BIO_DB=<copia>` y `BIO_ID=<id>` (sin `BIO_ID` lista
+  candidatas).
 
 ### Novedades de la 0.5.0 (31-10-2026)
 - **Biblioteca › botón derecho en una carpeta › «Mandar a la papelera…»**: todos sus textos (y los de
@@ -386,7 +418,7 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 ## 7. Pendientes e ideas
 
 ### Para la próxima sesión (plan acordado el 31-10-2026)
-1. **Probar la actualización automática.** El usuario instala la 0.5.0 a mano (la 0.4.2 no sabe
+1. **Probar la actualización automática** (01-11-2026: publicada la 0.5.1 para ello). El usuario instala la 0.5.0 a mano (la 0.4.2 no sabe
    actualizarse; al desinstalar, **no marcar «Borrar los datos»**). Para probar que se actualiza sola
    hace falta publicar después una 0.5.1 (con `npm run app:build` y subir `latest.json`): la 0.5.0
    instalada debería ofrecer «Actualizar ahora» en la barra de estado.
@@ -419,6 +451,10 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 8. Historial
 
+- **01-11-2026 — v0.5.1**: líneas guru → discípulos en el árbol; Guru y Discípulos con la lista de
+  fichas al editar (y la ficha se coloca sola en el árbol); panel «Con IA local» en Rellenar fichas
+  (qwen2.5:7b; aún sin lanzar sobre la biblioteca real). Primera versión para probar la
+  actualización automática desde la 0.5.0.
 - **31-10-2026 — v0.5.0**: actualizar desde la app (updater firmado + `latest.json`); carpeta a la
   papelera; buscar en el árbol y «Mostrar en el árbol»; «Paramparā…» (poner como discípulo de…);
   colección como lista al editar; vaciar versiones anteriores; Ajustes › Rellenar fichas (calendario,

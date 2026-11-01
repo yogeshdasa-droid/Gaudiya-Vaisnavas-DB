@@ -1259,13 +1259,22 @@ export default function App() {
         <PersonDialog
           t={t}
           person={dialog.person}
+          persons={persons}
           onClose={() => setDialog(null)}
-          onSaved={(id) => {
+          onSaved={(id, moved) => {
             setDialog(null);
-            showToast(t.personSaved);
+            showToast(moved ? `${t.personSaved} · ${moved}` : t.personSaved);
             openPerson(id);
             reloadPerson();
             refreshAll();
+            if (moved)
+              api
+                .listPersons()
+                .then((list) => {
+                  setPersons(list);
+                  revealIn("person", id);
+                })
+                .catch(fail);
           }}
         />
       )}

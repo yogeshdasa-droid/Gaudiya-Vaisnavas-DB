@@ -86,7 +86,7 @@ fn in_tree(conn: &Connection, id: i64) -> rusqlite::Result<bool> {
 }
 
 /// Names written in a field: "A (his son); B, C and D" → A, B, C, D.
-fn names_in(text: &str) -> Vec<String> {
+pub(crate) fn names_in(text: &str) -> Vec<String> {
     let mut plain = String::new();
     let mut depth = 0;
     for c in text.chars() {

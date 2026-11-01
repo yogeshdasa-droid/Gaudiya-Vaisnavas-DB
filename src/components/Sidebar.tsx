@@ -248,15 +248,18 @@ function PersonList({
   }, [persons]);
 
   const rows = useMemo(() => {
-    const out: { p: PersonListItem; depth: number; hasKids: boolean }[] = [];
-    const walk = (parent: number | null, depth: number) => {
-      for (const p of kids.get(parent) ?? []) {
+    // guides: for each guru above, whether more of his disciples come below (a line goes on down)
+    const out: { p: PersonListItem; depth: number; hasKids: boolean; guides: boolean[]; last: boolean }[] = [];
+    const walk = (parent: number | null, depth: number, guides: boolean[]) => {
+      const list = kids.get(parent) ?? [];
+      list.forEach((p, i) => {
         const hasKids = (kids.get(p.id)?.length ?? 0) > 0;
-        out.push({ p, depth, hasKids });
-        if (hasKids && !closed.has(p.id)) walk(p.id, depth + 1);
-      }
+        const last = i === list.length - 1;
+        out.push({ p, depth, hasKids, guides, last });
+        if (hasKids && !closed.has(p.id)) walk(p.id, depth + 1, depth ? [...guides, !last] : guides);
+      });
     };
-    walk(null, 0);
+    walk(null, 0, []);
     return out;
   }, [kids, closed]);
 
@@ -351,17 +354,18 @@ function PersonList({
   };
   const dropClass = (id: number) => (drag?.drop && "target" in drag.drop && drag.drop.target === id ? ` drop-${drag.drop.kind}` : "");
 
-  const personRow = (p: PersonListItem, inTree = false, caret?: React.ReactNode, depth = 0) => (
+  const personRow = (p: PersonListItem, inTree = false, caret?: React.ReactNode, depth = 0, lines?: React.ReactNode) => (
     <div
       data-ctx="person"
       data-id={p.id}
       data-drop={inTree ? "node" : "out"}
       className={`tree-row person${activeId === p.id ? " active" : ""}${drag?.id === p.id ? " dragged" : ""}${inTree ? dropClass(p.id) : ""}`}
-      style={inTree ? { paddingLeft: 4 + depth * 14 } : undefined}
+      style={inTree ? { paddingLeft: 4 + depth * INDENT } : undefined}
       onMouseDown={(e) => startDrag(e, p)}
       onClick={() => !dragged.current && onPerson(p.id)}
       title={p.aka ? `${p.name} · ${p.aka}` : p.name}
     >
+      {lines}
       {caret}
       <span className="name">{p.name}</span>
       {p.docs > 1 && <span className="count">{p.docs.toLocaleString(lang)}</span>}
@@ -414,7 +418,7 @@ function PersonList({
           {groupHead("tree", t.parampara, parentOf.size, "root", t.paramparaHint)}
           {!closedGroups.has("tree") && (
             <div className="parampara">
-              {rows.map(({ p, depth, hasKids }) => (
+              {rows.map(({ p, depth, hasKids, guides, last }) => (
                 <div key={p.id}>
                   {personRow(
                     p,
@@ -433,6 +437,7 @@ function PersonList({
                       <span className="caret-space" />
                     ),
                     depth,
+                    depth > 0 && treeLines(guides, last),
                   )}
                 </div>
               ))}
@@ -517,6 +522,23 @@ interface Props {
   tag: string | null;
   onTag: (tag: string | null) => void;
   reveal: Reveal | null;
+}
+
+/** Indent of each level of the Guru Paramparā, in px. */
+const INDENT = 16;
+
+/** The lines from a guru down to his disciples: │ for each guru above whose
+ *  disciples go on below, and ├ or └ joining the row to its own guru. */
+function treeLines(guides: boolean[], last: boolean) {
+  // the middle of the caret of a guru at level i
+  const x = (i: number) => 4 + i * INDENT + 6;
+  return (
+    <span className="tree-lines" aria-hidden>
+      {guides.map((on, i) => (on ? <span key={i} className="tl-down" style={{ left: x(i) }} /> : null))}
+      <span className={`tl-down${last ? " tl-half" : ""}`} style={{ left: x(guides.length) }} />
+      <span className="tl-across" style={{ left: x(guides.length), width: INDENT - 6 }} />
+    </span>
+  );
 }
 
 export function Sidebar(p: Props) {

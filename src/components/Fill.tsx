@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { Check, ListChecks, ListTree, Search, X } from "lucide-react";
-import { api, Proposal } from "../api";
+import { listen } from "@tauri-apps/api/event";
+import { Check, CheckCircle2, Download, ListChecks, ListTree, Search, Sparkles, Square, X, XCircle } from "lucide-react";
+import { AiDone, AiStatus, api, Proposal, PullProgress } from "../api";
 import { T } from "../i18n";
 import { ask } from "./ui";
 
@@ -76,6 +77,7 @@ export function FillPane({ t, onToast, onChanged, onOpenPerson }: { t: T; onToas
           {busy ? <span className="spinner light" /> : <Search size={15} />} {t.fillGather}
         </button>
       </div>
+      <AiSection t={t} onToast={onToast} onFound={load} />
 
       {list && list.length === 0 && <p className="muted">{t.fillNone}</p>}
       {list && list.length > 0 && (
@@ -128,5 +130,109 @@ export function FillPane({ t, onToast, onChanged, onOpenPerson }: { t: T; onToas
         </>
       )}
     </>
+  );
+}
+
+/** The local AI (Ollama) reading the texts of the records. */
+function AiSection({ t, onToast, onFound }: { t: T; onToast: (msg: string) => void; onFound: () => void }) {
+  const [st, setSt] = useState<AiStatus | null>(null);
+  const [pull, setPull] = useState<PullProgress | null>(null);
+  const load = () => api.aiStatus().then(setSt, (e) => onToast(String(e)));
+  useEffect(() => {
+    load();
+    const unsubs = [
+      listen<[number, number, string]>("ai-progress", (e) =>
+        setSt((s) => s && { ...s, busy: true, done: e.payload[0], total: e.payload[1], current: e.payload[2] }),
+      ),
+      listen<AiDone>("ai-done", (e) => {
+        onToast(t.aiDone(e.payload.records, e.payload.proposals, e.payload.failed));
+        load();
+        onFound();
+      }),
+      listen<string>("ai-error", (e) => {
+        onToast(e.payload);
+        load();
+        onFound();
+      }),
+      listen<PullProgress>("ai-pull", (e) => setPull(e.payload)),
+      listen<string | null>("ai-pull-done", (e) => {
+        setPull(null);
+        if (e.payload) onToast(e.payload);
+        load();
+      }),
+    ];
+    return () => unsubs.forEach((u) => u.then((f) => f()));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const pct = (d: number, n: number) => (n ? Math.round((d / n) * 100) : 0);
+  const ok = (yes: boolean, good: string, bad: string) => (
+    <span className={yes ? "sem-ok" : "sem-bad"}>
+      {yes ? <CheckCircle2 size={15} /> : <XCircle size={15} />} {yes ? good : bad}
+    </span>
+  );
+  const start = async (limit: number | null) => {
+    if (limit === null && !(await ask(t.aiAllConfirm))) return;
+    api.aiStart(limit).then(load, (e) => onToast(String(e)));
+  };
+  if (!st) return null;
+  return (
+    <div className="fill-ai">
+      <h4>
+        <Sparkles size={15} /> {t.aiTitle}
+      </h4>
+      <p className="muted small">{t.aiHint}</p>
+      <div className="sem-list">
+        <div>
+          <strong>{t.meaningOllama}</strong>
+          {ok(st.ollama, t.meaningOllamaOk, t.meaningOllamaNo)}
+          {!st.ollama && (
+            <button className="btn ghost" onClick={() => api.openExternal("https://ollama.com/download")}>
+              <Download size={15} /> {t.meaningOllamaGet}
+            </button>
+          )}
+        </div>
+        <div>
+          <strong>{t.aiModel(st.modelName)}</strong>
+          {ok(st.model, t.meaningModelOk, t.aiModelNo)}
+          {st.ollama && !st.model && !pull && (
+            <button className="btn ghost" onClick={() => api.aiPull().then(() => setPull({ status: "", completed: 0, total: 0 }), (e) => onToast(String(e)))}>
+              <Download size={15} /> {t.meaningModelGet}
+            </button>
+          )}
+          {pull && (
+            <span className="progress">
+              <span className="spinner" /> {pull.status} {pull.total ? `${pct(pull.completed, pull.total)}%` : ""}
+            </span>
+          )}
+        </div>
+        {st.read > 0 && (
+          <div>
+            <span className="muted">{t.aiRead(st.read)}</span>
+          </div>
+        )}
+      </div>
+      {st.busy ? (
+        <>
+          <p className="small">
+            {t.aiProgress(st.done, st.total, st.current)}
+            <span className="bar wide">
+              <span style={{ width: `${pct(st.done, st.total)}%` }} />
+            </span>
+          </p>
+          <button className="btn ghost" onClick={() => api.aiStop().catch((e) => onToast(String(e)))}>
+            <Square size={15} /> {t.meaningStop}
+          </button>
+        </>
+      ) : (
+        <div className="btn-row">
+          <button className="btn ghost" disabled={!st.ollama || !st.model} onClick={() => start(10)}>
+            <Sparkles size={15} /> {t.aiTry}
+          </button>
+          <button className="btn" disabled={!st.ollama || !st.model} onClick={() => start(null)}>
+            <Sparkles size={15} /> {t.aiAll}
+          </button>
+        </div>
+      )}
+    </div>
   );
 }

@@ -1,5 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod ai;
 mod backup;
 mod calendar;
 mod db;
@@ -42,6 +43,8 @@ struct AppState {
     startup_error: Option<String>,
     /// the search by meaning (its own file and thread)
     semantic: Arc<semantic::Shared>,
+    /// filling in records with the local AI (its own thread)
+    ai: Arc<ai::Shared>,
 }
 
 type CmdResult<T> = Result<T, String>;
@@ -302,6 +305,62 @@ async fn fill_accept(state: State<'_, AppState>, ids: Vec<i64>) -> CmdResult<usi
 #[tauri::command]
 async fn fill_reject(state: State<'_, AppState>, ids: Vec<i64>) -> CmdResult<()> {
     fill::reject(&fill::open(&state.db_path)?, &ids)
+}
+
+#[tauri::command]
+async fn ai_status(state: State<'_, AppState>) -> CmdResult<ai::Status> {
+    Ok(ai::status(&state.db_path, &state.ai))
+}
+
+/// The local AI reads the records (all, or the first `limit` still to
+/// read) in a thread of its own; progress in "ai-progress" events.
+#[tauri::command]
+async fn ai_start(app: AppHandle, limit: Option<usize>) -> CmdResult<()> {
+    let state = app.state::<AppState>();
+    if state.startup_error.is_some() {
+        return Err("La base de datos no está disponible".into());
+    }
+    let shared = state.ai.clone();
+    if shared.busy.swap(true, Ordering::SeqCst) {
+        return Ok(());
+    }
+    shared.stop.store(false, Ordering::SeqCst);
+    let (db_path, app) = (state.db_path.clone(), app.clone());
+    std::thread::spawn(move || {
+        let r = ai::run(&db_path, &shared, limit, |done, total, name| {
+            *shared.progress.lock().unwrap() = (done, total, name.to_string());
+            let _ = app.emit("ai-progress", (done, total, name));
+        });
+        *shared.progress.lock().unwrap() = (0, 0, String::new());
+        shared.busy.store(false, Ordering::SeqCst);
+        match r {
+            Ok(done) => {
+                let _ = app.emit("ai-done", done);
+            }
+            Err(e) => {
+                let _ = app.emit("ai-error", e);
+            }
+        }
+    });
+    Ok(())
+}
+
+#[tauri::command]
+async fn ai_stop(state: State<'_, AppState>) -> CmdResult<()> {
+    state.ai.stop.store(true, Ordering::SeqCst);
+    Ok(())
+}
+
+/// Downloads the model of the AI through Ollama; progress in "ai-pull" events.
+#[tauri::command]
+async fn ai_pull(app: AppHandle) -> CmdResult<()> {
+    std::thread::spawn(move || {
+        let r = semantic::pull_model(ai::MODEL, |p| {
+            let _ = app.emit("ai-pull", p);
+        });
+        let _ = app.emit("ai-pull-done", r.err());
+    });
+    Ok(())
 }
 
 /// Plain words of the library with a known spelling with diacritics.
@@ -936,6 +995,7 @@ fn main() {
                 backing_up,
                 startup_error,
                 semantic: Arc::new(semantic::Shared::default()),
+                ai: Arc::new(ai::Shared::default()),
             });
             // the search by meaning catches up with the changes, once it has
             // been prepared and Ollama is there
@@ -1019,6 +1079,10 @@ fn main() {
             fill_list,
             fill_accept,
             fill_reject,
+            ai_status,
+            ai_start,
+            ai_stop,
+            ai_pull,
             upcoming,
             lunar_label,
             import_calendar,

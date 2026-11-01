@@ -24,7 +24,7 @@ fn e(x: impl std::fmt::Display) -> String {
     x.to_string()
 }
 
-const OLLAMA: &str = "http://127.0.0.1:11434";
+pub(crate) const OLLAMA: &str = "http://127.0.0.1:11434";
 pub const MODEL: &str = "embeddinggemma";
 /// pieces sent to the model at once
 const BATCH: usize = 32;
@@ -84,7 +84,7 @@ fn open(db_path: &Path) -> Res<Connection> {
 
 // ---------------------------------------------------------------- Ollama
 
-fn agent(read_secs: u64) -> ureq::Agent {
+pub(crate) fn agent(read_secs: u64) -> ureq::Agent {
     ureq::AgentBuilder::new().timeout_connect(Duration::from_secs(2)).timeout_read(Duration::from_secs(read_secs)).build()
 }
 
@@ -99,11 +99,16 @@ struct TagModel {
 
 /// (Ollama answers, the model is downloaded)
 pub fn ollama_state() -> (bool, bool) {
+    ollama_has(MODEL)
+}
+
+/// (Ollama answers, this model is downloaded)
+pub fn ollama_has(model_name: &str) -> (bool, bool) {
     match agent(5).get(&format!("{OLLAMA}/api/tags")).call() {
         Ok(r) => {
             let model = r
                 .into_json::<Tags>()
-                .map(|t| t.models.iter().any(|m| m.name == MODEL || m.name.starts_with(&format!("{MODEL}:"))))
+                .map(|t| t.models.iter().any(|m| m.name == model_name || (!model_name.contains(':') && m.name.starts_with(&format!("{model_name}:")))))
                 .unwrap_or(false);
             (true, model)
         }
@@ -150,9 +155,14 @@ pub struct PullProgress {
 
 /// Downloads the model (≈ 620 MB) through Ollama, reporting progress.
 pub fn pull(progress: impl Fn(PullProgress)) -> Res<()> {
+    pull_model(MODEL, progress)
+}
+
+/// Downloads a model through Ollama, reporting progress.
+pub fn pull_model(model_name: &str, progress: impl Fn(PullProgress)) -> Res<()> {
     let r = agent(3600)
         .post(&format!("{OLLAMA}/api/pull"))
-        .send_json(json!({ "model": MODEL, "stream": true }))
+        .send_json(json!({ "model": model_name, "stream": true }))
         .map_err(|x| format!("Ollama: {x}"))?;
     #[derive(Deserialize)]
     struct Line {
@@ -179,7 +189,7 @@ pub fn pull(progress: impl Fn(PullProgress)) -> Res<()> {
 // ---------------------------------------------------------------- pieces
 
 /// FNV-1a: a hash that stays the same from one version of the program to the next.
-fn hash(s: &str) -> String {
+pub(crate) fn hash(s: &str) -> String {
     let mut h: u64 = 0xcbf29ce484222325;
     for b in s.bytes() {
         h ^= b as u64;
