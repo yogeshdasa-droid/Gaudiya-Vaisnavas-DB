@@ -121,6 +121,12 @@ export const EMPTY_PERSON: PersonFields = {
 
 /** relation with the guru above in the Guru Paramparā */
 export type TreeKind = "diksa" | "siksa" | "associate";
+/** Colours given to records with a double click in the tree. */
+export type MarkColor = "yellow" | "green" | "blue";
+export type Marks = Record<number, MarkColor>;
+/** A double click goes yellow → green → blue → none. */
+export const nextMark = (m: MarkColor | undefined): MarkColor | undefined =>
+  m === undefined ? "yellow" : m === "yellow" ? "green" : m === "green" ? "blue" : undefined;
 
 export interface PersonListItem {
   id: number;
@@ -329,6 +335,8 @@ export const api = {
   setTreeKind: (id: number, kind: TreeKind) => invoke<void>("set_tree_kind", { id, kind }),
   /** writes guru and disciple in both records; returns how many changed */
   setLinks: (id: number, links: [number, TreeKind][]) => invoke<void>("set_links", { id, links }),
+  treeMarks: () => invoke<string>("tree_marks").then((s) => JSON.parse(s) as Marks),
+  setTreeMarks: (marks: Marks) => invoke<void>("set_tree_marks", { marks: JSON.stringify(marks) }),
   relate: (disciple: number, guru: number, kind: TreeKind, oldGuru: number | null) => invoke<number>("relate", { disciple, guru, kind, oldGuru }),
   setPersonPhoto: (id: number, path: string) => invoke<void>("set_person_photo", { id, path }),
   removePersonPhoto: (id: number) => invoke<void>("remove_person_photo", { id }),

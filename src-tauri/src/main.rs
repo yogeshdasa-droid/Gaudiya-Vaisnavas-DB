@@ -563,6 +563,19 @@ async fn set_tree_kind(state: State<'_, AppState>, id: i64, kind: String) -> Cmd
     store::set_tree_kind(&state.conn.lock().unwrap(), id, &kind)
 }
 
+/// The colours given to records with a double click in the tree (JSON
+/// {id: colour}, in meta: no table of its own, so the format stays).
+#[tauri::command]
+async fn tree_marks(state: State<'_, AppState>) -> CmdResult<String> {
+    Ok(db::get_meta(&state.conn.lock().unwrap(), "tree_marks").map_err(err)?.unwrap_or_else(|| "{}".into()))
+}
+
+#[tauri::command]
+async fn set_tree_marks(state: State<'_, AppState>, marks: String) -> CmdResult<()> {
+    serde_json::from_str::<std::collections::HashMap<String, String>>(&marks).map_err(err)?;
+    db::set_meta(&state.conn.lock().unwrap(), "tree_marks", &marks).map_err(err)
+}
+
 /// The other gurus of a record besides its place in the tree (its śikṣā gurus).
 #[tauri::command]
 async fn set_links(state: State<'_, AppState>, id: i64, links: Vec<(i64, String)>) -> CmdResult<()> {
@@ -1081,6 +1094,8 @@ fn main() {
             move_person,
             set_tree_kind,
             set_links,
+            tree_marks,
+            set_tree_marks,
             relate,
             set_person_photo,
             remove_person_photo,

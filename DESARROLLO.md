@@ -186,7 +186,11 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.7.2)
+## 5. Qué hace hoy (v0.7.3)
+
+### Novedades de la 0.7.3 (01-11-2026)
+- Marcas de colores con doble clic en el árbol (§7, punto 10).
+- Árbol dibujado: «Todo · Línea de dīkṣā · Línea de śikṣā» (§7, punto 11).
 
 ### Novedades de la 0.7.2 (01-11-2026)
 - Árbol dibujado: acercar / alejar (botones, Ctrl + rueda), «Ver el árbol entero» y arrastrar el
@@ -560,6 +564,22 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
    botones − % + y «Ver el árbol entero», Ctrl + rueda (acerca donde está el ratón; listener no
    pasivo), arrastrar el fondo para moverse; el árbol tiene su propio recuadro que llena la pantalla
    (`.tree-page`); el tamaño se recuerda (`bio.treeZoom`).
+10. **Marcas de colores — publicado en la 0.7.3** (idea de Whisper): doble clic en un nombre
+   (panel o árbol dibujado): amarillo → verde → azul → sin color. Se guardan en `meta` «tree_marks»
+    (JSON {id: color}; comandos `tree_marks` / `set_tree_marks`): no cambia el formato.
+11. **Tres vistas del árbol dibujado — publicado en la 0.7.3** (idea de Whisper): «Todo» (con
+    el deslizador) · «Línea de dīkṣā» (cada uno bajo su guru de dīkṣā: su sitio si es dīkṣā o un
+    «otro guru» dīkṣā; sin guru de dīkṣā en el árbol = rama propia) · «Línea de śikṣā» (solo quien
+    está en una relación de śikṣā y los gurus que llevan hasta ellos, subiendo por el árbol para que la
+    línea no se corte). `arrange()` en `TreeView.tsx`; la vista se recuerda (`bio.treeLine`). Para
+    alargar la línea de śikṣā hay que añadir las relaciones que faltan (p. ej. Narottama ← Kṛṣṇadāsa
+    Kavirāja, Viśvanātha ← Narottama, Bhaktisiddhānta ← Bhaktivinoda).
+12. **Árbol corregido en los datos de Whisper (01-11-2026)**, con `fixtree.cjs` (scratchpad) y copia
+    previa «Gaudiya Vaisnavas DB antes de corregir el árbol 2026-11-01.db»: 14 tipos (Caitanya dīkṣā de
+    Īśvara Purī; Sanātana, Gopāla Bhaṭṭa, Raghunātha Bhaṭṭa, Raghunātha dāsa, Kṛṣṇadāsa Kavirāja,
+    Śyāmānanda, Baladeva, Jagannātha dāsa, Bhaktivinoda, Gaura Kiśora → śikṣā; Svarūpa, Rāmānanda,
+    Haridāsa → pārṣada) y 10 discípulos de Narottama movidos de Lokanātha a Narottama. Quedan para
+    Whisper: Lokanātha y Śrīvāsa (¿pārṣadas de Caitanya?), fichas repetidas y campos raros.
 6. **Fichas repetidas de la misma persona** (Whisper, 01-11-2026): 1809 / 995 (Nārāyaṇa Gosvāmī
    Mahārāja) y 125 / 1516 (Prabhupāda) son la misma persona; **las une Whisper**. Idea para más
    adelante: marcar en otro color las fichas que podrían estar repetidas (p. ej. «Apellido, Nombre»
@@ -600,6 +620,8 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 8. Historial
 
+- **01-11-2026 — v0.7.3**: marcas de colores; vistas Todo / Línea de dīkṣā / Línea de śikṣā.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.3
 - **01-11-2026 — v0.7.2**: acercar / alejar y mover el árbol dibujado.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.2
 - **01-11-2026 — v0.7.1**: orden de los árboles (hojas primero) y ficha en tres columnas.

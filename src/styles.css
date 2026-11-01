@@ -4667,3 +4667,31 @@ body.dragging-person * {
   backdrop-filter: none;
   background: rgba(0, 0, 0, 0.45);
 }
+
+/* colours given with a double click in the tree, like a highlighter */
+.tree-row.mark-yellow .name,
+.tree-row.mark-green .name,
+.tree-row.mark-blue .name {
+  flex: 0 1 auto;
+  margin-right: auto;
+  padding: 0 5px;
+  border-radius: 4px;
+}
+.tree-row.mark-yellow .name {
+  background: rgba(245, 197, 66, 0.42);
+}
+.tree-row.mark-green .name {
+  background: rgba(74, 190, 110, 0.38);
+}
+.tree-row.mark-blue .name {
+  background: rgba(80, 150, 255, 0.38);
+}
+.tree-node.mark-yellow rect {
+  fill: rgba(245, 197, 66, 0.4);
+}
+.tree-node.mark-green rect {
+  fill: rgba(74, 190, 110, 0.36);
+}
+.tree-node.mark-blue rect {
+  fill: rgba(80, 150, 255, 0.36);
+}

@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { BookMarked, ChevronRight, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
-import { api, Bookmark, DocListItem, hueOf, PersonListItem, sortDisciples, TreePlace } from "../api";
+import { api, Bookmark, DocListItem, hueOf, Marks, PersonListItem, sortDisciples, TreePlace } from "../api";
 import { foldWord } from "../fold";
 import { Lang, T } from "../i18n";
 
@@ -175,10 +175,14 @@ function PersonList({
   activeDocId,
   onDoc,
   reveal,
+  marks,
+  onMark,
 }: {
   t: T;
   lang: Lang;
   persons: PersonListItem[];
+  marks: Marks;
+  onMark: (id: number) => void;
   activeId: number | null;
   onPerson: (id: number) => void;
   onMove: (id: number, place: TreePlace) => void;
@@ -359,10 +363,11 @@ function PersonList({
       data-ctx="person"
       data-id={p.id}
       data-drop={inTree ? "node" : "out"}
-      className={`tree-row person${activeId === p.id ? " active" : ""}${drag?.id === p.id ? " dragged" : ""}${inTree ? dropClass(p.id) : ""}`}
+      className={`tree-row person${activeId === p.id ? " active" : ""}${drag?.id === p.id ? " dragged" : ""}${inTree ? dropClass(p.id) : ""}${marks[p.id] ? ` mark-${marks[p.id]}` : ""}`}
       style={inTree ? { paddingLeft: 4 + depth * INDENT } : undefined}
       onMouseDown={(e) => startDrag(e, p)}
       onClick={() => !dragged.current && onPerson(p.id)}
+      onDoubleClick={() => onMark(p.id)}
       title={p.aka ? `${p.name} · ${p.aka}` : p.name}
     >
       {lines}
@@ -531,6 +536,8 @@ interface Props {
   tag: string | null;
   onTag: (tag: string | null) => void;
   reveal: Reveal | null;
+  marks: Marks;
+  onMark: (id: number) => void;
 }
 
 /** Indent of each level of the Guru Paramparā, in px. */
@@ -632,6 +639,8 @@ export function Sidebar(p: Props) {
             activeDocId={p.activeDocId}
             onDoc={(id) => p.onDoc(id)}
             reveal={p.reveal}
+            marks={p.marks}
+            onMark={p.onMark}
           />
         )}
 

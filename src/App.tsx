@@ -46,6 +46,8 @@ import {
   Hit,
   ImportProgress,
   ImportSummary,
+  Marks,
+  nextMark,
   Person,
   PersonListItem,
   Replaced,
@@ -169,6 +171,18 @@ export default function App() {
   const [dataTick, setDataTick] = useState(0);
   const [resultsOpen, setResultsOpen] = useState(false);
   const [personTag, setPersonTag] = useState<string | null>(null);
+  // colours given with a double click in the tree (kept in the database)
+  const [marks, setMarks] = useState<Marks>({});
+  useEffect(() => void api.treeMarks().then(setMarks, () => {}), []);
+  const cycleMark = (id: number) =>
+    setMarks((m) => {
+      const next = { ...m };
+      const c = nextMark(m[id]);
+      if (c) next[id] = c;
+      else delete next[id];
+      api.setTreeMarks(next).catch((e) => showToast(String(e)));
+      return next;
+    });
   const [update, setUpdate] = useState<Update | null>(null);
   const [updatePct, setUpdatePct] = useState<number | null | undefined>(undefined);
   const [reveal, setReveal] = useState<Reveal | null>(null);
@@ -993,6 +1007,8 @@ export default function App() {
               tag={personTag}
               onTag={setPersonTag}
               reveal={reveal}
+              marks={marks}
+              onMark={cycleMark}
             />
             <Splitter onDrag={(dx) => setSideW((w) => Math.min(480, Math.max(200, w + dx)))} onDoubleClick={() => setSideW(280)} />
           </>
@@ -1099,7 +1115,7 @@ export default function App() {
         )}
         {main.kind === "timeline" && <Timeline t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} onOpenDoc={openDoc} />}
         {main.kind === "calendar" && <Calendar t={t} lang={lang} reload={dataTick} onPerson={openPerson} page />}
-        {main.kind === "tree" && <TreeView t={t} persons={persons} onPerson={openPerson} />}
+        {main.kind === "tree" && <TreeView t={t} persons={persons} onPerson={openPerson} marks={marks} onMark={cycleMark} />}
       </main>
 
       <footer className="statusbar">
