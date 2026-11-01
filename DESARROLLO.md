@@ -186,7 +186,11 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.7.1)
+## 5. Qué hace hoy (v0.7.2)
+
+### Novedades de la 0.7.2 (01-11-2026)
+- Árbol dibujado: acercar / alejar (botones, Ctrl + rueda), «Ver el árbol entero» y arrastrar el
+  fondo para moverse; el árbol tiene su propio recuadro (§7, punto 9).
 
 ### Novedades de la 0.7.1 (01-11-2026)
 - Árboles: primero los discípulos sin discípulos, después los que siguen la línea (§7, punto 7).
@@ -552,6 +556,10 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
    Guru / Discípulos · Aparición / Desaparición · Lugar / Obras; Notas a lo ancho debajo
    (`PersonView.tsx`: `facts` por columnas, clases `.facts-col` y `.fact`). Los nombres largos del
    guru ya no se salen de su tarjeta (`.facts dd .chip` con salto de línea).
+9. **Acercar / alejar el árbol dibujado — publicado en la 0.7.2** (lo pidió Whisper):
+   botones − % + y «Ver el árbol entero», Ctrl + rueda (acerca donde está el ratón; listener no
+   pasivo), arrastrar el fondo para moverse; el árbol tiene su propio recuadro que llena la pantalla
+   (`.tree-page`); el tamaño se recuerda (`bio.treeZoom`).
 6. **Fichas repetidas de la misma persona** (Whisper, 01-11-2026): 1809 / 995 (Nārāyaṇa Gosvāmī
    Mahārāja) y 125 / 1516 (Prabhupāda) son la misma persona; **las une Whisper**. Idea para más
    adelante: marcar en otro color las fichas que podrían estar repetidas (p. ej. «Apellido, Nombre»
@@ -592,6 +600,8 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 8. Historial
 
+- **01-11-2026 — v0.7.2**: acercar / alejar y mover el árbol dibujado.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.2
 - **01-11-2026 — v0.7.1**: orden de los árboles (hojas primero) y ficha en tres columnas.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.1
 - **01-11-2026 — v0.7.0** (DATA_VERSION 6): varios gurus en el árbol (`person_links`), deslizador

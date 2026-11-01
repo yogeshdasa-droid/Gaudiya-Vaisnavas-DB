@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Network } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Maximize, Network, ZoomIn, ZoomOut } from "lucide-react";
 import { PersonListItem, sortDisciples, TreeKind } from "../api";
 import { T } from "../i18n";
 
@@ -7,6 +7,17 @@ const W = 200; // box width
 const H = 30; // box height
 const DX = 250; // from one generation to the next
 const DY = 40; // from one line to the next
+const ZOOM_MIN = 0.15;
+const ZOOM_MAX = 2.5;
+
+function storedZoom(): number {
+  try {
+    const z = Number(localStorage.getItem("bio.treeZoom"));
+    return z >= ZOOM_MIN && z <= ZOOM_MAX ? z : 1;
+  } catch {
+    return 1;
+  }
+}
 
 interface Box {
   p: PersonListItem;
@@ -29,6 +40,63 @@ interface Link {
 export function TreeView({ t, persons, onPerson }: { t: T; persons: PersonListItem[]; onPerson: (id: number) => void }) {
   // 0 = only the dīkṣā Paramparā … 100 = the śikṣā relations stand out
   const [mix, setMix] = useState(0);
+  const [zoom, setZoomState] = useState(storedZoom);
+  const canvas = useRef<HTMLDivElement>(null);
+  const zoomRef = useRef(zoom);
+  zoomRef.current = zoom;
+  /** A new size, keeping the point (cx, cy) of the canvas (default: its middle) where it was. */
+  const setZoom = (z: number, cx?: number, cy?: number) => {
+    const el = canvas.current;
+    const next = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, z));
+    const old = zoomRef.current;
+    if (!el || next === old) return;
+    const px = cx ?? el.clientWidth / 2;
+    const py = cy ?? el.clientHeight / 2;
+    const [x, y] = [(el.scrollLeft + px) / old, (el.scrollTop + py) / old];
+    zoomRef.current = next;
+    setZoomState(next);
+    try {
+      localStorage.setItem("bio.treeZoom", String(next));
+    } catch {
+      /* storage unavailable */
+    }
+    requestAnimationFrame(() => {
+      el.scrollLeft = x * next - px;
+      el.scrollTop = y * next - py;
+    });
+  };
+  // Ctrl + wheel: bigger or smaller around the mouse (React's wheel cannot stop the page zoom)
+  useEffect(() => {
+    const el = canvas.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      const r = el.getBoundingClientRect();
+      setZoom(zoomRef.current * (e.deltaY < 0 ? 1.15 : 1 / 1.15), e.clientX - r.left, e.clientY - r.top);
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  });
+  // dragging the background moves around the tree, like a map
+  const pan = (e: React.MouseEvent) => {
+    const el = canvas.current;
+    if (!el || e.button !== 0 || (e.target as Element).closest(".tree-node")) return;
+    e.preventDefault();
+    const [sx, sy, l, t0] = [e.clientX, e.clientY, el.scrollLeft, el.scrollTop];
+    el.classList.add("panning");
+    const move = (m: MouseEvent) => {
+      el.scrollLeft = l - (m.clientX - sx);
+      el.scrollTop = t0 - (m.clientY - sy);
+    };
+    const up = () => {
+      el.classList.remove("panning");
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("mouseup", up);
+    };
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mouseup", up);
+  };
   const { boxes, links, width, height } = useMemo(() => {
     const ids = new Set(persons.filter((p) => p.tree).map((p) => p.id));
     const kids = new Map<number | null, PersonListItem[]>();
@@ -90,7 +158,7 @@ export function TreeView({ t, persons, onPerson }: { t: T; persons: PersonListIt
   return (
     <div className="reader">
       <div className="reader-scroll">
-        <div className="tree-view">
+        <div className="tree-view tree-page">
           <header className="view-head">
             <h1>
               <Network size={22} /> {t.treeView}
@@ -102,12 +170,35 @@ export function TreeView({ t, persons, onPerson }: { t: T; persons: PersonListIt
               <span className={mix >= 50 ? "on" : ""}>{t.treeSliderSiksa}</span>
               <span className="muted small">{hasSiksa ? t.treeSliderHint : t.treeNoLinks}</span>
             </div>
+            <div className="tree-zoom" title={t.treeZoomHint}>
+              <button className="icon-btn" title={t.treeZoomOut} onClick={() => setZoom(zoom / 1.25)}>
+                <ZoomOut size={18} />
+              </button>
+              <button className="link-btn" title={t.treeZoomReset} onClick={() => setZoom(1)}>
+                {Math.round(zoom * 100)} %
+              </button>
+              <button className="icon-btn" title={t.treeZoomIn} onClick={() => setZoom(zoom * 1.25)}>
+                <ZoomIn size={18} />
+              </button>
+              <button
+                className="btn ghost"
+                onClick={() => {
+                  const el = canvas.current;
+                  if (!el) return;
+                  setZoom(Math.min(1, (el.clientWidth - 20) / width, (el.clientHeight - 20) / height));
+                  requestAnimationFrame(() => el.scrollTo(0, 0));
+                }}
+              >
+                <Maximize size={15} /> {t.treeFit}
+              </button>
+              <span className="muted small">{t.treeZoomHint}</span>
+            </div>
           </header>
           {boxes.length === 0 ? (
             <p className="muted">{t.paramparaEmpty}</p>
           ) : (
-            <div className="tree-canvas">
-              <svg width={width} height={height} viewBox={`-10 -10 ${width} ${height}`}>
+            <div className="tree-canvas" ref={canvas} onMouseDown={pan}>
+              <svg width={width * zoom} height={height * zoom} viewBox={`-10 -10 ${width} ${height}`}>
                 <g opacity={diksaOpacity}>
                   {links
                     .filter((l) => !siksa(l))

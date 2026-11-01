@@ -3595,6 +3595,38 @@ body.dragging-person * {
   position: absolute;
   transform: translateX(-50%);
 }
+/* the tree page: the canvas takes the rest of the height and scrolls on its own */
+.reader-scroll:has(> .tree-page) {
+  display: flex;
+  flex-direction: column;
+}
+.tree-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding-bottom: 20px;
+}
+.tree-page .tree-canvas {
+  flex: 1;
+  min-height: 320px;
+  cursor: grab;
+}
+.tree-page .tree-canvas.panning {
+  cursor: grabbing;
+  user-select: none;
+}
+.tree-zoom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  margin-top: 10px;
+}
+.tree-zoom .link-btn {
+  min-width: 58px;
+  font-variant-numeric: tabular-nums;
+}
 .tree-canvas {
   overflow: auto;
   padding: 10px;
