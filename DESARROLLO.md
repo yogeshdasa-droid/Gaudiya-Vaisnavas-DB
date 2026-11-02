@@ -523,7 +523,7 @@ Publicada la **0.7.3** (DATA_VERSION 6). En una tarde se publicaron 0.6.0 → 0.
    en el árbol.
 4. Para probar la interfaz con la app de Whisper abierta: `WEBVIEW2_USER_DATA_FOLDER` (ver CLAUDE.md).
 
-### Hecho el 02-11-2026 (instalador 0.7.4 hecho; sin publicar en GitHub todavía)
+### Hecho el 02-11-2026 (publicado en la 0.7.4)
 1. **Árbol hondo en el panel** (`Sidebar.tsx`): la sangría por nivel baja de 16 a 6 px según lo hondo
    del árbol abierto y el ancho del panel (`INDENT`, `MIN_INDENT`, `NAME_ROOM`, ResizeObserver); si aun
    así no cabe, el árbol se desliza (margen negativo `shift`, `.parampara { overflow: hidden }`) hasta
@@ -684,6 +684,9 @@ Publicada la **0.7.3** (DATA_VERSION 6). En una tarde se publicaron 0.6.0 → 0.
 
 ## 8. Historial
 
+- **02-11-2026 — v0.7.4**: árbol hondo legible; tipos vāṇī / sannyāsa / veśa; árbol → fichas;
+  repetidas en rojo; colorear la línea; otros gurus fuera del árbol; comprobar los datos; enlaces web.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.4
 - **01-11-2026 — v0.7.3**: marcas de colores; vistas Todo / Línea de dīkṣā / Línea de śikṣā.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.3
 - **01-11-2026 — v0.7.2**: acercar / alejar y mover el árbol dibujado.
