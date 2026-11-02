@@ -186,7 +186,13 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.8.2)
+## 5. Qué hace hoy (v0.8.3)
+
+### Novedades de la 0.8.3 (02-11-2026)
+- La barra de arriba ya no esconde Ajustes en ventanas estrechas: el cuadro de búsqueda cede primero
+  (`.topbar .searchbox { min-width: 140px }`, `.top-actions { flex-shrink: 0 }`); sin el nombre de la
+  app por debajo de 1360 px; sin el orden de resultados ni el botón de idioma por debajo de 860 px.
+  Medido de 640 a 1500 px (la ventana no baja de 900).
 
 ### Novedades de la 0.8.2 (02-11-2026)
 - Filtro de Personas: primero las fichas que **se llaman** así; debajo, «Lo nombran en sus datos» (las
@@ -822,6 +828,9 @@ Estado:
 
 ## 8. Historial
 
+- **02-11-2026 — v0.8.3**: Ajustes siempre a la vista en la barra de arriba.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.8.3
+
 - **02-11-2026 — v0.8.2**: filtro de Personas con el nombre primero; nombres que solo cambian en el título.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.8.2
 - **02-11-2026 — datos, árbol** (antes de «Pasar la Guru Paramparā a las fichas», que Whisper pegó para
@@ -832,6 +841,12 @@ Estado:
   fichas repetidas en el árbol (Nityānanda 1047/1851, Śrīdhara 1227/1802, Kṛṣṇadāsa Kavirāja 759/1836),
   guru de Nityānanda (¿Mādhavendra o Lakṣmīpati?), Ramahari ← Jagannātha dās Bābājī, Gaura dāsa bābājī
   (Nandagrāma) ← Sanātana, y asociados de Mahāprabhu puestos como dīkṣā.
+  Después (Whisper): repetidas ya unidas; Nityānanda (1851) sigue bajo Mādhavendra y tiene además
+  Lakṣmīpati Tīrtha como «otro guru» (dīkṣā, según el Bhakti-ratnākara) con una nota que explica las dos
+  versiones; los 15 «dīkṣā» de Mahāprabhu (Anupama, Dāmodara Paṇḍit, Prabodhānanda…) pasan a **asociado**.
+  Ramahari ← Jagannātha dās Bābājī y Gaura dāsa bābājī (Nandagrāma) ← Sanātana: etiqueta **«Por
+  verificar»** y una nota (el árbol sin cambiar), hasta tener la fuente (decisión de Whisper).
+  Copia previa: «antes de asociados y Nityananda 2026-11-02».
 
 - **02-11-2026 — datos, «Comprobar los datos» (540 avisos)**, decisiones de Whisper: Śrīnivāsa Ācārya (1466,
   de Gopāla Bhaṭṭa) ≠ Śrīnivāsa Ācārya Ṭhākura (1465, de Caitanya) — ojo: sus notas parecen del mismo

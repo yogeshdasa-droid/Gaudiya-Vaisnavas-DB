@@ -633,11 +633,29 @@ select {
   gap: 12px;
   flex-shrink: 0;
 }
+/* in a narrow window the search box gives way first: Settings and the
+   buttons on the right are always in sight */
+.topbar .searchbox {
+  min-width: 140px;
+}
 .top-actions {
   display: flex;
   align-items: center;
   gap: 4px;
   margin-left: auto;
+  flex-shrink: 0;
+}
+@media (max-width: 1360px) {
+  .brand-name {
+    display: none;
+  }
+}
+/* a very narrow window: the order of the results and the language go */
+@media (max-width: 860px) {
+  .search-opts select,
+  .top-actions .lang-btn {
+    display: none;
+  }
 }
 
 /* ================================================================ sidebar */
