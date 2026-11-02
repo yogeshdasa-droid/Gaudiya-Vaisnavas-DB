@@ -901,6 +901,11 @@ async fn mark_distinct(state: State<'_, AppState>, ids: Vec<i64>) -> CmdResult<(
 }
 
 #[tauri::command]
+async fn unmark_distinct(state: State<'_, AppState>, a: i64, b: i64) -> CmdResult<()> {
+    store::unmark_distinct(&state.conn.lock().unwrap(), a, b)
+}
+
+#[tauri::command]
 async fn set_tag(state: State<'_, AppState>, ids: Vec<i64>, tag: String, on: bool) -> CmdResult<()> {
     store::set_tag(&mut state.conn.lock().unwrap(), &ids, &tag, on)
 }
@@ -1184,6 +1189,7 @@ fn main() {
             image_as_photo,
             review_docs,
             mark_distinct,
+            unmark_distinct,
             set_tag,
             list_distinct,
             open_external,

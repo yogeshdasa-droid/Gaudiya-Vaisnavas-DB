@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { BookOpen, GitMerge, ListTree, SearchCheck, SkipForward, Trash2, UserRound, Users, UserX } from "lucide-react";
+import { BookOpen, GitMerge, ListTree, SearchCheck, SkipForward, Trash2, Undo2, UserRound, Users, UserX } from "lucide-react";
 import { api, isNamesake, Issue, IssueKind, PersonListItem, ReviewDoc, SyncChange } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { Modal } from "./ui";
@@ -268,6 +268,19 @@ export function ReviewPane({
   };
   useEffect(load, []); // eslint-disable-line react-hooks/exhaustive-deps
   const dups = useMemo(() => duplicateGroups(persons, distinct).length, [persons, distinct]);
+  // the pairs called different people, to undo a mistake (they come back in red)
+  const apart = useMemo(() => {
+    const byId = new Map(persons.map((p) => [p.id, p]));
+    return distinct
+      .map(([a, b]) => ({ a: byId.get(a), b: byId.get(b) }))
+      .filter((x): x is { a: PersonListItem; b: PersonListItem } => !!x.a && !!x.b)
+      .sort((x, y) => x.a.name.localeCompare(y.a.name, undefined, { sensitivity: "base" }));
+  }, [persons, distinct]);
+  const unmark = (a: number, b: number) =>
+    api.unmarkDistinct(a, b).then(
+      () => (onToast(t.distinctUndone), onChanged(), api.listDistinct().then(setDistinct, () => {})),
+      (e) => onToast(String(e)),
+    );
   const [issues, setIssues] = useState<Issue[] | null>(null);
   const [checking, setChecking] = useState(false);
   const [onlyTree, setOnlyTree] = useState(true);
@@ -405,6 +418,34 @@ export function ReviewPane({
       <button className="btn" disabled={!dups} onClick={onDuplicates}>
         <Users size={15} /> {t.dupOpen}
       </button>
+
+      <h3>{t.distinctTitle}</h3>
+      <p className="muted small">{t.distinctHint}</p>
+      {apart.length === 0 ? (
+        <p className="muted">{t.nothingHere}</p>
+      ) : (
+        <details className="check-group">
+          <summary>
+            {t.distinctPairs} <span className="count">{apart.length}</span>
+          </summary>
+          <div className="check-list">
+            {apart.map(({ a, b }) => (
+              <div key={`${a.id}-${b.id}`} className="check-item">
+                <button className="link" onClick={() => onOpenPerson(a.id)}>
+                  {a.name}
+                </button>
+                <span className="muted"> ≠ </span>
+                <button className="link" onClick={() => onOpenPerson(b.id)}>
+                  {b.name}
+                </button>
+                <button className="icon-btn" title={t.distinctUndo} onClick={() => unmark(a.id, b.id)}>
+                  <Undo2 size={13} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </details>
+      )}
 
       <h3>{t.oddTitlesTitle}</h3>
       <p className="muted small">{t.oddTitlesHint}</p>

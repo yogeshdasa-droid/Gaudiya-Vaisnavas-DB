@@ -583,6 +583,13 @@ pub fn mark_distinct(conn: &mut Connection, ids: &[i64]) -> Res<()> {
     tx.commit().map_err(e)
 }
 
+/// Forgets that two records were called different people (a mistake): they
+/// can be proposed as the same person again.
+pub fn unmark_distinct(conn: &Connection, a: i64, b: i64) -> Res<()> {
+    conn.execute("DELETE FROM person_distinct WHERE a = ?1 AND b = ?2", params![a.min(b), a.max(b)]).map_err(e)?;
+    Ok(())
+}
+
 pub fn list_distinct(conn: &Connection) -> Res<Vec<(i64, i64)>> {
     let mut st = conn.prepare("SELECT a, b FROM person_distinct").map_err(e)?;
     let rows = st.query_map([], |r| Ok((r.get(0)?, r.get(1)?))).map_err(e)?;

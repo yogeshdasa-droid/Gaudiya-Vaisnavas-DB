@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { BookOpen, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Pencil, Search, TextSearch, Trash2, UserRound, Users, X } from "lucide-react";
+import { ArrowUp, BookOpen, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Pencil, Search, TextSearch, Trash2, UserRound, Users, X } from "lucide-react";
 import { api, fileUrl, isNamesake, NAMESAKES, Person, PersonListItem, SectionText, TocEntry } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
@@ -52,6 +52,20 @@ interface Props {
 }
 
 const NO_TERMS: Term[] = [];
+
+/** The first lines of a text that only repeat the record's name or the part's
+ *  title ("ĪŚVARA PURĪ", "ŚRĪ ĪŚVARA PURĪ"): they are already in the bar above. */
+function withoutRepeatedTitles(s: SectionText, names: string[]): SectionText {
+  const cores = new Set(names.map(coreName).filter(Boolean));
+  const lines = s.text.split("\n");
+  let i = 0;
+  for (; i < lines.length; i++) {
+    const l = lines[i].replace(/^[\s#>*_]+|[\s*_:.]+$/g, "");
+    if (l && (l.length > 80 || !cores.has(coreName(l)))) break;
+  }
+  const text = lines.slice(i).join("\n");
+  return text.trim() ? { ...s, text } : s;
+}
 
 /** How much of a single text is shown inside the record (the rest in the reader). */
 const INLINE_SECTIONS = 4;
@@ -183,8 +197,37 @@ export function PersonView(p: Props) {
   const parts = inline && inline.total > 1 && inline.toc.length > 1 ? inline : null;
   const goPart = (ord: number) => {
     if (!parts || ord < 0 || ord >= parts.total) return;
-    api.getSections(parts.docId, ord, ord).then((sections) => setInline((x) => x && { ...x, sections, ord }), (e) => p.onToast(String(e)));
+    api.getSections(parts.docId, ord, ord).then(
+      (sections) => {
+        setInline((x) => x && { ...x, sections, ord });
+        // the new part from its start, under the bar
+        textRef.current?.scrollIntoView({ block: "start" });
+      },
+      (e) => p.onToast(String(e)),
+    );
   };
+
+  // a long text: its headings beside it, to jump without scrolling, and a
+  // button back to the top
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const [outline, setOutline] = useState<{ text: string; el: HTMLElement }[]>([]);
+  useEffect(() => {
+    // not the page marks of PDFs ("p. 3") nor the name repeated: only real headings
+    const own = new Set([person?.name ?? "", single?.title ?? ""].map(coreName));
+    const seen = new Set<string>();
+    const heads = [...(bodyRef.current?.querySelectorAll<HTMLElement>("h1, h2, h3, h4, .ln.h") ?? [])]
+      .map((el) => ({ text: (el.textContent ?? "").replace(/^#+\s*/, "").trim(), el }))
+      .filter((h) => {
+        const k = coreName(h.text);
+        if (!h.text || h.text.length > 120 || /^p(age|ág)?\.?\s*\d+$/i.test(h.text) || own.has(k) || seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      });
+    setOutline(heads.length >= 3 ? heads : []);
+  }, [inline, p.readerStyle, p.names]); // eslint-disable-line react-hooks/exhaustive-deps
+  const [far, setFar] = useState(false);
 
   const onInlineClick = async (e: React.MouseEvent) => {
     const a = (e.target as HTMLElement).closest("a");
@@ -311,7 +354,12 @@ export function PersonView(p: Props) {
 
   return (
     <div className="reader person-view">
-      <div className="reader-scroll">
+      {far && (
+        <button className="btn to-top" onClick={() => scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" })}>
+          <ArrowUp size={15} /> {t.toTop}
+        </button>
+      )}
+      <div className="reader-scroll" ref={scrollRef} onScroll={(e) => setFar(e.currentTarget.scrollTop > 900)}>
         <div className="person-inner">
           <header className="person-head">
             <div className="person-cover-wrap">
@@ -446,7 +494,9 @@ export function PersonView(p: Props) {
               <h2>
                 <BookOpen size={14} /> {t.texts} <span className="pill">1</span>
               </h2>
-              <div className="inline-doc">
+              <div className="inline-doc" ref={textRef}>
+                {/* stays at the top while the text is read */}
+                <div className="inline-sticky">
                 <div className="inline-head" data-ctx="doc" data-id={single.id}>
                   <span className="tc-title">{single.title}</span>
                   <CollectionChip name={single.collection} />
@@ -481,7 +531,10 @@ export function PersonView(p: Props) {
                     </span>
                   </div>
                 )}
+                </div>
+                <div className={`inline-main${outline.length ? " with-outline" : ""}`}>
                 <div
+                  ref={bodyRef}
                   className={`reader-body ${p.readerStyle === "editor" ? "src-view" : p.readerStyle}`}
                   style={{ fontSize: p.fontSize }}
                   data-ctx="doc"
@@ -496,7 +549,7 @@ export function PersonView(p: Props) {
                     inline.sections.map((s) => (
                       <SectionView
                         key={s.id}
-                        s={s}
+                        s={withoutRepeatedTitles(s, [person.name, single.title, s.heading ?? ""])}
                         terms={NO_TERMS}
                         multi={inline.total > 1}
                         source={p.readerStyle === "editor"}
@@ -510,6 +563,17 @@ export function PersonView(p: Props) {
                       {t.readMore}
                     </button>
                   )}
+                </div>
+                {outline.length > 0 && (
+                  <nav className="inline-outline">
+                    <div className="outline-title">{t.inThisText}</div>
+                    {outline.map((h, i) => (
+                      <button key={i} title={h.text} onClick={() => h.el.scrollIntoView({ block: "start", behavior: "smooth" })}>
+                        {h.text}
+                      </button>
+                    ))}
+                  </nav>
+                )}
                 </div>
               </div>
               <button className="link-btn add-text-link" onClick={() => p.onAddText(person)}>

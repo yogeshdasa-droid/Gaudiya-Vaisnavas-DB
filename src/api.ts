@@ -447,6 +447,7 @@ export const api = {
   reviewDocs: () => invoke<{ empty: ReviewDoc[]; oddTitles: ReviewDoc[] }>("review_docs"),
   markDistinct: (ids: number[]) => invoke<void>("mark_distinct", { ids }),
   listDistinct: () => invoke<[number, number][]>("list_distinct"),
+  unmarkDistinct: (a: number, b: number) => invoke<void>("unmark_distinct", { a, b }),
   setTag: (ids: number[], tag: string, on: boolean) => invoke<void>("set_tag", { ids, tag, on }),
   openExternal: (target: string) => invoke<void>("open_external", { target }),
   replacePreview: (spec: ReplaceSpec) => invoke<ReplacePreview>("replace_preview", { spec }),

@@ -186,7 +186,14 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.7.7)
+## 5. Qué hace hoy (v0.7.8)
+
+### Novedades de la 0.7.8 (02-11-2026)
+- Texto dentro de la ficha: la barra (título, partes) se queda fija arriba al leer; no salen las
+  primeras líneas que solo repiten el nombre; botón «↑ Arriba»; índice de subtítulos al lado (solo si
+  hay 3 o más de verdad: hoy casi ningún texto los tiene).
+- «Homónimos» se ve siempre, aunque esté vacía.
+- Ajustes › Revisar › «Marcadas como “No son la misma persona”»: deshacer la X con una flecha.
 
 ### Novedades de la 0.7.7 (02-11-2026)
 - Carpeta **«Homónimos»** en el panel Personas (personas distintas con el mismo nombre: Haridāsa,
@@ -512,8 +519,9 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 ## 7. Pendientes e ideas
 
 ### Para la próxima sesión (después del 02-11-2026) — dónde nos quedamos
-Publicada la **0.7.7** (DATA_VERSION 6, sin cambio de formato desde la 0.7.0). El 02-11-2026 se
-publicaron 0.7.4 a 0.7.7 (ver «Hecho el 02-11-2026» abajo y §8). Estado:
+Publicada la **0.7.8** (DATA_VERSION 6, sin cambio de formato desde la 0.7.0). El 02-11-2026 se
+publicaron 0.7.4 a 0.7.8 (ver «Hecho el 02-11-2026» abajo y §8). Whisper tiene «un par de ideas»
+más para después de la 0.7.8. Estado:
 1. **Le toca a Whisper, con las herramientas nuevas**, en este orden:
    - Ajustes › Revisar › **Comprobar los datos** (casilla «Solo la Guru Paramparā») y arreglar lo que
      salga. En la copia del 02-11 salían, p. ej.: Nityānanda bajo Mādhavendra Purī en el árbol pero su
@@ -534,8 +542,23 @@ publicaron 0.7.4 a 0.7.7 (ver «Hecho el 02-11-2026» abajo y §8). Estado:
 2. **Rellenar fichas con IA** (qwen3.5:4b): iba por ~600 de 986; volver a pulsar «Leer todas las
    fichas» tras actualizar. Whisper revisa las propuestas y cuenta qué falla para afinar `ai.rs`.
 3. **Ideas sin hacer**: OCR del único PDF escaneado; firma digital del .exe.
+   Sigue sin poder deshacerse una unión de fichas (merge): solo con una copia de seguridad.
+   Muchos textos tienen marcas de página de PDF como subtítulos («## p. 1») y el nombre repetido
+   («## BALARĀMA DĀS» varias veces): limpiarlos sería otra mejora (con Reemplazar o una limpieza única).
 4. Para probar la interfaz con la app de Whisper abierta: `WEBVIEW2_USER_DATA_FOLDER` (ver CLAUDE.md).
    La copia de pruebas del 02-11 está en el scratchpad de esa sesión (se borra); hacer otra copia.
+
+### Hecho el 02-11-2026, publicado en la 0.7.8
+1. **Texto dentro de la ficha** (`PersonView.tsx`): `.inline-sticky` (cabecera + barra de partes) con
+   `position: sticky`; por eso `.inline-doc` usa `overflow: clip` (con `hidden` no funciona).
+   `withoutRepeatedTitles`: quita las primeras líneas cuyo `coreName` es el de la ficha, el título o la
+   parte (solo al mostrar, el texto no cambia). Botón `.to-top` cuando se ha bajado más de 900 px.
+   Índice `.inline-outline` (columna de 210 px, `@container` lo esconde si la tarjeta mide < 680 px):
+   solo con ≥ 3 subtítulos que no sean «p. N» ni el nombre; en 70 textos largos de la copia, ninguno.
+   Al cambiar de parte, la tarjeta vuelve a su principio.
+2. «Homónimos» siempre a la vista (vacía, con `t.namesakesEmpty`).
+3. **Deshacer «No son la misma persona»**: Ajustes › Revisar › «Marcadas como “No son la misma
+   persona”», parejas con flecha (`store::unmark_distinct`, orden `unmark_distinct`) → vuelven en rojo.
 
 ### Hecho el 02-11-2026, publicado en la 0.7.7
 1. **Homónimos** (idea de Whisper): muchos Haridāsa, Kṛṣṇadāsa, Govinda, Jagannātha… que son personas
@@ -728,6 +751,10 @@ publicaron 0.7.4 a 0.7.7 (ver «Hecho el 02-11-2026» abajo y §8). Estado:
 ---
 
 ## 8. Historial
+
+- **02-11-2026 — v0.7.8**: barra fija y «Arriba» en el texto de la ficha, sin títulos repetidos;
+  Homónimos siempre a la vista; deshacer «No son la misma persona».
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.8
 
 - **02-11-2026 — v0.7.7**: carpeta «Homónimos»; rojo de las repetidas en el árbol dibujado; título
   del trozo movido = su primera línea.

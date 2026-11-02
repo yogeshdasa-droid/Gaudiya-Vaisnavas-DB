@@ -532,20 +532,20 @@ function PersonList({
               )}
             </div>
           )}
-          {namesakes.length > 0 && (
-            <>
-              {groupHead("namesakes", t.namesakes, namesakes.reduce((n, g) => n + g.people.length, 0), undefined, t.namesakesHint)}
-              {!closedGroups.has("namesakes") &&
-                namesakes.map((g) => (
-                  <div key={g.label}>
-                    <div className="letter namesake-head">{g.label}</div>
-                    {g.people.map((p) => (
-                      <div key={p.id}>{personRow(p)}</div>
-                    ))}
-                  </div>
-                ))}
-            </>
-          )}
+          {groupHead("namesakes", t.namesakes, namesakes.reduce((n, g) => n + g.people.length, 0), undefined, t.namesakesHint)}
+          {!closedGroups.has("namesakes") &&
+            (namesakes.length === 0 ? (
+              <div className="side-empty small">{t.namesakesEmpty}</div>
+            ) : (
+              namesakes.map((g) => (
+                <div key={g.label}>
+                  <div className="letter namesake-head">{g.label}</div>
+                  {g.people.map((p) => (
+                    <div key={p.id}>{personRow(p)}</div>
+                  ))}
+                </div>
+              ))
+            ))}
           {groupHead("other", t.otherVaisnavas, others.length, "out")}
           {!closedGroups.has("other") && (
             <div data-drop="out" className={drag?.drop?.kind === "out" ? "drop-zone-hot" : ""}>
