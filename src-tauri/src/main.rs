@@ -3,6 +3,7 @@
 mod ai;
 mod backup;
 mod calendar;
+mod check;
 mod chronicle;
 mod db;
 mod export;
@@ -588,6 +589,24 @@ async fn relate(state: State<'_, AppState>, disciple: i64, guru: i64, kind: Stri
     store::relate(&mut state.conn.lock().unwrap(), disciple, guru, &kind, old_guru)
 }
 
+/// Takes guru and disciple out of both records (see store::unrelate).
+#[tauri::command]
+async fn unrelate(state: State<'_, AppState>, disciple: i64, guru: i64) -> CmdResult<usize> {
+    store::unrelate(&mut state.conn.lock().unwrap(), disciple, guru)
+}
+
+/// What does not fit in the records: gurus, disciples, dates (see check::check).
+#[tauri::command]
+async fn check_data(state: State<'_, AppState>) -> CmdResult<Vec<check::Issue>> {
+    check::check(&state.conn.lock().unwrap()).map_err(err)
+}
+
+/// Writes the Guru Paramparā in the records (see store::sync_tree).
+#[tauri::command]
+async fn sync_tree(state: State<'_, AppState>, write: bool) -> CmdResult<Vec<store::SyncChange>> {
+    store::sync_tree(&mut state.conn.lock().unwrap(), write)
+}
+
 #[tauri::command]
 async fn remove_person_photo(state: State<'_, AppState>, id: i64) -> CmdResult<()> {
     store::remove_person_photo(&state.conn.lock().unwrap(), id)
@@ -1097,6 +1116,9 @@ fn main() {
             tree_marks,
             set_tree_marks,
             relate,
+            unrelate,
+            sync_tree,
+            check_data,
             set_person_photo,
             remove_person_photo,
             create_doc,

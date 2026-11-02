@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, ListTree, ListX, FilePen, FileText, FolderInput, GitMerge, History, Search, Trash2, Undo2, Upload, UserPlus, UserRound, X } from "lucide-react";
-import { api, DocInfo, EMPTY_PERSON, Person, PersonFields, PersonListItem, SectionText, TreeKind, Version } from "../api";
+import { api, DocInfo, EMPTY_PERSON, Person, PersonFields, PersonListItem, SectionText, TREE_KINDS, TreeKind, Version } from "../api";
 import { T } from "../i18n";
 import { ask, Modal } from "./ui";
 import { foldName } from "./Sidebar";
@@ -385,7 +385,7 @@ export function RelateDialog({
         <strong>{t.relateAsk(me.name, guru.name)}</strong>
       </p>
       <div className="relate-kinds">
-        {(["diksa", "siksa", "associate"] as TreeKind[]).map((k) => (
+        {TREE_KINDS.map((k) => (
           <label key={k} className="check">
             <input type="radio" name="relate-kind" checked={kind === k} onChange={() => setKind(k)} /> {t.treeKinds[k]}
           </label>
@@ -584,10 +584,10 @@ function MoreGurus({
   exclude: number[];
 }) {
   const [q, setQ] = useState("");
-  const inTreeList = useMemo(() => persons.filter((p) => p.tree), [persons]);
+  // any record: one not in the tree goes in at its first level on saving
   const matches = useMemo(
-    () => filterPersons(inTreeList, q, 12).filter((p) => !exclude.includes(p.id) && !links.some(([g]) => g === p.id)),
-    [inTreeList, q, exclude, links],
+    () => filterPersons(persons, q, 12).filter((p) => !exclude.includes(p.id) && !links.some(([g]) => g === p.id)),
+    [persons, q, exclude, links],
   );
   const name = (id: number) => persons.find((p) => p.id === id)?.name ?? "?";
   return (
@@ -600,9 +600,12 @@ function MoreGurus({
           {links.map(([g, k], i) => (
             <div key={g} className="more-guru">
               <UserRound size={14} />
-              <span className="grow">{name(g)}</span>
+              <span className="grow">
+                {name(g)}
+                {!persons.find((p) => p.id === g)?.tree && <em className="lunar-hint"> · {t.moreGurusOutside}</em>}
+              </span>
               <select value={k} onChange={(e) => onChange(links.map((l, j) => (j === i ? [g, e.target.value as TreeKind] : l)))}>
-                {(["siksa", "associate", "diksa"] as TreeKind[]).map((kk) => (
+                {[...TREE_KINDS.filter((kk) => kk !== "diksa"), "diksa" as const].map((kk) => (
                   <option key={kk} value={kk}>
                     {t.treeKinds[kk]}
                   </option>
@@ -628,6 +631,7 @@ function MoreGurus({
                   >
                     <UserRound size={13} /> {m.name}
                     {m.aka && <em>{m.aka}</em>}
+                    {!m.tree && <em>{t.moreGurusOutside}</em>}
                   </button>
                 ))}
               </div>
@@ -922,7 +926,7 @@ export function PersonDialog({
           <label>
             <span>{t.treeKind}</span>
             <select value={kind} title={t.treeKindsHint} onChange={(e) => setKind(e.target.value as TreeKind)}>
-              {(["diksa", "siksa", "associate"] as TreeKind[]).map((k) => (
+              {TREE_KINDS.map((k) => (
                 <option key={k} value={k}>
                   {t.treeKinds[k]}
                 </option>
@@ -955,7 +959,7 @@ export function PersonDialog({
         {field("tags", t.tags, t.tagsHint)}
         <label>
           <span>{t.notes}</span>
-          <textarea className="notes-editor" value={f.notes} onChange={set("notes")} />
+          <textarea className="notes-editor" value={f.notes} placeholder={t.notesHint} onChange={set("notes")} />
         </label>
       </div>
       {error && <div className="error-box">{error}</div>}

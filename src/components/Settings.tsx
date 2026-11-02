@@ -466,6 +466,7 @@ export function Settings(p: Props) {
                   onOpenDoc={p.onOpenDoc}
                   onChanged={p.onChanged}
                   onToast={p.onToast}
+                  onOpenPerson={p.onOpenPerson}
                 />
               )}
 

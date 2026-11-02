@@ -120,13 +120,51 @@ export const EMPTY_PERSON: PersonFields = {
 };
 
 /** relation with the guru above in the Guru Paramparā */
-export type TreeKind = "diksa" | "siksa" | "associate";
+export type TreeKind = "diksa" | "siksa" | "vani" | "sannyasa" | "vesa" | "associate";
+/** All of them, in the order offered in the lists. */
+export const TREE_KINDS: TreeKind[] = ["diksa", "siksa", "vani", "sannyasa", "vesa", "associate"];
+/** The line view a relation belongs to: śikṣā por vāṇī goes in the śikṣā
+ *  line; sannyāsa, veśa and associates in neither (only in the whole tree). */
+export const lineOfKind = (k: TreeKind): "diksa" | "siksa" | null => (k === "diksa" ? "diksa" : k === "siksa" || k === "vani" ? "siksa" : null);
 /** Colours given to records with a double click in the tree. */
 export type MarkColor = "yellow" | "green" | "blue";
 export type Marks = Record<number, MarkColor>;
 /** A double click goes yellow → green → blue → none. */
 export const nextMark = (m: MarkColor | undefined): MarkColor | undefined =>
   m === undefined ? "yellow" : m === "yellow" ? "green" : m === "green" ? "blue" : undefined;
+
+/** A record that writing the Guru Paramparā in the records changes, with the names it adds. */
+export interface SyncChange {
+  id: number;
+  name: string;
+  gurus: string[];
+  disciples: string[];
+}
+
+/** Something that does not fit in a record (see check.rs); the text comes from `t.checkItem[kind]`. */
+export type IssueKind =
+  | "treeGuru"
+  | "missingGuru"
+  | "missingDisciple"
+  | "notBackGuru"
+  | "notBackDisciple"
+  | "selfGuru"
+  | "unknownGuru"
+  | "noOverlap"
+  | "diedBefore"
+  | "tooLong"
+  | "sameDates"
+  | "oddName"
+  | "oddGuru";
+export interface Issue {
+  kind: IssueKind;
+  id: number;
+  name: string;
+  inTree: boolean;
+  a: string;
+  b: string;
+  other: number | null;
+}
 
 export interface PersonListItem {
   id: number;
@@ -338,6 +376,9 @@ export const api = {
   treeMarks: () => invoke<string>("tree_marks").then((s) => JSON.parse(s) as Marks),
   setTreeMarks: (marks: Marks) => invoke<void>("set_tree_marks", { marks: JSON.stringify(marks) }),
   relate: (disciple: number, guru: number, kind: TreeKind, oldGuru: number | null) => invoke<number>("relate", { disciple, guru, kind, oldGuru }),
+  unrelate: (disciple: number, guru: number) => invoke<number>("unrelate", { disciple, guru }),
+  syncTree: (write: boolean) => invoke<SyncChange[]>("sync_tree", { write }),
+  checkData: () => invoke<Issue[]>("check_data"),
   setPersonPhoto: (id: number, path: string) => invoke<void>("set_person_photo", { id, path }),
   removePersonPhoto: (id: number) => invoke<void>("remove_person_photo", { id }),
 

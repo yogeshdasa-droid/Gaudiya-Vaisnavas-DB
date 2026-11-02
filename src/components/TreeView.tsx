@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Maximize, Network, ZoomIn, ZoomOut } from "lucide-react";
-import { Marks, PersonListItem, sortDisciples, TreeKind } from "../api";
+import { lineOfKind, Marks, PersonListItem, sortDisciples, TreeKind } from "../api";
 import { T } from "../i18n";
 
 const W = 200; // box width
@@ -46,22 +46,24 @@ function arrange(persons: PersonListItem[], line: TreeLine) {
   const inTree = persons.filter((p) => p.tree);
   const ids = new Set(inTree.map((p) => p.id));
   const treeParent = (p: PersonListItem) => (p.tree!.parent !== null && ids.has(p.tree!.parent) ? p.tree!.parent : null);
-  // the guru of one kind: its place in the tree, or one of its other gurus
-  const guruOf = (p: PersonListItem, kind: TreeKind) =>
-    (p.tree!.kind === kind ? treeParent(p) : null) ?? p.links.find((l) => l.kind === kind && ids.has(l.guru))?.guru ?? null;
+  // the guru in one line: its place in the tree, or one of its other gurus
+  const guruOf = (p: PersonListItem, line: "diksa" | "siksa"): { guru: number; kind: TreeKind } | null => {
+    const up = treeParent(p);
+    if (up !== null && lineOfKind(p.tree!.kind) === line) return { guru: up, kind: p.tree!.kind };
+    return p.links.find((l) => lineOfKind(l.kind) === line && ids.has(l.guru)) ?? null;
+  };
   const under = new Map<number, { parent: number | null; kind: TreeKind | null }>();
   if (line === "all") {
     for (const p of inTree) under.set(p.id, { parent: treeParent(p), kind: treeParent(p) !== null ? p.tree!.kind : null });
   } else {
-    const kind: TreeKind = line;
     const gurus = new Set<number>();
     for (const p of inTree) {
-      const g = guruOf(p, kind);
-      if (g !== null) gurus.add(g);
+      const g = guruOf(p, line);
+      if (g !== null) gurus.add(g.guru);
     }
     for (const p of inTree) {
-      const g = guruOf(p, kind);
-      if (g !== null || gurus.has(p.id)) under.set(p.id, { parent: g, kind: g !== null ? kind : null });
+      const g = guruOf(p, line);
+      if (g !== null || gurus.has(p.id)) under.set(p.id, { parent: g?.guru ?? null, kind: g?.kind ?? null });
     }
     // the śikṣā line goes on through the gurus above (dīkṣā or not), so that it does not break
     if (line === "siksa") {
@@ -86,7 +88,7 @@ function arrange(persons: PersonListItem[], line: TreeLine) {
     const placed = under.get(p.id)!.parent;
     const others = [...p.links.map((l) => ({ guru: l.guru, kind: l.kind })), ...(treeParent(p) !== null ? [{ guru: treeParent(p)!, kind: p.tree!.kind }] : [])];
     for (const o of others) {
-      if (o.guru === placed || !under.has(o.guru) || (line !== "all" && o.kind !== line)) continue;
+      if (o.guru === placed || !under.has(o.guru) || (line !== "all" && lineOfKind(o.kind) !== line)) continue;
       if (!extras.some((x) => x.from === o.guru && x.to === p.id)) extras.push({ from: o.guru, to: p.id, kind: o.kind });
     }
   }

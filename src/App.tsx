@@ -12,7 +12,9 @@ import {
   FileDown,
   FolderOpen,
   GitMerge,
+  Highlighter,
   History,
+  UserCheck,
   Link as LinkIcon,
   List as ListIcon,
   Moon,
@@ -180,6 +182,16 @@ export default function App() {
       const c = nextMark(m[id]);
       if (c) next[id] = c;
       else delete next[id];
+      api.setTreeMarks(next).catch((e) => showToast(String(e)));
+      return next;
+    });
+  // a record and all its gurus up to the first one, in its colour (green if it has none)
+  const markLine = (id: number) =>
+    setMarks((m) => {
+      const next = { ...m };
+      const colour = m[id] ?? "green";
+      const byId = new Map(persons.map((p) => [p.id, p]));
+      for (let x: number | null | undefined = id, n = 0; x != null && n < 200; x = byId.get(x)?.tree?.parent, n++) next[x] = colour;
       api.setTreeMarks(next).catch((e) => showToast(String(e)));
       return next;
     });
@@ -600,8 +612,17 @@ export default function App() {
     // under another guru: ask how they are related, and write it in both records
     const now = persons.find((p) => p.id === id)?.tree;
     if (place && place.parent != null && (!now || now.parent !== place.parent)) return setDialog({ kind: "relate", id, place });
+    // out of the tree, or to its first level: the records may forget that guru too
+    const guru = now?.parent != null && place?.parent == null ? persons.find((p) => p.id === now.parent) : undefined;
+    const name = persons.find((p) => p.id === id)?.name ?? "";
     return api
       .movePerson(id, place)
+      .then(async () => {
+        if (guru && now?.kind !== "associate" && (await ask(t.unrelateAsk(name, guru.name)))) {
+          showToast(t.unrelateDone(await api.unrelate(id, guru.id)));
+          refreshAll();
+        }
+      })
       .then(() => api.listPersons().then(setPersons))
       .catch(fail);
   };
@@ -750,6 +771,20 @@ export default function App() {
           { label: t.mergePersons, icon: GitMerge, onClick: withPerson(id, (person) => setDialog({ kind: "merge", person, suggested: [] })) },
           { label: t.versions, icon: History, onClick: () => p && setDialog({ kind: "versions", what: "person", target: p.id, label: p.name }) },
           { label: t.importFiles, icon: Upload, onClick: () => p && pickImport({ id: p.id, name: p.name }) },
+          ...(p?.tree?.parent != null ? [{ label: t.markLine, icon: Highlighter, onClick: () => markLine(id) }] : []),
+          ...(ctxEl!.dataset.like
+            ? [
+                {
+                  label: t.notRepeated,
+                  icon: UserCheck,
+                  onClick: async () => {
+                    // each pair apart: the records it looks like may still be one person between them
+                    for (const other of ctxEl!.dataset.like!.split(",").map(Number)) await api.markDistinct([id, other]).catch(fail);
+                    setPersons(await api.listPersons());
+                  },
+                },
+              ]
+            : []),
           p?.tree
             ? { label: t.removeFromParampara, icon: ListX, onClick: () => movePerson(id, null) }
             : { label: t.addToParampara, icon: ListTree, onClick: () => movePerson(id, { parent: null, before: null }) },

@@ -186,7 +186,12 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.7.3)
+## 5. Qué hace hoy (v0.7.4)
+
+### Novedades de la 0.7.4 (02-11-2026)
+- Árbol hondo: los nombres siempre a la vista; tipos śikṣā por vāṇī, sannyāsa y bābājī veśa; el árbol
+  pasa a las fichas; fichas quizá repetidas en rojo; «Colorear su línea hasta arriba»; otros gurus
+  fuera del árbol; «Comprobar los datos»; enlaces web en las notas (§7, «Hecho el 02-11-2026»).
 
 ### Novedades de la 0.7.3 (01-11-2026)
 - Marcas de colores con doble clic en el árbol (§7, punto 10).
@@ -517,6 +522,40 @@ Publicada la **0.7.3** (DATA_VERSION 6). En una tarde se publicaron 0.6.0 → 0.
    dīkṣā fuera del árbol (p. ej. Bipin Bihārī para Bhaktivinoda) no se dibuja: habría que meterlo
    en el árbol.
 4. Para probar la interfaz con la app de Whisper abierta: `WEBVIEW2_USER_DATA_FOLDER` (ver CLAUDE.md).
+
+### Hecho el 02-11-2026 (instalador 0.7.4 hecho; sin publicar en GitHub todavía)
+1. **Árbol hondo en el panel** (`Sidebar.tsx`): la sangría por nivel baja de 16 a 6 px según lo hondo
+   del árbol abierto y el ancho del panel (`INDENT`, `MIN_INDENT`, `NAME_ROOM`, ResizeObserver); si aun
+   así no cabe, el árbol se desliza (margen negativo `shift`, `.parampara { overflow: hidden }`) hasta
+   la fila pulsada o la rama abierta. El nombre tiene `min-width: 7em`.
+2. **Tipos de relación nuevos**: `vani` (śikṣā por vāṇī: sin trato en vida — Narottama → Viśvanātha;
+   Whisper eligió el nombre), `sannyasa`, `vesa` (bābājī veśa). Solo valores de `kind`
+   (`store::TREE_KINDS`, `api.ts TREE_KINDS / lineOfKind`): **sin cambio de DATA_VERSION**. vāṇī va en
+   la «Línea de śikṣā»; sannyāsa y veśa en ninguna línea (solo árbol completo / deslizador). Color
+   `--saffron` para sannyāsa (continua) y veśa (rayas); vāṇī de rayas tenue.
+3. **Árbol → fichas**: `store::Pending` (lee cada ficha una vez, cambia en memoria y escribe al final)
+   lo usan `relate`, `unrelate` (nuevo: al sacar a alguien del árbol o subirlo al primer nivel, la app
+   pregunta si quitarlo también de las fichas) y `sync_tree` (nuevo: Ajustes › Revisar › «Pasar la
+   Guru Paramparā a las fichas», primero muestra la lista y luego escribe; solo añade). Nombres con
+   coma se escriben dados la vuelta (`in_list`: «Nityānanda Prabhu, Śrīla» → «Śrīla Nityānanda Prabhu»).
+   En la copia de pruebas: 46 fichas, 200 discípulos y 24 gurus. **Antes de pulsarlo** conviene que
+   Whisper una las fichas repetidas (saldrían dos veces: «Bhakti Dayita Mādhava» y «Dayita Mādhava
+   Gosvāmī Mahārāja»…) y revise tipos (Prabhupāda está como dīkṣā de Keśava: debería ser sannyāsa).
+4. **Fichas quizá repetidas en rojo** en el panel Personas (`Review.tsx possibleRepeats`: los grupos de
+   `duplicateGroups` y, en el árbol, mismo nombre sin títulos `looseKey`); el título dice a cuál se
+   parece. Botón derecho › «No es una ficha repetida» guarda cada pareja en `person_distinct`
+   (`markDistinct([id, otro])`). En la copia: 136 en rojo, 45 en el árbol; ninguna pareja estaba
+   guardada como distinta (las 13 del 31-10 vuelven a salir hasta que Whisper las marque).
+5. Botón derecho › **«Colorear su línea hasta arriba»** (`markLine` en `App.tsx`): la ficha y todos sus
+   gurus del árbol con su color (verde si no tiene).
+6. **Otros gurus fuera del árbol**: en «Otros gurus» se puede elegir cualquier ficha; `store::set_links`
+   mete en el primer nivel del árbol al guru que no estaba (para dibujar p. ej. Bipin Bihārī → Bhaktivinoda).
+7. **Comprobar los datos** (`check.rs`, Ajustes › Revisar): solo lee. Tipos en `check::KINDS` (textos en
+   `t.checkGroup` / `t.checkItem`): nombres-trozo, gurus distintos árbol/ficha, gurus o discípulos de la
+   ficha no unidos en el árbol, vidas que no coinciden (salvo vāṇī / asociado), fechas imposibles, gurus
+   sin ficha, y (al final, largos) relaciones que solo dice una de las dos fichas. Las listas se parten
+   por comas fuera de paréntesis. En la copia: ~400 avisos, casi todos del árbol.
+8. **Enlaces web en Notas** (`WebLinks` en `PersonView.tsx`): https://… se abre en el navegador.
 
 ### Hecho el 01-11-2026 (tarde)
 1. Whisper actualiza a la 0.5.2 (comprueba que la actualización automática desde la 0.5.1 funciona) y la

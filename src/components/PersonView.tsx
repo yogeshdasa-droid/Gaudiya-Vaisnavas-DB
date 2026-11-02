@@ -54,6 +54,34 @@ const NO_TERMS: Term[] = [];
 /** How much of a single text is shown inside the record (the rest in the reader). */
 const INLINE_SECTIONS = 4;
 
+/** A text with its web addresses as links, opened in the browser (pages
+ *  with more about the person, a book to download…). */
+function WebLinks({ text, onError }: { text: string; onError: (msg: string) => void }) {
+  const parts = text.split(/(https?:\/\/[^\s<>"«»]+[^\s<>"«».,;:!?)\]])/);
+  return (
+    <>
+      {parts.map((s, i) =>
+        i % 2 ? (
+          <a
+            key={i}
+            href={s}
+            className="web-link"
+            title={s}
+            onClick={(e) => {
+              e.preventDefault();
+              api.openExternal(s).catch((err) => onError(String(err)));
+            }}
+          >
+            {s}
+          </a>
+        ) : (
+          s
+        ),
+      )}
+    </>
+  );
+}
+
 export function PersonView(p: Props) {
   const { t, lang } = p;
   const [person, setPerson] = useState<Person | null>(null);
@@ -372,7 +400,9 @@ export function PersonView(p: Props) {
               {person.notes.trim() && (
                 <div className="fact wide">
                   <dt>{t.notes}</dt>
-                  <dd className="notes">{person.notes}</dd>
+                  <dd className="notes">
+                    <WebLinks text={person.notes} onError={p.onToast} />
+                  </dd>
                 </div>
               )}
             </dl>

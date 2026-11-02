@@ -118,7 +118,7 @@ CREATE INDEX IF NOT EXISTS person_tree_parent ON person_tree(parent_id, pos);
 CREATE TABLE IF NOT EXISTS person_links(
     person_id INTEGER NOT NULL,     -- the disciple
     guru_id INTEGER NOT NULL,
-    kind TEXT NOT NULL DEFAULT 'siksa', -- diksa | siksa | associate
+    kind TEXT NOT NULL DEFAULT 'siksa', -- store::TREE_KINDS
     PRIMARY KEY(person_id, guru_id)
 );
 CREATE INDEX IF NOT EXISTS person_links_guru ON person_links(guru_id);

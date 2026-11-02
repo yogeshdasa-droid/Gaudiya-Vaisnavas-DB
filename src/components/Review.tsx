@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { BookOpen, GitMerge, ListTree, SkipForward, Trash2, Users, UserX } from "lucide-react";
-import { api, PersonListItem, ReviewDoc } from "../api";
+import { BookOpen, GitMerge, ListTree, SearchCheck, SkipForward, Trash2, UserRound, Users, UserX } from "lucide-react";
+import { api, Issue, IssueKind, PersonListItem, ReviewDoc, SyncChange } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { Modal } from "./ui";
 import { foldName } from "./Sidebar";
@@ -58,6 +58,45 @@ export function duplicateGroups(persons: PersonListItem[], distinct: [number, nu
   return [...groups.values()]
     .filter((g) => g.length > 1 && g.some((a, i) => g.slice(i + 1).some((b) => !apart.has(`${Math.min(a.id, b.id)}-${Math.max(a.id, b.id)}`))))
     .sort((a, b) => b.reduce((s, p) => s + p.docs, 0) - a.reduce((s, p) => s + p.docs, 0));
+}
+
+/** Titles left out when two records of the Guru Paramparā are compared. */
+const TITLES = new Set([...LEADING, ...TRAILING, "bhakti", "deva", "maharaj", "maharaja", "goswami", "thakura", "swami", "svami", "ac", "a", "c"]);
+
+/** Loose key of a name: its words without titles, in any order
+ *  ("Bhakti Dayita Mādhava" = "Dayita Mādhava Gosvāmī Mahārāja"). */
+function looseKey(name: string): string {
+  const words = foldName(name)
+    .split(" ")
+    .filter((w) => w && !TITLES.has(w))
+    .map((w) => (w.length > 3 && w.endsWith("a") ? w.slice(0, -1) : w));
+  return words.sort().join(" ");
+}
+
+/**
+ * The records that may be repeated, each with the others it looks like: the
+ * groups of `duplicateGroups`, and in the Guru Paramparā also the records
+ * with the same loose name. Pairs called different people are left out.
+ */
+export function possibleRepeats(persons: PersonListItem[], distinct: [number, number][]): Map<number, PersonListItem[]> {
+  const apart = new Set(distinct.map(([a, b]) => `${Math.min(a, b)}-${Math.max(a, b)}`));
+  const out = new Map<number, PersonListItem[]>();
+  const pair = (a: PersonListItem, b: PersonListItem) => {
+    if (a.id === b.id || apart.has(`${Math.min(a.id, b.id)}-${Math.max(a.id, b.id)}`)) return;
+    for (const [x, y] of [[a, b], [b, a]]) {
+      const like = out.get(x.id) ?? [];
+      if (!like.includes(y)) out.set(x.id, [...like, y]);
+    }
+  };
+  const groups = [...duplicateGroups(persons, distinct)];
+  const byKey = new Map<string, PersonListItem[]>();
+  for (const p of persons) {
+    const k = p.tree ? looseKey(p.name) : "";
+    if (k.length >= 4) byKey.set(k, [...(byKey.get(k) ?? []), p]);
+  }
+  groups.push(...[...byKey.values()].filter((g) => g.length > 1));
+  for (const g of groups) g.forEach((a, i) => g.slice(i + 1).forEach((b) => pair(a, b)));
+  return out;
 }
 
 /** The assistant: one group at a time, merge / different people / skip. */
@@ -207,6 +246,7 @@ export function ReviewPane({
   onOpenDoc,
   onChanged,
   onToast,
+  onOpenPerson,
 }: {
   t: T;
   lang: Lang;
@@ -215,6 +255,7 @@ export function ReviewPane({
   onOpenDoc: (id: number) => void;
   onChanged: () => void;
   onToast: (msg: string) => void;
+  onOpenPerson: (id: number) => void;
 }) {
   const [data, setData] = useState<{ empty: ReviewDoc[]; oddTitles: ReviewDoc[] } | null>(null);
   const [distinct, setDistinct] = useState<[number, number][]>([]);
@@ -224,6 +265,37 @@ export function ReviewPane({
   };
   useEffect(load, []); // eslint-disable-line react-hooks/exhaustive-deps
   const dups = useMemo(() => duplicateGroups(persons, distinct).length, [persons, distinct]);
+  const [issues, setIssues] = useState<Issue[] | null>(null);
+  const [checking, setChecking] = useState(false);
+  const [onlyTree, setOnlyTree] = useState(true);
+  const check = () => {
+    setChecking(true);
+    api.checkData().then(
+      (x) => (setIssues(x), setChecking(false)),
+      (e) => (onToast(String(e)), setChecking(false)),
+    );
+  };
+  const issueGroups = useMemo(() => {
+    const by = new Map<IssueKind, Issue[]>();
+    for (const i of issues ?? []) if (!onlyTree || i.inTree) by.set(i.kind, [...(by.get(i.kind) ?? []), i]);
+    return [...by];
+  }, [issues, onlyTree]);
+  const [sync, setSync] = useState<SyncChange[] | null>(null);
+  const [syncing, setSyncing] = useState(false);
+  const syncTree = async (write: boolean) => {
+    setSyncing(true);
+    try {
+      const changes = await api.syncTree(write);
+      if (write) {
+        onToast(t.syncTreeDone(changes.length));
+        onChanged();
+        setSync(null);
+      } else setSync(changes);
+    } catch (e) {
+      onToast(String(e));
+    }
+    setSyncing(false);
+  };
 
   const rename = async (d: ReviewDoc, title: string) => {
     if (!title.trim() || title === d.title) return;
@@ -246,6 +318,85 @@ export function ReviewPane({
 
   return (
     <>
+      <h3>{t.checkTitle}</h3>
+      <p className="muted small">{t.checkHint}</p>
+      <div className="row-gap">
+        <button className="btn" disabled={checking} onClick={check}>
+          {checking ? <span className="spinner light" /> : <SearchCheck size={15} />} {t.checkRun}
+        </button>
+        <label className="check">
+          <input type="checkbox" checked={onlyTree} onChange={(e) => setOnlyTree(e.target.checked)} /> {t.checkOnlyTree}
+        </label>
+      </div>
+      {issues && (
+        <>
+          <p className="muted small">{issueGroups.length ? t.checkCount(issueGroups.reduce((n, [, g]) => n + g.length, 0)) : t.checkNothing}</p>
+          {issueGroups.map(([kind, list]) => (
+            <details key={kind} className="check-group">
+              <summary>
+                {t.checkGroup[kind]} <span className="count">{list.length}</span>
+              </summary>
+              <div className="check-list">
+                {list.map((i, n) => (
+                  <div key={n} className="check-item">
+                    <button className="link" onClick={() => onOpenPerson(i.id)}>
+                      {i.name}
+                    </button>
+                    {t.checkItem[kind](i.a, i.b) && <span className="muted"> · {t.checkItem[kind](i.a, i.b)}</span>}
+                    {i.other !== null && (
+                      <button className="icon-btn" title={t.checkOpenOther(i.a)} onClick={() => onOpenPerson(i.other!)}>
+                        <UserRound size={13} />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </details>
+          ))}
+        </>
+      )}
+
+      <h3>{t.syncTreeTitle}</h3>
+      <p className="muted small">{t.syncTreeHint}</p>
+      {sync === null ? (
+        <button className="btn" disabled={syncing} onClick={() => syncTree(false)}>
+          {syncing ? <span className="spinner light" /> : <ListTree size={15} />} {t.syncTreeCheck}
+        </button>
+      ) : sync.length === 0 ? (
+        <p className="muted">{t.syncTreeNothing}</p>
+      ) : (
+        <>
+          <p className="muted small">{t.syncTreeCount(sync.length)}</p>
+          <div className="lib-list sync-list">
+            {sync.map((c) => (
+              <div key={c.id} className="lib-item">
+                <div className="lib-info">
+                  <strong>{c.name}</strong>
+                  {c.gurus.length > 0 && (
+                    <code>
+                      {t.syncTreeGurus}: + {c.gurus.join(", ")}
+                    </code>
+                  )}
+                  {c.disciples.length > 0 && (
+                    <code>
+                      {t.syncTreeDisciples}: + {c.disciples.join(", ")}
+                    </code>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="row-gap">
+            <button className="btn" disabled={syncing} onClick={() => syncTree(true)}>
+              {syncing ? <span className="spinner light" /> : <ListTree size={15} />} {t.syncTreeWrite(sync.length)}
+            </button>
+            <button className="btn ghost" onClick={() => setSync(null)}>
+              {t.cancel}
+            </button>
+          </div>
+        </>
+      )}
+
       <h3>{t.dupTitle}</h3>
       <p className="muted small">{t.dupCount(dups)}</p>
       <button className="btn" disabled={!dups} onClick={onDuplicates}>

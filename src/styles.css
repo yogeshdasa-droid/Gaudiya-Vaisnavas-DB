@@ -17,6 +17,7 @@
   --accent-grad: linear-gradient(135deg, #f59e4b 0%, #e0701f 45%, #b8380c 100%);
   --accent-soft: #fdebdc;
   --accent-text: #a8460d;
+  --saffron: #c2620a; /* sannyāsa and veśa in the trees */
   --ring: rgba(224, 112, 31, 0.28);
   --mark: #ffe28a;
   --mark-text: inherit;
@@ -53,6 +54,7 @@
   --accent-2: #ff6b1a;
   --accent-soft: rgba(255, 138, 61, 0.14);
   --accent-text: #ffaa6e;
+  --saffron: #f08c3a;
   --ring: rgba(255, 138, 61, 0.3);
   --mark: rgba(255, 196, 70, 0.32);
   --mark-text: #fff3d6;
@@ -85,6 +87,7 @@
     --accent-2: #ff6b1a;
     --accent-soft: rgba(255, 138, 61, 0.14);
     --accent-text: #ffaa6e;
+    --saffron: #f08c3a;
     --ring: rgba(255, 138, 61, 0.3);
     --mark: rgba(255, 196, 70, 0.32);
     --mark-text: #fff3d6;
@@ -2001,6 +2004,63 @@ select {
   white-space: nowrap;
   font-size: 11.5px;
 }
+/* Check the data: one folding group per kind of thing */
+.check-group {
+  margin-bottom: 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.check-group summary {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.check-group summary .count {
+  margin-left: 6px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.check-list {
+  max-height: 50vh;
+  overflow: auto;
+  padding: 0 12px 10px;
+  font-size: 12.5px;
+}
+.check-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 3px 0;
+  border-top: 1px solid var(--border);
+}
+.check-item button.link {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--accent-text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.check-item button.link:hover {
+  text-decoration: underline;
+}
+
+/* the names a record would get from the tree: all of them, not cut */
+.sync-list {
+  max-height: 50vh;
+  overflow: auto;
+}
+.sync-list .lib-info code {
+  white-space: normal;
+}
+.row-gap {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
 .lib-info form {
   display: flex;
   gap: 4px;
@@ -2311,6 +2371,14 @@ button.logo {
   gap: 4px;
   position: relative;
 }
+/* even in a very deep tree the name is not squeezed away: the tree slides
+   sideways to the row clicked, and the gurus far to the left go out of sight */
+.parampara {
+  overflow: hidden;
+}
+.parampara .tree-row.person .name {
+  min-width: 7em;
+}
 /* lines from each guru down to his disciples */
 .tree-lines {
   position: absolute;
@@ -2342,6 +2410,18 @@ button.logo {
 .tl-associate {
   border-style: dotted;
 }
+/* śikṣā por vāṇī: dashed and faint; sannyāsa and veśa (the orders): saffron */
+.tl-vani {
+  border-style: dashed;
+  opacity: 0.55;
+}
+.tl-sannyasa,
+.tl-vesa {
+  border-color: var(--saffron);
+}
+.tl-vesa {
+  border-style: dashed;
+}
 .tree-kind {
   flex-shrink: 0;
   font-size: 11px;
@@ -2350,8 +2430,13 @@ button.logo {
 }
 /* śikṣā and pārṣada stand out from the usual dīkṣā */
 .tree-kind.siksa,
+.tree-kind.vani,
 .tree-kind.associate {
   color: var(--accent-text);
+}
+.tree-kind.sannyasa,
+.tree-kind.vesa {
+  color: var(--saffron);
 }
 .tl-across {
   top: 50%;
@@ -2591,6 +2676,13 @@ body.dragging-person * {
   flex-wrap: wrap;
   gap: 5px;
   line-height: 1.5;
+}
+/* web addresses written in the notes */
+.web-link {
+  color: var(--accent-text);
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+  cursor: pointer;
 }
 .facts dd.notes {
   display: block;
@@ -3657,6 +3749,19 @@ body.dragging-person * {
 .tree-link.associate {
   stroke-dasharray: 2 4;
 }
+.tree-link.vani {
+  stroke-dasharray: 6 4;
+  stroke-opacity: 0.55;
+}
+.tree-link.sannyasa,
+.tree-link.vesa,
+.tree-link.sannyasa.strong,
+.tree-link.vesa.strong {
+  stroke: var(--saffron);
+}
+.tree-link.vesa {
+  stroke-dasharray: 6 4;
+}
 /* the śikṣā side brought out by the slider */
 .tree-link.strong {
   stroke: var(--accent);
@@ -3727,7 +3832,12 @@ body.dragging-person * {
   fill: var(--muted);
   font-size: 11px;
 }
+.tree-node text.tree-kind.sannyasa,
+.tree-node text.tree-kind.vesa {
+  fill: var(--saffron);
+}
 .tree-node text.tree-kind.siksa,
+.tree-node text.tree-kind.vani,
 .tree-node text.tree-kind.associate {
   fill: var(--accent-text);
 }
@@ -4666,6 +4776,11 @@ body.dragging-person * {
 :root[data-skin="fluent"] .modal-backdrop {
   backdrop-filter: none;
   background: rgba(0, 0, 0, 0.45);
+}
+
+/* records that may be repeated: name in red until merged (or called different people) */
+.tree-row.repeated .name {
+  color: #e5484d;
 }
 
 /* colours given with a double click in the tree, like a highlighter */

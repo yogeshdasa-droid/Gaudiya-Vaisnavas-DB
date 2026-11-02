@@ -2,6 +2,7 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { BookMarked, ChevronRight, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
 import { api, Bookmark, DocListItem, hueOf, Marks, PersonListItem, sortDisciples, TreePlace } from "../api";
 import { foldWord } from "../fold";
+import { possibleRepeats } from "./Review";
 import { Lang, T } from "../i18n";
 
 export type SideTab = "persons" | "library" | "bookmarks" | "history";
@@ -199,6 +200,10 @@ function PersonList({
   const [closed, toggleNode] = useStoredSet<number>("treeClosed");
   const [drag, setDrag] = useState<Drag | null>(null);
   const dragged = useRef(false);
+  // records that may be repeated: their names in red, to merge them
+  const [distinct, setDistinct] = useState<[number, number][]>([]);
+  useEffect(() => void api.listDistinct().then(setDistinct, () => {}), [persons]);
+  const repeats = useMemo(() => possibleRepeats(persons, distinct), [persons, distinct]);
 
   // Names are filtered here; the records' other fields by the database.
   useEffect(() => {
@@ -266,6 +271,27 @@ function PersonList({
     walk(null, 0, []);
     return out;
   }, [kids, closed]);
+
+  // a deep tree in a narrow panel: the levels come closer so that the names
+  // are always seen (from INDENT down to MIN_INDENT px a level)
+  const treeBox = useRef<HTMLDivElement>(null);
+  const [treeW, setTreeW] = useState(0);
+  useEffect(() => {
+    const el = treeBox.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setTreeW(el.clientWidth));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [closedGroups, filter, tag]);
+  const deepest = rows.reduce((m, r) => Math.max(m, r.depth), 0);
+  const indent = treeW && deepest ? Math.max(MIN_INDENT, Math.min(INDENT, Math.floor((treeW - NAME_ROOM) / deepest))) : INDENT;
+  // and if even so it does not fit, the tree slides sideways to the row clicked
+  const [pan, setPan] = useState(0);
+  const shift = treeW && 4 + deepest * indent + NAME_ROOM > treeW ? pan : 0;
+  const follow = (depth: number) => {
+    const start = 4 + depth * indent;
+    setPan(Math.max(0, start + NAME_ROOM - treeW, Math.min(shift, start - 2 * indent)));
+  };
 
   // "show in the tree": no filter, its group and its gurus open
   useEffect(() => {
@@ -363,12 +389,17 @@ function PersonList({
       data-ctx="person"
       data-id={p.id}
       data-drop={inTree ? "node" : "out"}
-      className={`tree-row person${activeId === p.id ? " active" : ""}${drag?.id === p.id ? " dragged" : ""}${inTree ? dropClass(p.id) : ""}${marks[p.id] ? ` mark-${marks[p.id]}` : ""}`}
-      style={inTree ? { paddingLeft: 4 + depth * INDENT } : undefined}
+      data-like={repeats.get(p.id)?.map((x) => x.id).join(",")}
+      className={`tree-row person${activeId === p.id ? " active" : ""}${drag?.id === p.id ? " dragged" : ""}${inTree ? dropClass(p.id) : ""}${marks[p.id] ? ` mark-${marks[p.id]}` : ""}${repeats.has(p.id) ? " repeated" : ""}`}
+      style={inTree ? { paddingLeft: 4 + depth * indent, marginLeft: -shift } : undefined}
       onMouseDown={(e) => startDrag(e, p)}
-      onClick={() => !dragged.current && onPerson(p.id)}
+      onClick={() => {
+        if (dragged.current) return;
+        if (inTree) follow(depth);
+        onPerson(p.id);
+      }}
       onDoubleClick={() => onMark(p.id)}
-      title={p.aka ? `${p.name} · ${p.aka}` : p.name}
+      title={(p.aka ? `${p.name} · ${p.aka}` : p.name) + (repeats.has(p.id) ? `\n${t.maybeRepeated(repeats.get(p.id)!.map((x) => x.name).join(", "))}` : "")}
     >
       {lines}
       {caret}
@@ -431,7 +462,7 @@ function PersonList({
         <>
           {groupHead("tree", t.parampara, parentOf.size, "root", t.paramparaHint)}
           {!closedGroups.has("tree") && (
-            <div className="parampara">
+            <div className="parampara" ref={treeBox}>
               {rows.map(({ p, depth, hasKids, guides, last }) => (
                 <div key={p.id}>
                   {personRow(
@@ -444,6 +475,7 @@ function PersonList({
                         onMouseDown={(e) => e.stopPropagation()}
                         onClick={(e) => {
                           e.stopPropagation();
+                          follow(depth + (closed.has(p.id) ? 1 : 0));
                           toggleNode(p.id);
                         }}
                       />
@@ -451,7 +483,7 @@ function PersonList({
                       <span className="caret-space" />
                     ),
                     depth,
-                    depth > 0 && treeLines(guides, last, p.tree?.kind ?? "diksa"),
+                    depth > 0 && treeLines(guides, last, p.tree?.kind ?? "diksa", indent),
                   )}
                 </div>
               ))}
@@ -542,19 +574,23 @@ interface Props {
 
 /** Indent of each level of the Guru Paramparā, in px. */
 const INDENT = 16;
+/** The least indent, when the tree is deep and the panel narrow. */
+const MIN_INDENT = 6;
+/** Room kept for the caret, the name and its relation at the deepest level, in px. */
+const NAME_ROOM = 210;
 
 /** The lines from a guru down to his disciples: │ for each guru above whose
  *  disciples go on below, and ├ or └ joining the row to its own guru. */
-function treeLines(guides: boolean[], last: boolean, kind: string) {
+function treeLines(guides: boolean[], last: boolean, kind: string, indent: number) {
   // the middle of the caret of a guru at level i
-  const x = (i: number) => 4 + i * INDENT + 6;
+  const x = (i: number) => 4 + i * indent + 6;
   return (
     <span className="tree-lines" aria-hidden>
       {guides.map((on, i) => (on ? <span key={i} className="tl-down" style={{ left: x(i) }} /> : null))}
       {/* up to this row: drawn as its relation (solid / dashed / dotted); on down: the next disciples */}
       <span className={`tl-down tl-half tl-${kind}`} style={{ left: x(guides.length) }} />
       {!last && <span className="tl-down tl-rest" style={{ left: x(guides.length) }} />}
-      <span className={`tl-across tl-${kind}`} style={{ left: x(guides.length), width: INDENT - 6 }} />
+      <span className={`tl-across tl-${kind}`} style={{ left: x(guides.length), width: Math.max(indent - 6, 4) }} />
     </span>
   );
 }
