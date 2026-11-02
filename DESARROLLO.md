@@ -186,7 +186,13 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.8.1)
+## 5. Qué hace hoy (v0.8.2)
+
+### Novedades de la 0.8.2 (02-11-2026)
+- Filtro de Personas: primero las fichas que **se llaman** así; debajo, «Lo nombran en sus datos» (las
+  que solo lo mencionan); la lista vuelve arriba al escribir.
+- La comprobación de datos, el calendario y la línea de tiempo distinguen nombres que solo cambian en el
+  título («Śrīnivāsa Ācārya» / «Śrīnivāsa Ṭhākura»): primero se busca el nombre completo exacto.
 
 ### Novedades de la 0.8.1 (02-11-2026)
 - **Deshacer la unión** de fichas: aviso «Acabas de unir aquí: … · Deshacer la unión» durante una hora y,
@@ -566,6 +572,13 @@ Estado:
 4. Para probar la interfaz con la app de Whisper abierta: `WEBVIEW2_USER_DATA_FOLDER` (ver CLAUDE.md).
    La copia de pruebas del 02-11 está en el scratchpad de esa sesión (se borra); hacer otra copia.
 
+### Hecho el 02-11-2026, publicado en la 0.8.2
+1. `Sidebar.tsx`: el filtro separa `shown` (nombre / otros nombres) y `mentions` (solo `searchPersons`
+   por sus campos), con el título `t.filterMentions`; `listRoot` sube la lista al cambiar el filtro.
+2. `calendar::PersonIndex` guarda también `whole` (la clave entera, con títulos) y `find` la prueba antes
+   que `loose_words` si un solo registro la tiene. Prueba en `calendar.rs` (Śrīnivāsa Ācārya / Ṭhākura).
+   Con los nombres nuevos de Whisper los avisos de la comprobación bajaron de 559 a 471.
+
 ### Hecho el 02-11-2026, publicado en la 0.8.1
 1. **Deshacer la unión** (`store::merge_snapshot`, `list_merges`, `undo_merge`): antes de unir se guarda
    en `history` (kind `merge`, target = la que se queda) un `MergeUndo` en JSON: campos de la que se
@@ -808,6 +821,29 @@ Estado:
 ---
 
 ## 8. Historial
+
+- **02-11-2026 — v0.8.2**: filtro de Personas con el nombre primero; nombres que solo cambian en el título.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.8.2
+- **02-11-2026 — datos, árbol** (antes de «Pasar la Guru Paramparā a las fichas», que Whisper pegó para
+  revisar): Mādhavendra Purī ← Lakṣmīpati Tīrtha **dīkṣā** y fuera el enlace absurdo a Vṛndāvana dāsa
+  Ṭhākura; Mahāprabhu ← Keśava Bhāratī **sannyāsa**; Prabhupāda ← Bhaktisiddhānta **dīkṣā**, ← Keśava
+  Mahārāja **sannyāsa**; Bhakti Sāraṅga Gosvāmī bajo **Bhaktisiddhānta** (estaba bajo Śrīdhara M.).
+  Copia previa: «antes de corregir el arbol 2026-11-02». Pendiente de Whisper antes de pulsar el botón:
+  fichas repetidas en el árbol (Nityānanda 1047/1851, Śrīdhara 1227/1802, Kṛṣṇadāsa Kavirāja 759/1836),
+  guru de Nityānanda (¿Mādhavendra o Lakṣmīpati?), Ramahari ← Jagannātha dās Bābājī, Gaura dāsa bābājī
+  (Nandagrāma) ← Sanātana, y asociados de Mahāprabhu puestos como dīkṣā.
+
+- **02-11-2026 — datos, «Comprobar los datos» (540 avisos)**, decisiones de Whisper: Śrīnivāsa Ācārya (1466,
+  de Gopāla Bhaṭṭa) ≠ Śrīnivāsa Ācārya Ṭhākura (1465, de Caitanya) — ojo: sus notas parecen del mismo
+  Śrīnivāsa, se lo dije —; Vīrabhadra 1701/1702/1703 y Vṛndāvana dāsa 1740/1746 distintos. Otros nombres:
+  Bhaktisiddhānta (124) + «Bhaktisiddhānta Sarasvatī Ṭhākura», «Śrīla Bhaktisiddhānta Sarasvatī Mahārāja»;
+  Advaita (15) + «Śrī Advaita Prabhu»; Mahāprabhu (164) + «Caitanya». Fichas nuevas: «Śrīla Bhagavat dāsa
+  Bābājī», «Rasikānanda Dāsa». Unidas (con deshacer): «Bābājī Mahārāja: Two Beyond Duality:» → Gaura Kiśora
+  (1819); «The Qualification for Seeing God» → Bhakti Dayita Mādhava (1794); «He translated Līlāmṛta-rāsa-pūra.»
+  → Rasikānanda Prabhu (1908). Jagannātha dās Bābājī ← Baladeva: vāṇī. Quedan 559 avisos: ~80 por los dos
+  Śrīnivāsa (nombre ambiguo; idea: que `check.rs` prefiera el nombre exacto), «Rādhikāvilāsa Ṭhākura» sin
+  ficha, y ~475 que arregla «Pasar la Guru Paramparā a las fichas» (Whisper: «lo hacemos después»).
+  Copia previa: «antes de revisar los datos 2026-11-02».
 
 - **02-11-2026 — v0.8.1**: deshacer la unión de fichas; «Vaiṣṇava-maṇḍala» (un solo grupo por nombre).
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.8.1

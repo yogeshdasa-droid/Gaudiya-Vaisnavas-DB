@@ -503,6 +503,9 @@ fn loose_words(name: &str) -> Vec<String> {
 pub struct PersonIndex {
     /// (id, loose words) of every name and other name of every record
     names: Vec<(i64, Vec<String>)>,
+    /// (id, whole key, titles and all) of the same names: "Śrīnivāsa Ācārya"
+    /// and "Śrīnivāsa Ṭhākura" are told apart by them
+    whole: Vec<(i64, String)>,
     /// how much each record weighs when one name fits several (repeated
     /// records): in the Guru Paramparā first, then the one with more texts
     weight: std::collections::HashMap<i64, (bool, i64)>,
@@ -519,6 +522,7 @@ impl PersonIndex {
             Ok((r.get::<_, i64>(0)?, r.get::<_, String>(1)?, r.get::<_, String>(2)?, r.get::<_, bool>(3)?, r.get::<_, i64>(4)?))
         })?;
         let mut names = Vec::new();
+        let mut whole = Vec::new();
         let mut weight = std::collections::HashMap::new();
         for row in rows {
             let (id, name, aka, tree, docs) = row?;
@@ -527,10 +531,11 @@ impl PersonIndex {
                 let w = loose_words(n);
                 if !w.is_empty() {
                     names.push((id, w));
+                    whole.push((id, crate::store::person_key(n)));
                 }
             }
         }
-        Ok(PersonIndex { names, weight })
+        Ok(PersonIndex { names, whole, weight })
     }
 
     /// The same name, or else one name ending the other ("Saccidānanda
@@ -546,6 +551,11 @@ impl PersonIndex {
             ids.dedup();
             (ids.len() == 1).then(|| ids[0])
         };
+        // the whole name, titles and all, when only one record has it
+        let key = crate::store::person_key(name);
+        if let Some(id) = unique(self.whole.iter().filter(|(_, k)| *k == key).map(|(id, _)| *id).collect()) {
+            return Some(id);
+        }
         let mut exact: Vec<i64> = self.names.iter().filter(|(_, n)| *n == w).map(|(id, _)| *id).collect();
         if !exact.is_empty() {
             // the very same name on several records: repeated records of one person
@@ -861,6 +871,15 @@ END:VCALENDAR
         assert_eq!(find("Tirobhāva of Śrī Śrīvāsa Paṇḍita"), Some(ids[4]));
         assert_eq!(find("Tirobhāva of Nitya-līlā praviṣṭa oṁ viṣṇupāda aṣṭottara-śata-śrī Śrīmad Bhaktivedānta Vāmana Gosvāmī Mahārāja"), Some(ids[5]));
         assert_eq!(find("Tirobhāva of Śrī Murāri Gupta"), None);
+
+        // two people told apart only by their title
+        let tx = conn.transaction().unwrap();
+        let acarya = crate::store::create_person(&tx, "Śrīnivāsa Ācārya").unwrap();
+        let thakura = crate::store::create_person(&tx, "Śrīnivāsa Ṭhākura").unwrap();
+        tx.commit().unwrap();
+        let index = PersonIndex::load(&conn).unwrap();
+        assert_eq!(index.find("Śrīnivāsa Ācārya"), Some(acarya));
+        assert_eq!(index.find("Srinivasa Thakura"), Some(thakura));
 
         // the calendar's days win over the ones worked out here
         import_ics(&mut conn, text).unwrap();

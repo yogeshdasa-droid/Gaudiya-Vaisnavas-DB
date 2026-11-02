@@ -241,12 +241,24 @@ function PersonList({
     return [...count].sort((a, b) => a[0].localeCompare(b[0], undefined, { sensitivity: "base" }));
   }, [persons]);
 
-  const shown = useMemo(() => {
+  // typing in the filter: the list from its top, where the names found are
+  const listRoot = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    let el = listRoot.current?.parentElement ?? null;
+    while (el && !/(auto|scroll)/.test(getComputedStyle(el).overflowY)) el = el.parentElement;
+    el?.scrollTo({ top: 0 });
+  }, [filter]);
+
+  // the records with that name first; below, those that only name it in their
+  // fields or notes (else the one looked for is lost among them)
+  const { shown, mentions } = useMemo(() => {
     const words = foldName(filter).split(" ").filter(Boolean);
     const tagged = tag ? persons.filter((p) => tagsOf(p).includes(tag)) : persons;
-    if (!words.length) return tagged;
+    if (!words.length) return { shown: tagged, mentions: [] };
+    const named = tagged.filter((p) => words.every((w) => ` ${foldName(`${p.name} ${p.aka}`)}`.includes(` ${w}`)));
+    const ids = new Set(named.map((p) => p.id));
     const extra = new Set(fieldHits);
-    return tagged.filter((p) => words.every((w) => ` ${foldName(`${p.name} ${p.aka}`)}`.includes(` ${w}`)) || extra.has(p.id));
+    return { shown: named, mentions: tagged.filter((p) => extra.has(p.id) && !ids.has(p.id)) };
   }, [filter, tag, persons, fieldHits]);
 
   // collections that are not about people (Bhajans & Kirtans…): a group of
@@ -465,7 +477,7 @@ function PersonList({
 
   let letter = "";
   return (
-    <div className="fade-in">
+    <div className="fade-in" ref={listRoot}>
       <div className="person-filter">
         <Search size={14} />
         <input value={filter} placeholder={t.filterPersons} title={t.filterPersonsHint} spellCheck={false} onChange={(e) => setFilter(e.target.value)} />
@@ -491,10 +503,20 @@ function PersonList({
       )}
       {filter || tag ? (
         <>
-          {shown.length === 0 && <div className="side-empty">{t.noPersons}</div>}
+          {shown.length === 0 && mentions.length === 0 && <div className="side-empty">{t.noPersons}</div>}
           {shown.map((p) => (
             <div key={p.id}>{personRow(p)}</div>
           ))}
+          {mentions.length > 0 && (
+            <>
+              <div className="letter mentions-head" title={t.filterMentionsHint}>
+                {t.filterMentions} <span className="count">{mentions.length}</span>
+              </div>
+              {mentions.map((p) => (
+                <div key={p.id}>{personRow(p)}</div>
+              ))}
+            </>
+          )}
         </>
       ) : (
         <>

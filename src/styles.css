@@ -5012,6 +5012,17 @@ h2 .h2-action {
 .tree-row.repeated .name {
   color: #e5484d;
 }
+/* the filter: records that only name it, after those called so */
+.letter.mentions-head {
+  margin-top: 8px;
+  border-top: 1px solid var(--border);
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+.letter.mentions-head .count {
+  margin-left: 4px;
+  font-weight: 500;
+}
 /* a name shared by several people, in the Vaiṣṇava-maṇḍala: its people together */
 .namesake-group {
   margin: 2px 0 4px 6px;
