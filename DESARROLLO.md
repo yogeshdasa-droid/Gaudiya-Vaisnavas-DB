@@ -189,6 +189,12 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 ## 5. Qué hace hoy (v0.8.3)
 
 ### Novedades de la 0.8.3 (02-11-2026)
+- **Guru por tipo** en la ficha (idea de Whisper): «Guru de dīkṣā», «Guru de śikṣā», «Guru de sannyāsa»,
+  «Guru por vāṇī», «Guru de bābājī veśa», «Asociado de», y «Guru» para lo escrito sin tipo. Salen del
+  árbol (guru con el que cuelga + «otros gurus») y de lo escrito en la ficha («(śikṣā)»…), sin repetir
+  (`looseName`: sin Śrī, sin la «a» final, dos primeras palabras). **Discípulos** en una fila ancha
+  abajo, como Notas, agrupados por tipo con cuántos hay (del árbol: hijos y fichas que lo tienen como
+  «otro guru»; y lo escrito). `splitList` parte por comas fuera de paréntesis. Solo forma de mostrar.
 - La barra de arriba ya no esconde Ajustes en ventanas estrechas: el cuadro de búsqueda cede primero
   (`.topbar .searchbox { min-width: 140px }`, `.top-actions { flex-shrink: 0 }`); sin el nombre de la
   app por debajo de 1360 px; sin el orden de resultados ni el botón de idioma por debajo de 860 px.
@@ -828,7 +834,7 @@ Estado:
 
 ## 8. Historial
 
-- **02-11-2026 — v0.8.3**: Ajustes siempre a la vista en la barra de arriba.
+- **02-11-2026 — v0.8.3**: guru por tipo y discípulos agrupados en la ficha; Ajustes siempre a la vista.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.8.3
 
 - **02-11-2026 — v0.8.2**: filtro de Personas con el nombre primero; nombres que solo cambian en el título.

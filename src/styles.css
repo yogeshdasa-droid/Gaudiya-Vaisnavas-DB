@@ -2728,6 +2728,36 @@ body.dragging-person * {
 .fact.wide {
   grid-column: 1 / -1;
 }
+/* the disciples, wide, one line per kind of relation */
+.facts dt .count {
+  margin-left: 4px;
+  color: var(--accent-text);
+}
+.facts dd.disciple-groups {
+  flex-direction: column;
+  gap: 8px;
+}
+.disciple-group {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.disciple-kind {
+  flex: 0 0 110px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.disciple-kind .count {
+  font-weight: 500;
+  color: var(--accent-text);
+}
+.disciple-names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-width: 0;
+}
 .facts dt {
   font-size: 11px;
   font-weight: 650;

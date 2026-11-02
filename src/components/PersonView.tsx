@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { ArrowUp, BookOpen, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Pencil, Search, TextSearch, Trash2, Undo2, UserRound, Users, X } from "lucide-react";
-import { api, fileUrl, isNamesake, NAMESAKES, Person, PersonListItem, SectionText, TocEntry } from "../api";
+import { api, fileUrl, isNamesake, NAMESAKES, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
 import { ReaderStyle, SectionView } from "./Reader";
@@ -65,6 +65,59 @@ function withoutRepeatedTitles(s: SectionText, names: string[]): SectionText {
   }
   const text = lines.slice(i).join("\n");
   return text.trim() ? { ...s, text } : s;
+}
+
+/** A list of names as written in a field: split at the commas that are not
+ *  inside brackets ("X (harināma, dīkṣā), Y" is two names). */
+function splitList(value: string): string[] {
+  const out: string[] = [];
+  let depth = 0;
+  let cur = "";
+  for (const ch of value) {
+    if (ch === "(") depth++;
+    if (ch === ")") depth = Math.max(0, depth - 1);
+    if ((ch === "," || ch === "\n") && depth === 0) {
+      out.push(cur);
+      cur = "";
+    } else cur += ch;
+  }
+  out.push(cur);
+  return out.map((s) => s.trim().replace(/[,;.]+$/, "").trim()).filter(Boolean);
+}
+
+/** A name as compared inside one record's lists: without "Śrī", the final
+ *  "a"s or what follows its first two words ("Kṛṣṇadāsa Kavirāj Gosvāmī" =
+ *  "Śrī Kṛṣṇadāsa Kavirāja Gosvāmī"). */
+const HONORIFICS = new Set(foldName("Śrī Śrīla Śrīmatī Śrīmad Sri Srila").split(" "));
+function looseName(s: string): string {
+  return foldName(s.replace(/\([^)]*\)/g, "").split(/[;:]/)[0])
+    .split(" ")
+    .filter((w) => w && !HONORIFICS.has(w))
+    .map((w) => w.replace(/a$/, ""))
+    .slice(0, 2)
+    .join(" ");
+}
+
+const plainFold = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+/** "(śikṣā)" and the like after a name: the kind of relation written in the record. */
+const KIND_LABEL = /\s*\((dīkṣā|śikṣā|sannyāsa|vāṇī|veśa|bābājī veśa|pārṣada|asociado|associate|diksa|siksa|sannyasa|vani|vesa)\)\s*/gi;
+function kindOf(item: string): TreeKind | "" {
+  const label = /\(([^)]*)\)/.exec(item)?.[1];
+  if (!label) return "";
+  const l = plainFold(label);
+  if (/\bvani\b/.test(l)) return "vani";
+  if (/\bsiksa\b/.test(l)) return "siksa";
+  if (/\bsannyasa\b/.test(l)) return "sannyasa";
+  if (/\bvesa\b/.test(l)) return "vesa";
+  if (/\b(parsada|asociado|associate)\b/.test(l)) return "associate";
+  if (/\bdiksa\b/.test(l)) return "diksa";
+  return "";
+}
+/** The names grouped by kind of relation, in the order of TREE_KINDS (no kind last). */
+function byKind<N extends { kind: TreeKind | "" }>(list: N[]): [TreeKind | "", N[]][] {
+  return ([...TREE_KINDS, ""] as (TreeKind | "")[])
+    .map((k) => [k, list.filter((n) => n.kind === k)] as [TreeKind | "", N[]])
+    .filter(([, l]) => l.length > 0);
 }
 
 /** More joined parts than this: one part at a time, as before. */
@@ -406,21 +459,37 @@ export function PersonView(p: Props) {
     if (!(await ask(t.removePhotoConfirm))) return;
     api.removePersonPhoto(person.id).then(p.onPhotoChanged, (e) => p.onToast(String(e)));
   };
-  // guru and disciples: the names written in the record, plus those of the Guru Paramparā
+  // guru and disciples: the Guru Paramparā (with how they are related) and
+  // the names written in the record, once each, by kind of relation
   const me = p.persons.find((x) => x.id === person.id);
-  const treeGuru = p.persons.filter((x) => me?.tree?.parent != null && x.id === me.tree.parent);
-  const treeDisciples = p.persons.filter((x) => x.tree?.parent === person.id).sort((a, b) => a.tree!.pos - b.tree!.pos);
-  type Name = { text: string; id?: number; tree?: boolean };
+  type Name = { text: string; id?: number; tree?: boolean; kind: TreeKind | "" };
   // "Rupa Gosvami (diksa); studied under…" links to Rupa Gosvami
   const nameKey = (s: string) => s.replace(/\([^)]*\)/g, "").split(/[;:]/)[0].trim();
-  const nameList = (value: string, fromTree: PersonListItem[]): Name[] => {
-    const out: Name[] = value
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .map((text) => ({ text, id: byName(nameKey(text)) }));
-    // the Guru Paramparā only fills in what the record does not say
-    if (!out.length) for (const x of fromTree) out.push({ text: x.name, id: x.id, tree: true });
+  const fromTree = (x: PersonListItem, kind: TreeKind): Name => ({ text: x.name, id: x.id, tree: true, kind });
+  const treeGurus: Name[] = [
+    ...p.persons.filter((x) => me?.tree?.parent != null && x.id === me.tree.parent).map((x) => fromTree(x, me!.tree!.kind)),
+    ...(me?.links ?? []).flatMap((l) => p.persons.filter((x) => x.id === l.guru).map((x) => fromTree(x, l.kind))),
+  ];
+  const treeDisciples: Name[] = [
+    ...p.persons
+      .filter((x) => x.tree?.parent === person.id)
+      .sort((a, b) => a.tree!.pos - b.tree!.pos)
+      .map((x) => fromTree(x, x.tree!.kind)),
+    ...p.persons.flatMap((x) => x.links.filter((l) => l.guru === person.id).map((l) => fromTree(x, l.kind))),
+  ];
+  const nameList = (value: string, tree: Name[]): Name[] => {
+    const out: Name[] = [...tree];
+    for (const item of splitList(value)) {
+      const id = byName(nameKey(item));
+      const kind = kindOf(item);
+      const same = out.find((n) => (id && n.id === id) || looseName(n.text) === looseName(item));
+      if (same) {
+        // the tree says how they are related; the record may say it when the tree does not
+        if (!same.kind && kind) same.kind = kind;
+        continue;
+      }
+      out.push({ text: kind ? item.replace(KIND_LABEL, "").trim() : item, id, kind });
+    }
     return out;
   };
   const names = (list: Name[]) =>
@@ -441,15 +510,13 @@ export function PersonView(p: Props) {
       {lunar && <span className="lunar">{lunar}</span>}
     </>
   );
-  const gurus = nameList(person.guru, treeGuru);
-  const disciples = nameList(person.disciples, treeDisciples);
+  const gurus = byKind(nameList(person.guru, treeGurus));
+  const disciples = byKind(nameList(person.disciples, treeDisciples));
 
-  // three columns: the line (guru, disciples), the dates, place and works
+  // three columns: the gurus by kind, the dates, place and works; the
+  // disciples below, wide, by kind
   const facts: [string, React.ReactNode, boolean][][] = [
-    [
-      [t.guru, names(gurus), gurus.length > 0],
-      [t.disciples, names(disciples), disciples.length > 0],
-    ],
+    gurus.map(([kind, list]) => [kind ? t.guruOfKind[kind] : t.guru, names(list), true]),
     [
       [t.appearance, dated(person.appearance, person.appearanceDay), !!person.appearance.trim()],
       [t.disappearance, dated(person.disappearance, person.disappearanceDay), !!person.disappearance.trim()],
@@ -459,7 +526,7 @@ export function PersonView(p: Props) {
       [t.works, person.works, !!person.works.trim()],
     ],
   ];
-  const hasFacts = facts.flat().some(([, , show]) => show) || person.notes.trim();
+  const hasFacts = facts.flat().some(([, , show]) => show) || person.notes.trim() || disciples.length > 0;
   const tags = person.tags
     .split(",")
     .map((s) => s.trim())
@@ -625,6 +692,23 @@ export function PersonView(p: Props) {
                     ))}
                   </div>
                 ))}
+              {disciples.length > 0 && (
+                <div className="fact wide">
+                  <dt>
+                    {t.disciples} <span className="count">{disciples.reduce((n, [, l]) => n + l.length, 0)}</span>
+                  </dt>
+                  <dd className="disciple-groups">
+                    {disciples.map(([kind, list]) => (
+                      <div key={kind} className="disciple-group">
+                        <span className="disciple-kind">
+                          {kind ? t.disciplesOfKind[kind] : t.disciplesNoKind} <span className="count">{list.length}</span>
+                        </span>
+                        <span className="disciple-names">{names(list)}</span>
+                      </div>
+                    ))}
+                  </dd>
+                </div>
+              )}
               {person.notes.trim() && (
                 <div className="fact wide">
                   <dt>{t.notes}</dt>
