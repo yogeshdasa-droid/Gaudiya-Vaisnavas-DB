@@ -186,7 +186,11 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.8.3)
+## 5. Qué hace hoy (v0.8.4)
+
+### Novedades de la 0.8.4 (02-11-2026)
+- Los nombres largos de guru / discípulos se parten dentro de su tarjeta (`.facts dd .name-link`
+  tenía `white-space: nowrap`); medido de 1000 a 2000 px.
 
 ### Novedades de la 0.8.3 (02-11-2026)
 - **Guru por tipo** en la ficha (idea de Whisper): «Guru de dīkṣā», «Guru de śikṣā», «Guru de sannyāsa»,
@@ -833,6 +837,9 @@ Estado:
 ---
 
 ## 8. Historial
+
+- **02-11-2026 — v0.8.4**: los nombres largos ya no se salen de las tarjetas de la ficha.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.8.4
 
 - **02-11-2026 — v0.8.3**: guru por tipo y discípulos agrupados en la ficha; Ajustes siempre a la vista.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.8.3

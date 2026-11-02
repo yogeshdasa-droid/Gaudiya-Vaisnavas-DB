@@ -2712,10 +2712,17 @@ body.dragging-person * {
   gap: 10px;
   min-width: 0;
 }
-/* a long list of names wraps inside its card */
-.facts dd .chip {
+/* a long list of names wraps inside its card, and so does a long name
+   ("Śrīla Bhakti Prajñāna Keśava Gosvāmī Mahārāja") */
+.facts dd .chip,
+.facts dd .name-link {
   max-width: 100%;
   white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+.facts dd .name-link {
+  border-radius: 12px;
 }
 .fact {
   padding: 12px 14px;
