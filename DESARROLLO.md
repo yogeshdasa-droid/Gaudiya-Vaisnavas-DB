@@ -186,7 +186,12 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.7.8)
+## 5. Qué hace hoy (v0.7.9)
+
+### Novedades de la 0.7.9 (02-11-2026)
+- La búsqueda principal busca también en los datos de las fichas (notas, fechas, lugar, obras…):
+  arriba de los resultados, «Fichas que lo dicen» (5 a la vista, «Ver las N fichas», hasta 100).
+  Es la preparación para pasar los textos cortos (≤ 500 B) a Notas sin perder la búsqueda.
 
 ### Novedades de la 0.7.8 (02-11-2026)
 - Texto dentro de la ficha: la barra (título, partes) se queda fija arriba al leer; no salen las
@@ -519,9 +524,11 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 ## 7. Pendientes e ideas
 
 ### Para la próxima sesión (después del 02-11-2026) — dónde nos quedamos
-Publicada la **0.7.8** (DATA_VERSION 6, sin cambio de formato desde la 0.7.0). El 02-11-2026 se
-publicaron 0.7.4 a 0.7.8 (ver «Hecho el 02-11-2026» abajo y §8). Whisper tiene «un par de ideas»
-más para después de la 0.7.8. Estado:
+Publicada la **0.7.9** (DATA_VERSION 6, sin cambio de formato desde la 0.7.0). El 02-11-2026 se
+publicaron 0.7.4 a 0.7.9 (ver «Hecho el 02-11-2026» abajo y §8). Propuesta pendiente de que Whisper
+diga sí: **fichas con varias personas del mismo nombre** (los tres Īśāna) vistas como tarjetas, una
+por persona, con sus fuentes aparte y «Hacer ficha propia» (solo forma de mostrar, sin tocar datos).
+Estado:
 1. **Le toca a Whisper, con las herramientas nuevas**, en este orden:
    - Ajustes › Revisar › **Comprobar los datos** (casilla «Solo la Guru Paramparā») y arreglar lo que
      salga. En la copia del 02-11 salían, p. ej.: Nityānanda bajo Mādhavendra Purī en el árbol pero su
@@ -547,6 +554,19 @@ más para después de la 0.7.8. Estado:
    («## BALARĀMA DĀS» varias veces): limpiarlos sería otra mejora (con Reemplazar o una limpieza única).
 4. Para probar la interfaz con la app de Whisper abierta: `WEBVIEW2_USER_DATA_FOLDER` (ver CLAUDE.md).
    La copia de pruebas del 02-11 está en el scratchpad de esa sesión (se borra); hacer otra copia.
+
+### Hecho el 02-11-2026, publicado en la 0.7.9
+1. `search::search` devuelve también `persons: Vec<PersonHit>` (id, nombre, fragmento de sus campos)
+   desde `persons_fts`, solo en la primera página de una búsqueda de texto sin filtros de colección,
+   carpeta, texto, ficha o tipo (con «Guru Paramparā» filtra por el árbol). `Results.tsx` las muestra
+   arriba («Fichas que lo dicen»). La búsqueda por significado no las da (`persons: vec![]`).
+2. **Textos cortos → Notas** (datos, con un script por CDP en la app de Whisper, no es código de la
+   app): fichas con un solo texto Markdown de ≤ 500 B; se quitan las líneas que repiten el nombre, varias
+   entradas del mismo nombre van numeradas («1. … 2. …»), se añaden a las notas que hubiera (salvo si ya
+   lo decían) y el texto va a la Papelera. 5 textos mezclaban a otra persona: se crearon fichas nuevas
+   (Amulyadhana Rāya Bhaṭṭa, Bālaka, Bālakadāsa Vairāgī, Balarāma Oḍra, Bhīmalocana Sānyāl, Rādhākṛṣṇa
+   Ācārya (Gosvāmī) y (Ṭhākura)); en esas 5 las notas de la IA (que mezclaban) se sustituyeron.
+   En la copia de pruebas: 1.227 fichas, 7 nuevas. Los PDF cortos (5) no se tocaron.
 
 ### Hecho el 02-11-2026, publicado en la 0.7.8
 1. **Texto dentro de la ficha** (`PersonView.tsx`): `.inline-sticky` (cabecera + barra de partes) con
@@ -751,6 +771,14 @@ más para después de la 0.7.8. Estado:
 ---
 
 ## 8. Historial
+
+- **02-11-2026 — v0.7.9**: la búsqueda principal encuentra también las fichas por sus notas y datos.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.9
+
+- **02-11-2026 — datos (no programa)**: fechas de 20 fichas según la lista de Whisper (convenciones del
+  Gauḍīya Maṭha: Mahāprabhu 1533, Jīva 1533–1618), con `update_person` en su app (cada ficha guarda su
+  versión anterior). Copia previa en Documentos › … › Copias de seguridad › «antes de las fechas 2026-11-02».
+  Sin año de aparición fiable: Uddhāraṇa Datta, Govardhana Dāsa, Rāmahari, Saranga Gosvāmī.
 
 - **02-11-2026 — v0.7.8**: barra fija y «Arriba» en el texto de la ficha, sin títulos repetidos;
   Homónimos siempre a la vista; deshacer «No son la misma persona».

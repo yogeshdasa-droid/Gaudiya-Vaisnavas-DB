@@ -36,6 +36,8 @@ export interface Hit {
 export interface SearchResult {
   total: number;
   hits: Hit[];
+  /** records that say it in their notes, dates, works… (first page only) */
+  persons: { id: number; name: string; snippet: string }[];
   facets: { name: string; count: number }[];
   terms: Term[];
   millis: number;

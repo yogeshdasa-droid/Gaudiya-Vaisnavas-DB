@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FileText, Folder, ListTree, SearchX, UserRound, X } from "lucide-react";
 import { Hit, hueOf, SearchResult } from "../api";
 import { highlightParts, Term } from "../fold";
@@ -75,8 +75,11 @@ export function Results(p: Props) {
   useEffect(() => {
     listRef.current?.querySelector(`[data-i="${selected}"]`)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [selected]);
+  // the records that say it: the first five, the rest on request
+  const [allPersons, setAllPersons] = useState(false);
   useEffect(() => {
     listRef.current?.scrollTo({ top: 0 });
+    setAllPersons(false);
   }, [p.generation]);
 
   const toggleCollection = (name: string) => {
@@ -159,11 +162,31 @@ export function Results(p: Props) {
       <div className="result-list" ref={listRef}>
         {result?.error && <div className="error-box">{result.error}</div>}
         {!result && [0, 1, 2, 3, 4].map((i) => <Skeleton key={i} />)}
-        {result && !result.error && hits.length === 0 && !loading && (
+        {result && !result.error && hits.length === 0 && result.persons.length === 0 && !loading && (
           <div className="empty-state small">
             <SearchX size={34} />
             <p>{t.noResults}</p>
             <p className="muted small">{t.noResultsHint}</p>
+          </div>
+        )}
+        {hasQuery && result && result.persons.length > 0 && (
+          <div className="person-hits">
+            <div className="person-hits-title">
+              {t.personHits} <span className="n">{result.persons.length >= 100 ? "100+" : result.persons.length}</span>
+            </div>
+            {(allPersons ? result.persons : result.persons.slice(0, 5)).map((ph) => (
+              <button key={ph.id} className="person-hit" onClick={() => p.onPerson(ph.id)}>
+                <span className="person-hit-name">
+                  <UserRound size={12} /> <Highlighted text={ph.name} terms={terms} />
+                </span>
+                {ph.snippet && <span className="snippet" dangerouslySetInnerHTML={{ __html: ph.snippet }} />}
+              </button>
+            ))}
+            {result.persons.length > 5 && (
+              <button className="link-btn" onClick={() => setAllPersons((x) => !x)}>
+                {allPersons ? t.personHitsLess : t.personHitsAll(result.persons.length)}
+              </button>
+            )}
           </div>
         )}
         {hits.map((h, i) => (

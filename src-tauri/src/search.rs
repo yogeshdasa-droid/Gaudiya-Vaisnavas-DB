@@ -179,11 +179,21 @@ pub struct Facet {
     pub count: i64,
 }
 
+/// A record whose name or fields (notes, dates, works…) match the search.
+#[derive(Serialize)]
+pub struct PersonHit {
+    pub id: i64,
+    pub name: String,
+    pub snippet: String,
+}
+
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SearchResult {
     pub total: i64,
     pub hits: Vec<Hit>,
+    /// records that say it in their fields (first page of a text search only)
+    pub persons: Vec<PersonHit>,
     pub facets: Vec<Facet>,
     pub terms: Vec<Term>,
     pub millis: u128,
@@ -301,6 +311,7 @@ pub fn search(conn: &Connection, p: &SearchParams) -> rusqlite::Result<SearchRes
             return Ok(SearchResult {
                 total: 0,
                 hits: vec![],
+                persons: vec![],
                 facets: vec![],
                 terms: parsed.terms,
                 millis: started.elapsed().as_millis(),
@@ -355,9 +366,33 @@ pub fn search(conn: &Connection, p: &SearchParams) -> rusqlite::Result<SearchRes
         })
         .collect();
 
+    // The records' own fields are searched too (short texts live in their
+    // notes): only on the first page of a text search over everything.
+    let mut persons = Vec::new();
+    let unfiltered = p.collections.is_empty() && p.dir.as_deref().unwrap_or("").is_empty() && p.doc_id.is_none() && p.person_id.is_none() && p.kinds.is_empty();
+    if let (Some(expr), false, 0, true) = (&parsed.fts, p.titles_only, p.offset, unfiltered) {
+        let tree = if p.parampara_only { " AND p.id IN (SELECT person_id FROM person_tree)" } else { "" };
+        let mut st = conn.prepare(&format!(
+            "SELECT p.id, p.name, p.appearance, p.disappearance, p.place, p.guru, p.disciples, p.works, p.notes
+             FROM persons_fts JOIN persons p ON p.id = persons_fts.rowid
+             WHERE persons_fts MATCH ?1{tree} ORDER BY bm25(persons_fts, 8.0, 1.0) LIMIT 100"
+        ))?;
+        let rows = st.query_map([expr], |r| {
+            let fields: Vec<String> = (2..9).map(|i| r.get::<_, String>(i)).collect::<Result<_, _>>()?;
+            Ok((r.get::<_, i64>(0)?, r.get::<_, String>(1)?, fields))
+        })?;
+        for row in rows {
+            let (id, name, fields) = row?;
+            let all = fields.into_iter().filter(|f| !f.trim().is_empty()).collect::<Vec<_>>().join(" · ");
+            let (snippet, n) = text::snippet(&all, &parsed.terms, 30);
+            persons.push(PersonHit { id, name, snippet: if n > 0 { snippet } else { String::new() } });
+        }
+    }
+
     Ok(SearchResult {
         total,
         hits,
+        persons,
         facets,
         terms: parsed.terms,
         millis: started.elapsed().as_millis(),

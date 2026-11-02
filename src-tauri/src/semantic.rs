@@ -436,7 +436,7 @@ fn escape(s: &str) -> String {
 pub fn search(main: &Connection, db_path: &Path, shared: &Shared, p: &SearchParams) -> Res<SearchResult> {
     let started = std::time::Instant::now();
     let q = p.query.trim();
-    let empty = |error: Option<String>| SearchResult { total: 0, hits: vec![], facets: vec![], terms: vec![], millis: 0, error };
+    let empty = |error: Option<String>| SearchResult { total: 0, hits: vec![], persons: vec![], facets: vec![], terms: vec![], millis: 0, error };
     if q.is_empty() {
         return Ok(empty(None));
     }
@@ -493,7 +493,7 @@ pub fn search(main: &Connection, db_path: &Path, shared: &Shared, p: &SearchPara
     }
     let mut facets: Vec<search::Facet> = counts.into_iter().map(|(name, count)| search::Facet { name, count }).collect();
     facets.sort_by(|a, b| b.count.cmp(&a.count));
-    Ok(SearchResult { total, hits, facets, terms: vec![], millis: started.elapsed().as_millis(), error: None })
+    Ok(SearchResult { total, hits, persons: vec![], facets, terms: vec![], millis: started.elapsed().as_millis(), error: None })
 }
 
 #[cfg(test)]
