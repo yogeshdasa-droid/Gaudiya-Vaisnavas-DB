@@ -5152,3 +5152,261 @@ h2 .h2-action {
 .tree-node.mark-blue rect {
   fill: rgba(80, 150, 255, 0.36);
 }
+
+/* ================================================================ panorama */
+.panorama {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 32px 60px;
+}
+.panorama .view-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.panorama h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 28px 0 6px;
+  font-size: 15px;
+  font-weight: 650;
+}
+.panorama h2 .count {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.pano-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+}
+.pano-tabs button {
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: var(--text-2);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.pano-tabs button.on {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+.pano-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+.pano-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.pano-tile strong {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+}
+.pano-tile span {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.pano-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.pano-bar-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 260px) 1fr minmax(120px, auto) 16px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.pano-bar-row:hover:not(:disabled) {
+  background: var(--sunken);
+}
+.pano-bar-row:disabled {
+  cursor: default;
+}
+.pano-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.pano-track {
+  height: 10px;
+  border-radius: 4px;
+  background: var(--sunken);
+  box-shadow: inset 0 0 0 1px var(--border);
+  overflow: hidden;
+}
+.pano-fill {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--accent);
+}
+.pano-value {
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.pano-bar-row .caret {
+  color: var(--muted);
+  transition: transform 0.15s;
+}
+.pano-bar-row .caret.open {
+  transform: rotate(90deg);
+}
+.pano-names {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 8px 12px 8px;
+}
+.pano-names .name-link {
+  max-width: 100%;
+  white-space: normal;
+  text-align: left;
+}
+.pano-names .name-link.strong {
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+.pano-two {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 0 28px;
+}
+.pano-two .pano-bar-row {
+  grid-template-columns: 120px 1fr 40px 16px;
+}
+.pano-maps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+.map-title {
+  margin: 2px 4px 6px;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--muted);
+}
+.map-frame {
+  fill: none;
+  stroke: var(--accent);
+  stroke-dasharray: 5 4;
+  stroke-opacity: 0.6;
+}
+.pano-map {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.pano-map svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+}
+.map-region {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  fill: var(--muted);
+  opacity: 0.35;
+}
+.map-place {
+  cursor: pointer;
+}
+.map-hit {
+  fill: transparent;
+}
+.map-dot {
+  fill: var(--accent);
+  fill-opacity: 0.55;
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+.map-place:hover .map-dot,
+.map-place.on .map-dot {
+  fill-opacity: 0.95;
+}
+.map-label {
+  font-size: 13px;
+  fill: var(--text);
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 4px;
+}
+.works-list {
+  display: flex;
+  flex-direction: column;
+}
+.works-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 280px) 1fr;
+  gap: 14px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.works-name {
+  justify-self: start;
+  align-self: start;
+  max-width: 100%;
+  white-space: normal;
+  text-align: left;
+}
+.works-text {
+  color: var(--text-2);
+}
+/* contemporaries in a record */
+.contemporaries .name-link {
+  white-space: normal;
+}
+.contemporaries summary {
+  list-style: none;
+  cursor: pointer;
+}
+.contemporaries summary::-webkit-details-marker {
+  display: none;
+}
+.contemporaries summary dt::before {
+  content: "▸ ";
+}
+.contemporaries[open] summary dt::before {
+  content: "▾ ";
+}
+.contemporaries .name-link .muted {
+  font-weight: 500;
+}

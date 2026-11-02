@@ -11,6 +11,7 @@ mod extract;
 mod fill;
 mod fold;
 mod import;
+mod overview;
 mod replace;
 mod sanskrit;
 mod search;
@@ -835,6 +836,11 @@ async fn timeline(state: State<'_, AppState>) -> CmdResult<Vec<calendar::LifeSpa
     calendar::timeline(&state.conn.lock().unwrap()).map_err(err)
 }
 
+#[tauri::command]
+async fn overview(state: State<'_, AppState>) -> CmdResult<Vec<overview::OverviewPerson>> {
+    overview::overview(&state.conn.lock().unwrap()).map_err(err)
+}
+
 /// The dated entries of the chronologies of the library (Digdarśanī).
 #[tauri::command]
 async fn chronicle(state: State<'_, AppState>) -> CmdResult<Vec<chronicle::Entry>> {
@@ -1196,6 +1202,7 @@ fn main() {
             lunar_label,
             import_calendar,
             timeline,
+            overview,
             chronicle,
             export_markdown,
             export_person,

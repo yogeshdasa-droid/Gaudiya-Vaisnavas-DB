@@ -186,7 +186,23 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.8.5)
+## 5. Qué hace hoy (v0.9.0)
+
+### Novedades de la 0.9.0 (02-11-2026) — **Panorama**
+- Vista nueva **Panorama** (barra de la izquierda y botón en Inicio; `Panorama.tsx`, datos de
+  `overview.rs` → orden `overview`), con «Todas / Guru Paramparā / Vaiṣṇava-maṇḍala» y pestañas:
+  - **Estado**: % de fichas con año, aparición, desaparición, día vaiṣṇava, guru, discípulos, lugar,
+    obras, notas, texto, foto; cada barra abre la lista de las que lo tienen pendiente; fichas por siglo.
+  - **Mapa**: lugares sagrados de la casilla «Lugar» (`PLACES`: ~40 con coordenadas y formas de
+    escribirlos), mapa del norte de la India + «Bengala de cerca»; punto → quién; lista de lugares.
+  - **Ramas**: guru con más discípulos directos, total debajo y generaciones.
+  - **Año vaiṣṇava**: apariciones y desapariciones por mes vaiṣṇava, con su tithi. El día sale del
+    **calendario .ics** de Whisper si lo tiene (`calendar::person_days` + `calendar::day`), si no del texto.
+  - **Obras**: la casilla «Obras» por siglo.
+- En cada ficha, **«Coincidieron en vida»**: las fichas de la Guru Paramparā cuya vida se cruza con la
+  suya (de `timeline`; una vida con un solo año se toma de 60 años).
+- En la copia de pruebas (Guru Paramparā, 262 fichas): 13 % con algún año, 98 % con guru, 55 % con
+  lugar; 60 con día vaiṣṇava (37 sin el calendario). Ideas: más lugares en `PLACES`; rellenar años.
 
 ### Novedades de la 0.8.5 (02-11-2026)
 - Ajustes › Revisar: al abrir una ficha o un texto desde Ajustes sale abajo **«← Volver a Ajustes ›
@@ -570,8 +586,8 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 ## 7. Pendientes e ideas
 
 ### Para la próxima sesión (después del 02-11-2026) — dónde nos quedamos
-Publicada la **0.8.1** (DATA_VERSION 6, sin cambio de formato desde la 0.7.0). El 02-11-2026 se
-publicaron 0.7.4 a 0.8.1 (ver «Hecho el 02-11-2026» abajo y §8). Ideas para las tarjetas: fuentes
+Publicada la **0.9.0** (DATA_VERSION 6, sin cambio de formato desde la 0.7.0). El 02-11-2026 se
+publicaron 0.7.4 a 0.9.0 (ver «Hecho el 02-11-2026» abajo y §8). Ideas para las tarjetas: fuentes
 (CC, Bhaktiratnākara…) aparte en cada tarjeta y «Hacer ficha propia» por tarjeta (usaría `move_text`).
 Estado:
 1. **Le toca a Whisper, con las herramientas nuevas**, en este orden:
@@ -849,6 +865,9 @@ Estado:
 ---
 
 ## 8. Historial
+
+- **02-11-2026 — v0.9.0**: Panorama (Estado, Mapa, Ramas, Año vaiṣṇava, Obras) y «Coincidieron en vida».
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.9.0
 
 - **02-11-2026 — v0.8.5**: volver a Revisar sin perder la comprobación; «Escribirlo también en …» por línea.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.8.5

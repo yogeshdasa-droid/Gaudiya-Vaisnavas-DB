@@ -76,6 +76,7 @@ import { Reader, ReaderStyle, ReaderTarget } from "./components/Reader";
 import { PersonView } from "./components/PersonView";
 import { DuplicatesDialog } from "./components/Review";
 import { Timeline } from "./components/Timeline";
+import { Panorama } from "./components/Panorama";
 import { TreeView } from "./components/TreeView";
 import { Settings, SettingsTab, Skin, Theme } from "./components/Settings";
 import { Reveal, SideTab, Sidebar } from "./components/Sidebar";
@@ -105,7 +106,7 @@ function usePersisted<T>(key: string, fallback: T) {
   return [v, setV] as const;
 }
 
-type Main = { kind: "home" } | { kind: "timeline" } | { kind: "calendar" } | { kind: "tree" } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number };
+type Main = { kind: "home" } | { kind: "timeline" } | { kind: "panorama" } | { kind: "calendar" } | { kind: "tree" } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number };
 
 type Dialog =
   | { kind: "settings"; tab: SettingsTab }
@@ -1169,9 +1170,11 @@ export default function App() {
             reload={dataTick}
             onTimeline={() => setMain({ kind: "timeline" })}
             onTree={() => setMain({ kind: "tree" })}
+            onPanorama={() => setMain({ kind: "panorama" })}
           />
         )}
         {main.kind === "timeline" && <Timeline t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} onOpenDoc={openDoc} />}
+        {main.kind === "panorama" && <Panorama t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} />}
         {main.kind === "calendar" && <Calendar t={t} lang={lang} reload={dataTick} onPerson={openPerson} page />}
         {main.kind === "tree" && <TreeView t={t} persons={persons} onPerson={openPerson} marks={marks} onMark={cycleMark} />}
       </main>

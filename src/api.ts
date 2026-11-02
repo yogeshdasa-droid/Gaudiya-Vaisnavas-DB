@@ -235,6 +235,29 @@ export interface CalEvent {
   computed: boolean;
 }
 
+/** What a record has, for the Panorama. */
+export interface OverviewPerson {
+  id: number;
+  name: string;
+  tree: boolean;
+  born: number | null;
+  died: number | null;
+  /** [month 0–12, tithi 1–30] */
+  appearanceDay: [number, number] | null;
+  disappearanceDay: [number, number] | null;
+  hasAppearance: boolean;
+  hasDisappearance: boolean;
+  hasGuru: boolean;
+  hasDisciples: boolean;
+  hasPlace: boolean;
+  hasWorks: boolean;
+  hasNotes: boolean;
+  hasPhoto: boolean;
+  docs: number;
+  place: string;
+  works: string;
+}
+
 export interface LifeSpan {
   id: number;
   name: string;
@@ -442,6 +465,7 @@ export const api = {
   calendarInfo: () => invoke<CalendarInfo>("calendar_info"),
   clearCalendar: () => invoke<void>("clear_calendar"),
   timeline: () => invoke<LifeSpan[]>("timeline"),
+  overview: () => invoke<OverviewPerson[]>("overview"),
   chronicle: () => invoke<ChronicleEntry[]>("chronicle"),
   exportMarkdown: (dir: string) => invoke<void>("export_markdown", { dir }),
   exportPerson: (id: number, path: string) => invoke<void>("export_person", { id, path }),

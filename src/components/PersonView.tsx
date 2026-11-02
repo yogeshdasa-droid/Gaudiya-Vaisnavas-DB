@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { ArrowUp, BookOpen, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Pencil, Search, TextSearch, Trash2, Undo2, UserRound, Users, X } from "lucide-react";
-import { api, fileUrl, isNamesake, NAMESAKES, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
+import { api, fileUrl, isNamesake, LifeSpan, NAMESAKES, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
 import { ReaderStyle, SectionView } from "./Reader";
@@ -289,6 +289,25 @@ export function PersonView(p: Props) {
     const apart = new Set(distinct.flatMap(([a, b]) => (a === person.id ? [b] : b === person.id ? [a] : [])));
     return p.persons.filter((x) => x.id !== person.id && !apart.has(x.id) && !isNamesake(x) && coreName(x.name) === core).slice(0, 8);
   }, [person, p.persons, distinct]);
+  // who lived at the same time (the Guru Paramparā, by their years); a life
+  // with one year known is taken as 60 years long
+  const [spans, setSpans] = useState<LifeSpan[]>([]);
+  useEffect(() => void api.timeline().then(setSpans, () => setSpans([])), [p.reload]);
+  const contemporaries = useMemo(() => {
+    const life = (l: LifeSpan) => [l.born ?? (l.died !== null ? l.died - 60 : 0), l.died ?? (l.born !== null ? l.born + 60 : 0)];
+    const me = spans.find((l) => l.id === p.id);
+    if (!me) return [];
+    const [a, b] = life(me);
+    return spans
+      .filter((l) => l.id !== p.id && l.parampara)
+      .map((l) => {
+        const [c, d] = life(l);
+        return { l, overlap: Math.min(b, d) - Math.max(a, c) };
+      })
+      .filter((x) => x.overlap > 0)
+      .sort((x, y) => (x.l.born ?? x.l.died ?? 0) - (y.l.born ?? y.l.died ?? 0));
+  }, [spans, p.id]);
+  const years = (l: LifeSpan) => `${l.born ?? "?"}–${l.died ?? "?"}`;
   // merges into this record that can be undone (the newest first)
   const [merges, setMerges] = useState<{ id: number; saved: string; names: string[] }[]>([]);
   useEffect(() => void api.listMerges(p.id).then(setMerges, () => setMerges([])), [p.id, p.persons]);
@@ -708,6 +727,23 @@ export function PersonView(p: Props) {
                     ))}
                   </dd>
                 </div>
+              )}
+              {contemporaries.length > 0 && (
+                <details className="fact wide contemporaries">
+                  <summary>
+                    <dt>
+                      {t.contemporaries} <span className="count">{contemporaries.length}</span>
+                    </dt>
+                  </summary>
+                  <p className="muted small">{t.contemporariesHint(contemporaries.length)}</p>
+                  <dd>
+                    {contemporaries.map(({ l }) => (
+                      <button key={l.id} className="name-link" title={years(l)} onClick={() => p.onPerson(l.id)}>
+                        {l.name} <span className="muted">{years(l)}</span>
+                      </button>
+                    ))}
+                  </dd>
+                </details>
               )}
               {person.notes.trim() && (
                 <div className="fact wide">

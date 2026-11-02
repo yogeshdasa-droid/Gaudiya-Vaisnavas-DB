@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Clock, Clock3, Database, Network, FileText, HardDrive, Star, Upload, UserRound, Users } from "lucide-react";
+import { BarChart3, Clock, Clock3, Database, Network, FileText, HardDrive, Star, Upload, UserRound, Users } from "lucide-react";
 import { Bookmark, fileUrl, hueOf, PersonListItem, SearchResult, Status } from "../api";
 import { Lang, T } from "../i18n";
 import { AnimatedNumber } from "./ui";
@@ -28,9 +28,10 @@ interface Props {
   reload: number;
   onTimeline: () => void;
   onTree: () => void;
+  onPanorama: () => void;
 }
 
-export function Home({ t, lang, status, facets, persons, recent, bookmarks, onCollection, onPerson, onRecent, onBookmark, onImportDefaults, reload, onTimeline, onTree }: Props) {
+export function Home({ t, lang, status, facets, persons, recent, bookmarks, onCollection, onPerson, onRecent, onBookmark, onImportDefaults, reload, onTimeline, onTree, onPanorama }: Props) {
   const max = Math.max(1, ...facets.map((f) => f.count));
   const top = useMemo(() => [...persons].sort((a, b) => b.docs - a.docs).slice(0, 12), [persons]);
   const stats = [
@@ -57,6 +58,9 @@ export function Home({ t, lang, status, facets, persons, recent, bookmarks, onCo
                 </button>
                 <button className="btn ghost" onClick={onTimeline} title={t.timelineHint}>
                   <Clock3 size={15} /> {t.timeline}
+                </button>
+                <button className="btn ghost" onClick={onPanorama} title={t.panoramaHint}>
+                  <BarChart3 size={15} /> {t.panorama}
                 </button>
               </div>
             )}
