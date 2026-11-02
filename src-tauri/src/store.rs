@@ -256,6 +256,9 @@ pub fn save_section(conn: &mut Connection, doc_id: i64, ordinal: i64, new_text: 
     }
     if all.len() == 1 {
         all = text::split_sections(&new_t);
+    } else if new_t.trim().is_empty() {
+        // a part left empty (an entry deleted from it) goes away
+        all.remove(i);
     } else {
         let mut pieces = text::split_sections(&new_t);
         if pieces.len() == 1 {

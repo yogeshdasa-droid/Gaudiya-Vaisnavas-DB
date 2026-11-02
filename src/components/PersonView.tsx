@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ArrowUp, BookOpen, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Pencil, Search, TextSearch, Trash2, UserRound, Users, X } from "lucide-react";
+import { ArrowUp, BookOpen, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Pencil, Search, TextSearch, Trash2, UserRound, Users, X } from "lucide-react";
 import { api, fileUrl, isNamesake, NAMESAKES, Person, PersonListItem, SectionText, TocEntry } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
@@ -65,6 +65,94 @@ function withoutRepeatedTitles(s: SectionText, names: string[]): SectionText {
   }
   const text = lines.slice(i).join("\n");
   return text.trim() ? { ...s, text } : s;
+}
+
+/** More joined parts than this: one part at a time, as before. */
+const MAX_CARD_PARTS = 40;
+/** The pages of a PDF ("p. 3") are not people. */
+const PAGE_MARK = /^p(age|ág)?\.?\s*\d+$/i;
+/** Letters of a card seen before "Read all"; a shorter one is seen whole. */
+const CARD_PREVIEW = 250;
+
+interface Card {
+  key: string;
+  title: string;
+  /** the part it is in, to edit it */
+  ord: number;
+  section: SectionText;
+  preview: string;
+  short: boolean;
+  /** number of an earlier card that says the same (the text is repeated) */
+  same: number | null;
+  /** its lines in the part as stored [from, to), to delete it alone */
+  raw: SectionText;
+  from: number;
+  to: number;
+}
+
+/** The text without Markdown marks, for the start of a card. */
+function plainText(md: string): string {
+  return md
+    .replace(/^\s*(#{1,6}|>|[-*+])\s+/gm, "")
+    .replace(/\[\[([^\]|]+)\|?([^\]]*)\]\]/g, (_, a, b) => b || a)
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/[*_`]+/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * The entries of a text, one per person: each joined part, cut again where a
+ * heading only repeats the record's name ("## BALARĀMA DĀS" five times).
+ */
+function entriesOf(sections: SectionText[], names: string[]): Card[] {
+  const out: Card[] = [];
+  for (const s of sections) {
+    const own = new Set([...names, s.heading ?? ""].map(coreName).filter(Boolean));
+    const lines = s.text.split("\n");
+    let cur: { title: string; lines: string[]; from: number } = { title: s.heading ?? "", lines: [], from: 0 };
+    const flush = (to: number) => {
+      const text = cur.lines.join("\n").trim();
+      if (!text) return;
+      const section = withoutRepeatedTitles({ ...s, text }, [...names, cur.title, s.heading ?? ""]);
+      const plain = plainText(section.text);
+      const short = plain.length <= CARD_PREVIEW + 60;
+      const cut = plain.slice(0, CARD_PREVIEW);
+      const preview = short ? plain : cut.slice(0, Math.max(cut.lastIndexOf(" "), CARD_PREVIEW - 40)) + "…";
+      // the same start (letters only) = the same entry written twice
+      const start = (x: string) => foldName(x).replace(/\s/g, "").slice(0, 120);
+      const earlier = out.findIndex((c) => start(c.preview) === start(preview));
+      out.push({
+        key: `${s.id}:${out.length}`,
+        title: cur.title,
+        ord: s.ordinal,
+        section,
+        preview,
+        short,
+        same: earlier >= 0 ? earlier + 1 : null,
+        raw: s,
+        from: cur.from,
+        to,
+      });
+    };
+    lines.forEach((line, i) => {
+      const m = /^#{1,6}\s+(.+?)\s*$/.exec(line);
+      if (m && own.has(coreName(m[1]))) {
+        flush(i);
+        cur = { title: m[1], lines: [], from: i };
+      } else cur.lines.push(line);
+    });
+    flush(lines.length);
+  }
+  return out;
+}
+
+/** "BALARĀMA DĀS" as the record writes it; other titles as they are. */
+function cardTitle(title: string, name: string): string {
+  const t = title.trim().replace(/[.:]+$/, "");
+  if (!t) return name;
+  const bare = (x: string) => coreName(x).replace(/\s/g, "");
+  return t === t.toUpperCase() && bare(t) === bare(name) ? name : t;
 }
 
 /** How much of a single text is shown inside the record (the rest in the reader). */
@@ -176,25 +264,58 @@ export function PersonView(p: Props) {
   const single = person && person.id === p.id && person.docs.length === 1 ? person.docs[0] : null;
   // with several parts (texts joined into one): one part at a time, chosen
   // in a bar like the reader's
-  const [inline, setInline] = useState<{ docId: number; sections: SectionText[]; total: number; toc: TocEntry[]; ord: number } | null>(null);
+  const [inline, setInline] = useState<{ docId: number; sections: SectionText[]; total: number; toc: TocEntry[]; ord: number; all: boolean } | null>(null);
+  const [textReload, setTextReload] = useState(0);
   useEffect(() => {
     setInline(null);
+    setOpenCards(new Set());
     if (!single) return;
     let cancelled = false;
     api
       .getDoc(single.id)
       .then(async ({ doc, toc }) => {
-        const n = doc.sections > 1 && toc.length > 1 ? 1 : Math.min(doc.sections, INLINE_SECTIONS);
+        // joined parts (not the pages of a PDF): all of them, to be seen as cards
+        const joined = doc.sections > 1 && toc.length > 1;
+        const all = joined && doc.sections <= MAX_CARD_PARTS && !toc.some((e) => PAGE_MARK.test(e.heading ?? ""));
+        const n = all ? doc.sections : joined ? 1 : Math.min(doc.sections, INLINE_SECTIONS);
         const sections = n ? await api.getSections(doc.id, 0, n - 1) : [];
-        if (!cancelled) setInline({ docId: doc.id, sections, total: doc.sections, toc, ord: 0 });
+        if (!cancelled) setInline({ docId: doc.id, sections, total: doc.sections, toc, ord: 0, all });
       })
       .catch((e) => p.onToast(String(e)));
     return () => {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [single?.id, p.reload]);
-  const parts = inline && inline.total > 1 && inline.toc.length > 1 ? inline : null;
+  }, [single?.id, p.reload, textReload]);
+  // several people of the same name (or several joined parts): one card each,
+  // all in sight, each opened where it is
+  const cards = useMemo(() => {
+    if (!inline || !person) return null;
+    const list = entriesOf(inline.sections, [person.name, single?.title ?? ""]);
+    return (inline.all && list.length > 1) || (inline.total === 1 && list.length > 1) ? list : null;
+  }, [inline, person, single?.title]);
+  const [openCards, setOpenCards] = useState<Set<string>>(new Set());
+  const toggleCard = (key: string) =>
+    setOpenCards((s) => {
+      const next = new Set(s);
+      if (!next.delete(key)) next.add(key);
+      return next;
+    });
+  const allOpen = !!cards && cards.every((c) => c.short || openCards.has(c.key));
+  /** One entry out of the text (a repeated one…): the part keeps its earlier version. */
+  const deleteCard = async (c: Card, n: number) => {
+    if (!inline || !(await ask(t.cardDeleteConfirm(n)))) return;
+    const lines = c.raw.text.split("\n");
+    const rest = [...lines.slice(0, c.from), ...lines.slice(c.to)].join("\n").replace(/\n{3,}/g, "\n\n").trim();
+    try {
+      await api.saveSection(inline.docId, c.ord, rest);
+      p.onToast(t.cardDeleted(n));
+      setTextReload((x) => x + 1);
+    } catch (e) {
+      p.onToast(String(e));
+    }
+  };
+  const parts = inline && !cards && inline.total > 1 && inline.toc.length > 1 ? inline : null;
   const goPart = (ord: number) => {
     if (!parts || ord < 0 || ord >= parts.total) return;
     api.getSections(parts.docId, ord, ord).then(
@@ -225,8 +346,8 @@ export function PersonView(p: Props) {
         seen.add(k);
         return true;
       });
-    setOutline(heads.length >= 3 ? heads : []);
-  }, [inline, p.readerStyle, p.names]); // eslint-disable-line react-hooks/exhaustive-deps
+    setOutline(heads.length >= 3 && !cards ? heads : []);
+  }, [inline, cards, p.readerStyle, p.names]); // eslint-disable-line react-hooks/exhaustive-deps
   const [far, setFar] = useState(false);
 
   const onInlineClick = async (e: React.MouseEvent) => {
@@ -531,7 +652,68 @@ export function PersonView(p: Props) {
                     </span>
                   </div>
                 )}
+                {cards && (
+                  <div className="toc-row cards-bar">
+                    <span className="muted small">{t.cardsCount(cards.length)}</span>
+                    <span className="grow" />
+                    {cards.some((c) => !c.short) && (
+                      <button
+                        className="link-btn"
+                        onClick={() => setOpenCards(allOpen ? new Set() : new Set(cards.filter((c) => !c.short).map((c) => c.key)))}
+                      >
+                        {allOpen ? t.cardsCloseAll : t.cardsOpenAll}
+                      </button>
+                    )}
+                  </div>
+                )}
                 </div>
+                {cards ? (
+                  <div className="entry-cards">
+                    {cards.map((c, i) => {
+                      const open = c.short || openCards.has(c.key);
+                      return (
+                        <article key={c.key} className={`entry-card${open ? " open" : ""}`}>
+                          <header>
+                            <span className="entry-n">{i + 1}</span>
+                            <strong>{cardTitle(c.title, person.name)}</strong>
+                            {c.same && <span className="pill">{t.cardSame(c.same)}</span>}
+                            <span className="grow" />
+                            <button className="icon-btn" title={t.edit} onClick={() => p.onEditDoc(single.id, c.ord)}>
+                              <Pencil size={14} />
+                            </button>
+                            <button className="icon-btn" title={t.cardDelete} onClick={() => deleteCard(c, i + 1)}>
+                              <Trash2 size={14} />
+                            </button>
+                          </header>
+                          {open ? (
+                            <div
+                              className={`reader-body ${p.readerStyle === "editor" ? "src-view" : p.readerStyle}`}
+                              style={{ fontSize: p.fontSize }}
+                              data-ctx="doc"
+                              data-id={single.id}
+                              onClick={onInlineClick}
+                            >
+                              <SectionView s={c.section} terms={NO_TERMS} multi={false} source={p.readerStyle === "editor"} names={p.names} self={person.id} />
+                            </div>
+                          ) : (
+                            <div
+                              className={`reader-body ${p.readerStyle === "editor" ? "src-view" : p.readerStyle}`}
+                              style={{ fontSize: p.fontSize }}
+                              onClick={() => toggleCard(c.key)}
+                            >
+                              <p className="entry-preview">{c.preview}</p>
+                            </div>
+                          )}
+                          {!c.short && (
+                            <button className="link-btn entry-more" onClick={() => toggleCard(c.key)}>
+                              {open ? <ChevronUp size={14} /> : <ChevronDown size={14} />} {open ? t.cardClose : t.cardReadAll}
+                            </button>
+                          )}
+                        </article>
+                      );
+                    })}
+                  </div>
+                ) : (
                 <div className={`inline-main${outline.length ? " with-outline" : ""}`}>
                 <div
                   ref={bodyRef}
@@ -575,6 +757,7 @@ export function PersonView(p: Props) {
                   </nav>
                 )}
                 </div>
+                )}
               </div>
               <button className="link-btn add-text-link" onClick={() => p.onAddText(person)}>
                 <FilePlus2 size={14} /> {t.addText}

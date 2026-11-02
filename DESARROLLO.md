@@ -186,7 +186,13 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.7.9)
+## 5. Qué hace hoy (v0.8.0)
+
+### Novedades de la 0.8.0 (02-11-2026)
+- **Tarjetas** en el texto de la ficha: cuando el texto junta varias personas del mismo nombre
+  (subtítulos «## BALARĀMA DĀS» repetidos) o varias partes unidas, cada entrada es una tarjeta, todas a
+  la vista: 250 letras y «Leer todo» la abre ahí mismo; «Abrir todo / Cerrar todo»; lápiz por tarjeta;
+  «igual que la entrada N» si el texto está repetido; papelera por tarjeta para borrar solo esa entrada.
 
 ### Novedades de la 0.7.9 (02-11-2026)
 - La búsqueda principal busca también en los datos de las fichas (notas, fechas, lugar, obras…):
@@ -524,10 +530,9 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 ## 7. Pendientes e ideas
 
 ### Para la próxima sesión (después del 02-11-2026) — dónde nos quedamos
-Publicada la **0.7.9** (DATA_VERSION 6, sin cambio de formato desde la 0.7.0). El 02-11-2026 se
-publicaron 0.7.4 a 0.7.9 (ver «Hecho el 02-11-2026» abajo y §8). Propuesta pendiente de que Whisper
-diga sí: **fichas con varias personas del mismo nombre** (los tres Īśāna) vistas como tarjetas, una
-por persona, con sus fuentes aparte y «Hacer ficha propia» (solo forma de mostrar, sin tocar datos).
+Publicada la **0.8.0** (DATA_VERSION 6, sin cambio de formato desde la 0.7.0). El 02-11-2026 se
+publicaron 0.7.4 a 0.8.0 (ver «Hecho el 02-11-2026» abajo y §8). Ideas para las tarjetas: fuentes
+(CC, Bhaktiratnākara…) aparte en cada tarjeta y «Hacer ficha propia» por tarjeta (usaría `move_text`).
 Estado:
 1. **Le toca a Whisper, con las herramientas nuevas**, en este orden:
    - Ajustes › Revisar › **Comprobar los datos** (casilla «Solo la Guru Paramparā») y arreglar lo que
@@ -555,6 +560,17 @@ Estado:
 4. Para probar la interfaz con la app de Whisper abierta: `WEBVIEW2_USER_DATA_FOLDER` (ver CLAUDE.md).
    La copia de pruebas del 02-11 está en el scratchpad de esa sesión (se borra); hacer otra copia.
 
+### Hecho el 02-11-2026, publicado en la 0.8.0
+1. **Tarjetas** (`PersonView.tsx`, idea de Whisper con Balarāma Dās): si el texto tiene partes unidas
+   (≤ `MAX_CARD_PARTS` = 40, y no son páginas «p. N» de un PDF) se cargan todas; `entriesOf` las corta
+   otra vez donde un subtítulo solo repite el nombre de la ficha o de la parte. Con 2 o más entradas
+   (`cards`) se ven como tarjetas en vez del desplegable de partes. Vista previa de `CARD_PREVIEW` = 250
+   letras en texto plano (`plainText`); las cortas (≤ 310) se ven enteras. `same`: misma frase de inicio
+   que una tarjeta anterior → «igual que la entrada N» (en Balarāma Dās, la 4 y la 5 están repetidas en
+   los datos). El índice lateral no sale con tarjetas. Papelera por tarjeta (idea de Whisper):
+   `deleteCard` quita sus líneas [`from`, `to`) de la parte y la guarda con `save_section` (guarda la
+   versión anterior); `store::save_section` ahora **quita la parte si queda vacía** (y hay más de una).
+
 ### Hecho el 02-11-2026, publicado en la 0.7.9
 1. `search::search` devuelve también `persons: Vec<PersonHit>` (id, nombre, fragmento de sus campos)
    desde `persons_fts`, solo en la primera página de una búsqueda de texto sin filtros de colección,
@@ -567,6 +583,9 @@ Estado:
    (Amulyadhana Rāya Bhaṭṭa, Bālaka, Bālakadāsa Vairāgī, Balarāma Oḍra, Bhīmalocana Sānyāl, Rādhākṛṣṇa
    Ācārya (Gosvāmī) y (Ṭhākura)); en esas 5 las notas de la IA (que mezclaban) se sustituyeron.
    En la copia de pruebas: 1.227 fichas, 7 nuevas. Los PDF cortos (5) no se tocaron.
+   **Aplicado en los datos de Whisper el 02-11-2026** con la 0.7.9 instalada: 1.227 fichas, 7 nuevas,
+   sin errores (1.880 fichas; 613 con texto). Copia previa en Documentos › … › Copias de seguridad ›
+   «antes de textos cortos a notas 2026-11-02».
 
 ### Hecho el 02-11-2026, publicado en la 0.7.8
 1. **Texto dentro de la ficha** (`PersonView.tsx`): `.inline-sticky` (cabecera + barra de partes) con
@@ -771,6 +790,10 @@ Estado:
 ---
 
 ## 8. Historial
+
+- **02-11-2026 — v0.8.0**: tarjetas en el texto de la ficha (varias personas del mismo nombre / partes
+  unidas, todas a la vista, «Leer todo» en el sitio).
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.8.0
 
 - **02-11-2026 — v0.7.9**: la búsqueda principal encuentra también las fichas por sus notas y datos.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.9

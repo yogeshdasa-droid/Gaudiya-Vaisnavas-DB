@@ -2889,6 +2889,54 @@ h2 .h2-action {
     display: none;
   }
 }
+/* several people of the same name in one text: a card each, all in sight */
+.cards-bar {
+  gap: 10px;
+}
+.entry-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+}
+.entry-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  padding: 10px 14px 10px;
+}
+.entry-card header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.entry-n {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-size: 12px;
+  font-weight: 700;
+}
+.entry-card .reader-body .entry-preview {
+  margin: 0;
+  color: var(--text-2);
+  cursor: pointer;
+}
+.entry-card .reader-body {
+  max-width: none;
+  margin: 0;
+  padding: 6px 0 2px;
+}
+.entry-card .entry-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
 /* back to the top of a long record */
 .person-view .to-top {
   position: absolute;
