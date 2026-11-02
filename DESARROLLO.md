@@ -585,36 +585,58 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 7. Pendientes e ideas
 
-### Para la próxima sesión (después del 02-11-2026) — dónde nos quedamos
-Publicada la **0.9.0** (DATA_VERSION 6, sin cambio de formato desde la 0.7.0). El 02-11-2026 se
-publicaron 0.7.4 a 0.9.0 (ver «Hecho el 02-11-2026» abajo y §8). Ideas para las tarjetas: fuentes
-(CC, Bhaktiratnākara…) aparte en cada tarjeta y «Hacer ficha propia» por tarjeta (usaría `move_text`).
-Estado:
-1. **Le toca a Whisper, con las herramientas nuevas**, en este orden:
-   - Ajustes › Revisar › **Comprobar los datos** (casilla «Solo la Guru Paramparā») y arreglar lo que
-     salga. En la copia del 02-11 salían, p. ej.: Nityānanda bajo Mādhavendra Purī en el árbol pero su
-     ficha dice Īśvara Purī; Raghunātha Bhaṭṭa bajo Caitanya pero su ficha dice Gadādhara Paṇḍita;
-     Ramahari dāsa bābājī (n. 1895) con Jagannātha dās Bābājī (desap. 1807 en la ficha); nombres-trozo
-     «Bābājī Mahārāja: Two Beyond Duality:», «He translated Līlāmṛta-rāsa-pūra.». Los grupos largos
-     («su guru no lo tiene en Discípulos», ~250) van al final.
-   - **Fichas en rojo**: unirlas si son la misma persona; si no, X / «No son la misma persona» en la
-     ficha o botón derecho › «No es una ficha repetida»; si es otra persona con el mismo nombre
-     (Haridāsa, Jagannātha…), mandarla a **Homónimos** (0.7.7). Las 13 del 31-10 (Gaurāṅga/Caitanya,
-     Kamalākṣa/Advaita…) no estaban guardadas como distintas: Whisper las irá quitando.
-   - Revisar tipos de relación con los nuevos (Prabhupāda ← Keśava M. es **sannyāsa**, no dīkṣā;
-     Viśvanātha ← Narottama **vāṇī**); añadir gurus de śikṣā que faltan (Bhaktisiddhānta ← Bhaktivinoda,
-     Nārāyaṇa M. ← Prabhupāda y Vāmana M.…); decidir Lokanātha y Śrīvāsa (¿pārṣadas?).
-   - Separar textos que mezclan personas del mismo nombre («Haridāsa», «Gopāla»…) con
-     **Mover a otra ficha…** y luego **Unir sus textos en uno solo** donde sea la misma persona.
-   - Después: Ajustes › Revisar › **Pasar la Guru Paramparā a las fichas** (primero muestra la lista).
-2. **Rellenar fichas con IA** (qwen3.5:4b): iba por ~600 de 986; volver a pulsar «Leer todas las
-   fichas» tras actualizar. Whisper revisa las propuestas y cuenta qué falla para afinar `ai.rs`.
-3. **Ideas sin hacer**: OCR del único PDF escaneado; firma digital del .exe.
-   Sigue sin poder deshacerse una unión de fichas (merge): solo con una copia de seguridad.
-   Muchos textos tienen marcas de página de PDF como subtítulos («## p. 1») y el nombre repetido
-   («## BALARĀMA DĀS» varias veces): limpiarlos sería otra mejora (con Reemplazar o una limpieza única).
-4. Para probar la interfaz con la app de Whisper abierta: `WEBVIEW2_USER_DATA_FOLDER` (ver CLAUDE.md).
-   La copia de pruebas del 02-11 está en el scratchpad de esa sesión (se borra); hacer otra copia.
+### Para la próxima sesión (después del 02-11-2026, noche) — dónde nos quedamos
+Publicada la **0.9.0** (DATA_VERSION 6, sin cambio de formato desde la 0.7.0). El 02-11-2026 fue un
+día largo: se publicaron de la 0.7.4 a la 0.9.0 (§5 «Novedades», §8 «Historial») y se arreglaron
+muchos datos de Whisper con su app (§8, entradas «datos»). Whisper dice: «ya estamos casi».
+
+**Hecho hoy, en resumen.** Programa: Homónimos → «Vaiṣṇava-maṇḍala» (un grupo por nombre); tarjetas
+en el texto de la ficha (una por persona/entrada, «Leer todo», papelera por tarjeta); barra fija y
+«Arriba»; búsqueda en notas/datos de las fichas; deshacer «No son la misma persona» y **deshacer la
+unión**; filtro de Personas con el nombre primero; guru **por tipo** y discípulos agrupados en la
+ficha; Ajustes siempre visible; volver a Revisar sin perder la comprobación y «＋ Escribirlo también
+en…» por línea; **Panorama** (Estado, Mapa, Ramas, Año vaiṣṇava, Obras) y «Coincidieron en vida».
+Datos (con copia antes de cada cambio en Documentos › … › Copias de seguridad): fechas de 20 fichas;
+1.227 textos cortos → Notas y 7 fichas nuevas; deshecha a mano la unión de Nārāyaṇa; otros nombres
+de gurus; nombres raros unidos; árbol corregido (Mādhavendra, Keśava Bhāratī = sannyāsa, Prabhupāda,
+Sāraṅga Gosvāmī, 15 asociados de Mahāprabhu, Nityānanda con las dos versiones); «Por verificar».
+
+**Decisiones de Whisper que hay que respetar:**
+- Śrīnivāsa Ācārya (1466, de Gopāla Bhaṭṭa) y **Śrīnivāsa Ṭhākura** (1465, de Caitanya) son personas
+  distintas (Whisper las renombró así); también los tres Vīrabhadra y los dos Vṛndāvana dāsa.
+- Nityānanda: Mādhavendra Purī como línea principal + Lakṣmīpati Tīrtha como «otro guru» (dīkṣā
+  según el Bhakti-ratnākara), con nota. Ramahari ← Jagannātha dās Bābājī y Gaura dāsa bābājī
+  (Nandagrāma) ← Sanātana: etiqueta «Por verificar» hasta tener la fuente.
+- Las fichas repetidas las une Whisper (ahora con «Deshacer la unión»). Nunca unirlas Claude sin
+  que lo pida.
+
+**Lo siguiente (orden propuesto):**
+1. **Whisper revisa** con la 0.9.0: Ajustes › Revisar › Comprobar los datos, línea a línea con
+   «＋ Escribirlo también en…» (los dos grupos grandes: «Su guru no lo tiene en Discípulos» ~290 y
+   «Su discípulo no lo tiene en Guru» ~107). **No hay botón para todos a propósito**: probado en una
+   copia, metía errores de los campos (Gaṅgā Dāsa como guru de Mahāprabhu, etc.).
+2. Después, **Pasar la Guru Paramparā a las fichas** (copia el árbol, ya revisado, a las fichas). Si
+   Whisper pega la lista que enseña, revisarla antes como el 02-11 (errores del árbol → corregir el
+   árbol primero; el botón es todo o nada).
+3. **Años**: Panorama › Estado muestra que solo ~13 % de la Guru Paramparā tiene algún año (98 %
+   tiene guru, 55 % lugar). Es lo que más falta; con años mejoran «Coincidieron en vida», la línea de
+   tiempo y el Año vaiṣṇava. Se puede hacer como las 20 fechas del 02-11 (Whisper da una lista
+   verificada → Claude la aplica con versión) o con la IA de Rellenar fichas.
+4. **Mapa**: de 144 fichas con «Lugar», 85 salen en el mapa; añadir lugares a `PLACES` en
+   `Panorama.tsx` (mirar qué escriben las que no salen).
+5. Ideas pendientes: en las tarjetas, fuentes (CC, Bhakti-ratnākara…) aparte y «Hacer ficha propia»
+   por tarjeta (con `move_text`); limpiar subtítulos «## p. 1» de los PDF; Rellenar fichas con IA
+   (iba por ~600 de 986); OCR del único PDF escaneado; firma digital del .exe.
+
+**Cómo se cambiaron los datos de Whisper (para repetirlo):** Whisper cierra su app → copia de
+`%APPDATA%\com.whispers.biodata\biodata.db*` a Documentos › Gaudiya Vaisnavas DB › Copias de
+seguridad › «antes de …» → se abre **su** app instalada con
+`$env:WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS='--remote-debugging-port=9334'; Start-Process
+"$env:LOCALAPPDATA\Gaudiya Vaisnavas DB\gaudiya-vaisnavas-db.exe"` → un script por CDP llama a las
+órdenes de la app (`update_person`, `set_links`, `set_tree_kind`, `new_person`, `merge_persons`…;
+cada ficha guarda su versión) **comprobando antes** que cada ficha es la esperada → se comprueba →
+Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una copia con
+`BIO_DB` + `npm run app:dev`. Para leer sin app: `node:sqlite` (Node 24) sobre una copia, solo lectura.
 
 ### Hecho el 02-11-2026, publicado en la 0.8.2
 1. `Sidebar.tsx`: el filtro separa `shown` (nombre / otros nombres) y `mentions` (solo `searchPersons`
