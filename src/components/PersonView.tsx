@@ -134,11 +134,14 @@ export function PersonView(p: Props) {
     const apart = new Set(distinct.flatMap(([a, b]) => (a === person.id ? [b] : b === person.id ? [a] : [])));
     return p.persons.filter((x) => x.id !== person.id && !apart.has(x.id) && coreName(x.name) === core).slice(0, 8);
   }, [person, p.persons, distinct]);
-  const notSame = async () => {
+  const joinMe = async () => {
+    if (person && (await ask(t.joinOneConfirm(person.name)))) api.joinTexts(person.id).catch((e) => p.onToast(String(e)));
+  };
+  const notSame = async (which: PersonListItem[] = similar) => {
     if (!person) return;
     try {
       // each pair apart: the others may still be one person between them
-      for (const s of similar) await api.markDistinct([person.id, s.id]);
+      for (const s of which) await api.markDistinct([person.id, s.id]);
       setDistinct(await api.listDistinct());
       p.onDistinct();
     } catch (e) {
@@ -370,7 +373,7 @@ export function PersonView(p: Props) {
                         <button
                           onClick={async () => {
                             setMenu(false);
-                            if (await ask(t.joinOneConfirm(person.name))) api.joinTexts(person.id).catch((e) => p.onToast(String(e)));
+                            joinMe();
                           }}
                         >
                           <Combine size={15} /> {t.joinOne}
@@ -508,6 +511,12 @@ export function PersonView(p: Props) {
           <section>
             <h2>
               <BookOpen size={14} /> {t.texts} <span className="pill">{person.docs.length}</span>
+              {/* several texts of one person: one text with parts, read one after another */}
+              {person.docs.length > 1 && (
+                <button className="link-btn h2-action" title={t.joinOneHint} onClick={joinMe}>
+                  <Combine size={14} /> {t.joinOne}
+                </button>
+              )}
             </h2>
             {person.docs.length === 0 && <p className="muted small">{t.noTexts}</p>}
             <div className="text-cards">
@@ -576,15 +585,20 @@ export function PersonView(p: Props) {
               <p className="muted small">{t.similarHint}</p>
               <div className="similar">
                 {similar.map((s) => (
-                  <button key={s.id} className="chip clickable" onClick={() => p.onPerson(s.id)}>
-                    <UserRound size={12} /> {s.name}
-                    <span className="n">{s.docs}</span>
-                  </button>
+                  <span key={s.id} className="chip-x">
+                    <button className="chip clickable" onClick={() => p.onPerson(s.id)}>
+                      <UserRound size={12} /> {s.name}
+                      <span className="n">{s.docs}</span>
+                    </button>
+                    <button className="icon-btn" title={t.notSameOne(s.name)} onClick={() => notSame([s])}>
+                      <X size={13} />
+                    </button>
+                  </span>
                 ))}
                 <button className="link-btn" onClick={() => p.onMerge(person, similar.map((s) => s.id))}>
                   {t.mergePersons}
                 </button>
-                <button className="link-btn" title={t.notSameHint} onClick={notSame}>
+                <button className="link-btn" title={t.notSameHint} onClick={() => notSame()}>
                   {t.notSame}
                 </button>
               </div>

@@ -186,7 +186,10 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.7.5)
+## 5. Qué hace hoy (v0.7.6)
+
+### Novedades de la 0.7.6 (02-11-2026)
+- Botón «Unir sus textos en uno solo» junto al título «Textos» de la ficha; X en cada ficha parecida.
 
 ### Novedades de la 0.7.5 (02-11-2026)
 - «Mover a otra ficha…» un trozo de texto seleccionado; «No son la misma persona» en la ficha.
@@ -526,6 +529,11 @@ Publicada la **0.7.3** (DATA_VERSION 6). En una tarde se publicaron 0.6.0 → 0.
    en el árbol.
 4. Para probar la interfaz con la app de Whisper abierta: `WEBVIEW2_USER_DATA_FOLDER` (ver CLAUDE.md).
 
+### Hecho el 02-11-2026, publicado en la 0.7.6
+1. «Unir sus textos en uno solo» (ya existía en el menú «⋯», `join_person_texts`) sale también como botón
+   a la derecha del título «Textos» cuando la ficha tiene más de uno (`joinMe` en `PersonView.tsx`).
+2. «¿La misma persona?»: una X en cada ficha parecida (`notSame([s])`) para quitarla sola.
+
 ### Hecho el 02-11-2026, publicado en la 0.7.5
 1. **Mover un trozo de texto a otra ficha** (idea de Whisper, para textos como «Haridāsa» que juntan
    a varias personas del mismo nombre): seleccionar en el lector o en el texto de la ficha › botón
@@ -697,6 +705,8 @@ Publicada la **0.7.3** (DATA_VERSION 6). En una tarde se publicaron 0.6.0 → 0.
 
 ## 8. Historial
 
+- **02-11-2026 — v0.7.6**: botón «Unir sus textos en uno solo» a la vista; X en cada ficha parecida.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.6
 - **02-11-2026 — v0.7.5**: mover un trozo de texto a otra ficha; «No son la misma persona».
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.5
 - **02-11-2026 — v0.7.4**: árbol hondo legible; tipos vāṇī / sannyāsa / veśa; árbol → fichas;

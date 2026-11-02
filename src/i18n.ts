@@ -224,6 +224,7 @@ const es = {
   noDetails: "Ficha sin datos todavía. Pulsa «Editar ficha» para añadir fechas, guru, discípulos, obras…",
   similar: "¿La misma persona?",
   notSame: "No son la misma persona",
+  notSameOne: (n: string) => `${n} no es la misma persona: quitarla de aquí`,
   notSameHint: "Las he mirado y son personas distintas: no volver a proponerlas (ni marcarlas en rojo)",
   similarHint: "Fichas con nombres parecidos. Únelas si son la misma persona.",
   openPerson: "Abrir ficha",
@@ -523,6 +524,7 @@ const es = {
   joinConfirm:
     "¿Unir los textos de todas las fichas que tienen más de uno? Antes se guarda una copia de seguridad completa y los textos anteriores van a la Papelera.",
   joinOne: "Unir sus textos en uno solo",
+  joinOneHint: "Un solo texto con partes, que se pasan con las flechas (como en Mādhavendra Purī). Los textos repetidos se quitan.",
   joinOneConfirm: (n: string) => `¿Unir todos los textos de «${n}» en uno solo? Los textos anteriores van a la Papelera (se pueden recuperar).`,
   joinDone: (p: number, d: number, r: number) =>
     `Hecho: ${p.toLocaleString("es-ES")} fichas con un solo texto (${d.toLocaleString("es-ES")} textos unidos${r ? `, ${r} repetidos dejados fuera` : ""}). Los anteriores están en la Papelera.`,
@@ -883,6 +885,7 @@ const en: Dict = {
   noDetails: "No details yet. Use “Edit record” to add dates, guru, disciples, works…",
   similar: "The same person?",
   notSame: "Not the same person",
+  notSameOne: (n) => `${n} is not the same person: take it away from here`,
   notSameHint: "I have looked and they are different people: do not offer them again (nor mark them in red)",
   similarHint: "Records with similar names. Merge them if they are the same person.",
   openPerson: "Open record",
@@ -1170,6 +1173,7 @@ const en: Dict = {
   joinButton: "Join the texts of each record",
   joinConfirm: "Join the texts of every record that has more than one? A full backup is made first and the former texts go to the Recycle bin.",
   joinOne: "Join its texts into one",
+  joinOneHint: "A single text with parts, turned with the arrows (as in Mādhavendra Purī). Repeated texts are left out.",
   joinOneConfirm: (n) => `Join all the texts of “${n}” into one? The former texts go to the Recycle bin (they can be restored).`,
   joinDone: (p, d, r) =>
     `Done: ${p.toLocaleString("en-GB")} records with a single text (${d.toLocaleString("en-GB")} texts joined${r ? `, ${r} repeated ones left out` : ""}). The former ones are in the Recycle bin.`,
