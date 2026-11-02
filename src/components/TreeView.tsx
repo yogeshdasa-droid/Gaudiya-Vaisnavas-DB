@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Maximize, Network, ZoomIn, ZoomOut } from "lucide-react";
-import { lineOfKind, Marks, PersonListItem, sortDisciples, TreeKind } from "../api";
+import { api, lineOfKind, Marks, PersonListItem, sortDisciples, TreeKind } from "../api";
 import { T } from "../i18n";
+import { possibleRepeats } from "./Review";
 
 const W = 200; // box width
 const H = 30; // box height
@@ -121,6 +122,10 @@ export function TreeView({
 }) {
   // 0 = only the dīkṣā Paramparā … 100 = the śikṣā relations stand out
   const [mix, setMix] = useState(0);
+  // records that may be repeated: their names in red, as in the panel
+  const [distinct, setDistinct] = useState<[number, number][]>([]);
+  useEffect(() => void api.listDistinct().then(setDistinct, () => {}), [persons]);
+  const repeats = useMemo(() => possibleRepeats(persons, distinct), [persons, distinct]);
   const [line, setLineState] = useState<TreeLine>(storedLine);
   const setLine = (l: TreeLine) => {
     setLineState(l);
@@ -322,13 +327,16 @@ export function TreeView({
                 {boxes.map((b) => (
                   <g
                     key={b.p.id}
-                    className={`tree-node${marks[b.p.id] ? ` mark-${marks[b.p.id]}` : ""}`}
+                    className={`tree-node${marks[b.p.id] ? ` mark-${marks[b.p.id]}` : ""}${repeats.has(b.p.id) ? " repeated" : ""}`}
                     transform={`translate(${b.x},${b.y})`}
                     opacity={nodeOpacity(b.p.id)}
                     onClick={(e) => e.detail === 1 && onPerson(b.p.id)}
                     onDoubleClick={() => onMark(b.p.id)}
                   >
-                    <title>{b.kind ? `${b.p.name} · ${t.treeKinds[b.kind]}` : b.p.name}</title>
+                    <title>
+                      {(b.kind ? `${b.p.name} · ${t.treeKinds[b.kind]}` : b.p.name) +
+                        (repeats.has(b.p.id) ? `\n${t.maybeRepeated(repeats.get(b.p.id)!.map((x) => x.name).join(", "))}` : "")}
+                    </title>
                     <rect width={W} height={H} rx={5} />
                     <text x={10} y={H / 2 + 4}>
                       {short(b.p.name, b.kind ? 22 : 28)}

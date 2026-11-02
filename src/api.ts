@@ -181,6 +181,14 @@ export interface PersonListItem {
   links: { guru: number; kind: TreeKind }[];
 }
 
+/** The label of the "Namesakes" group: records with the same name as others
+ *  who are other people (from other times). Never marked as repeated. */
+export const NAMESAKES = "Homónimos";
+
+export function isNamesake(p: PersonListItem): boolean {
+  return p.tags.split(",").some((x) => x.trim().toLowerCase() === NAMESAKES.toLowerCase());
+}
+
 /** Where a record goes in the Guru Paramparā (null = take it out). */
 export type TreePlace = { parent: number | null; before: number | null } | null;
 
@@ -439,6 +447,7 @@ export const api = {
   reviewDocs: () => invoke<{ empty: ReviewDoc[]; oddTitles: ReviewDoc[] }>("review_docs"),
   markDistinct: (ids: number[]) => invoke<void>("mark_distinct", { ids }),
   listDistinct: () => invoke<[number, number][]>("list_distinct"),
+  setTag: (ids: number[], tag: string, on: boolean) => invoke<void>("set_tag", { ids, tag, on }),
   openExternal: (target: string) => invoke<void>("open_external", { target }),
   replacePreview: (spec: ReplaceSpec) => invoke<ReplacePreview>("replace_preview", { spec }),
   replaceApply: (spec: ReplaceSpec) => invoke<void>("replace_apply", { spec }),

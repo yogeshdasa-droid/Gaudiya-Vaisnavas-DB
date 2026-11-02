@@ -37,6 +37,7 @@ import {
   UploadCloud,
   UserPlus,
   UserRound,
+  Users,
   X,
 } from "lucide-react";
 import { ContextMenu, MenuItem, MenuState } from "./components/ContextMenu";
@@ -48,7 +49,9 @@ import {
   Hit,
   ImportProgress,
   ImportSummary,
+  isNamesake,
   Marks,
+  NAMESAKES,
   nextMark,
   Person,
   PersonListItem,
@@ -797,6 +800,14 @@ export default function App() {
           p?.tree
             ? { label: t.removeFromParampara, icon: ListX, onClick: () => movePerson(id, null) }
             : { label: t.addToParampara, icon: ListTree, onClick: () => movePerson(id, { parent: null, before: null }) },
+          {
+            label: p && isNamesake(p) ? t.outOfNamesakes : t.toNamesakes,
+            icon: Users,
+            onClick: async () => {
+              await api.setTag([id], NAMESAKES, !(p && isNamesake(p))).catch(fail);
+              setPersons(await api.listPersons());
+            },
+          },
           "sep",
           { label: t.deletePerson, icon: Trash2, danger: true, onClick: withPerson(id, deletePerson) },
         ],

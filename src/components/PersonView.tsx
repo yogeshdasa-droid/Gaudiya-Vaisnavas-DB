@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { BookOpen, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Pencil, Search, TextSearch, Trash2, UserRound, X } from "lucide-react";
-import { api, fileUrl, Person, PersonListItem, SectionText, TocEntry } from "../api";
+import { BookOpen, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Pencil, Search, TextSearch, Trash2, UserRound, Users, X } from "lucide-react";
+import { api, fileUrl, isNamesake, NAMESAKES, Person, PersonListItem, SectionText, TocEntry } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
 import { ReaderStyle, SectionView } from "./Reader";
@@ -132,8 +132,17 @@ export function PersonView(p: Props) {
     const core = coreName(person.name);
     if (!core) return [];
     const apart = new Set(distinct.flatMap(([a, b]) => (a === person.id ? [b] : b === person.id ? [a] : [])));
-    return p.persons.filter((x) => x.id !== person.id && !apart.has(x.id) && coreName(x.name) === core).slice(0, 8);
+    return p.persons.filter((x) => x.id !== person.id && !apart.has(x.id) && !isNamesake(x) && coreName(x.name) === core).slice(0, 8);
   }, [person, p.persons, distinct]);
+  /** other people with the same name: to the "Namesakes" group, not proposed again */
+  const toNamesakes = async (ids: number[]) => {
+    try {
+      await api.setTag(ids, NAMESAKES, true);
+      p.onDistinct();
+    } catch (e) {
+      p.onToast(String(e));
+    }
+  };
   const joinMe = async () => {
     if (person && (await ask(t.joinOneConfirm(person.name)))) api.joinTexts(person.id).catch((e) => p.onToast(String(e)));
   };
@@ -590,6 +599,9 @@ export function PersonView(p: Props) {
                       <UserRound size={12} /> {s.name}
                       <span className="n">{s.docs}</span>
                     </button>
+                    <button className="icon-btn namesake-btn" title={t.toNamesakesOne(s.name)} onClick={() => toNamesakes([s.id])}>
+                      <Users size={12} />
+                    </button>
                     <button className="icon-btn" title={t.notSameOne(s.name)} onClick={() => notSame([s])}>
                       <X size={13} />
                     </button>
@@ -600,6 +612,9 @@ export function PersonView(p: Props) {
                 </button>
                 <button className="link-btn" title={t.notSameHint} onClick={() => notSame()}>
                   {t.notSame}
+                </button>
+                <button className="link-btn" title={t.allToNamesakesHint} onClick={() => toNamesakes([person.id, ...similar.map((s) => s.id)])}>
+                  {t.allToNamesakes}
                 </button>
               </div>
             </section>

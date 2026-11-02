@@ -916,6 +916,24 @@ pub fn get_fields(tx: &Connection, id: i64) -> rusqlite::Result<PersonFields> {
     )
 }
 
+/// Gives a label to some records, or takes it away (the "Namesakes" group is
+/// a label: records with the same name as others who are other people).
+pub fn set_tag(conn: &mut Connection, ids: &[i64], tag: &str, on: bool) -> Res<()> {
+    let tag = tag.trim();
+    if tag.is_empty() {
+        return Ok(());
+    }
+    let tx = conn.transaction().map_err(e)?;
+    for &id in ids {
+        tx.execute("DELETE FROM person_tags WHERE person_id = ?1 AND tag = ?2 COLLATE NOCASE", params![id, tag]).map_err(e)?;
+        if on {
+            tx.execute("INSERT INTO person_tags(person_id, tag) VALUES(?1, ?2)", params![id, tag]).map_err(e)?;
+        }
+        fts_person(&tx, id).map_err(e)?;
+    }
+    tx.commit().map_err(e)
+}
+
 /// Labels in use, with how many records have each.
 pub fn list_tags(conn: &Connection) -> Res<Vec<(String, i64)>> {
     let mut st = conn

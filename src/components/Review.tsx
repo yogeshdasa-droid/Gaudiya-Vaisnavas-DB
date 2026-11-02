@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { BookOpen, GitMerge, ListTree, SearchCheck, SkipForward, Trash2, UserRound, Users, UserX } from "lucide-react";
-import { api, Issue, IssueKind, PersonListItem, ReviewDoc, SyncChange } from "../api";
+import { api, isNamesake, Issue, IssueKind, PersonListItem, ReviewDoc, SyncChange } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { Modal } from "./ui";
 import { foldName } from "./Sidebar";
@@ -28,9 +28,10 @@ function dupKey(name: string): string {
 /**
  * Groups of records that may be the same person: the same name (see
  * `dupKey`), also through their other names. Groups the user already called
- * different people are left out.
+ * different people, and the "Namesakes" group, are left out.
  */
-export function duplicateGroups(persons: PersonListItem[], distinct: [number, number][]): PersonListItem[][] {
+export function duplicateGroups(all: PersonListItem[], distinct: [number, number][]): PersonListItem[][] {
+  const persons = all.filter((p) => !isNamesake(p));
   const parent = new Map<number, number>();
   const find = (x: number): number => {
     const p = parent.get(x) ?? x;
@@ -76,9 +77,11 @@ function looseKey(name: string): string {
 /**
  * The records that may be repeated, each with the others it looks like: the
  * groups of `duplicateGroups`, and in the Guru Paramparā also the records
- * with the same loose name. Pairs called different people are left out.
+ * with the same loose name. Pairs called different people, and records in
+ * the "Namesakes" group, are left out.
  */
-export function possibleRepeats(persons: PersonListItem[], distinct: [number, number][]): Map<number, PersonListItem[]> {
+export function possibleRepeats(all: PersonListItem[], distinct: [number, number][]): Map<number, PersonListItem[]> {
+  const persons = all.filter((p) => !isNamesake(p));
   const apart = new Set(distinct.map(([a, b]) => `${Math.min(a, b)}-${Math.max(a, b)}`));
   const out = new Map<number, PersonListItem[]>();
   const pair = (a: PersonListItem, b: PersonListItem) => {

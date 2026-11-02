@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { BookMarked, ChevronRight, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
-import { api, Bookmark, DocListItem, hueOf, Marks, PersonListItem, sortDisciples, TreePlace } from "../api";
+import { api, Bookmark, DocListItem, hueOf, isNamesake, Marks, PersonListItem, sortDisciples, TreePlace } from "../api";
 import { foldWord } from "../fold";
 import { possibleRepeats } from "./Review";
 import { Lang, T } from "../i18n";
@@ -30,6 +30,28 @@ export const foldName = (s: string) =>
     .filter(Boolean)
     .map(foldWord)
     .join(" ");
+
+/** Titles that do not tell namesakes apart ("Kṛṣṇadāsa Kavirāja" goes with the other Kṛṣṇadāsas). */
+const NAMESAKE_TITLES = new Set(
+  ["sri", "srila", "srimati", "gosvami", "goswami", "thakura", "thakur", "prabhu", "babaji", "maharaja", "pandita", "pandit", "acarya", "kaviraja", "mahasaya", "bhattacarya", "misra", "brahmacari", "adhikari", "devi", "mata", "swami", "svami"].map(foldWord),
+);
+
+/** Key that puts namesakes together: the first name without titles, with its
+ *  "dāsa" ("Kṛṣṇa dāsa" = "Kṛṣṇadāsa"; all the Jagannāthas but the Jagannātha
+ *  dāsas together), without "a"s. */
+function namesakeKey(name: string): string {
+  const words = foldName(name).split(" ").filter((w) => w && !NAMESAKE_TITLES.has(w));
+  if (!words.length) return foldName(name);
+  const key = /^dasa?$/.test(words[1] ?? "") ? words[0] + words[1] : words[0];
+  return key.replace(/a/g, "");
+}
+
+/** The words of `namesakeKey` as they are written: "Kṛṣṇa dāsa", "Jagannātha". */
+function namesakeLabel(name: string): string {
+  const words = name.split(/[\s,.;:()\-–—]+/).filter((w) => w && !NAMESAKE_TITLES.has(foldWord(w)));
+  if (!words.length) return name;
+  return /^dasa?$/.test(foldWord(words[1] ?? "")) ? `${words[0]} ${words[1]}` : words[0];
+}
 
 // ---------------------------------------------------------------- library tree
 
@@ -253,7 +275,23 @@ function PersonList({
       kids.set(parent, [...(kids.get(parent) ?? []), p]);
     }
     sortDisciples(kids);
-    return { kids, parentOf, others: persons.filter((p) => !p.tree) };
+    return { kids, parentOf, others: persons.filter((p) => !p.tree && !isNamesake(p)) };
+  }, [persons]);
+
+  // the Namesakes (many Haridāsas, Govindas…): each name with its people,
+  // under the name as written in them
+  const namesakes = useMemo(() => {
+    const by = new Map<string, PersonListItem[]>();
+    for (const p of persons.filter(isNamesake)) {
+      const k = namesakeKey(p.name);
+      by.set(k, [...(by.get(k) ?? []), p]);
+    }
+    return [...by.values()]
+      .map((g) => {
+        const sorted = [...g].sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }));
+        return { label: namesakeLabel(sorted[0].name), people: sorted };
+      })
+      .sort((a, b) => foldName(a.label).localeCompare(foldName(b.label)));
   }, [persons]);
 
   const rows = useMemo(() => {
@@ -493,6 +531,20 @@ function PersonList({
                 </div>
               )}
             </div>
+          )}
+          {namesakes.length > 0 && (
+            <>
+              {groupHead("namesakes", t.namesakes, namesakes.reduce((n, g) => n + g.people.length, 0), undefined, t.namesakesHint)}
+              {!closedGroups.has("namesakes") &&
+                namesakes.map((g) => (
+                  <div key={g.label}>
+                    <div className="letter namesake-head">{g.label}</div>
+                    {g.people.map((p) => (
+                      <div key={p.id}>{personRow(p)}</div>
+                    ))}
+                  </div>
+                ))}
+            </>
           )}
           {groupHead("other", t.otherVaisnavas, others.length, "out")}
           {!closedGroups.has("other") && (

@@ -404,6 +404,18 @@ export function RelateDialog({
 
 // ---------------------------------------------------------------- move a piece of text
 
+/** The first line of a piece, without Markdown marks, as the title of its new
+ *  text (so the parts of a record do not all get the record's name). */
+function firstLine(fragment: string): string {
+  const line = fragment
+    .split("\n")
+    .map((l) => l.replace(/^[\s#>*\-+]+|[*_`]+/g, "").trim())
+    .find((l) => l) ?? "";
+  if (line.length <= 80) return line.replace(/[.:,;]$/, "");
+  const cut = line.slice(0, 80);
+  return cut.slice(0, cut.lastIndexOf(" ") > 40 ? cut.lastIndexOf(" ") : 80) + "…";
+}
+
 /** A piece of a text that tells of someone else (another Haridāsa…) taken
  *  to that person's record, existing or new. */
 export function MoveTextDialog({
@@ -427,7 +439,7 @@ export function MoveTextDialog({
   const [q, setQ] = useState(from);
   const [chosen, setChosen] = useState<PersonListItem | null>(null);
   const [name, setName] = useState(from);
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(() => firstLine(fragment));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const matches = useMemo(() => filterPersons(persons, q, 12), [persons, q]);

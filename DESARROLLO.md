@@ -186,7 +186,14 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.7.6)
+## 5. Qué hace hoy (v0.7.7)
+
+### Novedades de la 0.7.7 (02-11-2026)
+- Carpeta **«Homónimos»** en el panel Personas (personas distintas con el mismo nombre: Haridāsa,
+  Jagannātha, Govinda…), agrupada por nombre; cuadradito en cada ficha parecida, «Todas a Homónimos»
+  y botón derecho › «Mandar a / Sacar de Homónimos». Ya no salen en rojo.
+- Rojo de las fichas quizá repetidas también en el árbol dibujado.
+- Al mover un trozo a otra ficha, el título propuesto es la primera línea del trozo.
 
 ### Novedades de la 0.7.6 (02-11-2026)
 - Botón «Unir sus textos en uno solo» junto al título «Textos» de la ficha; X en cada ficha parecida.
@@ -505,8 +512,8 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 ## 7. Pendientes e ideas
 
 ### Para la próxima sesión (después del 02-11-2026) — dónde nos quedamos
-Publicada la **0.7.6** (DATA_VERSION 6, sin cambio de formato desde la 0.7.0). El 02-11-2026 se
-publicaron 0.7.4, 0.7.5 y 0.7.6 (ver «Hecho el 02-11-2026» abajo y §8). Estado:
+Publicada la **0.7.7** (DATA_VERSION 6, sin cambio de formato desde la 0.7.0). El 02-11-2026 se
+publicaron 0.7.4 a 0.7.7 (ver «Hecho el 02-11-2026» abajo y §8). Estado:
 1. **Le toca a Whisper, con las herramientas nuevas**, en este orden:
    - Ajustes › Revisar › **Comprobar los datos** (casilla «Solo la Guru Paramparā») y arreglar lo que
      salga. En la copia del 02-11 salían, p. ej.: Nityānanda bajo Mādhavendra Purī en el árbol pero su
@@ -515,7 +522,8 @@ publicaron 0.7.4, 0.7.5 y 0.7.6 (ver «Hecho el 02-11-2026» abajo y §8). Estad
      «Bābājī Mahārāja: Two Beyond Duality:», «He translated Līlāmṛta-rāsa-pūra.». Los grupos largos
      («su guru no lo tiene en Discípulos», ~250) van al final.
    - **Fichas en rojo**: unirlas si son la misma persona; si no, X / «No son la misma persona» en la
-     ficha o botón derecho › «No es una ficha repetida». Las 13 del 31-10 (Gaurāṅga/Caitanya,
+     ficha o botón derecho › «No es una ficha repetida»; si es otra persona con el mismo nombre
+     (Haridāsa, Jagannātha…), mandarla a **Homónimos** (0.7.7). Las 13 del 31-10 (Gaurāṅga/Caitanya,
      Kamalākṣa/Advaita…) no estaban guardadas como distintas: Whisper las irá quitando.
    - Revisar tipos de relación con los nuevos (Prabhupāda ← Keśava M. es **sannyāsa**, no dīkṣā;
      Viśvanātha ← Narottama **vāṇī**); añadir gurus de śikṣā que faltan (Bhaktisiddhānta ← Bhaktivinoda,
@@ -525,11 +533,25 @@ publicaron 0.7.4, 0.7.5 y 0.7.6 (ver «Hecho el 02-11-2026» abajo y §8). Estad
    - Después: Ajustes › Revisar › **Pasar la Guru Paramparā a las fichas** (primero muestra la lista).
 2. **Rellenar fichas con IA** (qwen3.5:4b): iba por ~600 de 986; volver a pulsar «Leer todas las
    fichas» tras actualizar. Whisper revisa las propuestas y cuenta qué falla para afinar `ai.rs`.
-3. **Ideas sin hacer**: el rojo de las repetidas también en el árbol dibujado (`TreeView`); al mover
-   un trozo, proponer como título la primera línea del trozo (ahora el nombre de la ficha, y al unir
-   las partes salen todas con el mismo título); OCR del único PDF escaneado; firma digital del .exe.
+3. **Ideas sin hacer**: OCR del único PDF escaneado; firma digital del .exe.
 4. Para probar la interfaz con la app de Whisper abierta: `WEBVIEW2_USER_DATA_FOLDER` (ver CLAUDE.md).
    La copia de pruebas del 02-11 está en el scratchpad de esa sesión (se borra); hacer otra copia.
+
+### Hecho el 02-11-2026, publicado en la 0.7.7
+1. **Homónimos** (idea de Whisper): muchos Haridāsa, Kṛṣṇadāsa, Govinda, Jagannātha… que son personas
+   distintas de otras épocas. Es la etiqueta fija `NAMESAKES = "Homónimos"` (`api.ts`, `isNamesake`;
+   **sin cambio de DATA_VERSION**), puesta con `store::set_tag` (orden `set_tag`). En el panel, grupo
+   «Homónimos» entre la Guru Paramparā y Otros vaiṣṇavas, con un subtítulo por nombre (`namesakeKey` /
+   `namesakeLabel` en `Sidebar.tsx`: el primer nombre sin títulos, con su «dāsa» — «Kṛṣṇa dāsa» =
+   «Kṛṣṇadāsa»; los Jagannātha juntos y los Jagannātha Dāsa aparte). Salen de Otros vaiṣṇavas (si
+   están en el árbol, siguen también en él). Nunca salen en rojo ni como repetidas (`duplicateGroups`,
+   `possibleRepeats`, «¿La misma persona?»). Para mandarlas: cuadradito (icono de personas) junto a cada
+   ficha parecida, «Todas a Homónimos» (esta y las parecidas), y botón derecho › «Mandar a Homónimos» /
+   «Sacar de Homónimos». También se quita borrando la etiqueta al editar la ficha.
+2. Rojo de las repetidas también en el árbol dibujado (`TreeView` usa `possibleRepeats`, clase
+   `.tree-node.repeated`; el título dice a cuál se parece). En la copia: 22 de 261.
+3. Al mover un trozo, título propuesto = su primera línea sin marcas Markdown (`firstLine` en
+   `Dialogs.tsx`, máx. 80 letras).
 
 ### Hecho el 02-11-2026, publicado en la 0.7.6
 1. «Unir sus textos en uno solo» (ya existía en el menú «⋯», `join_person_texts`) sale también como botón
@@ -706,6 +728,10 @@ publicaron 0.7.4, 0.7.5 y 0.7.6 (ver «Hecho el 02-11-2026» abajo y §8). Estad
 ---
 
 ## 8. Historial
+
+- **02-11-2026 — v0.7.7**: carpeta «Homónimos»; rojo de las repetidas en el árbol dibujado; título
+  del trozo movido = su primera línea.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.7
 
 - **02-11-2026 — v0.7.6**: botón «Unir sus textos en uno solo» a la vista; X en cada ficha parecida.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.6

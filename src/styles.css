@@ -4829,6 +4829,17 @@ h2 .h2-action {
 .tree-row.repeated .name {
   color: #e5484d;
 }
+/* a name shared by several people, in the Namesakes group */
+.letter.namesake-head {
+  letter-spacing: 0;
+}
+.similar .namesake-btn {
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+.tree-node.repeated text:not(.tree-kind) {
+  fill: #e5484d;
+}
 
 /* colours given with a double click in the tree, like a highlighter */
 .tree-row.mark-yellow .name,
