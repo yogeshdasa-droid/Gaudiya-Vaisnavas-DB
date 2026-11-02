@@ -1474,9 +1474,205 @@ pub fn remove_person_photo(conn: &Connection, id: i64) -> Res<()> {
     Ok(())
 }
 
+/// What a merge changes, kept before it (history kind "merge", target = the
+/// record that stays) so that it can be undone: the records that go away
+/// with everything of theirs, and the tree and links around them.
+#[derive(Serialize, Deserialize)]
+struct MergeUndo {
+    into: i64,
+    into_fields: PersonFields,
+    into_photo: bool,
+    removed: Vec<MergedAway>,
+    /// person_tree rows around the records: (person, parent, pos, kind)
+    tree: Vec<(i64, Option<i64>, i64, String)>,
+    /// person_links rows of the records: (person, guru, kind)
+    links: Vec<(i64, i64, String)>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct MergedAway {
+    id: i64,
+    fields: PersonFields,
+    docs: Vec<i64>,
+    images: Vec<i64>,
+    /// its picture (mime, bytes as hex): kept by the other one or deleted
+    photo: Option<(String, String)>,
+    distinct: Vec<i64>,
+}
+
+fn hex(b: &[u8]) -> String {
+    b.iter().map(|x| format!("{x:02x}")).collect()
+}
+
+fn unhex(s: &str) -> Vec<u8> {
+    (0..s.len() / 2).filter_map(|i| u8::from_str_radix(&s[2 * i..2 * i + 2], 16).ok()).collect()
+}
+
+fn ids_of(tx: &Connection, sql: &str, id: i64) -> rusqlite::Result<Vec<i64>> {
+    let mut st = tx.prepare(sql)?;
+    let rows = st.query_map([id], |r| r.get(0))?;
+    rows.collect()
+}
+
+fn merge_snapshot(tx: &Connection, into: i64, from: &[i64]) -> Res<MergeUndo> {
+    let all: Vec<i64> = std::iter::once(into).chain(from.iter().copied().filter(|&o| o != into)).collect();
+    let mut removed = Vec::new();
+    for &id in &all[1..] {
+        let photo: Option<(String, Vec<u8>)> = tx
+            .query_row("SELECT mime, data FROM person_photos WHERE person_id = ?1", [id], |r| Ok((r.get(0)?, r.get(1)?)))
+            .optional()
+            .map_err(e)?;
+        removed.push(MergedAway {
+            id,
+            fields: get_fields(tx, id).map_err(e)?,
+            docs: ids_of(tx, "SELECT id FROM docs WHERE person_id = ?1", id).map_err(e)?,
+            images: ids_of(tx, "SELECT id FROM person_images WHERE person_id = ?1", id).map_err(e)?,
+            photo: photo.map(|(m, d)| (m, hex(&d))),
+            distinct: ids_of(tx, "SELECT CASE WHEN a = ?1 THEN b ELSE a END FROM person_distinct WHERE a = ?1 OR b = ?1", id)
+                .map_err(e)?,
+        });
+    }
+    // the tree rows of the records, of their disciples and of those beside them
+    let mut tree = Vec::new();
+    let mut seen = std::collections::HashSet::new();
+    for &id in &all {
+        let parent = tree_parent(tx, id).map_err(e)?;
+        let mut st = tx
+            .prepare(
+                "SELECT person_id, parent_id, pos, kind FROM person_tree
+                 WHERE person_id = ?1 OR parent_id = ?1 OR (?2 AND parent_id IS ?3)",
+            )
+            .map_err(e)?;
+        let rows = st
+            .query_map(params![id, parent.is_some(), parent.flatten()], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?)))
+            .map_err(e)?;
+        for row in rows {
+            let row: (i64, Option<i64>, i64, String) = row.map_err(e)?;
+            if seen.insert(row.0) {
+                tree.push(row);
+            }
+        }
+    }
+    let mut links = Vec::new();
+    for &id in &all {
+        let mut st = tx.prepare("SELECT person_id, guru_id, kind FROM person_links WHERE person_id = ?1 OR guru_id = ?1").map_err(e)?;
+        let rows = st.query_map([id], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?))).map_err(e)?;
+        for row in rows {
+            let row: (i64, i64, String) = row.map_err(e)?;
+            if !links.contains(&row) {
+                links.push(row);
+            }
+        }
+    }
+    let into_photo = tx.query_row("SELECT 1 FROM person_photos WHERE person_id = ?1", [into], |_| Ok(())).optional().map_err(e)?.is_some();
+    Ok(MergeUndo { into, into_fields: get_fields(tx, into).map_err(e)?, into_photo, removed, tree, links })
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MergeInfo {
+    pub id: i64,
+    pub saved: String,
+    /// the names of the records that went away
+    pub names: Vec<String>,
+}
+
+/// The merges into a record that can still be undone, newest first.
+pub fn list_merges(conn: &Connection, person: i64) -> Res<Vec<MergeInfo>> {
+    let mut st = conn
+        .prepare("SELECT id, saved, data FROM history WHERE kind = 'merge' AND target = ?1 ORDER BY id DESC")
+        .map_err(e)?;
+    let rows = st.query_map([person], |r| Ok((r.get::<_, i64>(0)?, r.get::<_, String>(1)?, r.get::<_, String>(2)?))).map_err(e)?;
+    let mut out = Vec::new();
+    for row in rows {
+        let (id, saved, data) = row.map_err(e)?;
+        if let Ok(m) = serde_json::from_str::<MergeUndo>(&data) {
+            out.push(MergeInfo { id, saved, names: m.removed.iter().map(|r| r.fields.name.clone()).collect() });
+        }
+    }
+    Ok(out)
+}
+
+/// Undoes a merge: the records that went away come back with their ids,
+/// texts, pictures, place in the tree and links; the one that stayed goes
+/// back to what it was (what it is now is kept as a version).
+pub fn undo_merge(conn: &mut Connection, history_id: i64) -> Res<()> {
+    let tx = conn.transaction().map_err(e)?;
+    let data: String = tx
+        .query_row("SELECT data FROM history WHERE id = ?1 AND kind = 'merge'", [history_id], |r| r.get(0))
+        .optional()
+        .map_err(e)?
+        .ok_or("Esa unión ya no se puede deshacer")?;
+    let m: MergeUndo = serde_json::from_str(&data).map_err(e)?;
+    if get_fields(&tx, m.into).optional().map_err(e)?.is_none() {
+        return Err("La ficha que se quedó ya no existe".into());
+    }
+    for r in &m.removed {
+        let taken: bool = tx.query_row("SELECT 1 FROM persons WHERE id = ?1", [r.id], |_| Ok(())).optional().map_err(e)?.is_some();
+        if taken {
+            return Err(format!("Ya hay otra ficha con el número {}: no se puede deshacer", r.id));
+        }
+    }
+    keep_person_version(&tx, m.into, true).map_err(e)?;
+    for r in &m.removed {
+        tx.execute("INSERT INTO persons(id, name, key) VALUES(?1, ?2, ?3)", params![r.id, r.fields.name, person_key(&r.fields.name)])
+            .map_err(e)?;
+        for &d in &r.docs {
+            tx.execute("UPDATE docs SET person_id = ?1 WHERE id = ?2 AND person_id = ?3", params![r.id, d, m.into]).map_err(e)?;
+        }
+        for &i in &r.images {
+            tx.execute("UPDATE person_images SET person_id = ?1 WHERE id = ?2", params![r.id, i]).map_err(e)?;
+        }
+        if let Some((mime, data)) = &r.photo {
+            tx.execute("INSERT OR REPLACE INTO person_photos(person_id, mime, data) VALUES(?1, ?2, ?3)", params![r.id, mime, unhex(data)])
+                .map_err(e)?;
+        }
+        for &o in &r.distinct {
+            tx.execute("INSERT OR IGNORE INTO person_distinct(a, b) VALUES(?1, ?2)", params![r.id.min(o), r.id.max(o)]).map_err(e)?;
+        }
+        write_person(&tx, r.id, &r.fields)?;
+    }
+    // the picture the record that stayed took from another one goes back
+    if !m.into_photo && m.removed.iter().any(|r| r.photo.is_some()) {
+        tx.execute("DELETE FROM person_photos WHERE person_id = ?1", [m.into]).map_err(e)?;
+    }
+    // the tree and the links around them, as they were
+    let mut ids: Vec<i64> = m.removed.iter().map(|r| r.id).collect();
+    ids.push(m.into);
+    for &id in &ids {
+        if !m.tree.iter().any(|t| t.0 == id) {
+            tx.execute("DELETE FROM person_tree WHERE person_id = ?1", [id]).map_err(e)?;
+        }
+        tx.execute("DELETE FROM person_links WHERE person_id = ?1 OR guru_id = ?1", [id]).map_err(e)?;
+    }
+    for (person, parent, pos, kind) in &m.tree {
+        tx.execute(
+            "INSERT INTO person_tree(person_id, parent_id, pos, kind) VALUES(?1, ?2, ?3, ?4)
+             ON CONFLICT(person_id) DO UPDATE SET parent_id = excluded.parent_id, pos = excluded.pos, kind = excluded.kind",
+            params![person, parent, pos, kind],
+        )
+        .map_err(e)?;
+    }
+    for (person, guru, kind) in &m.links {
+        tx.execute("INSERT OR IGNORE INTO person_links(person_id, guru_id, kind) VALUES(?1, ?2, ?3)", params![person, guru, kind])
+            .map_err(e)?;
+    }
+    write_person(&tx, m.into, &m.into_fields)?;
+    tx.execute("DELETE FROM history WHERE id = ?1", [history_id]).map_err(e)?;
+    tx.commit().map_err(e)
+}
+
 pub fn merge_persons(conn: &mut Connection, into: i64, from: &[i64]) -> Res<()> {
     let tx = conn.transaction().map_err(e)?;
     keep_person_version(&tx, into, true).map_err(e)?;
+    // everything needed to undo it
+    let undo = merge_snapshot(&tx, into, from)?;
+    let names: Vec<&str> = undo.removed.iter().map(|r| r.fields.name.as_str()).collect();
+    tx.execute(
+        "INSERT INTO history(kind, target, label, data) VALUES('merge', ?1, ?2, ?3)",
+        params![into, names.join(", "), serde_json::to_string(&undo).map_err(e)?],
+    )
+    .map_err(e)?;
     let mut f = get_fields(&tx, into).map_err(e)?;
     for &other in from.iter().filter(|&&o| o != into) {
         let o = get_fields(&tx, other).map_err(e)?;
@@ -1949,6 +2145,44 @@ pub fn find_person(tx: &Connection, key: &str) -> rusqlite::Result<Option<i64>> 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_merge_can_be_undone() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        crate::db::init(&conn).unwrap();
+        let p = |c: &mut Connection, name: &str, notes: &str| {
+            new_person(c, &PersonFields { name: name.into(), notes: notes.into(), ..Default::default() }).unwrap()
+        };
+        let guru = p(&mut conn, "Śrī Nityānanda", "");
+        let stays = p(&mut conn, "Nārāyaṇa", "1. Brother of Dāmodara.");
+        let goes = p(&mut conn, "Nārāyaṇa Paṇḍit", "Of the branch of Śrī Caitanya.");
+        let disciple = p(&mut conn, "Gopāla", "");
+        // the one that goes is in the tree, with a disciple, a picture and a "not the same" pair
+        move_person(&mut conn, guru, Some(TreePlace { parent: None, before: None })).unwrap();
+        move_person(&mut conn, goes, Some(TreePlace { parent: Some(guru), before: None })).unwrap();
+        move_person(&mut conn, disciple, Some(TreePlace { parent: Some(goes), before: None })).unwrap();
+        conn.execute("INSERT INTO person_photos(person_id, mime, data) VALUES(?1, 'image/png', x'0102ff')", [goes]).unwrap();
+        mark_distinct(&mut conn, &[goes, disciple]).unwrap();
+
+        merge_persons(&mut conn, stays, &[goes]).unwrap();
+        assert!(get_fields(&conn, goes).is_err(), "it went away");
+        assert_eq!(tree_parent(&conn, disciple).unwrap(), Some(Some(stays)), "its disciple went to the one that stays");
+        let merges = list_merges(&conn, stays).unwrap();
+        assert_eq!(merges[0].names, vec!["Nārāyaṇa Paṇḍit".to_string()]);
+
+        undo_merge(&mut conn, merges[0].id).unwrap();
+        assert_eq!(get_fields(&conn, goes).unwrap().notes, "Of the branch of Śrī Caitanya.");
+        assert_eq!(get_fields(&conn, stays).unwrap().notes, "1. Brother of Dāmodara.");
+        assert_eq!(get_fields(&conn, stays).unwrap().aka, "");
+        assert_eq!(tree_parent(&conn, goes).unwrap(), Some(Some(guru)));
+        assert_eq!(tree_parent(&conn, disciple).unwrap(), Some(Some(goes)));
+        assert_eq!(tree_parent(&conn, stays).unwrap(), None, "the one that stays was not in the tree");
+        let photo: Vec<u8> = conn.query_row("SELECT data FROM person_photos WHERE person_id = ?1", [goes], |r| r.get(0)).unwrap();
+        assert_eq!(photo, vec![1, 2, 255]);
+        assert!(conn.query_row("SELECT 1 FROM person_photos WHERE person_id = ?1", [stays], |_| Ok(())).optional().unwrap().is_none());
+        assert_eq!(list_distinct(&conn).unwrap(), vec![(goes.min(disciple), goes.max(disciple))]);
+        assert!(list_merges(&conn, stays).unwrap().is_empty(), "undone only once");
+    }
 
     #[test]
     fn relate_writes_both_records() {

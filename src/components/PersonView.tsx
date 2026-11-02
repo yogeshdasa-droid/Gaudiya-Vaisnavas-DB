@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ArrowUp, BookOpen, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Pencil, Search, TextSearch, Trash2, UserRound, Users, X } from "lucide-react";
+import { ArrowUp, BookOpen, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Pencil, Search, TextSearch, Trash2, Undo2, UserRound, Users, X } from "lucide-react";
 import { api, fileUrl, isNamesake, NAMESAKES, Person, PersonListItem, SectionText, TocEntry } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
@@ -236,6 +236,21 @@ export function PersonView(p: Props) {
     const apart = new Set(distinct.flatMap(([a, b]) => (a === person.id ? [b] : b === person.id ? [a] : [])));
     return p.persons.filter((x) => x.id !== person.id && !apart.has(x.id) && !isNamesake(x) && coreName(x.name) === core).slice(0, 8);
   }, [person, p.persons, distinct]);
+  // merges into this record that can be undone (the newest first)
+  const [merges, setMerges] = useState<{ id: number; saved: string; names: string[] }[]>([]);
+  useEffect(() => void api.listMerges(p.id).then(setMerges, () => setMerges([])), [p.id, p.persons]);
+  const recentMerge = merges.find((m) => Date.now() - new Date(m.saved.replace(" ", "T")).getTime() < 60 * 60 * 1000);
+  const undoMerge = async (m: { id: number; names: string[] }) => {
+    if (!(await ask(t.undoMergeConfirm(m.names.join(", "))))) return;
+    try {
+      await api.undoMerge(m.id);
+      p.onToast(t.undoMergeDone(m.names.length));
+      setPerson(await api.getPerson(p.id));
+      p.onDistinct();
+    } catch (e) {
+      p.onToast(String(e));
+    }
+  };
   /** other people with the same name: to the "Namesakes" group, not proposed again */
   const toNamesakes = async (ids: number[]) => {
     try {
@@ -563,6 +578,11 @@ export function PersonView(p: Props) {
                       <button onClick={() => (setMenu(false), p.onVersions(person))}>
                         <History size={15} /> {t.versions}
                       </button>
+                      {merges.map((m) => (
+                        <button key={m.id} onClick={() => (setMenu(false), undoMerge(m))} title={m.saved}>
+                          <Undo2 size={15} /> {t.undoMerge(m.names.join(", "))}
+                        </button>
+                      ))}
                       <button onClick={() => (setMenu(false), exportMe())}>
                         <FileDown size={15} /> {t.exportPerson}
                       </button>
@@ -579,6 +599,16 @@ export function PersonView(p: Props) {
               </div>
             </div>
           </header>
+          {/* just merged: undo it at once if it was a mistake */}
+          {recentMerge && (
+            <div className="merge-notice">
+              <Undo2 size={15} />
+              <span>{t.mergedNotice(recentMerge.names.join(", "))}</span>
+              <button className="link-btn" onClick={() => undoMerge(recentMerge)}>
+                {t.undoMergeShort}
+              </button>
+            </div>
+          )}
 
           {hasFacts ? (
             <dl className="facts">

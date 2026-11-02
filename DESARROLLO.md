@@ -186,7 +186,13 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.8.0)
+## 5. Qué hace hoy (v0.8.1)
+
+### Novedades de la 0.8.1 (02-11-2026)
+- **Deshacer la unión** de fichas: aviso «Acabas de unir aquí: … · Deshacer la unión» durante una hora y,
+  siempre, en el menú «⋯» de la ficha.
+- «Otros vaiṣṇavas» y «Homónimos» son un solo grupo, **«Vaiṣṇava-maṇḍala»** (nombre elegido por
+  Whisper), ordenado por nombre: los del mismo nombre van juntos con un subtítulo.
 
 ### Novedades de la 0.8.0 (02-11-2026)
 - **Tarjetas** en el texto de la ficha: cuando el texto junta varias personas del mismo nombre
@@ -530,8 +536,8 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 ## 7. Pendientes e ideas
 
 ### Para la próxima sesión (después del 02-11-2026) — dónde nos quedamos
-Publicada la **0.8.0** (DATA_VERSION 6, sin cambio de formato desde la 0.7.0). El 02-11-2026 se
-publicaron 0.7.4 a 0.8.0 (ver «Hecho el 02-11-2026» abajo y §8). Ideas para las tarjetas: fuentes
+Publicada la **0.8.1** (DATA_VERSION 6, sin cambio de formato desde la 0.7.0). El 02-11-2026 se
+publicaron 0.7.4 a 0.8.1 (ver «Hecho el 02-11-2026» abajo y §8). Ideas para las tarjetas: fuentes
 (CC, Bhaktiratnākara…) aparte en cada tarjeta y «Hacer ficha propia» por tarjeta (usaría `move_text`).
 Estado:
 1. **Le toca a Whisper, con las herramientas nuevas**, en este orden:
@@ -559,6 +565,18 @@ Estado:
    («## BALARĀMA DĀS» varias veces): limpiarlos sería otra mejora (con Reemplazar o una limpieza única).
 4. Para probar la interfaz con la app de Whisper abierta: `WEBVIEW2_USER_DATA_FOLDER` (ver CLAUDE.md).
    La copia de pruebas del 02-11 está en el scratchpad de esa sesión (se borra); hacer otra copia.
+
+### Hecho el 02-11-2026, publicado en la 0.8.1
+1. **Deshacer la unión** (`store::merge_snapshot`, `list_merges`, `undo_merge`): antes de unir se guarda
+   en `history` (kind `merge`, target = la que se queda) un `MergeUndo` en JSON: campos de la que se
+   queda, y de cada ficha que se va sus campos, textos, imágenes, foto (hex), parejas distintas; y las
+   filas de `person_tree` alrededor (ellas, sus discípulos y sus hermanos) y sus `person_links`. Deshacer
+   vuelve a crear las fichas **con su mismo número**, devuelve todo y la que se queda vuelve a sus campos
+   (lo de ahora como versión). Prueba `a_merge_can_be_undone`. Sin cambio de DATA_VERSION (solo filas de
+   `history`). Las uniones hechas antes de la 0.8.1 no se pueden deshacer así.
+2. **Vaiṣṇava-maṇḍala** (`Sidebar.tsx`, `mandala`): todas las fichas fuera del árbol agrupadas por
+   `namesakeKey`; grupos de 2 o más con subtítulo (`.namesake-group`). La etiqueta «Homónimos» ya solo
+   significa «otra persona con el mismo nombre: sin rojo» (textos `toNamesakes…` cambiados).
 
 ### Hecho el 02-11-2026, publicado en la 0.8.0
 1. **Tarjetas** (`PersonView.tsx`, idea de Whisper con Balarāma Dās): si el texto tiene partes unidas
@@ -790,6 +808,15 @@ Estado:
 ---
 
 ## 8. Historial
+
+- **02-11-2026 — v0.8.1**: deshacer la unión de fichas; «Vaiṣṇava-maṇḍala» (un solo grupo por nombre).
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.8.1
+
+- **02-11-2026 — datos**: Whisper unió por error en «Nārāyaṇa» (1005) a Nārāyaṇa Dāsa Kavirāja, Nārāyaṇa
+  Dāsa Ṭhākura y Nārāyaṇa Paṇḍit. Deshecho a mano (no hay botón): 1005 a su versión anterior a la unión;
+  las 3 fichas creadas de nuevo (ids 1917–1919) con sus datos de la copia + el paso a Notas, y sus textos
+  de la Papelera reasignados. Copia previa: «antes de deshacer la union de Narayana 2026-11-02».
+  Idea: un «Deshacer la unión» de verdad (guardar la ficha borrada en `history` antes de unir).
 
 - **02-11-2026 — v0.8.0**: tarjetas en el texto de la ficha (varias personas del mismo nombre / partes
   unidas, todas a la vista, «Leer todo» en el sitio).

@@ -549,6 +549,16 @@ async fn merge_persons(state: State<'_, AppState>, into: i64, from: Vec<i64>) ->
 }
 
 #[tauri::command]
+async fn list_merges(state: State<'_, AppState>, person: i64) -> CmdResult<Vec<store::MergeInfo>> {
+    store::list_merges(&state.conn.lock().unwrap(), person)
+}
+
+#[tauri::command]
+async fn undo_merge(state: State<'_, AppState>, id: i64) -> CmdResult<()> {
+    store::undo_merge(&mut state.conn.lock().unwrap(), id)
+}
+
+#[tauri::command]
 async fn move_person(state: State<'_, AppState>, id: i64, place: Option<store::TreePlace>) -> CmdResult<()> {
     store::move_person(&mut state.conn.lock().unwrap(), id, place)
 }
@@ -1126,6 +1136,8 @@ fn main() {
             update_person,
             delete_person,
             merge_persons,
+            list_merges,
+            undo_merge,
             move_person,
             set_tree_kind,
             set_links,

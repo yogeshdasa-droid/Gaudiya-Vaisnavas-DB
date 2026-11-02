@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { BookMarked, ChevronRight, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
-import { api, Bookmark, DocListItem, hueOf, isNamesake, Marks, PersonListItem, sortDisciples, TreePlace } from "../api";
+import { api, Bookmark, DocListItem, hueOf, Marks, PersonListItem, sortDisciples, TreePlace } from "../api";
 import { foldWord } from "../fold";
 import { possibleRepeats } from "./Review";
 import { Lang, T } from "../i18n";
@@ -275,14 +275,14 @@ function PersonList({
       kids.set(parent, [...(kids.get(parent) ?? []), p]);
     }
     sortDisciples(kids);
-    return { kids, parentOf, others: persons.filter((p) => !p.tree && !isNamesake(p)) };
+    return { kids, parentOf, others: persons.filter((p) => !p.tree) };
   }, [persons]);
 
-  // the Namesakes (many Haridāsas, Govindas…): each name with its people,
-  // under the name as written in them
-  const namesakes = useMemo(() => {
+  // the Vaiṣṇava-maṇḍala (everyone outside the tree) by name: the many
+  // Haridāsas, Govindas… together, under the name as written in them
+  const mandala = useMemo(() => {
     const by = new Map<string, PersonListItem[]>();
-    for (const p of persons.filter(isNamesake)) {
+    for (const p of others) {
       const k = namesakeKey(p.name);
       by.set(k, [...(by.get(k) ?? []), p]);
     }
@@ -292,7 +292,7 @@ function PersonList({
         return { label: namesakeLabel(sorted[0].name), people: sorted };
       })
       .sort((a, b) => foldName(a.label).localeCompare(foldName(b.label)));
-  }, [persons]);
+  }, [others]);
 
   const rows = useMemo(() => {
     // guides: for each guru above, whether more of his disciples come below (a line goes on down)
@@ -532,30 +532,27 @@ function PersonList({
               )}
             </div>
           )}
-          {groupHead("namesakes", t.namesakes, namesakes.reduce((n, g) => n + g.people.length, 0), undefined, t.namesakesHint)}
-          {!closedGroups.has("namesakes") &&
-            (namesakes.length === 0 ? (
-              <div className="side-empty small">{t.namesakesEmpty}</div>
-            ) : (
-              namesakes.map((g) => (
-                <div key={g.label}>
-                  <div className="letter namesake-head">{g.label}</div>
-                  {g.people.map((p) => (
-                    <div key={p.id}>{personRow(p)}</div>
-                  ))}
-                </div>
-              ))
-            ))}
-          {groupHead("other", t.otherVaisnavas, others.length, "out")}
+          {groupHead("other", t.otherVaisnavas, others.length, "out", t.otherVaisnavasHint)}
           {!closedGroups.has("other") && (
             <div data-drop="out" className={drag?.drop?.kind === "out" ? "drop-zone-hot" : ""}>
-              {others.map((p) => {
-                const first = foldWord(p.name.trim()[0] ?? "#").toUpperCase() || "#";
+              {mandala.map((g) => {
+                const first = foldWord(g.label.trim()[0] ?? "#").toUpperCase() || "#";
                 const header = first !== letter ? (letter = first) : null;
                 return (
-                  <div key={p.id}>
+                  <div key={g.label + g.people[0].id}>
                     {header && <div className="letter">{header}</div>}
-                    {personRow(p)}
+                    {g.people.length > 1 ? (
+                      <div className="namesake-group">
+                        <div className="namesake-head">
+                          {g.label} <span className="count">{g.people.length}</span>
+                        </div>
+                        {g.people.map((p) => (
+                          <div key={p.id}>{personRow(p)}</div>
+                        ))}
+                      </div>
+                    ) : (
+                      personRow(g.people[0])
+                    )}
                   </div>
                 );
               })}

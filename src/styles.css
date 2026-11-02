@@ -2937,6 +2937,19 @@ h2 .h2-action {
   gap: 4px;
   margin-top: 4px;
 }
+/* right after merging: undo it at once */
+.merge-notice {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 10px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--text);
+}
 /* back to the top of a long record */
 .person-view .to-top {
   position: absolute;
@@ -4999,9 +5012,23 @@ h2 .h2-action {
 .tree-row.repeated .name {
   color: #e5484d;
 }
-/* a name shared by several people, in the Namesakes group */
-.letter.namesake-head {
-  letter-spacing: 0;
+/* a name shared by several people, in the Vaiṣṇava-maṇḍala: its people together */
+.namesake-group {
+  margin: 2px 0 4px 6px;
+  border-left: 2px solid var(--border);
+}
+.namesake-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px 2px;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--accent-text);
+}
+.namesake-head .count {
+  font-weight: 500;
+  color: var(--muted);
 }
 .similar .namesake-btn {
   border: 1px solid var(--border);
