@@ -504,30 +504,32 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 7. Pendientes e ideas
 
-### Para la próxima sesión (02-11-2026) — dónde nos quedamos
-Publicada la **0.7.3** (DATA_VERSION 6). En una tarde se publicaron 0.6.0 → 0.7.3 (ver §8). Estado:
-1. **Rellenar fichas con IA**: Whisper la lanzó con qwen3.5:4b («Leer todas las fichas»); iba por
-   ~600 de 986. Al actualizar la app se para: volver a pulsar «Leer todas las fichas» y sigue donde
-   iba (hash por ficha). Luego Whisper revisa las propuestas en Ajustes › Rellenar fichas y cuenta
-   qué salió bien / mal para afinar `ai.rs` (prompt, `keep`).
-2. **Árbol de la Paramparā** (Whisper lo está ordenando): corregido en sus datos el 01-11-2026 (punto
-   12). Le toca a Whisper: añadir los gurus de śikṣā que faltan para que la «Línea de śikṣā» llegue
-   hasta hoy (Narottama ← Kṛṣṇadāsa Kavirāja ya lo hizo, junto a Jīva; faltan Viśvanātha ← Narottama,
-   Bhaktisiddhānta ← Bhaktivinoda, Nārāyaṇa M. ← Prabhupāda y Vāmana M., y los contemporáneos);
-   decidir Lokanātha y Śrīvāsa (¿pārṣadas de Caitanya?); unir las fichas repetidas (lista en la
-   conversación del 01-11: Advaita ×2, Nityānanda ×2, Vīrabhadra ×3, Abhirāma ×2, Kṛṣṇadāsa Kavirāja
-   ×2, Dayita Mādhava ×2, Vaibhava Purī ×2, Śrīdhara ×2, Prabhupāda ×2, Nārāyaṇa M. ×2) — **las une
-   Whisper**; arreglar campos raros (Guru de Mādhavendra Purī y de Trivikrama M.; fichas que son
-   trozos de libro: «Bābājī Mahārāja: Two Beyond Duality:», «He translated Līlāmṛta-rāsa-pūra.»;
-   «Viśvanātha Cakravartī Ṭhākura’s»).
-   Orden de los «otros gurus»: el primero de la lista es el que coloca a la persona en la «Línea de
-   śikṣā»; los demás salen como línea de rayas (Whisper preguntó por Narottama: Jīva y Kṛṣṇadāsa son
-   los dos correctos).
-3. Ideas apuntadas sin hacer: marcar en otro color las fichas que podrían estar repetidas (punto 6);
-   tipo de relación «sannyāsa» (Keśava Bhāratī → Caitanya está como «otro guru» dīkṣā); un guru de
-   dīkṣā fuera del árbol (p. ej. Bipin Bihārī para Bhaktivinoda) no se dibuja: habría que meterlo
-   en el árbol.
+### Para la próxima sesión (después del 02-11-2026) — dónde nos quedamos
+Publicada la **0.7.6** (DATA_VERSION 6, sin cambio de formato desde la 0.7.0). El 02-11-2026 se
+publicaron 0.7.4, 0.7.5 y 0.7.6 (ver «Hecho el 02-11-2026» abajo y §8). Estado:
+1. **Le toca a Whisper, con las herramientas nuevas**, en este orden:
+   - Ajustes › Revisar › **Comprobar los datos** (casilla «Solo la Guru Paramparā») y arreglar lo que
+     salga. En la copia del 02-11 salían, p. ej.: Nityānanda bajo Mādhavendra Purī en el árbol pero su
+     ficha dice Īśvara Purī; Raghunātha Bhaṭṭa bajo Caitanya pero su ficha dice Gadādhara Paṇḍita;
+     Ramahari dāsa bābājī (n. 1895) con Jagannātha dās Bābājī (desap. 1807 en la ficha); nombres-trozo
+     «Bābājī Mahārāja: Two Beyond Duality:», «He translated Līlāmṛta-rāsa-pūra.». Los grupos largos
+     («su guru no lo tiene en Discípulos», ~250) van al final.
+   - **Fichas en rojo**: unirlas si son la misma persona; si no, X / «No son la misma persona» en la
+     ficha o botón derecho › «No es una ficha repetida». Las 13 del 31-10 (Gaurāṅga/Caitanya,
+     Kamalākṣa/Advaita…) no estaban guardadas como distintas: Whisper las irá quitando.
+   - Revisar tipos de relación con los nuevos (Prabhupāda ← Keśava M. es **sannyāsa**, no dīkṣā;
+     Viśvanātha ← Narottama **vāṇī**); añadir gurus de śikṣā que faltan (Bhaktisiddhānta ← Bhaktivinoda,
+     Nārāyaṇa M. ← Prabhupāda y Vāmana M.…); decidir Lokanātha y Śrīvāsa (¿pārṣadas?).
+   - Separar textos que mezclan personas del mismo nombre («Haridāsa», «Gopāla»…) con
+     **Mover a otra ficha…** y luego **Unir sus textos en uno solo** donde sea la misma persona.
+   - Después: Ajustes › Revisar › **Pasar la Guru Paramparā a las fichas** (primero muestra la lista).
+2. **Rellenar fichas con IA** (qwen3.5:4b): iba por ~600 de 986; volver a pulsar «Leer todas las
+   fichas» tras actualizar. Whisper revisa las propuestas y cuenta qué falla para afinar `ai.rs`.
+3. **Ideas sin hacer**: el rojo de las repetidas también en el árbol dibujado (`TreeView`); al mover
+   un trozo, proponer como título la primera línea del trozo (ahora el nombre de la ficha, y al unir
+   las partes salen todas con el mismo título); OCR del único PDF escaneado; firma digital del .exe.
 4. Para probar la interfaz con la app de Whisper abierta: `WEBVIEW2_USER_DATA_FOLDER` (ver CLAUDE.md).
+   La copia de pruebas del 02-11 está en el scratchpad de esa sesión (se borra); hacer otra copia.
 
 ### Hecho el 02-11-2026, publicado en la 0.7.6
 1. «Unir sus textos en uno solo» (ya existía en el menú «⋯», `join_person_texts`) sale también como botón
