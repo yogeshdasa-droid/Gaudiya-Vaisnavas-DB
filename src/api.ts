@@ -385,6 +385,7 @@ export const api = {
   createDoc: (personId: number | null, title: string, collection: string) =>
     invoke<number>("create_doc", { personId, title, collection }),
   saveSection: (docId: number, ordinal: number, text: string) => invoke<void>("save_section", { docId, ordinal, text }),
+  moveText: (docId: number, fragment: string, toPerson: number, title: string) => invoke<number>("move_text", { docId, fragment, toPerson, title }),
   updateDoc: (docId: number, meta: DocMeta) => invoke<void>("update_doc", { docId, meta }),
   renameFolder: (dir: string, name: string) => invoke<void>("rename_folder", { dir, name }),
   trashFolder: (dir: string) => invoke<number>("trash_folder", { dir }),

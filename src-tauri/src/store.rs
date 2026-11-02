@@ -269,6 +269,88 @@ pub fn save_section(conn: &mut Connection, doc_id: i64, ordinal: i64, new_text: 
     tx.commit().map_err(e)
 }
 
+/// Where `fragment` (text selected on screen, so without the Markdown marks)
+/// is in `full`: from the start of the line of its first word to the end of
+/// the line of its last one. Long pieces are found by their first and last
+/// words, so that a link or a mark inside does not matter.
+fn find_fragment(full: &str, fragment: &str) -> Option<(usize, usize)> {
+    let words = |s: &str| -> Vec<(usize, usize, String)> {
+        let mut out = Vec::new();
+        let mut start = None;
+        for (i, c) in s.char_indices().chain(std::iter::once((s.len(), ' '))) {
+            match (c.is_alphanumeric(), start) {
+                (true, None) => start = Some(i),
+                (false, Some(st)) => {
+                    out.push((st, i, fold_text(&s[st..i])));
+                    start = None;
+                }
+                _ => {}
+            }
+        }
+        out
+    };
+    let src = words(full);
+    let sel: Vec<String> = words(fragment).into_iter().map(|w| w.2).collect();
+    if sel.is_empty() {
+        return None;
+    }
+    let k = sel.len().min(6);
+    let at = |from: usize, part: &[String]| (from..=src.len().saturating_sub(part.len())).find(|&i| src[i..i + part.len()].iter().map(|w| &w.2).eq(part.iter()));
+    let first = at(0, &sel[..k])?;
+    let last = if sel.len() <= k { first + k - 1 } else { at(first + k, &sel[sel.len() - k..])? + k - 1 };
+    let start = full[..src[first].0].rfind('\n').map_or(0, |i| i + 1);
+    let end = full[src[last].1..].find('\n').map_or(full.len(), |i| src[last].1 + i + 1);
+    Some((start, end))
+}
+
+/// Takes a piece out of a text and makes it a text of its own for the record
+/// `to_person` (a text that tells of several people of the same name). The
+/// text keeps its earlier version. Returns the id of the new text.
+pub fn move_text(conn: &mut Connection, doc_id: i64, fragment: &str, to_person: i64, title: &str) -> Res<i64> {
+    let tx = conn.transaction().map_err(e)?;
+    let (collection, dir): (String, String) =
+        tx.query_row("SELECT collection, dir FROM docs WHERE id = ?1", [doc_id], |r| Ok((r.get(0)?, r.get(1)?))).map_err(e)?;
+    let full: String = tx
+        .prepare("SELECT text FROM sections WHERE doc_id = ?1 ORDER BY ordinal")
+        .map_err(e)?
+        .query_map([doc_id], |r| r.get::<_, String>(0))
+        .map_err(e)?
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(e)?
+        .iter()
+        .map(|t| if t.ends_with('\n') { t.clone() } else { format!("{t}\n") })
+        .collect();
+    let (a, b) = find_fragment(&full, fragment).ok_or("No se encuentra el trozo seleccionado en el texto")?;
+    let piece = full[a..b].trim().to_string();
+    let rest = format!("{}{}", &full[..a], &full[b..]);
+    if piece.is_empty() {
+        return Err("El trozo seleccionado está vacío".into());
+    }
+    keep_doc_version(&tx, doc_id, true).map_err(e)?;
+    write_sections(&tx, doc_id, &text::split_sections(rest.trim())).map_err(e)?;
+    tx.execute("UPDATE docs SET modified = datetime('now', 'localtime') WHERE id = ?1", [doc_id]).map_err(e)?;
+    let title = title.trim();
+    let id = insert_doc(
+        &tx,
+        &NewDoc {
+            person_id: Some(to_person),
+            collection,
+            dir,
+            title: if title.is_empty() { "Texto".into() } else { title.into() },
+            date: None,
+            tags: String::new(),
+            kind: "new".into(),
+            source: String::new(),
+            hash: String::new(),
+            sections: text::split_sections(&piece),
+            files: vec![],
+        },
+    )
+    .map_err(e)?;
+    tx.commit().map_err(e)?;
+    Ok(id)
+}
+
 fn valid_date(d: &str) -> bool {
     let parts: Vec<&str> = d.split('-').collect();
     let num = |s: &str, len: usize| s.len() == len && s.chars().all(|c| c.is_ascii_digit());
@@ -1881,6 +1963,40 @@ mod tests {
         assert_eq!(unrelate(&mut conn, cai, kesava).unwrap(), 2);
         assert_eq!(f(&conn, cai).guru, "");
         assert_eq!(f(&conn, kesava).disciples, "");
+    }
+
+    #[test]
+    fn move_text_takes_a_piece_to_another_record() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        crate::db::init(&conn).unwrap();
+        let p = |c: &mut Connection, name: &str| new_person(c, &PersonFields { name: name.into(), ..Default::default() }).unwrap();
+        let hari = p(&mut conn, "Haridāsa");
+        let other = p(&mut conn, "Haridāsa Ācārya");
+        let doc = create_doc(&mut conn, Some(hari), "Haridāsa", "Biografías").unwrap();
+        let text = "## HARIDĀSA
+He was a disciple of Śyāmānanda Prabhu.
+
+## HARIDĀSA
+He was the son of **Nṛsiṁha**, the chief of [Brāhmaṇa-kūla](x).
+He passed away on the eleventh lunar day.
+
+## HARIDĀSA
+A resident of Orissa.
+";
+        save_section(&mut conn, doc, 0, text).unwrap();
+        // as selected on screen: no Markdown marks
+        let sel = "HARIDĀSA He was the son of Nṛsiṁha, the chief of Brāhmaṇa-kūla. He passed away on the eleventh lunar day.";
+        let new = move_text(&mut conn, doc, sel, other, "Haridāsa Ācārya").unwrap();
+        let body = |id: i64| -> String {
+            conn.query_row("SELECT group_concat(text, '') FROM sections WHERE doc_id = ?1", [id], |r| r.get(0)).unwrap()
+        };
+        assert_eq!(body(new), "## HARIDĀSA
+He was the son of **Nṛsiṁha**, the chief of [Brāhmaṇa-kūla](x).
+He passed away on the eleventh lunar day.");
+        assert!(body(doc).contains("Śyāmānanda") && body(doc).contains("Orissa") && !body(doc).contains("Nṛsiṁha"));
+        let owner: i64 = conn.query_row("SELECT person_id FROM docs WHERE id = ?1", [new], |r| r.get(0)).unwrap();
+        assert_eq!(owner, other);
+        assert!(move_text(&mut conn, doc, "words that are not there", other, "x").is_err());
     }
 
     #[test]

@@ -186,7 +186,10 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.7.4)
+## 5. Qué hace hoy (v0.7.5)
+
+### Novedades de la 0.7.5 (02-11-2026)
+- «Mover a otra ficha…» un trozo de texto seleccionado; «No son la misma persona» en la ficha.
 
 ### Novedades de la 0.7.4 (02-11-2026)
 - Árbol hondo: los nombres siempre a la vista; tipos śikṣā por vāṇī, sannyāsa y bābājī veśa; el árbol
@@ -523,6 +526,16 @@ Publicada la **0.7.3** (DATA_VERSION 6). En una tarde se publicaron 0.6.0 → 0.
    en el árbol.
 4. Para probar la interfaz con la app de Whisper abierta: `WEBVIEW2_USER_DATA_FOLDER` (ver CLAUDE.md).
 
+### Hecho el 02-11-2026, publicado en la 0.7.5
+1. **Mover un trozo de texto a otra ficha** (idea de Whisper, para textos como «Haridāsa» que juntan
+   a varias personas del mismo nombre): seleccionar en el lector o en el texto de la ficha › botón
+   derecho › «Mover a otra ficha…» (`MoveTextDialog`): ficha existente o nueva. `store::move_text`
+   busca el trozo por sus palabras (`find_fragment`: primeras y últimas 6, líneas enteras; las marcas
+   Markdown no importan), lo quita (el texto guarda su versión) y crea un texto nuevo para la otra ficha
+   en la misma carpeta. Probado en la copia: Haridāsa → Haridāsa Dvija.
+2. Ficha › «¿La misma persona?» › **«No son la misma persona»**: guarda cada pareja en `person_distinct`;
+   la sección deja de proponerlas y el rojo del panel se quita (`PersonView` lee `listDistinct`).
+
 ### Hecho el 02-11-2026 (publicado en la 0.7.4)
 1. **Árbol hondo en el panel** (`Sidebar.tsx`): la sangría por nivel baja de 16 a 6 px según lo hondo
    del árbol abierto y el ancho del panel (`INDENT`, `MIN_INDENT`, `NAME_ROOM`, ResizeObserver); si aun
@@ -684,6 +697,8 @@ Publicada la **0.7.3** (DATA_VERSION 6). En una tarde se publicaron 0.6.0 → 0.
 
 ## 8. Historial
 
+- **02-11-2026 — v0.7.5**: mover un trozo de texto a otra ficha; «No son la misma persona».
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.5
 - **02-11-2026 — v0.7.4**: árbol hondo legible; tipos vāṇī / sannyāsa / veśa; árbol → fichas;
   repetidas en rojo; colorear la línea; otros gurus fuera del árbol; comprobar los datos; enlaces web.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.7.4

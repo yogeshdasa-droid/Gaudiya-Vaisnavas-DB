@@ -66,7 +66,7 @@ import {
 import { dicts, Lang } from "./i18n";
 import { buildNameIndex } from "./personLinks";
 import { checkUpdate, installUpdate, Update } from "./update";
-import { EditDialog, GuruDialog, RelateDialog, ImportDialog, MergeDialog, PersonDialog, TrashDialog, VersionsDialog } from "./components/Dialogs";
+import { EditDialog, GuruDialog, MoveTextDialog, RelateDialog, ImportDialog, MergeDialog, PersonDialog, TrashDialog, VersionsDialog } from "./components/Dialogs";
 import { Home, RecentDoc } from "./components/Home";
 import { EMPTY_FILTERS, Filters, hasFilter, Results } from "./components/Results";
 import { Reader, ReaderStyle, ReaderTarget } from "./components/Reader";
@@ -115,6 +115,7 @@ type Dialog =
   | { kind: "duplicates" }
   | { kind: "guru"; person: Person }
   | { kind: "relate"; id: number; place: NonNullable<TreePlace> }
+  | { kind: "moveText"; docId: number; fragment: string; from: string }
   | null;
 
 export default function App() {
@@ -735,6 +736,14 @@ export default function App() {
           },
         });
       }
+      // a piece that tells of someone else: to another record
+      const inlineDoc = ctx === "doc" && el.closest(".reader-body") ? Number(ctxEl!.dataset.id) : null;
+      const moveDoc = ctx === "reader" && readerDoc ? readerDoc.id : inlineDoc;
+      if (moveDoc) {
+        const fragment = window.getSelection()?.toString() ?? sel;
+        const from = ctx === "reader" ? readerDoc?.person ?? "" : main.kind === "person" ? persons.find((x) => x.id === main.id)?.name ?? "" : "";
+        items.push({ label: t.moveText, icon: Scissors, onClick: () => setDialog({ kind: "moveText", docId: moveDoc, fragment, from }) });
+      }
       if (ctx !== "reader") return { ...at, items };
       items.push("sep");
     }
@@ -1124,6 +1133,7 @@ export default function App() {
               refreshAll();
             }}
             onToast={showToast}
+            onDistinct={() => api.listPersons().then(setPersons, () => {})}
             readerStyle={readerStyle}
             fontSize={fontSize}
             names={nameIndex}
@@ -1277,6 +1287,22 @@ export default function App() {
           onOpenDoc={(id) => {
             setDialog(null);
             openDoc(id);
+          }}
+        />
+      )}
+      {dialog?.kind === "moveText" && (
+        <MoveTextDialog
+          t={t}
+          docId={dialog.docId}
+          fragment={dialog.fragment}
+          from={dialog.from}
+          persons={persons}
+          onClose={() => setDialog(null)}
+          onDone={(_, name) => {
+            setDialog(null);
+            showToast(t.moveTextDone(name));
+            reloadPerson();
+            refreshAll();
           }}
         />
       )}

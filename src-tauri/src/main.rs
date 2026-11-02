@@ -595,6 +595,12 @@ async fn unrelate(state: State<'_, AppState>, disciple: i64, guru: i64) -> CmdRe
     store::unrelate(&mut state.conn.lock().unwrap(), disciple, guru)
 }
 
+/// A piece of a text made a text of another record (see store::move_text).
+#[tauri::command]
+async fn move_text(state: State<'_, AppState>, doc_id: i64, fragment: String, to_person: i64, title: String) -> CmdResult<i64> {
+    store::move_text(&mut state.conn.lock().unwrap(), doc_id, &fragment, to_person, &title)
+}
+
 /// What does not fit in the records: gurus, disciples, dates (see check::check).
 #[tauri::command]
 async fn check_data(state: State<'_, AppState>) -> CmdResult<Vec<check::Issue>> {
@@ -1119,6 +1125,7 @@ fn main() {
             unrelate,
             sync_tree,
             check_data,
+            move_text,
             set_person_photo,
             remove_person_photo,
             create_doc,

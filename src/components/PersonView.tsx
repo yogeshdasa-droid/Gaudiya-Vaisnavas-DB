@@ -44,6 +44,8 @@ interface Props {
   onReveal: (p: Person) => void;
   onPhotoChanged: () => void;
   onToast: (msg: string) => void;
+  /** some records were called different people: the lists that mark repeated ones are read again */
+  onDistinct: () => void;
   readerStyle: ReaderStyle;
   fontSize: number;
   names: NameIndex | null;
@@ -122,12 +124,27 @@ export function PersonView(p: Props) {
     return (name: string) => m.get(foldName(name)) ?? cores.get(coreName(name)) ?? undefined;
   }, [p.persons]);
 
+  // pairs already called different people are not offered again
+  const [distinct, setDistinct] = useState<[number, number][]>([]);
+  useEffect(() => void api.listDistinct().then(setDistinct, () => {}), [p.id, p.persons]);
   const similar = useMemo(() => {
     if (!person) return [];
     const core = coreName(person.name);
     if (!core) return [];
-    return p.persons.filter((x) => x.id !== person.id && coreName(x.name) === core).slice(0, 8);
-  }, [person, p.persons]);
+    const apart = new Set(distinct.flatMap(([a, b]) => (a === person.id ? [b] : b === person.id ? [a] : [])));
+    return p.persons.filter((x) => x.id !== person.id && !apart.has(x.id) && coreName(x.name) === core).slice(0, 8);
+  }, [person, p.persons, distinct]);
+  const notSame = async () => {
+    if (!person) return;
+    try {
+      // each pair apart: the others may still be one person between them
+      for (const s of similar) await api.markDistinct([person.id, s.id]);
+      setDistinct(await api.listDistinct());
+      p.onDistinct();
+    } catch (e) {
+      p.onToast(String(e));
+    }
+  };
 
   // A record with a single text shows it right here, no click needed.
   const single = person && person.id === p.id && person.docs.length === 1 ? person.docs[0] : null;
@@ -566,6 +583,9 @@ export function PersonView(p: Props) {
                 ))}
                 <button className="link-btn" onClick={() => p.onMerge(person, similar.map((s) => s.id))}>
                   {t.mergePersons}
+                </button>
+                <button className="link-btn" title={t.notSameHint} onClick={notSame}>
+                  {t.notSame}
                 </button>
               </div>
             </section>

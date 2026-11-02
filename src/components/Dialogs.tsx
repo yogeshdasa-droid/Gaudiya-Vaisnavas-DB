@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, ListTree, ListX, FilePen, FileText, FolderInput, GitMerge, History, Search, Trash2, Undo2, Upload, UserPlus, UserRound, X } from "lucide-react";
+import { AlertTriangle, ListTree, ListX, FilePen, FileText, FolderInput, GitMerge, History, Scissors, Search, Trash2, Undo2, Upload, UserPlus, UserRound, X } from "lucide-react";
 import { api, DocInfo, EMPTY_PERSON, Person, PersonFields, PersonListItem, SectionText, TREE_KINDS, TreeKind, Version } from "../api";
 import { T } from "../i18n";
 import { ask, Modal } from "./ui";
@@ -397,6 +397,106 @@ export function RelateDialog({
         </label>
       )}
       <p className="muted small">{t.relateHint}</p>
+      {error && <div className="error-box">{error}</div>}
+    </Modal>
+  );
+}
+
+// ---------------------------------------------------------------- move a piece of text
+
+/** A piece of a text that tells of someone else (another Haridāsa…) taken
+ *  to that person's record, existing or new. */
+export function MoveTextDialog({
+  t,
+  docId,
+  fragment,
+  from,
+  persons,
+  onClose,
+  onDone,
+}: {
+  t: T;
+  docId: number;
+  fragment: string;
+  from: string;
+  persons: PersonListItem[];
+  onClose: () => void;
+  onDone: (personId: number, name: string) => void;
+}) {
+  const [mode, setMode] = useState<"existing" | "new">("existing");
+  const [q, setQ] = useState(from);
+  const [chosen, setChosen] = useState<PersonListItem | null>(null);
+  const [name, setName] = useState(from);
+  const [title, setTitle] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const matches = useMemo(() => filterPersons(persons, q, 12), [persons, q]);
+  const target = mode === "new" ? name.trim() : chosen?.name ?? "";
+
+  const go = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      const id = mode === "new" ? await api.newPerson({ ...EMPTY_PERSON, name: name.trim() }) : chosen!.id;
+      await api.moveText(docId, fragment, id, title.trim() || target);
+      onDone(id, target);
+    } catch (e) {
+      setError(String(e));
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Modal
+      title={t.moveTextTitle}
+      icon={<Scissors size={18} />}
+      onClose={onClose}
+      footer={
+        <>
+          <span className="grow" />
+          <button className="btn ghost" onClick={onClose}>
+            {t.cancel}
+          </button>
+          <button className="btn" disabled={busy || !target} onClick={go}>
+            {busy ? <span className="spinner light" /> : null} {t.moveTextGo}
+          </button>
+        </>
+      }
+    >
+      <blockquote className="move-preview">{fragment.length > 600 ? fragment.slice(0, 600) + "…" : fragment}</blockquote>
+      <div className="relate-kinds">
+        <label className="check">
+          <input type="radio" name="move-mode" checked={mode === "existing"} onChange={() => setMode("existing")} /> {t.moveTextExisting}
+        </label>
+        <label className="check">
+          <input type="radio" name="move-mode" checked={mode === "new"} onChange={() => setMode("new")} /> {t.moveTextNew}
+        </label>
+      </div>
+      {mode === "existing" ? (
+        <div className="picker">
+          <input value={q} placeholder={t.moveTextSearch} autoFocus onChange={(e) => (setQ(e.target.value), setChosen(null))} />
+          {!chosen && matches.length > 0 && (
+            <div className="picker-list static">
+              {matches.map((m) => (
+                <button key={m.id} onClick={() => (setChosen(m), setQ(m.name))}>
+                  <UserRound size={13} /> {m.name}
+                  {m.aka && <em>{m.aka}</em>}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        <label className="stack">
+          <span>{t.moveTextName}</span>
+          <input value={name} autoFocus onChange={(e) => setName(e.target.value)} />
+        </label>
+      )}
+      <label className="stack">
+        <span>{t.moveTextDocTitle}</span>
+        <input value={title} placeholder={target} onChange={(e) => setTitle(e.target.value)} />
+      </label>
+      <p className="muted small">{t.moveTextHint}</p>
       {error && <div className="error-box">{error}</div>}
     </Modal>
   );
