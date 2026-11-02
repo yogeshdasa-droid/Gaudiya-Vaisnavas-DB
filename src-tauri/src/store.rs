@@ -2041,6 +2041,67 @@ pub fn sync_tree(conn: &mut Connection, write: bool) -> Res<Vec<SyncChange>> {
     Ok(out)
 }
 
+/// The kind label written after a name in a list ("Rūpa Gosvāmī (śikṣā)"),
+/// to be written the same way on the other side.
+fn kind_label(entry: &str) -> &'static str {
+    let l = fold_text(entry.split_once('(').map_or("", |(_, r)| r));
+    if l.contains("vani") {
+        " (śikṣā through vāṇī)"
+    } else if l.contains("siksa") {
+        " (śikṣā)"
+    } else if l.contains("sannyasa") {
+        " (sannyāsa)"
+    } else if l.contains("vesa") {
+        " (bābājī veśa)"
+    } else {
+        ""
+    }
+}
+
+/// What one record says and the other does not ("Guru: Narottama" in
+/// Viśvanātha's record, but Narottama does not list him), written in the
+/// other one too: the guru gets the disciple, the disciple the guru. One
+/// pair at a time (`id` the record that says it, `other` the one that does
+/// not): the fields were often written by hand or by the AI and are not
+/// always right, so Whisper decides each one. Only the name is added; the
+/// record keeps its earlier version.
+pub fn complete_back(conn: &mut Connection, id: i64, other: i64) -> Res<Vec<SyncChange>> {
+    let issues = crate::check::check(conn).map_err(e)?;
+    let mut p = Pending::new(conn)?;
+    for i in issues
+        .iter()
+        .filter(|i| (i.kind == "notBackGuru" || i.kind == "notBackDisciple") && i.id == id && i.other == Some(other) && id != other)
+    {
+        let me = p.take(conn, i.id)?;
+        let mut o = p.take(conn, other)?;
+        if i.kind == "notBackGuru" {
+            // my record names `other` as guru: `other` gets me as disciple
+            let entry = list_entries(&me.guru).into_iter().find(|x| names_record(x, other, &o.name, &p.index)).unwrap_or("");
+            o.disciples = add_entry(&o.disciples, &format!("{}{}", in_list(&me.name), kind_label(entry)), i.id, &me.name, &p.index);
+        } else {
+            let entry = list_entries(&me.disciples).into_iter().find(|x| names_record(x, other, &o.name, &p.index)).unwrap_or("");
+            o.guru = add_entry(&o.guru, &format!("{}{}", in_list(&me.name), kind_label(entry)), i.id, &me.name, &p.index);
+        }
+        p.put(i.id, me);
+        p.put(other, o);
+    }
+    let added = |before: &str, after: &str| -> Vec<String> {
+        let old = list_entries(before);
+        list_entries(after).into_iter().filter(|x| !old.contains(x)).map(String::from).collect()
+    };
+    let out = p
+        .changed()
+        .into_iter()
+        .map(|id| {
+            let f = &p.now[&id];
+            let (g0, d0) = &p.was[&id];
+            SyncChange { id, name: f.name.clone(), gurus: added(g0, &f.guru), disciples: added(d0, &f.disciples) }
+        })
+        .collect();
+    p.write(conn)?;
+    Ok(out)
+}
+
 /// The usual line of the Gauḍīya Guru Paramparā, starting from Śrī Caitanya
 /// Mahāprabhu: (name, guru). Each name lists the spellings used in the
 /// records; the first one found is taken. Names not found are skipped.

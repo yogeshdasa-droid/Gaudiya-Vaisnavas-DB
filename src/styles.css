@@ -2992,6 +2992,27 @@ h2 .h2-action {
   gap: 4px;
   margin-top: 4px;
 }
+/* Review: write in the other record what one of them says */
+.check-item .add-back {
+  margin-left: 6px;
+  font-size: 12px;
+}
+/* a record opened from Settings › Review: the way back, bottom left */
+.back-to {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
 /* right after merging: undo it at once */
 .merge-notice {
   display: flex;

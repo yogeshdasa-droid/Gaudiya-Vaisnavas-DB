@@ -186,7 +186,19 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.8.4)
+## 5. Qué hace hoy (v0.8.5)
+
+### Novedades de la 0.8.5 (02-11-2026)
+- Ajustes › Revisar: al abrir una ficha o un texto desde Ajustes sale abajo **«← Volver a Ajustes ›
+  Revisar»** (`backTo` en `App.tsx`; `onOpenPerson(id, tab)` en `Settings.tsx`), y la comprobación
+  sigue como se dejó (`lastCheck` en `Review.tsx`: resultado, «solo árbol» y grupos abiertos); el
+  botón dice «Comprobar otra vez».
+- En «Su guru no lo tiene en Discípulos» / «Su discípulo no lo tiene en Guru», cada línea tiene
+  **«＋ Escribirlo también en …»** (`store::complete_back(id, other)`: añade el nombre en la otra ficha,
+  con su «(śikṣā)»… si lo llevaba; versión guardada). **Uno a uno a propósito**: hacerlo para todos de
+  golpe se probó en una copia y metía errores (a Mahāprabhu le ponía como gurus a Gaṅgā Dāsa, Murāri
+  Gupta…; a Narottama, Nārāyaṇī Dāsī, Vasanta Rāya…) porque los campos escritos a mano o por la IA no
+  siempre son correctos.
 
 ### Novedades de la 0.8.4 (02-11-2026)
 - Los nombres largos de guru / discípulos se parten dentro de su tarjeta (`.facts dd .name-link`
@@ -837,6 +849,9 @@ Estado:
 ---
 
 ## 8. Historial
+
+- **02-11-2026 — v0.8.5**: volver a Revisar sin perder la comprobación; «Escribirlo también en …» por línea.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.8.5
 
 - **02-11-2026 — v0.8.4**: los nombres largos ya no se salen de las tarjetas de la ficha.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.8.4

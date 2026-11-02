@@ -624,6 +624,11 @@ async fn sync_tree(state: State<'_, AppState>, write: bool) -> CmdResult<Vec<sto
 }
 
 #[tauri::command]
+async fn complete_back(state: State<'_, AppState>, id: i64, other: i64) -> CmdResult<Vec<store::SyncChange>> {
+    store::complete_back(&mut state.conn.lock().unwrap(), id, other)
+}
+
+#[tauri::command]
 async fn remove_person_photo(state: State<'_, AppState>, id: i64) -> CmdResult<()> {
     store::remove_person_photo(&state.conn.lock().unwrap(), id)
 }
@@ -1146,6 +1151,7 @@ fn main() {
             relate,
             unrelate,
             sync_tree,
+            complete_back,
             check_data,
             move_text,
             set_person_photo,

@@ -388,6 +388,8 @@ export const api = {
   relate: (disciple: number, guru: number, kind: TreeKind, oldGuru: number | null) => invoke<number>("relate", { disciple, guru, kind, oldGuru }),
   unrelate: (disciple: number, guru: number) => invoke<number>("unrelate", { disciple, guru }),
   syncTree: (write: boolean) => invoke<SyncChange[]>("sync_tree", { write }),
+  /** what record `id` says about `other`, written in `other` too */
+  completeBack: (id: number, other: number) => invoke<SyncChange[]>("complete_back", { id, other }),
   checkData: () => invoke<Issue[]>("check_data"),
   setPersonPhoto: (id: number, path: string) => invoke<void>("set_person_photo", { id, path }),
   removePersonPhoto: (id: number) => invoke<void>("remove_person_photo", { id }),

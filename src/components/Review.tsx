@@ -240,6 +240,35 @@ export function DuplicatesDialog({
   );
 }
 
+/** The names a writing would add to each record, to look at before. */
+function ChangeList({ t, changes }: { t: T; changes: SyncChange[] }) {
+  return (
+    <div className="lib-list sync-list">
+      {changes.map((c) => (
+        <div key={c.id} className="lib-item">
+          <div className="lib-info">
+            <strong>{c.name}</strong>
+            {c.gurus.length > 0 && (
+              <code>
+                {t.syncTreeGurus}: + {c.gurus.join(", ")}
+              </code>
+            )}
+            {c.disciples.length > 0 && (
+              <code>
+                {t.syncTreeDisciples}: + {c.disciples.join(", ")}
+              </code>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** The last "Check the data", kept while the app is open: going to a record
+ *  and back finds the list as it was left (and its groups open). */
+const lastCheck: { issues: Issue[] | null; onlyTree: boolean; open: Set<IssueKind> } = { issues: null, onlyTree: true, open: new Set() };
+
 /** The "Review" tab in Settings: repeated records, doubtful titles, empty texts. */
 export function ReviewPane({
   t,
@@ -281,9 +310,19 @@ export function ReviewPane({
       () => (onToast(t.distinctUndone), onChanged(), api.listDistinct().then(setDistinct, () => {})),
       (e) => onToast(String(e)),
     );
-  const [issues, setIssues] = useState<Issue[] | null>(null);
+  const [issues, setIssuesState] = useState<Issue[] | null>(lastCheck.issues);
+  const setIssues = (x: Issue[]) => setIssuesState((lastCheck.issues = x));
   const [checking, setChecking] = useState(false);
-  const [onlyTree, setOnlyTree] = useState(true);
+  const [onlyTree, setOnlyTreeState] = useState(lastCheck.onlyTree);
+  const setOnlyTree = (x: boolean) => setOnlyTreeState((lastCheck.onlyTree = x));
+  const [openKinds, setOpenKinds] = useState<Set<IssueKind>>(lastCheck.open);
+  const toggleKind = (kind: IssueKind, open: boolean) =>
+    setOpenKinds((s) => {
+      const next = new Set(s);
+      if (open) next.add(kind);
+      else next.delete(kind);
+      return (lastCheck.open = next);
+    });
   const check = () => {
     setChecking(true);
     api.checkData().then(
@@ -313,6 +352,19 @@ export function ReviewPane({
     setSyncing(false);
   };
 
+  // what one record says and the other does not: written in the other one,
+  // one line at a time (the fields are not always right)
+  const completeBack = async (i: Issue) => {
+    try {
+      const changes = await api.completeBack(i.id, i.other!);
+      onToast(changes.length ? t.completeBackDone(i.a) : t.syncTreeNothing);
+      setIssues((issues ?? []).filter((x) => x !== i));
+      onChanged();
+    } catch (e) {
+      onToast(String(e));
+    }
+  };
+
   const rename = async (d: ReviewDoc, title: string) => {
     if (!title.trim() || title === d.title) return;
     try {
@@ -338,7 +390,7 @@ export function ReviewPane({
       <p className="muted small">{t.checkHint}</p>
       <div className="row-gap">
         <button className="btn" disabled={checking} onClick={check}>
-          {checking ? <span className="spinner light" /> : <SearchCheck size={15} />} {t.checkRun}
+          {checking ? <span className="spinner light" /> : <SearchCheck size={15} />} {issues ? t.checkAgain : t.checkRun}
         </button>
         <label className="check">
           <input type="checkbox" checked={onlyTree} onChange={(e) => setOnlyTree(e.target.checked)} /> {t.checkOnlyTree}
@@ -348,7 +400,15 @@ export function ReviewPane({
         <>
           <p className="muted small">{issueGroups.length ? t.checkCount(issueGroups.reduce((n, [, g]) => n + g.length, 0)) : t.checkNothing}</p>
           {issueGroups.map(([kind, list]) => (
-            <details key={kind} className="check-group">
+            <details
+              key={kind}
+              className="check-group"
+              open={openKinds.has(kind)}
+              onToggle={(e) => {
+                const open = (e.currentTarget as HTMLDetailsElement).open;
+                if (open !== openKinds.has(kind)) toggleKind(kind, open);
+              }}
+            >
               <summary>
                 {t.checkGroup[kind]} <span className="count">{list.length}</span>
               </summary>
@@ -362,6 +422,11 @@ export function ReviewPane({
                     {i.other !== null && (
                       <button className="icon-btn" title={t.checkOpenOther(i.a)} onClick={() => onOpenPerson(i.other!)}>
                         <UserRound size={13} />
+                      </button>
+                    )}
+                    {i.other !== null && (kind === "notBackGuru" || kind === "notBackDisciple") && (
+                      <button className="link-btn add-back" title={t.completeBackHint} onClick={() => completeBack(i)}>
+                        + {t.completeBackOne(i.a)}
                       </button>
                     )}
                   </div>
@@ -383,25 +448,7 @@ export function ReviewPane({
       ) : (
         <>
           <p className="muted small">{t.syncTreeCount(sync.length)}</p>
-          <div className="lib-list sync-list">
-            {sync.map((c) => (
-              <div key={c.id} className="lib-item">
-                <div className="lib-info">
-                  <strong>{c.name}</strong>
-                  {c.gurus.length > 0 && (
-                    <code>
-                      {t.syncTreeGurus}: + {c.gurus.join(", ")}
-                    </code>
-                  )}
-                  {c.disciples.length > 0 && (
-                    <code>
-                      {t.syncTreeDisciples}: + {c.disciples.join(", ")}
-                    </code>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+          <ChangeList t={t} changes={sync} />
           <div className="row-gap">
             <button className="btn" disabled={syncing} onClick={() => syncTree(true)}>
               {syncing ? <span className="spinner light" /> : <ListTree size={15} />} {t.syncTreeWrite(sync.length)}

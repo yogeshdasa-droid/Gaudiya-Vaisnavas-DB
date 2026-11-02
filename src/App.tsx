@@ -170,6 +170,8 @@ export default function App() {
   const [persons, setPersons] = useState<PersonListItem[]>([]);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [dialog, setDialog] = useState<Dialog>(null);
+  // a record or text opened from Settings: the tab to come back to
+  const [backTo, setBackTo] = useState<SettingsTab | null>(null);
   const [dragging, setDragging] = useState(false);
   const [toast, setToast] = useState<{ msg: string; id: number } | null>(null);
   const [menu, setMenu] = useState<MenuState | null>(null);
@@ -1291,15 +1293,28 @@ export default function App() {
           }}
           persons={persons}
           onDuplicates={() => setDialog({ kind: "duplicates" })}
-          onOpenPerson={(id) => {
+          onOpenPerson={(id, from) => {
             setDialog(null);
+            setBackTo(from);
             openPerson(id);
           }}
-          onOpenDoc={(id) => {
+          onOpenDoc={(id, from) => {
             setDialog(null);
+            setBackTo(from);
             openDoc(id);
           }}
         />
+      )}
+      {/* opened from Settings (the review…): back to it, where it was left */}
+      {backTo && dialog?.kind !== "settings" && (
+        <div className="back-to">
+          <button className="btn" onClick={() => (setDialog({ kind: "settings", tab: backTo }), setBackTo(null))}>
+            <ArrowLeft size={15} /> {t.backToSettings(t.settingsTabName[backTo])}
+          </button>
+          <button className="icon-btn" title={t.close} onClick={() => setBackTo(null)}>
+            <X size={14} />
+          </button>
+        </div>
       )}
       {dialog?.kind === "moveText" && (
         <MoveTextDialog

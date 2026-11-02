@@ -307,8 +307,9 @@ interface Props {
   onImportStarted: () => void;
   persons: PersonListItem[];
   onDuplicates: () => void;
-  onOpenDoc: (id: number) => void;
-  onOpenPerson: (id: number) => void;
+  /** `from`: the tab it was opened from, to come back to it */
+  onOpenDoc: (id: number, from: SettingsTab) => void;
+  onOpenPerson: (id: number, from: SettingsTab) => void;
 }
 
 export function Settings(p: Props) {
@@ -463,16 +464,16 @@ export function Settings(p: Props) {
                   lang={lang}
                   persons={p.persons}
                   onDuplicates={p.onDuplicates}
-                  onOpenDoc={p.onOpenDoc}
+                  onOpenDoc={(id) => p.onOpenDoc(id, tab)}
                   onChanged={p.onChanged}
                   onToast={p.onToast}
-                  onOpenPerson={p.onOpenPerson}
+                  onOpenPerson={(id) => p.onOpenPerson(id, tab)}
                 />
               )}
 
-              {tab === "fill" && <FillPane t={t} onToast={p.onToast} onChanged={p.onChanged} onOpenPerson={p.onOpenPerson} />}
+              {tab === "fill" && <FillPane t={t} onToast={p.onToast} onChanged={p.onChanged} onOpenPerson={(id) => p.onOpenPerson(id, tab)} />}
 
-              {tab === "replace" && <ReplacePane t={t} onToast={p.onToast} onOpenDoc={p.onOpenDoc} />}
+              {tab === "replace" && <ReplacePane t={t} onToast={p.onToast} onOpenDoc={(id) => p.onOpenDoc(id, tab)} />}
 
               {tab === "meaning" && <MeaningPane t={t} onToast={p.onToast} />}
 
