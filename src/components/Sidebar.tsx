@@ -11,6 +11,8 @@ export type SideTab = "persons" | "library" | "bookmarks" | "history";
 export type Reveal = { kind: "doc" | "person"; id: number; n: number };
 // the last request handled: the lists are mounted again on each tab change
 let revealed = 0;
+// "Other Vaiṣṇavas" starts folded each time the app opens: the Guru Paramparā is the focus
+let otherFolded = false;
 
 /** Scrolls the sidebar to a row and makes it blink, once it is drawn. */
 function scrollToRow(selector: string) {
@@ -220,6 +222,11 @@ function PersonList({
   const [fieldHits, setFieldHits] = useState<number[]>([]);
   const [closedGroups, toggleGroup] = useStoredSet<string>("personGroups");
   const [closed, toggleNode] = useStoredSet<number>("treeClosed");
+  useEffect(() => {
+    if (otherFolded) return;
+    otherFolded = true;
+    toggleGroup("other", true);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const [drag, setDrag] = useState<Drag | null>(null);
   const dragged = useRef(false);
   // records that may be repeated: their names in red, to merge them
@@ -255,10 +262,12 @@ function PersonList({
     const words = foldName(filter).split(" ").filter(Boolean);
     const tagged = tag ? persons.filter((p) => tagsOf(p).includes(tag)) : persons;
     if (!words.length) return { shown: tagged, mentions: [] };
+    // and in each, those of the Guru Paramparā first
+    const treeFirst = (ps: PersonListItem[]) => [...ps].sort((a, b) => Number(!a.tree) - Number(!b.tree));
     const named = tagged.filter((p) => words.every((w) => ` ${foldName(`${p.name} ${p.aka}`)}`.includes(` ${w}`)));
     const ids = new Set(named.map((p) => p.id));
     const extra = new Set(fieldHits);
-    return { shown: named, mentions: tagged.filter((p) => extra.has(p.id) && !ids.has(p.id)) };
+    return { shown: treeFirst(named), mentions: treeFirst(tagged.filter((p) => extra.has(p.id) && !ids.has(p.id))) };
   }, [filter, tag, persons, fieldHits]);
 
   // collections that are not about people (Bhajans & Kirtans…): a group of

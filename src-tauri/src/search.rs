@@ -169,6 +169,8 @@ pub struct Hit {
     pub dir: String,
     pub person_id: Option<i64>,
     pub person: Option<String>,
+    /// its record is in the Guru Paramparā
+    pub tree: bool,
     pub snippet: String,
     pub hits: usize,
 }
@@ -185,6 +187,7 @@ pub struct PersonHit {
     pub id: i64,
     pub name: String,
     pub snippet: String,
+    pub tree: bool,
 }
 
 #[derive(Serialize)]
@@ -250,12 +253,16 @@ fn order_by(sort: &str, rank: &str) -> String {
         "title" => "d.title COLLATE NOCASE, s.ordinal".into(),
         "person" => "p.name IS NULL, p.name COLLATE NOCASE, d.title COLLATE NOCASE, s.ordinal".into(),
         "path" => "d.dir COLLATE NOCASE, d.title COLLATE NOCASE, s.ordinal".into(),
-        _ => format!("{rank}, d.id, s.ordinal"),
+        // the Guru Paramparā first: the focus of the library
+        _ => format!("{IN_TREE} DESC, {rank}, d.id, s.ordinal"),
     }
 }
 
+const IN_TREE: &str = "(d.person_id IN (SELECT person_id FROM person_tree))";
+
 const HIT_COLS: &str =
-    "s.id, s.doc_id, s.ordinal, d.sections, s.heading, d.title, d.collection, d.dir, d.person_id, p.name";
+    "s.id, s.doc_id, s.ordinal, d.sections, s.heading, d.title, d.collection, d.dir, d.person_id, p.name,
+     COALESCE(d.person_id IN (SELECT person_id FROM person_tree), 0)";
 
 pub fn search(conn: &Connection, p: &SearchParams) -> rusqlite::Result<SearchResult> {
     let started = std::time::Instant::now();
@@ -346,6 +353,7 @@ pub fn search(conn: &Connection, p: &SearchParams) -> rusqlite::Result<SearchRes
                 dir: r.get(7)?,
                 person_id: r.get(8)?,
                 person: r.get(9)?,
+                tree: r.get(10)?,
                 snippet: String::new(),
                 hits: 0,
             })
@@ -373,19 +381,21 @@ pub fn search(conn: &Connection, p: &SearchParams) -> rusqlite::Result<SearchRes
     if let (Some(expr), false, 0, true) = (&parsed.fts, p.titles_only, p.offset, unfiltered) {
         let tree = if p.parampara_only { " AND p.id IN (SELECT person_id FROM person_tree)" } else { "" };
         let mut st = conn.prepare(&format!(
-            "SELECT p.id, p.name, p.appearance, p.disappearance, p.place, p.guru, p.disciples, p.works, p.notes
+            "SELECT p.id, p.name, p.appearance, p.disappearance, p.place, p.guru, p.disciples, p.works, p.notes,
+                    p.id IN (SELECT person_id FROM person_tree)
              FROM persons_fts JOIN persons p ON p.id = persons_fts.rowid
-             WHERE persons_fts MATCH ?1{tree} ORDER BY bm25(persons_fts, 8.0, 1.0) LIMIT 100"
+             WHERE persons_fts MATCH ?1{tree}
+             ORDER BY 10 DESC, bm25(persons_fts, 8.0, 1.0) LIMIT 100"
         ))?;
         let rows = st.query_map([expr], |r| {
             let fields: Vec<String> = (2..9).map(|i| r.get::<_, String>(i)).collect::<Result<_, _>>()?;
-            Ok((r.get::<_, i64>(0)?, r.get::<_, String>(1)?, fields))
+            Ok((r.get::<_, i64>(0)?, r.get::<_, String>(1)?, fields, r.get::<_, bool>(9)?))
         })?;
         for row in rows {
-            let (id, name, fields) = row?;
+            let (id, name, fields, tree) = row?;
             let all = fields.into_iter().filter(|f| !f.trim().is_empty()).collect::<Vec<_>>().join(" · ");
             let (snippet, n) = text::snippet(&all, &parsed.terms, 30);
-            persons.push(PersonHit { id, name, snippet: if n > 0 { snippet } else { String::new() } });
+            persons.push(PersonHit { id, name, snippet: if n > 0 { snippet } else { String::new() }, tree });
         }
     }
 
@@ -429,10 +439,11 @@ pub fn hit_for_section(conn: &Connection, doc_id: i64, ordinal: i64) -> rusqlite
                     dir: r.get(7)?,
                     person_id: r.get(8)?,
                     person: r.get(9)?,
+                    tree: r.get(10)?,
                     snippet: String::new(),
                     hits: 0,
                 },
-                r.get(10)?,
+                r.get(11)?,
             ))
         },
     )

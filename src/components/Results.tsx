@@ -178,6 +178,7 @@ export function Results(p: Props) {
               <button key={ph.id} className="person-hit" onClick={() => p.onPerson(ph.id)}>
                 <span className="person-hit-name">
                   <UserRound size={12} /> <Highlighted text={ph.name} terms={terms} />
+                  {ph.tree && <span className="parampara-dot" title={t.parampara} />}
                 </span>
                 {ph.snippet && <span className="snippet" dangerouslySetInnerHTML={{ __html: ph.snippet }} />}
               </button>
@@ -218,6 +219,7 @@ export function Results(p: Props) {
                   }}
                 >
                   <UserRound size={11} /> {h.person}
+                  {h.tree && <span className="parampara-dot" title={t.parampara} />}
                 </button>
               )}
               {hasQuery && h.hits > 0 && <span className="badge">{t.hitsInSection(h.hits)}</span>}

@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
-import { BarChart3, ChevronRight } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { BarChart3, ChevronRight, Maximize, Minus, Plus } from "lucide-react";
 import { api, OverviewPerson, PersonListItem, sortDisciples } from "../api";
 import { Lang, T } from "../i18n";
 import { foldName } from "./Sidebar";
+import { BORDERS, LAKES, LAND, RIVERS, STATES } from "./mapData";
 
 const centuryOf = (p: { born: number | null; died: number | null }) => {
   const y = p.born ?? (p.died !== null ? p.died - 60 : null);
@@ -61,6 +62,8 @@ function BarRow({
 export type PanoramaTab = "status" | "map" | "branches" | "year" | "works";
 const TABS: PanoramaTab[] = ["status", "map", "branches", "year", "works"];
 type Scope = "all" | "tree" | "mandala";
+// the Guru Paramparā first: the focus of the library
+const SCOPES: Scope[] = ["tree", "mandala", "all"];
 
 /** What a record has, by name: the fields counted in "Status". */
 const FIELDS = ["year", "appearance", "disappearance", "lunar", "guru", "disciples", "place", "works", "notes", "text", "photo"] as const;
@@ -132,9 +135,9 @@ export function Panorama({
               ))}
             </div>
             {tab !== "branches" && (
-              <div className="seg small" data-n={3} data-on={scope === "all" ? 0 : scope === "tree" ? 1 : 2}>
+              <div className="seg small" data-n={3} data-on={SCOPES.indexOf(scope)}>
                 <span className="seg-ink" />
-                {(["all", "tree", "mandala"] as Scope[]).map((s) => (
+                {SCOPES.map((s) => (
                   <button key={s} className={scope === s ? "on" : ""} onClick={() => setScope(s)}>
                     {t.panoramaScope[s]}
                   </button>
@@ -310,6 +313,37 @@ const NORTH: Box = [18.6, 30.6, 74.6, 92.6];
 const BENGAL: Box = [21.7, 25.3, 86.5, 90.2];
 const inBox = (b: Box, la: number, lo: number) => la >= b[0] && la <= b[1] && lo >= b[2] && lo <= b[3];
 
+/** Rivers named on the map: [name, latitude, longitude, angle]. */
+const RIVER_NAMES: [string, number, number, number][] = [
+  ["Gaṅgā", 25.62, 84.6, 0],
+  ["Gaṅgā", 27.35, 79.75, -38],
+  ["Yamunā", 26.62, 79.0, -28],
+  ["Brahmaputra", 26.32, 91.4, 0],
+  ["Padmā", 23.9, 89.45, -18],
+  ["Bhāgīrathī", 23.92, 88.12, -80],
+  ["Mahānadī", 20.62, 84.9, -15],
+];
+
+/** The background lines, decoded once: [longitude, latitude] points. */
+const decoded = new Map<string, [number, number][]>();
+function points(line: string): [number, number][] {
+  let pts = decoded.get(line);
+  if (!pts) {
+    let x = 0;
+    let y = 0;
+    pts = line.split(" ").map((p) => {
+      const [dx, dy] = p.split(",");
+      x += Number(dx);
+      y += Number(dy);
+      return [x / 100, y / 100];
+    });
+    decoded.set(line, pts);
+  }
+  return pts;
+}
+
+const MAX_ZOOM = 10;
+
 function MapSvg({
   t,
   box,
@@ -341,43 +375,178 @@ function MapSvg({
   const H = Math.round((width * (n - s)) / ((e - w) * k));
   const x = (lon: number) => ((lon - w) / (e - w)) * width;
   const y = (lat: number) => ((n - lat) / (n - s)) * H;
-  const r = (c: number) => 5 + 14 * Math.sqrt(c / most);
-  const shown = [...at].filter(([i]) => inBox(box, PLACES[i][1], PLACES[i][2])).sort((a, b) => b[1].length - a[1].length);
+
+  // zoom: the piece of the map in view, [left, top, width] in map units
+  const [view, setView] = useState<[number, number, number]>([0, 0, width]);
+  const z = width / view[2];
+  const svgRef = useRef<SVGSVGElement>(null);
+  const zoomAt = (factor: number, px = view[0] + view[2] / 2, py = view[1] + (view[2] * H) / width / 2) =>
+    setView(([vx, vy, vw]) => {
+      const nw = Math.min(width, Math.max(width / MAX_ZOOM, vw / factor));
+      const f = nw / vw;
+      return clampView([px - (px - vx) * f, py - (py - vy) * f, nw]);
+    });
+  // the view stays over the drawn land: a little beyond the map's own box at most
+  const [minX, minY, maxX, maxY] = [x(72.5), y(32), x(95), y(16.5)];
+  const clampView = ([vx, vy, vw]: [number, number, number]): [number, number, number] => {
+    const vh = (vw * H) / width;
+    if (vw >= width) return [0, 0, width];
+    return [Math.min(Math.max(vx, minX), maxX - vw), Math.min(Math.max(vy, minY), maxY - vh), vw];
+  };
+  // a point of the screen in map units
+  const toMap = (cx: number, cy: number) => {
+    const r = svgRef.current!.getBoundingClientRect();
+    return [view[0] + ((cx - r.left) / r.width) * view[2], view[1] + ((cy - r.top) / r.height) * ((view[2] * H) / width)] as const;
+  };
+  // the wheel zooms where the pointer is (a native listener: React's is passive)
+  const wheel = useRef<(ev: WheelEvent) => void>(() => {});
+  wheel.current = (ev) => {
+    ev.preventDefault();
+    const [px, py] = toMap(ev.clientX, ev.clientY);
+    zoomAt(ev.deltaY < 0 ? 1.25 : 0.8, px, py);
+  };
+  useEffect(() => {
+    const el = svgRef.current;
+    if (!el) return;
+    const on = (ev: WheelEvent) => wheel.current(ev);
+    el.addEventListener("wheel", on, { passive: false });
+    return () => el.removeEventListener("wheel", on);
+  }, []);
+  // dragging moves the map; a press without moving is a click on a place
+  const drag = useRef<{ x: number; y: number; view: [number, number, number]; moved: boolean } | null>(null);
+  const onDown = (ev: React.PointerEvent) => {
+    if (ev.button !== 0) return;
+    drag.current = { x: ev.clientX, y: ev.clientY, view, moved: false };
+  };
+  const onMove = (ev: React.PointerEvent) => {
+    const d = drag.current;
+    if (!d || z <= 1) return;
+    const dx = ev.clientX - d.x;
+    const dy = ev.clientY - d.y;
+    if (!d.moved && Math.hypot(dx, dy) < 4) return;
+    if (!d.moved) svgRef.current?.setPointerCapture(ev.pointerId);
+    d.moved = true;
+    const scale = d.view[2] / svgRef.current!.getBoundingClientRect().width;
+    setView(clampView([d.view[0] - dx * scale, d.view[1] - dy * scale, d.view[2]]));
+  };
+  const onUp = () => {
+    // the click that follows a drag is not a pick
+    if (drag.current?.moved) window.setTimeout(() => (drag.current = null), 0);
+    else drag.current = null;
+  };
+  const pick = (i: number) => {
+    if (!drag.current?.moved) onPick(i);
+  };
+
+  const path = (line: string, close: boolean) =>
+    points(line)
+      .map(([lo, la], j) => `${j ? "L" : "M"}${x(lo).toFixed(1)} ${y(la).toFixed(1)}`)
+      .join("") + (close ? "Z" : "");
+  const background = useMemo(
+    () => ({
+      land: LAND.map((l) => path(l, true)).join(""),
+      lakes: LAKES.map((l) => path(l, true)).join(""),
+      states: STATES.map((l) => path(l, false)).join(""),
+      borders: BORDERS.map((l) => path(l, false)).join(""),
+      rivers: [0, 1, 2].map((c) =>
+        RIVERS.filter(([wc]) => wc === c)
+          .map(([, l]) => path(l, false))
+          .join(""),
+      ),
+    }),
+    [box, width], // eslint-disable-line react-hooks/exhaustive-deps
+  );
+
+  const r = (c: number) => (5 + 14 * Math.sqrt(c / most)) / Math.sqrt(z);
+  const shown = [...at].filter(([i]) => inBox(box, PLACES[i][1], PLACES[i][2]) || z > 1).sort((a, b) => b[1].length - a[1].length);
+  const vh = (view[2] * H) / width;
+  const right = (lo: number) => x(lo) > view[0] + view[2] * 0.78;
   return (
-    <svg viewBox={`0 0 ${width} ${H}`} role="img" aria-label={t.panoramaTab.map}>
-      {regions.map(([name, la, lo]) => (
-        <text key={name} className="map-region" x={x(lo)} y={y(la)} textAnchor="middle">
-          {name}
-        </text>
-      ))}
-      {frame && <rect className="map-frame" x={x(frame[2])} y={y(frame[1])} width={x(frame[3]) - x(frame[2])} height={y(frame[0]) - y(frame[1])} rx={6} />}
-      {shown.map(([i, ps]) => {
-        const [name, la, lo] = PLACES[i];
-        return (
-          <g
-            key={i}
-            className={`map-place${picked === i ? " on" : ""}`}
-            onClick={() => onPick(i)}
-            onMouseEnter={() => setHover(i)}
-            onMouseLeave={() => setHover(null)}
+    <div className="map-frame-wrap">
+      <svg
+        ref={svgRef}
+        viewBox={`${view[0]} ${view[1]} ${view[2]} ${vh}`}
+        role="img"
+        aria-label={t.panoramaTab.map}
+        className={z > 1 ? "zoomed" : undefined}
+        onPointerDown={onDown}
+        onPointerMove={onMove}
+        onPointerUp={onUp}
+        onPointerCancel={onUp}
+        onDoubleClick={(ev) => {
+          const [px, py] = toMap(ev.clientX, ev.clientY);
+          zoomAt(2, px, py);
+        }}
+      >
+        <rect className="map-sea" x={minX} y={minY} width={maxX - minX} height={maxY - minY} />
+        <path className="map-land" d={background.land} />
+        <path className="map-lake" d={background.lakes} />
+        <path className="map-state" d={background.states} />
+        <path className="map-border" d={background.borders} />
+        {background.rivers.map((d, c) => (
+          <path key={c} className={`map-river w${c}`} d={d} />
+        ))}
+        {RIVER_NAMES.filter(([, la, lo]) => inBox(box, la, lo) || z > 1).map(([name, la, lo, a]) => (
+          <text
+            key={`${name}${la}`}
+            className="map-river-name"
+            x={x(lo)}
+            y={y(la)}
+            fontSize={12 / Math.sqrt(z)}
+            textAnchor="middle"
+            transform={`rotate(${a} ${x(lo)} ${y(la)})`}
           >
-            <circle cx={x(lo)} cy={y(la)} r={r(ps.length) + 6} className="map-hit" />
-            <circle cx={x(lo)} cy={y(la)} r={r(ps.length)} className="map-dot" />
-            {(labels(i, ps.length) || hover === i || picked === i) && (
-              <text
-                x={x(lo) > width * 0.78 ? x(lo) - r(ps.length) - 4 : x(lo) + r(ps.length) + 4}
-                y={y(la) + 4}
-                textAnchor={x(lo) > width * 0.78 ? "end" : "start"}
-                className="map-label"
-              >
-                {name} · {ps.length}
-              </text>
-            )}
-            <title>{`${name}: ${ps.length}`}</title>
-          </g>
-        );
-      })}
-    </svg>
+            {name}
+          </text>
+        ))}
+        {regions.map(([name, la, lo]) => (
+          <text key={name} className="map-region" x={x(lo)} y={y(la)} textAnchor="middle">
+            {name}
+          </text>
+        ))}
+        {frame && <rect className="map-frame" x={x(frame[2])} y={y(frame[1])} width={x(frame[3]) - x(frame[2])} height={y(frame[0]) - y(frame[1])} rx={6} />}
+        {shown.map(([i, ps]) => {
+          const [name, la, lo] = PLACES[i];
+          const rr = r(ps.length);
+          return (
+            <g
+              key={i}
+              className={`map-place${picked === i ? " on" : ""}`}
+              onClick={() => pick(i)}
+              onMouseEnter={() => setHover(i)}
+              onMouseLeave={() => setHover(null)}
+            >
+              <circle cx={x(lo)} cy={y(la)} r={rr + 6 / z} className="map-hit" />
+              <circle cx={x(lo)} cy={y(la)} r={rr} className="map-dot" />
+              {(labels(i, ps.length) || z >= 2.5 || hover === i || picked === i) && (
+                <text
+                  x={right(lo) ? x(lo) - rr - 4 / z : x(lo) + rr + 4 / z}
+                  y={y(la) + 4 / z}
+                  textAnchor={right(lo) ? "end" : "start"}
+                  className="map-label"
+                  fontSize={13 / z}
+                  strokeWidth={4 / z}
+                >
+                  {name} · {ps.length}
+                </text>
+              )}
+              <title>{`${name}: ${ps.length}`}</title>
+            </g>
+          );
+        })}
+      </svg>
+      <div className="map-zoom">
+        <button className="icon-btn" title={t.mapZoomIn} onClick={() => zoomAt(1.6)} disabled={z >= MAX_ZOOM}>
+          <Plus size={15} />
+        </button>
+        <button className="icon-btn" title={t.mapZoomOut} onClick={() => zoomAt(1 / 1.6)} disabled={z <= 1}>
+          <Minus size={15} />
+        </button>
+        <button className="icon-btn" title={t.mapZoomReset} onClick={() => setView([0, 0, width])} disabled={z <= 1}>
+          <Maximize size={14} />
+        </button>
+      </div>
+    </div>
   );
 }
 

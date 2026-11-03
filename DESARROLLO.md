@@ -186,7 +186,21 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.9.0)
+## 5. Qué hace hoy (v0.9.1)
+
+### Novedades de la 0.9.1 (03-11-2026) — foco en la **Guru Paramparā**, mapa con fondo
+- **Mapa dibujado, sin internet** en Panorama › Mapa: tierra, mar, ríos (Gaṅgā, Yamunā…, con nombre),
+  lagos, fronteras y estados de India/Bangladés (`components/mapData.ts`, generado de Natural Earth 10m
+  con `scratchpad/geo/make.js`: simplificado, recortado a 72.5–95 E / 16.5–32 N, coordenadas en
+  centésimas de grado codificadas por diferencias). **Zoom** con la rueda, doble clic y botones
+  ＋ / − / encuadrar; arrastrar para moverse (`MAX_ZOOM` 10; nombres de lugares desde ×2.5).
+- La app **se centra en la Guru Paramparā** sin quitar a nadie: Panorama empieza en «Guru Paramparā»;
+  la búsqueda y el filtro ponen primero las fichas del árbol (`search.rs`: `IN_TREE`, columna `tree`
+  en `Hit`/`PersonHit`) con un punto naranja; «Otros vaiṣṇavas» se abre plegado; sello
+  «Guru Paramparā» encima del nombre en la ficha (lleva al árbol).
+- «Sin tipo» en Discípulos → «Sin especificar».
+- Arreglo: «Mover a otra ficha» fallaba con trozos de 7 a 11 palabras (`find_fragment`; con prueba).
+- Sin cambios en el formato de la base de datos (DATA_VERSION 6).
 
 ### Novedades de la 0.9.0 (02-11-2026) — **Panorama**
 - Vista nueva **Panorama** (barra de la izquierda y botón en Inicio; `Panorama.tsx`, datos de
@@ -585,7 +599,48 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 7. Pendientes e ideas
 
-### Para la próxima sesión (después del 02-11-2026, noche) — dónde nos quedamos
+### Para la próxima sesión (después del 03-11-2026) — dónde nos quedamos
+Publicada la **0.9.1** (§5). El 03-11-2026 se trabajaron los **datos** de Whisper por grupos, leyendo
+notas y textos de cada ficha (detalle en §8, entradas «datos» del 03-11): libros de B. V. Tīrtha y
+*Gaura-gaṇoddeśa-dīpikā* (Whisper confía en ambos: si dicen otra cosa, se corrige la ficha), círculos de
+Gadādhara, Advaita, Nityānanda y Śrīnivāsa–Narottama–Śyāmānanda, y **15 fichas mezcladas separadas**
+(25 nuevas). Cada ronda: copia «antes de …» en Documentos › … › Copias de seguridad.
+
+**Método por grupos (repetirlo igual):** leer en una copia (`node:sqlite`, solo lectura) las fichas
+del grupo (nombre, guru, discípulos, notas, textos, sitio en el árbol) → script de CDP que (a) pone en
+Guru/Discípulos los **nombres exactos** de las fichas, (b) escribe la familia en Notas con nombres
+exactos («Father: …. Son: ….»), (c) quita «discípulos» que eran familia, (d) da un apellido entre
+paréntesis a los homónimos para que cada enlace vaya a quien toca («Vīrabhadra (disciple of
+Śyāmānanda)») → **ensayo** en otra copia con `npm run app:dev` (dos pasadas: la segunda no debe
+cambiar nada) → Whisper cierra → copia → se aplica en su app (puerto 9334). Uniones: se proponen
+con tabla «Quedarse con / Unir en ella»; **las hace Whisper**. Fichas que mezclan personas (entradas
+«1. 2. 3.» del diccionario): la ficha conserva a quien ya apuntan el árbol o las notas; las demás,
+ficha nueva con apellido (Whisper: «sí, todas», aunque sean de una línea). Scripts en
+[scripts/datos/](scripts/datos/) (`adv.js`, `nit.js`, `sri.js`, `split.js`, ayudantes y LEEME.md).
+⚠ Para cerrar la app de pruebas, matar el proceso por **ruta** (`…\src-tauri\target\…`), nunca por
+nombre: `taskkill /IM gaudiya-vaisnavas-db.exe` cierra también la app de Whisper (pasó el 03-11).
+
+**Uniones pendientes que tiene que hacer Whisper** (se las di en tablas):
+Kamalākṣa → Śrī Advaita Ācārya Prabhu; Vīrabhadra Gosvāmī + Vīracandra → Vīracandra (Vīrabhadra
+Gosvāmī); Duhkhini Kṛṣṇa Dāsa → Śyāmānanda Paṇḍita; Jāhnavā Matta → Jāhnavā Devī (Mātā); Abhirāma Gopāl
+Ṭhākura → Abhirāma Ṭhākura; Dhananjaya Paṇḍita,Śrī + Dhananjaya Paṇḍit → Dhananjaya; Paramesvari → Parameśvara
+Dāsa Ṭhākura; Kholāvecā → Kholāvecā Śrīdhara; Kāla-Kṛṣṇa → Kālīya Kṛṣṇa Dāsa Ṭhākura; Rāmacandra (Ramai
+Gosāi) → Rāmacandra Gosvāmī (Ramai). Comprobar al empezar cuáles hizo (`SELECT id,name FROM persons WHERE id IN (…)`).
+⚠ **Śrīnivāsa Ṭhākura (1465) ≠ Śrīnivāsa Ācārya (1466)**: lo decidió Whisper el 02-11. El 03-11 propuse
+por error unirlas (el texto de la 1465 cuenta la vida de Śrīnivāsa Ācārya: padres Gaṅgādhara y
+Lakṣmīpriyā). Retirada la propuesta: preguntar a Whisper si ese **texto** se mueve a la 1466 y qué
+persona es la 1465 (guru: Mahāprabhu).
+
+**Lo siguiente (orden que pidió Whisper):**
+1. **Los seis Gosvāmīs de Vraja** (Rūpa, Sanātana, Jīva, Raghunātha Bhaṭṭa, Raghunātha dāsa, Gopāla
+   Bhaṭṭa) y su círculo: familias (Kumāra, Anupama/Vallabha, Govardhana Majumdar…), discípulos, homónimos.
+2. **Los devotos de Navadvīpa** (Śrīvāsa y sus hermanos, Murāri Gupta, Mukunda Datta, Gaṅgādāsa,
+   Candraśekhara, Jagannātha Miśra/Śacī, Viṣṇupriyā…). Por mirar ya anotado: Vāṇīnātha 1641/1638/265,
+   Gopāla 365 vs Gopāla Miśra 358, Bholanātha 147/148.
+3. **El resto**: otros grupos (asociados de Purī, de Orissa, la línea de Viśvanātha/Baladeva, los del
+   siglo XIX–XX), y luego lo de abajo (revisar, años, mapa).
+
+### Antes: para la sesión después del 02-11-2026, noche
 Publicada la **0.9.0** (DATA_VERSION 6, sin cambio de formato desde la 0.7.0). El 02-11-2026 fue un
 día largo: se publicaron de la 0.7.4 a la 0.9.0 (§5 «Novedades», §8 «Historial») y se arreglaron
 muchos datos de Whisper con su app (§8, entradas «datos»). Whisper dice: «ya estamos casi».
@@ -887,6 +942,64 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **03-11-2026 — v0.9.1**: mapa dibujado con zoom, la Guru Paramparā primero (búsqueda, filtro, Panorama,
+  sello en la ficha, «Otros vaiṣṇavas» plegado), «Sin especificar», arreglo de «Mover a otra ficha».
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.9.1
+
+- **03-11-2026 — datos (fichas separadas)**: 15 fichas que mezclaban personas del diccionario (entradas
+  «1. 2. 3.») → 25 fichas nuevas, ids 1922-1946 (copia «antes de separar fichas»). Regla: la ficha conserva
+  el nombre de la persona a la que ya apuntan el árbol o las notas; las demás llevan un apellido entre
+  paréntesis. Puruṣottama Paṇḍita (1136) pasa a asociado de Nityānanda en el árbol y su sitio bajo Narottama
+  lo ocupa «Puruṣottama (disciple of Narottama)»; Abhirāma Dāsa (poeta) sale del árbol; textos movidos a
+  Gaurī Dāsa Paṇḍit, Abhirāma Ṭhākura y Lakṣmīpriyā Mātā. Uniones para Whisper: Kamalākṣa → Advaita;
+  Vīrabhadra Gosvāmī + Vīracandra → Vīracandra (Vīrabhadra Gosvāmī). **Código (sin publicar):**
+  `find_fragment` (mover texto) fallaba con trozos de 7–11 palabras; arreglado, con prueba.
+
+- **03-11-2026 — datos (Śrīnivāsa, Narottama, Śyāmānanda)**: 35 fichas (copia «antes de circulo de
+  Srinivasa»). Guru de Narottama: Lokanātha (dīkṣā), Jīva y Kṛṣṇadāsa Kavirāja (śikṣā); de Śyāmānanda:
+  Hridayacaitanya (dīkṣā), Jīva (śikṣā); Hridayacaitanya ← Gaurī Dāsa Paṇḍit. Familias de los tres en notas
+  con nombres exactos (Datta de Kheturī; padres de Śyāmānanda; esposas, suegros, hijos e hijas de
+  Śrīnivāsa; Vīra Hamvira y su familia); quitados «discípulos» que eran familia (Nārāyaṇī Dāsī, Gopāla
+  Cakravartī). Renombrado «Santosa Rāya (brother of Chānd Rāya)». Uniones para Whisper: «Śrīnivāsa  Ṭhākura»
+  → Śrīnivāsa Ācārya; «Duhkhini Kṛṣṇa Dāsa» → Śyāmānanda Paṇḍita. Por separar: Nārāyaṇī Dāsī 1006,
+  Hemalatā Devī 497, Gopāla Cakravartī 348, Lakṣmīpriyā 834.
+
+- **03-11-2026 — datos (círculo de Nityānanda)**: 29 fichas (copia «antes de circulo de Nityananda»).
+  Decisiones de Whisper: Acyutānanda nació en 1428 Śaka (1506), según B. V. Tīrtha; Kṛṣṇadāsa Miśra ≠
+  Kṛṣṇamiśra (marcados distintos; «Kārttikeya» solo en Kṛṣṇamiśra). Familia de Nityānanda en notas con
+  nombres exactos; los doce gopālas (GGD 126-132) en su ficha y en la de cada uno; Maheśa y Kālīya Kṛṣṇa
+  Dāsa con Guru «Śrī Nityānanda»; Jāhnavā guru de Vīrabhadra Gosvāmī. Renombradas: «Vīrabhadra (disciple
+  of Śyāmānanda)», «Vīracandra Gosvāmī (Madograma, 19th c.)», «Suryadasa (son of Harivaṁśa)»,
+  «Sundarānanda (disciple of Śyāmānanda)», «Sundarānanda Paṇḍit (disciple of Abhirāma)». Uniones para
+  Whisper: Vīracandra + Vīrabhadra Gosvāmī → «Vīracandra (Vīrabhadra Gosvāmī)» (antes, mover el texto de
+  1858 a la de Madograma), Jāhnavā Matta, Abhirāma Gopāl Ṭhākura, Dhananjaya ×2, Paramesvari, Kholāvecā,
+  Kāla-Kṛṣṇa, Rāmacandra (Ramai Gosāi). Por separar: Gaurī Dāsa 326, Abhirāma Dāsa 4.
+
+- **03-11-2026 — datos (círculo de Advaita)**: 36 fichas (copia «antes de circulo de Advaita»). La ficha 14
+  vacía era Acyutānanda, hijo mayor de Advaita (lo dice su texto) → «Acyutānanda (son of Advaita)»; familia
+  de Advaita en notas con nombres exactos; 16 discípulos de la rama de Advaita (CC 1.12) con Guru y en sus
+  Discípulos; Kuvera ya no lo tiene como «discípulo»; renombradas «Sītā Devī (mother of Lokanātha)» y
+  «Gopāla Miśra (disciple of Sanātana)». Uniones para Whisper: Sītā Thakurni→Sītā Ṭhākurāṇī, Kṛṣṇadāsa
+  Miśra→Kṛṣṇamiśra, Bhagavān Kar→Bhavanatha Kar. Pendiente: año de Acyutānanda (1492 vs 1504) y fichas que
+  mezclan personas (Haridāsa Brahmacārī, Murāri Paṇḍit, Raghunātha, Srikanta, Kamalākṣa).
+
+- **03-11-2026 — datos (prueba «círculo de Gadādhara»)**: 20 fichas (copia «antes de circulo de Gadadhara»).
+  Leyendo notas y textos: el padre de Gadādhara es la ficha 864 (renombrada «Mādhava Miśra (father of
+  Gadādhara)»), la 863 es otro («(son of Kālidāsa)»); la 560 no es el padre del Señor («Jagannātha Miśra
+  (teacher of Rasikānanda)», se le quitó «Nanda»); 10 discípulos con «Gadādhara Paṇḍit Gosvāmī» en Guru y
+  añadidos a sus Discípulos; familia en notas con nombres exactos. Uniones propuestas a Whisper (las hace
+  él): 277→274 (Gadādhara), 1850→1028 (Nayanānanda); Vāṇīnātha (1641/1638/265) por mirar juntos.
+  Método útil para seguir por grupos (asociados de Mahāprabhu).
+
+- **03-11-2026 — datos (libros de Whisper)**: con la 0.9.0 instalada (copia previa en Documentos › … ›
+  «antes de libros Tirtha y GGD 2026-11-03»), 103 fichas: fechas/lugares vacíos rellenados con B. V. Tīrtha,
+  *Sri Chaitanya: His Associates* (28 datos), 7 correcciones donde el libro dice otra cosa (Gopāla Bhaṭṭa,
+  Gadādhara 1535, Lokanātha, Kāśīśvara, Abhirāma nº 6, Devānanda nº 203, Jayadeva) y en las notas la
+  identidad en Kṛṣṇa-līlā según la *Gaura-gaṇoddeśa-dīpikā* (con nº de verso). Whisper confía en ambos
+  libros. No se tocaron homónimos dudosos. Sin publicar aún (código): mapa con fondo y zoom
+  (`mapData.ts`, Natural Earth), Paramparā primero en búsqueda y filtro, «Otros vaiṣṇavas» plegado al
+  abrir, sello «Guru Paramparā» en la ficha y punto naranja en resultados.
 
 - **02-11-2026 — v0.9.0**: Panorama (Estado, Mapa, Ramas, Año vaiṣṇava, Obras) y «Coincidieron en vida».
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.9.0

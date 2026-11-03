@@ -29,6 +29,8 @@ export interface Hit {
   dir: string;
   personId: number | null;
   person: string | null;
+  /** its record is in the Guru Paramparā */
+  tree: boolean;
   snippet: string;
   hits: number;
 }
@@ -37,7 +39,7 @@ export interface SearchResult {
   total: number;
   hits: Hit[];
   /** records that say it in their notes, dates, works… (first page only) */
-  persons: { id: number; name: string; snippet: string }[];
+  persons: { id: number; name: string; snippet: string; tree: boolean }[];
   facets: { name: string; count: number }[];
   terms: Term[];
   millis: number;

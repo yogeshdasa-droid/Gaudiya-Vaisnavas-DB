@@ -605,6 +605,11 @@ export function PersonView(p: Props) {
               )}
             </div>
             <div className="person-title">
+              {me?.tree && (
+                <button className="parampara-seal" title={t.revealInTree} onClick={() => p.onReveal(person)}>
+                  <ListTree size={13} /> {t.parampara}
+                </button>
+              )}
               <h1>{person.name}</h1>
               {person.aka && <div className="aka">{person.aka}</div>}
               {tags.length > 0 && (

@@ -300,7 +300,7 @@ fn find_fragment(full: &str, fragment: &str) -> Option<(usize, usize)> {
     let k = sel.len().min(6);
     let at = |from: usize, part: &[String]| (from..=src.len().saturating_sub(part.len())).find(|&i| src[i..i + part.len()].iter().map(|w| &w.2).eq(part.iter()));
     let first = at(0, &sel[..k])?;
-    let last = if sel.len() <= k { first + k - 1 } else { at(first + k, &sel[sel.len() - k..])? + k - 1 };
+    let last = if sel.len() <= k { first + k - 1 } else { at(first + sel.len() - k, &sel[sel.len() - k..])? + k - 1 };
     let start = full[..src[first].0].rfind('\n').map_or(0, |i| i + 1);
     let end = full[src[last].1..].find('\n').map_or(full.len(), |i| src[last].1 + i + 1);
     Some((start, end))
@@ -2320,6 +2320,10 @@ He passed away on the eleventh lunar day.");
         let owner: i64 = conn.query_row("SELECT person_id FROM docs WHERE id = ?1", [new], |r| r.get(0)).unwrap();
         assert_eq!(owner, other);
         assert!(move_text(&mut conn, doc, "words that are not there", other, "x").is_err());
+        // a short piece (7 to 11 words): its first and last six words overlap
+        let new = move_text(&mut conn, doc, "HARIDĀSA He was a disciple of Śyāmānanda Prabhu.", other, "x").unwrap();
+        let short: String = conn.query_row("SELECT group_concat(text, '') FROM sections WHERE doc_id = ?1", [new], |r| r.get(0)).unwrap();
+        assert_eq!(short, "## HARIDĀSA\nHe was a disciple of Śyāmānanda Prabhu.");
     }
 
     #[test]
