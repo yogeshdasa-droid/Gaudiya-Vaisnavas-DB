@@ -619,7 +619,8 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 - **Publicada la 0.11.0** en GitHub (Tīrthas, satélite, Inicio nuevo; formato 8). Whisper actualiza desde
   la app (actualizador). La 0.11.1 (puntos de distrito en el mapa + arreglo de «Abiertos recientemente»)
   se prepara al final del 04-11: comprobar si quedó publicada (`gh release list`).
-- **Tīrthas en la BD de Whisper: 77** (tandas 1–7 de `scripts/datos/lugares-N.json`). Cómo se hace una
+- **Tīrthas en la BD de Whisper: 86** (tandas 1–8 de `scripts/datos/lugares-N.json`). Versión publicada:
+  **0.11.2**. Cómo se hace una
   tanda: leer el Abhidhāna (`C:\Users\Yoges\Desktop\BIOGRAPHYS\Abhidhana_Part4_Tirthas_Bengali.txt`; scripts
   en `scripts/datos` `heads2.mjs` (cabeceras), `look.mjs`, `ctx.mjs` (líneas alrededor), `grepnear.mjs`
   (términos con contexto)) → buscar ids de fichas en la app de
@@ -734,12 +735,12 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
   (daban «Query returned no rows»); **puntos de distrito/región** en el mapa (`DISTRICTS` en
   `Panorama.tsx`, gris azulado, leyenda): una ficha cae en su distrito solo si ningún lugar santo la
   reconoce. Con ellos el mapa pasa de 242 a 319 de las 386 fichas con «Lugar».
-- **Para la 0.11.2 (hecho, sin instalador):** tipo de relación nuevo **«Discípulo, sin especificar»**
+- **0.11.2 (04-11, publicada en GitHub):** tipo de relación nuevo **«Discípulo, sin especificar»**
   (`disciple` en `store::TREE_KINDS` y `api.ts`; línea gris en el árbol; no entra en las vistas «solo
   dīkṣā / solo śikṣā»; «(discípulo)» / «(disciple)» tras un nombre lo marca). Lo pidió Whisper: las fuentes
   a veces solo dicen «disciple». Sin cambio de formato. **Tanda 8** (viajes de Mahāprabhu: Gayā,
-  Vārāṇasī, Prayāga, Kūrmasthāna, Jiyaḍa-nṛsiṁha, Śrī Raṅgam, Uḍupī, Paṇḍharapura, Rāmeśvara) ensayada
-  en la copia, falta el visto bueno y aplicarla.
+  Vārāṇasī, Prayāga, Kūrmasthāna, Jiyaḍa-nṛsiṁha, Śrī Raṅgam, Uḍupī, Paṇḍharapura, Rāmeśvara)
+  **aplicada** en la BD de Whisper con la 0.11.2 (copia «antes de lugares-8 viajes»): **86 tīrthas**.
 - **0.10.6:** tercer mapa **«Vraja de cerca»** (`VRAJA` en `Panorama.tsx`), con su recuadro en el mapa
   grande (`frames`), como el de Bengala (lo pidió Whisper). El clic en un punto enseña primero los lugares a menos de ~10 km (si el mapa muestra mucho
   más que ellos: Navadvīpa y sus islas), y después los que están pegados (< 40 px). Recordar a Whisper:
