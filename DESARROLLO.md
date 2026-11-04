@@ -195,7 +195,9 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
   —Śrīpāṭa, Samādhi, Āvirbhāva-sthāna, Vāsa-sthāna, Otros— con explicación al pasar el ratón; fichas que
   lo nombran en «Lugar»; **foto**); tarjeta «Tīrthas» en cada ficha. 50 lugares en la BD de Whisper
   (tandas 1–4 de `scripts/datos/lugares-N.json`, sacados del Abhidhāna); la tanda 5 (Purī) y la ficha de
-  Kāśī Miśra (`kasi-misra.mjs`) se aplican después de que Whisper actualice a la 0.11.0.
+  Kāśī Miśra (`kasi-misra.mjs`) se aplicaron tras actualizar Whisper a la 0.11.0 (copia «antes de Puri
+  y Kasi Misra»): **62 tīrthas**, ficha 1952 Kāśī Miśra (sin discípulos: en la BD de Whisper aún hay tres
+  Pratāparudra iguales —278, 1111, 1854—, sin unir ni marcadas como distintas).
 - Mapa: «Dibujo / Satélite» (teselas Esri), mapa «Vraja de cerca», punto elegido en rojo, clic = acercar
   a los vecinos (≤10 km o pegados), doble clic = bajar a las fichas, zoom hasta ~1 km.
 - Inicio: «Hoy», Seguir leyendo, Marcadores, «Del día»; cifras en Panorama › Estado. Lateral:
@@ -613,6 +615,31 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 7. Pendientes e ideas
 
+### ▶ Para la próxima sesión (después del 04-11-2026) — dónde nos quedamos
+- **Publicada la 0.11.0** en GitHub (Tīrthas, satélite, Inicio nuevo; formato 8). Whisper actualiza desde
+  la app (actualizador). La 0.11.1 (puntos de distrito en el mapa + arreglo de «Abiertos recientemente»)
+  se prepara al final del 04-11: comprobar si quedó publicada (`gh release list`).
+- **Tīrthas en la BD de Whisper: 77** (tandas 1–7 de `scripts/datos/lugares-N.json`). Cómo se hace una
+  tanda: leer el Abhidhāna (`C:\Users\Yoges\Desktop\BIOGRAPHYS\Abhidhana_Part4_Tirthas_Bengali.txt`; scripts
+  en `scripts/datos` `heads2.mjs` (cabeceras), `look.mjs`, `ctx.mjs` (líneas alrededor), `grepnear.mjs`
+  (términos con contexto)) → buscar ids de fichas en la app de
+  pruebas → escribir `lugares-N.json` en **inglés** (solo lo que dice el libro; coordenadas aproximadas
+  puestas por Claude) → ensayo en la copia (2 pasadas) → tabla resumida a Whisper → Whisper cierra la app →
+  copia «antes de …» (`backup.mjs`: VACUUM INTO en Documentos › … › Copias de seguridad) → abrir su app con
+  `WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=9334` → `node scripts/datos/lugares.mjs
+  <json> 9334` (2 pasadas) → recargar.
+- **Lo siguiente en lugares:** (1) más pueblos de Bengala de las fichas sin punto (lista con
+  `unmapped.mjs`: Talakhaḍi (ilegible en el OCR), Guptipāḍā, Teṅga-Vaidyapura, Khālihāṭi, Sandvīpa…);
+  (2) sitios de toda la India donde estuvo Mahāprabhu (Vārāṇasī, Prayāga, Gayā, viaje al sur: Śrī Raṅgam,
+  Uḍupī, Paṇḍharapura…); (3) Navadvīpa: Śrīvāsāṅgana y otros sitios disputados (anotar las dos versiones).
+- **Pendiente de Whisper (unir o no):** Jayakṛṣṇa dāsa Bābājī 606/1830 (samādhi en Kāmyavana sin enlazar),
+  Śaṅkarāraṇya 1368/1369 (Cātarā), Rāmāi 1242/1268/1859, Viṣṇupriyā 1715/1881, Śacī 1336/1864, Gaura Kiśora
+  1819/314, Sārvabhauma 1381/1657, Sāraṅga 1378/1379, Narahari 979/980, Anupama 55/56, Gadādhara dāsa
+  272/1815, Bhāgavata Ācārya 105/1791, Jayadeva 597/598. Nārāyaṇī (1006/1007) sin enlazar en Māmagāchi.
+- **Criterios de Whisper** (memoria `conflicting-sources`): fuentes que no coinciden → la versión más
+  aceptada en el campo y la otra en notas con su fuente; si la ficha mezcla varias personas → separar.
+- Recordar: el número de un punto del mapa son **fichas**, no lugares. Un clic acerca, doble clic baja.
+
 ### Hecho el 04-11-2026 (sin publicar): **Lugares**, DATA_VERSION 7
 - Whisper eligió «apartado propio». Tablas nuevas `places` (name, aka, region, location, about, source,
   lat, lon) y `place_persons` (place_id, person_id, role ∈ sripata|samadhi|birth|lived|other).
@@ -684,6 +711,18 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
   visto bueno de Whisper). Jagannātha Purī (fiestas, maṭhas gauḍīyas, tīrthas), Gambhīrā, samādhi de
   Haridāsa, Ṭoṭā-gopīnātha, Guṇḍicā, Narendra-sarovara, Ālālanātha, Beṇṭapura (Rāmānanda Rāya), Kaṭaka,
   Sākṣi-gopāla, Remuṇā (samādhi de Mādhavendra Purī), Jājapura. Kāśī Miśra no tiene ficha.
+- **Después de publicar la 0.11.0 (04-11), aplicado en la BD de Whisper:** 278 Gajapati Pratāparudra Deva
+  (Whisper unió las tres) ↔ Kāśī Miśra guru/discípulo (`prataparudra.mjs`) y enlazado a Jagannātha Purī;
+  **tanda 6** (Vraja II: Mathurā, Madhuvana, Mahāvana-Gokula, Nandagrāma, Jāvaṭa, Varṣāṇā, Kāmyavana) y
+  **tanda 7** (Bengala: Cākundi, Agradvīpa, Bāghnāpāḍā, Phuliyā, Kāñcrāpāḍā, Buḍhan, Cātarā, Cāṁpāhāṭi):
+  **77 tīrthas**. Avisado: Jayakṛṣṇa dāsa Bābājī 606/1830 vacías, Śaṅkarāraṇya 1368/1369, Rāmāi
+  1242/1268/1859; padre de Haridāsa «Smṛti/Sumati» (OCR); Talakhaḍi ilegible.
+  `unmapped.mjs` (scratchpad): de 386 fichas con «Lugar», 176 sin punto en el mapa (muchos distritos:
+  Faridpur, Pabna, Barisal, Noakhali, Chittagong…; y pueblos sueltos de toda la India).
+- **0.11.1 (04-11, publicada en GitHub):** «Abiertos recientemente» olvida los textos que ya no existen
+  (daban «Query returned no rows»); **puntos de distrito/región** en el mapa (`DISTRICTS` en
+  `Panorama.tsx`, gris azulado, leyenda): una ficha cae en su distrito solo si ningún lugar santo la
+  reconoce. Con ellos el mapa pasa de 242 a 319 de las 386 fichas con «Lugar».
 - **0.10.6:** tercer mapa **«Vraja de cerca»** (`VRAJA` en `Panorama.tsx`), con su recuadro en el mapa
   grande (`frames`), como el de Bengala (lo pidió Whisper). El clic en un punto enseña primero los lugares a menos de ~10 km (si el mapa muestra mucho
   más que ellos: Navadvīpa y sus islas), y después los que están pegados (< 40 px). Recordar a Whisper:

@@ -317,6 +317,43 @@ const PLACES: [string, number, number, string[]][] = [
   ["Uḍupī", 13.34, 74.75, ["udupi"]],
 ];
 
+/** Districts and regions, for the records whose «Place» names only that (they are not tīrthas):
+ *  [name, latitude, longitude, ways it is written (folded)]. A record goes here only when no
+ *  holy place of the map recognises its «Place». */
+const DISTRICTS: [string, number, number, string[]][] = [
+  ["Faridpur", 23.61, 89.84, ["faridpur"]],
+  ["Pabna", 24.0, 89.24, ["pabna"]],
+  ["Barisal", 22.7, 90.37, ["barisal", "bakarganj", "banaripara", "banawaripara"]],
+  ["Noakhali", 22.87, 91.1, ["noakhali", "pheni", "feni"]],
+  ["Sandvīpa / Hatiyā", 22.45, 91.3, ["sandvip", "sandwip", "hatiya"]],
+  ["Chittagong", 22.34, 91.83, ["chittagong", "cattagram", "catagram", "chatigram", "patiya"]],
+  ["Mymensingh", 24.75, 90.4, ["mymensingh", "maimansingh", "kisoraganj", "kishoreganj", "egarasindur"]],
+  ["Bogra", 24.85, 89.37, ["bogra", "bagura"]],
+  ["Naogaon", 24.8, 88.93, ["naogaon"]],
+  ["Rangpur", 25.75, 89.25, ["rangpur", "piarigan"]],
+  ["Dinajpur", 25.62, 88.63, ["dinajpur"]],
+  ["Khulna / Sātakṣīrā", 22.82, 89.55, ["khulna", "satkhira", "satksira"]],
+  ["Madaripur", 23.17, 90.2, ["madaripur", "kotalipad"]],
+  ["Murshidabad", 24.18, 88.27, ["murshidabad", "mursidavad", "mursidabad", "renapur", "patenda"]],
+  ["Jangipur", 24.47, 88.07, ["jangipur", "jangipore"]],
+  ["Birbhum", 23.9, 87.53, ["birbhum"]],
+  ["Hugli", 22.9, 88.39, ["hugli", "hooghly", "siakhal", "seakhal", "seyakhal", "guptipar"]],
+  ["Bardhamān (district)", 23.25, 87.86, ["bardavan", "barddhaman"]],
+  ["Kaṭaka / Utkala", 20.6, 85.6, ["utkala", "orissa"]],
+  ["Gwalpara", 26.17, 90.62, ["gwalpara", "goalpara"]],
+  ["Mithilā / Tirhut", 26.12, 85.9, ["mithila", "trihut", "tirhut", "trihuta"]],
+  ["Orchhā (Bundelkhand)", 25.35, 78.64, ["odacha", "orchha", "bundelkhand"]],
+  ["Kānyakubja (Kanauj)", 27.05, 79.92, ["kanauj", "kannauj"]],
+  ["Kanpur", 26.45, 80.33, ["kanpur"]],
+  ["Lahore", 31.55, 74.34, ["lahore"]],
+  ["Kashmir", 34.08, 74.8, ["kashmir"]],
+  ["Ahmedabad", 23.03, 72.58, ["ahemadabad", "ahmedabad"]],
+  ["Śrīperumbudūr", 12.97, 79.95, ["sriperumbudur"]],
+  ["Kāladi", 10.17, 76.44, ["kaladi"]],
+  ["Kāñcī", 12.83, 79.7, ["kanci ", "kanchi ", "kancipuram"]],
+  ["Andhra", 16.5, 80.6, ["andhra"]],
+];
+
 /** A point of the map: one of PLACES, or a saved place (which takes the
  *  point of the one of PLACES it names, if any). */
 interface MapPlace {
@@ -330,6 +367,8 @@ interface MapPlace {
   placeId: number | null;
   /** the records the saved place lists */
   people: Set<number>;
+  /** a district or region, not a holy place (drawn grey) */
+  district?: boolean;
 }
 
 const inText = (keys: string[], text: string) => {
@@ -347,15 +386,19 @@ function mapPlaces(places: Place[]): MapPlace[] {
     if (same) Object.assign(same, mine);
     else out.push({ ...mine, keys: [] });
   }
+  for (const [name, lat, lon, keys] of DISTRICTS) out.push({ name, lat, lon, keys, placeKeys: [], placeId: null, people: new Set(), district: true });
   return out;
 }
 
 function placesOf(p: OverviewPerson, mp: MapPlace[]): number[] {
   const words = textKeys(p.place);
   const out: number[] = [];
+  const named = (m: MapPlace) => m.people.has(p.id) || (p.place.trim() && (inText(m.keys, p.place) || namesPlace(words, m.placeKeys)));
   mp.forEach((m, i) => {
-    if (m.people.has(p.id) || (p.place.trim() && (inText(m.keys, p.place) || namesPlace(words, m.placeKeys)))) out.push(i);
+    if (!m.district && named(m)) out.push(i);
   });
+  // only the district, when no holy place of the map recognised it
+  if (!out.length) mp.forEach((m, i) => m.district && named(m) && out.push(i));
   return out;
 }
 
@@ -692,7 +735,7 @@ function MapSvg({
           return (
             <g
               key={i}
-              className={`map-place${picked === i ? " on" : ""}`}
+              className={`map-place${picked === i ? " on" : ""}${mp[i].district ? " district" : ""}`}
               onClick={() => pick(i)}
               onDoubleClick={(ev) => {
                 ev.stopPropagation();
@@ -855,6 +898,9 @@ function PlacesMap({
           </button>
         </div>
         {offline && <span className="muted small">{t.mapOffline}</span>}
+        <span className="muted small map-legend">
+          <i className="legend-dot" /> {t.mapLegendPlace} <i className="legend-dot district" /> {t.mapLegendDistrict}
+        </span>
       </div>
       <div className="pano-maps">
         <div className="pano-map">

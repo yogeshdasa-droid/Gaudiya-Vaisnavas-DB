@@ -10,3 +10,13 @@ Ver DESARROLLO.md §7 «Método por grupos». Nunca sobre la BD real sin copia p
   Śyāmānanda), `split.js` (separar fichas que mezclan personas). Todas comprueban el nombre de cada
   ficha antes de tocarla y no cambian nada si se ejecutan dos veces.
 - `mapa-make.js`: genera `src/components/mapData.ts` a partir de Natural Earth 10m.
+
+## Tīrthas (lugares), desde el 04-11-2026
+- `lugares-N.json` + `node lugares.mjs <json> [puerto]`: guarda lugares por nombre (2 pasadas = nada nuevo).
+  Personas como `[id, rol]` o `["nombre exacto", rol]`; roles: sripata, samadhi, birth, lived, other.
+- Abhidhāna (Desktop\BIOGRAPHYS): `heads2.mjs <out> términos…` (cabeceras), `look.mjs`, `ctx.mjs <out> antes después líneas…`,
+  `grepnear.mjs <out> desde hasta antes después términos…`.
+- `backup.mjs "<motivo>"`: copia comprobada de la BD real (VACUUM INTO) en Documentos › … › Copias de seguridad.
+- `unmapped.mjs <copia.db> <out>`: fichas cuyo «Lugar» no sale en el mapa.
+- `cdpfull.mjs <out> @script.js` (puerto 9333) y `reload9334.mjs` (recargar la app de Whisper).
+- Cambios de datos del 04-11: `jayadeva-ravi.mjs`, `ramadasa.mjs`, `kasi-misra.mjs`, `prataparudra.mjs`.

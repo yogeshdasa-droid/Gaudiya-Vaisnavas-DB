@@ -504,6 +504,14 @@ export default function App() {
   }, []);
   const openPerson = useCallback((id: number) => setMain({ kind: "person", id }), []);
 
+  // «Recently opened» forgets the texts that are no longer there (merged, split, emptied
+  // from the bin): they would only give «Query returned no rows»
+  useEffect(() => {
+    if (!docs.length) return;
+    const ids = new Set(docs.map((d) => d.id));
+    setRecent((r) => (r.every((x) => ids.has(x.docId)) ? r : r.filter((x) => ids.has(x.docId))));
+  }, [docs, setRecent]);
+
   const onDocLoaded = useCallback(
     (d: DocInfo) => {
       setReaderDoc(d);

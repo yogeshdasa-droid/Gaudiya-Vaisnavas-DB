@@ -5715,3 +5715,27 @@ svg.satellite .map-dot {
   text-decoration: underline dotted;
   text-underline-offset: 3px;
 }
+
+/* district / region points of the map: not holy places */
+.map-place.district .map-dot {
+  fill: #7d98b8;
+}
+.map-place.district.on .map-dot {
+  fill: #e5484d;
+}
+.map-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-left: 6px;
+}
+.legend-dot.district {
+  background: #7d98b8;
+}
