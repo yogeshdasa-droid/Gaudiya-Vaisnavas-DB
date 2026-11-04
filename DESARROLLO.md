@@ -189,7 +189,7 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ## 5. Qué hace hoy (v0.11.3)
 
-### Novedades de la 0.11.3 (04-11-2026) — leer como un libro, satélite guardado en el PC
+### Novedades de la 0.11.3 (04-11-2026, **publicada en GitHub**) — leer como un libro, satélite guardado en el PC
 - Ficha de un solo texto: todo seguido como un libro (Literata 18 px, ~68ch, justificado, citas en cursiva,
   «❦ v.2 ❦» entre versiones) con índice «En este texto» a la izquierda; fuera tarjetas y «Leer todo».
 - Mapa satélite: teselas guardadas en «biodata-mapa.db» (`tiles.rs`, protocolo `bio` asíncrono), sin
