@@ -103,7 +103,7 @@ function looseName(s: string): string {
 
 const plainFold = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 /** "(śikṣā)" and the like after a name: the kind of relation written in the record. */
-const KIND_LABEL = /\s*\((dīkṣā|śikṣā|sannyāsa|vāṇī|veśa|bābājī veśa|pārṣada|asociado|associate|diksa|siksa|sannyasa|vani|vesa)\)\s*/gi;
+const KIND_LABEL = /\s*\((dīkṣā|śikṣā|sannyāsa|vāṇī|veśa|bābājī veśa|pārṣada|asociado|associate|diksa|siksa|sannyasa|vani|vesa|disciple|discípulo)\)\s*/gi;
 function kindOf(item: string): TreeKind | "" {
   const label = /\(([^)]*)\)/.exec(item)?.[1];
   if (!label) return "";
@@ -114,6 +114,7 @@ function kindOf(item: string): TreeKind | "" {
   if (/\bvesa\b/.test(l)) return "vesa";
   if (/\b(parsada|asociado|associate)\b/.test(l)) return "associate";
   if (/\bdiksa\b/.test(l)) return "diksa";
+  if (/\b(disciple|discipulo)\b/.test(l)) return "disciple";
   return "";
 }
 /** The names grouped by kind of relation, in the order of TREE_KINDS (no kind last). */

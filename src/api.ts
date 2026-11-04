@@ -124,9 +124,10 @@ export const EMPTY_PERSON: PersonFields = {
 };
 
 /** relation with the guru above in the Guru Paramparā */
-export type TreeKind = "diksa" | "siksa" | "vani" | "sannyasa" | "vesa" | "associate";
+export type TreeKind = "diksa" | "siksa" | "disciple" | "vani" | "sannyasa" | "vesa" | "associate";
 /** All of them, in the order offered in the lists. */
-export const TREE_KINDS: TreeKind[] = ["diksa", "siksa", "vani", "sannyasa", "vesa", "associate"];
+/** «disciple»: the source says disciple without saying whether dīkṣā or śikṣā. */
+export const TREE_KINDS: TreeKind[] = ["diksa", "siksa", "disciple", "vani", "sannyasa", "vesa", "associate"];
 /** The line view a relation belongs to: śikṣā por vāṇī goes in the śikṣā
  *  line; sannyāsa, veśa and associates in neither (only in the whole tree). */
 export const lineOfKind = (k: TreeKind): "diksa" | "siksa" | null => (k === "diksa" ? "diksa" : k === "siksa" || k === "vani" ? "siksa" : null);

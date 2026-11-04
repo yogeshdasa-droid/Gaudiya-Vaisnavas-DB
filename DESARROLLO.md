@@ -628,7 +628,18 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
   copia «antes de …» (`backup.mjs`: VACUUM INTO en Documentos › … › Copias de seguridad) → abrir su app con
   `WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=9334` → `node scripts/datos/lugares.mjs
   <json> 9334` (2 pasadas) → recargar.
-- **Lo siguiente en lugares:** (1) más pueblos de Bengala de las fichas sin punto (lista con
+- **▶ LO SIGUIENTE (pedido por Whisper): el Abhidhāna de BIOGRAFÍAS** (`Abhidhana_Part3_Biographies_Bengali.txt`,
+  ~130.000 líneas para los scripts; OCR a dos columnas). Whisper da por terminados los lugares (Part4).
+  Método acordado: **por grupos, empezando por los Seis Gosvāmīs** (Rūpa 1325, Sanātana 1353, Jīva 618,
+  Raghunātha Bhaṭṭa 1202, Raghunātha dāsa 1206, Gopāla Bhaṭṭa 343) y su círculo (Anupama 56, Kumāra,
+  Śrī Vallabha, Lokanātha 844, Kṛṣṇadāsa Kavirāja 759…). Por persona: sacar su entrada (OJO: las de los
+  grandes son ensayos largos repartidos; buscar la cabecera «Nombre—» con `heads2.mjs` cambiando el archivo
+  a Part3, y `grepnear.mjs`), comparar con la ficha (fechas, guru, discípulos, lugar, obras, familia) →
+  tabla a Whisper: «lo que añade» (solo campos vacíos, en inglés, con la fuente «Gauḍīya Vaiṣṇava
+  Abhidhāna») y «dónde no coincide» (solo avisar: el Abhidhāna NO corrige a B. V. Tīrtha ni a la
+  Gaura-gaṇoddeśa-dīpikā; si es conflicto real, las dos versiones en notas con su fuente) → Whisper
+  decide → script en `scripts/datos/` (2 pasadas) con copia antes, en su app (puerto 9334).
+- **Lo siguiente en lugares** (más adelante): (1) más pueblos de Bengala de las fichas sin punto (lista con
   `unmapped.mjs`: Talakhaḍi (ilegible en el OCR), Guptipāḍā, Teṅga-Vaidyapura, Khālihāṭi, Sandvīpa…);
   (2) sitios de toda la India donde estuvo Mahāprabhu (Vārāṇasī, Prayāga, Gayā, viaje al sur: Śrī Raṅgam,
   Uḍupī, Paṇḍharapura…); (3) Navadvīpa: Śrīvāsāṅgana y otros sitios disputados (anotar las dos versiones).
@@ -723,6 +734,12 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
   (daban «Query returned no rows»); **puntos de distrito/región** en el mapa (`DISTRICTS` en
   `Panorama.tsx`, gris azulado, leyenda): una ficha cae en su distrito solo si ningún lugar santo la
   reconoce. Con ellos el mapa pasa de 242 a 319 de las 386 fichas con «Lugar».
+- **Para la 0.11.2 (hecho, sin instalador):** tipo de relación nuevo **«Discípulo, sin especificar»**
+  (`disciple` en `store::TREE_KINDS` y `api.ts`; línea gris en el árbol; no entra en las vistas «solo
+  dīkṣā / solo śikṣā»; «(discípulo)» / «(disciple)» tras un nombre lo marca). Lo pidió Whisper: las fuentes
+  a veces solo dicen «disciple». Sin cambio de formato. **Tanda 8** (viajes de Mahāprabhu: Gayā,
+  Vārāṇasī, Prayāga, Kūrmasthāna, Jiyaḍa-nṛsiṁha, Śrī Raṅgam, Uḍupī, Paṇḍharapura, Rāmeśvara) ensayada
+  en la copia, falta el visto bueno y aplicarla.
 - **0.10.6:** tercer mapa **«Vraja de cerca»** (`VRAJA` en `Panorama.tsx`), con su recuadro en el mapa
   grande (`frames`), como el de Bengala (lo pidió Whisper). El clic en un punto enseña primero los lugares a menos de ~10 km (si el mapa muestra mucho
   más que ellos: Navadvīpa y sus islas), y después los que están pegados (< 40 px). Recordar a Whisper:

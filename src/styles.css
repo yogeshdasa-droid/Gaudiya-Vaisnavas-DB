@@ -5739,3 +5739,11 @@ svg.satellite .map-dot {
 .legend-dot.district {
   background: #7d98b8;
 }
+/* a disciple the source does not say whether of dīkṣā or śikṣā: grey */
+.tl-disciple {
+  border-color: var(--muted);
+}
+.tree-link.disciple,
+.tree-link.disciple.strong {
+  stroke: var(--muted);
+}

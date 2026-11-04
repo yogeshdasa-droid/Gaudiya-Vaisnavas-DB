@@ -1757,7 +1757,8 @@ pub struct TreePlace {
 /// his books, a vision);
 /// `sannyasa` / `vesa`: the renounced order or the bābājī cloth received from him.
 /// They are only values of `kind`: no change of DATA_VERSION.
-pub const TREE_KINDS: &[&str] = &["diksa", "siksa", "vani", "sannyasa", "vesa", "associate"];
+/// `disciple`: the source says «disciple» without saying whether dīkṣā or śikṣā.
+pub const TREE_KINDS: &[&str] = &["diksa", "siksa", "disciple", "vani", "sannyasa", "vesa", "associate"];
 
 /// Sets whether a record is the dīkṣā or śikṣā disciple of the guru above
 /// it in the tree, or an associate (pārṣada) placed beside him.
