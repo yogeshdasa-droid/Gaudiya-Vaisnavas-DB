@@ -67,11 +67,14 @@ export function SectionView({
   source,
   names,
   self,
+  book,
 }: {
   s: SectionText;
   terms: Term[];
   multi: boolean;
   source: boolean;
+  /** book look (the record's text): a paragraph that is all a quotation is set as one */
+  book?: boolean;
   /** names of the records, to link them in the text */
   names: NameIndex | null;
   /** the text's own record (not linked) */
@@ -86,7 +89,12 @@ export function SectionView({
     highlightDom(el, terms);
     // Obsidian image embeds point at files that are not in the database.
     el.querySelectorAll("img[data-attach]").forEach((i) => i.classList.add("missing"));
-  }, [html, terms, names, self]);
+    if (book)
+      el.querySelectorAll(":scope > p").forEach((p) => {
+        const x = (p.textContent ?? "").trim();
+        if (x.length < 900 && /^[“"«]/.test(x) && /[”"»][.)]?$/.test(x)) p.classList.add("quote");
+      });
+  }, [html, terms, names, self, book]);
   return <section ref={ref} className={multi ? "sec multi" : "sec"} data-ord={s.ordinal} />;
 }
 

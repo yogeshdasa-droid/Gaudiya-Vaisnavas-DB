@@ -1,6 +1,6 @@
 [package]
 name = "gaudiya-vaisnavas-db"
-version = "0.11.2"
+version = "0.11.3"
 description = "Gaudiya Vaisnavas DB: biografias vaisnavas"
 edition = "2021"
 
@@ -22,7 +22,7 @@ encoding_rs = "0.8"
 pdf-extract = "0.12"
 zip = { version = "9", default-features = false, features = ["deflate"] }
 # talks to Ollama (search by meaning), on this computer only: no TLS
-ureq = { version = "2", default-features = false, features = ["json"] }
+ureq = { version = "2", default-features = false, features = ["json", "tls"] }
 # shrinks the cover images ("ocupar menos espacio")
 image = { version = "0.25", default-features = false, features = ["jpeg", "png"] }
 tauri-plugin-updater = "2"

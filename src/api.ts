@@ -453,6 +453,8 @@ export const api = {
     invoke<number>("create_doc", { personId, title, collection }),
   saveSection: (docId: number, ordinal: number, text: string) => invoke<void>("save_section", { docId, ordinal, text }),
   moveText: (docId: number, fragment: string, toPerson: number, title: string) => invoke<number>("move_text", { docId, fragment, toPerson, title }),
+  /** takes the piece out of its text (whole lines; earlier version kept) and gives it back as written */
+  cutText: (docId: number, fragment: string) => invoke<string>("cut_text", { docId, fragment }),
   updateDoc: (docId: number, meta: DocMeta) => invoke<void>("update_doc", { docId, meta }),
   renameFolder: (dir: string, name: string) => invoke<void>("rename_folder", { dir, name }),
   trashFolder: (dir: string) => invoke<number>("trash_folder", { dir }),

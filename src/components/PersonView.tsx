@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ArrowUp, BookOpen, MapPin, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Pencil, Search, TextSearch, Trash2, Undo2, UserRound, Users, X } from "lucide-react";
+import { ArrowUp, BookOpen, MapPin, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Pencil, Search, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
 import { api, fileUrl, isNamesake, LifeSpan, NAMESAKES, Place, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
@@ -41,6 +41,8 @@ interface Props {
   onFindMentions: (p: Person) => void;
   onSearchIn: (p: Person) => void;
   onEditDoc: (docId: number, ordinal?: number) => void;
+  /** «Crear ficha con esta entrada»: a new record with this piece in its notes, taken out of the text */
+  onNewFromText: (docId: number, fragment: string, notes: string, source: string) => void;
   onGuru: (p: Person) => void;
   onReveal: (p: Person) => void;
   onPhotoChanged: () => void;
@@ -171,7 +173,9 @@ function entriesOf(sections: SectionText[], names: string[]): Card[] {
     const flush = (to: number) => {
       const text = cur.lines.join("\n").trim();
       if (!text) return;
-      const section = withoutRepeatedTitles({ ...s, text }, [...names, cur.title, s.heading ?? ""]);
+      // "Śrīvāsa - v.1" begins with a line "Śrīvāsa": the name without the version too
+      const bare = [cur.title, s.heading ?? ""].map((x) => x.replace(/\s*[-–—]\s*v\.\s*\d+.*$/i, ""));
+      const section = withoutRepeatedTitles({ ...s, text }, [...names, cur.title, s.heading ?? "", ...bare]);
       const plain = plainText(section.text);
       const short = plain.length <= CARD_PREVIEW + 60;
       const cut = plain.slice(0, CARD_PREVIEW);
@@ -359,7 +363,6 @@ export function PersonView(p: Props) {
   const [textReload, setTextReload] = useState(0);
   useEffect(() => {
     setInline(null);
-    setOpenCards(new Set());
     if (!single) return;
     let cancelled = false;
     api
@@ -385,14 +388,28 @@ export function PersonView(p: Props) {
     const list = entriesOf(inline.sections, [person.name, single?.title ?? ""]);
     return (inline.all && list.length > 1) || (inline.total === 1 && list.length > 1) ? list : null;
   }, [inline, person, single?.title]);
-  const [openCards, setOpenCards] = useState<Set<string>>(new Set());
-  const toggleCard = (key: string) =>
-    setOpenCards((s) => {
-      const next = new Set(s);
-      if (!next.delete(key)) next.add(key);
-      return next;
+  /** the name of each entry in the book ("v.2"), or null when it only goes on
+   *  with the one before ("v.3 · 2": a long text cut in parts) */
+  const cardLabels = useMemo(() => {
+    if (!cards || !person) return [];
+    const label = (c: Card) => {
+      const full = cardTitle(c.title, person.name);
+      return /\s[-–—]\s*(v\.\s*\d+.*)$/i.exec(full)?.[1] ?? full;
+    };
+    const cont = /\s*·\s*\d+\s*$/;
+    const list = cards.map((c, i) => {
+      const l = label(c);
+      return i > 0 && cont.test(l) && l.replace(cont, "") === label(cards[i - 1]).replace(cont, "") ? null : l;
     });
-  const allOpen = !!cards && cards.every((c) => c.short || openCards.has(c.key));
+    // several people of the same name: "Isana 1", "Isana 2"… (the same name thrice tells nothing)
+    const seen = new Map<string, number>();
+    return list.map((l) => {
+      if (l === null || list.filter((x) => x === l).length < 2) return l;
+      const n = (seen.get(l) ?? 0) + 1;
+      seen.set(l, n);
+      return `${l} ${n}`;
+    });
+  }, [cards, person]);
   /** One entry out of the text (a repeated one…): the part keeps its earlier version. */
   const deleteCard = async (c: Card, n: number) => {
     if (!inline || !(await ask(t.cardDeleteConfirm(n)))) return;
@@ -824,77 +841,71 @@ export function PersonView(p: Props) {
                     </span>
                   </div>
                 )}
-                {cards && (
-                  <div className="toc-row cards-bar">
-                    <span className="muted small">{t.cardsCount(cards.length)}</span>
-                    <span className="grow" />
-                    {cards.some((c) => !c.short) && (
-                      <button
-                        className="link-btn"
-                        onClick={() => setOpenCards(allOpen ? new Set() : new Set(cards.filter((c) => !c.short).map((c) => c.key)))}
-                      >
-                        {allOpen ? t.cardsCloseAll : t.cardsOpenAll}
-                      </button>
-                    )}
-                  </div>
-                )}
                 </div>
+                {/* the text read like a book, all of it in a row; its index on the left */}
+                <div className={`book-layout${cards || outline.length ? " with-nav" : ""}`}>
                 {cards ? (
-                  <div className="entry-cards">
-                    {cards.map((c, i) => {
-                      const open = c.short || openCards.has(c.key);
-                      return (
-                        <article key={c.key} className={`entry-card${open ? " open" : ""}`}>
-                          <header>
-                            <span className="entry-n">{i + 1}</span>
-                            <strong>{cardTitle(c.title, person.name)}</strong>
-                            {c.same && <span className="pill">{t.cardSame(c.same)}</span>}
-                            <span className="grow" />
+                  <nav className="book-nav">
+                    <div className="outline-title">{t.inThisText}</div>
+                    {cards.map((c, i) =>
+                      cardLabels[i] === null ? null : (
+                        <button
+                          key={c.key}
+                          title={cardTitle(c.title, person.name)}
+                          onClick={() => document.getElementById(`entry-${c.key}`)?.scrollIntoView({ block: "start", behavior: "smooth" })}
+                        >
+                          {cardLabels[i]}
+                        </button>
+                      ),
+                    )}
+                  </nav>
+                ) : (
+                  outline.length > 0 && (
+                    <nav className="book-nav">
+                      <div className="outline-title">{t.inThisText}</div>
+                      {outline.map((h, i) => (
+                        <button key={i} title={h.text} onClick={() => h.el.scrollIntoView({ block: "start", behavior: "smooth" })}>
+                          {h.text}
+                        </button>
+                      ))}
+                    </nav>
+                  )
+                )}
+                {cards ? (
+                  <div className="reader-body book" lang="en" data-ctx="doc" data-id={single.id} onClick={onInlineClick}>
+                    {cards.map((c, i) => (
+                      <div key={c.key} id={`entry-${c.key}`} className="book-entry">
+                        <div className={cardLabels[i] === null ? "book-orn cont" : "book-orn"}>
+                          {cardLabels[i] !== null && (
+                            <span className="orn-label" title={cardTitle(c.title, person.name)}>
+                              ❦ <span>{cardLabels[i]}</span> ❦
+                            </span>
+                          )}
+                          {c.same && <span className="pill">{t.cardSame(c.same)}</span>}
+                          <span className="orn-tools">
+                            <button
+                              className="icon-btn"
+                              title={t.newFromEntry}
+                              onClick={() =>
+                                p.onNewFromText(single.id, c.raw.text.split("\n").slice(c.from, c.to).join("\n"), c.section.text.trim(), person.name)
+                              }
+                            >
+                              <UserPlus size={14} />
+                            </button>
                             <button className="icon-btn" title={t.edit} onClick={() => p.onEditDoc(single.id, c.ord)}>
                               <Pencil size={14} />
                             </button>
                             <button className="icon-btn" title={t.cardDelete} onClick={() => deleteCard(c, i + 1)}>
                               <Trash2 size={14} />
                             </button>
-                          </header>
-                          {open ? (
-                            <div
-                              className={`reader-body ${p.readerStyle === "editor" ? "src-view" : p.readerStyle}`}
-                              style={{ fontSize: p.fontSize }}
-                              data-ctx="doc"
-                              data-id={single.id}
-                              onClick={onInlineClick}
-                            >
-                              <SectionView s={c.section} terms={NO_TERMS} multi={false} source={p.readerStyle === "editor"} names={p.names} self={person.id} />
-                            </div>
-                          ) : (
-                            <div
-                              className={`reader-body ${p.readerStyle === "editor" ? "src-view" : p.readerStyle}`}
-                              style={{ fontSize: p.fontSize }}
-                              onClick={() => toggleCard(c.key)}
-                            >
-                              <p className="entry-preview">{c.preview}</p>
-                            </div>
-                          )}
-                          {!c.short && (
-                            <button className="link-btn entry-more" onClick={() => toggleCard(c.key)}>
-                              {open ? <ChevronUp size={14} /> : <ChevronDown size={14} />} {open ? t.cardClose : t.cardReadAll}
-                            </button>
-                          )}
-                        </article>
-                      );
-                    })}
+                          </span>
+                        </div>
+                        <SectionView s={c.section} terms={NO_TERMS} multi={false} source={false} book names={p.names} self={person.id} />
+                      </div>
+                    ))}
                   </div>
                 ) : (
-                <div className={`inline-main${outline.length ? " with-outline" : ""}`}>
-                <div
-                  ref={bodyRef}
-                  className={`reader-body ${p.readerStyle === "editor" ? "src-view" : p.readerStyle}`}
-                  style={{ fontSize: p.fontSize }}
-                  data-ctx="doc"
-                  data-id={single.id}
-                  onClick={onInlineClick}
-                >
+                <div ref={bodyRef} className="reader-body book" lang="en" data-ctx="doc" data-id={single.id} onClick={onInlineClick}>
                   {inline === null ? (
                     <span className="spinner" />
                   ) : single.size < 50 ? (
@@ -906,7 +917,8 @@ export function PersonView(p: Props) {
                         s={withoutRepeatedTitles(s, [person.name, single.title, s.heading ?? ""])}
                         terms={NO_TERMS}
                         multi={inline.total > 1}
-                        source={p.readerStyle === "editor"}
+                        source={false}
+                        book
                         names={p.names}
                         self={person.id}
                       />
@@ -918,18 +930,8 @@ export function PersonView(p: Props) {
                     </button>
                   )}
                 </div>
-                {outline.length > 0 && (
-                  <nav className="inline-outline">
-                    <div className="outline-title">{t.inThisText}</div>
-                    {outline.map((h, i) => (
-                      <button key={i} title={h.text} onClick={() => h.el.scrollIntoView({ block: "start", behavior: "smooth" })}>
-                        {h.text}
-                      </button>
-                    ))}
-                  </nav>
                 )}
                 </div>
-                )}
               </div>
               <button className="link-btn add-text-link" onClick={() => p.onAddText(person)}>
                 <FilePlus2 size={14} /> {t.addText}

@@ -16,6 +16,7 @@ import {
   History,
   UserCheck,
   Link as LinkIcon,
+  Link2,
   List as ListIcon,
   Moon,
   PanelLeftClose,
@@ -54,6 +55,7 @@ import {
   NAMESAKES,
   nextMark,
   Person,
+  PersonFields,
   PersonListItem,
   Place,
   Replaced,
@@ -70,7 +72,7 @@ import {
 import { dicts, Lang } from "./i18n";
 import { buildNameIndex } from "./personLinks";
 import { checkUpdate, installUpdate, Update } from "./update";
-import { EditDialog, GuruDialog, MoveTextDialog, RelateDialog, ImportDialog, MergeDialog, PersonDialog, PlaceDialog, TrashDialog, VersionsDialog } from "./components/Dialogs";
+import { EditDialog, GuruDialog, LinkNameDialog, MoveTextDialog, NameSpot, RelateDialog, ImportDialog, MergeDialog, PersonDialog, PlaceDialog, TrashDialog, VersionsDialog } from "./components/Dialogs";
 import { PlaceView } from "./components/PlaceView";
 import { Home, RecentDoc } from "./components/Home";
 import { EMPTY_FILTERS, Filters, hasFilter, Results } from "./components/Results";
@@ -80,7 +82,7 @@ import { DuplicatesDialog } from "./components/Review";
 import { Timeline } from "./components/Timeline";
 import { Panorama } from "./components/Panorama";
 import { TreeView } from "./components/TreeView";
-import { Settings, SettingsTab, Skin, Theme } from "./components/Settings";
+import { Settings, SettingsTab, Theme } from "./components/Settings";
 import { Reveal, SideTab, Sidebar } from "./components/Sidebar";
 import { Rail } from "./components/Rail";
 import { Calendar } from "./components/Calendar";
@@ -116,7 +118,7 @@ type Dialog =
   | { kind: "edit"; doc: DocInfo; section: SectionText }
   | { kind: "trash"; doc: DocInfo }
   | { kind: "import"; paths: string[]; person?: { id: number; name: string } }
-  | { kind: "person"; person: Person | null }
+  | { kind: "person"; person: Person | null; prefill?: Partial<PersonFields>; from?: { docId: number; fragment: string; source: string } }
   | { kind: "place"; place: Place | null }
   | { kind: "merge"; person: Person; suggested: number[] }
   | { kind: "versions"; what: "doc" | "person" | "place"; target: number; label: string }
@@ -124,22 +126,14 @@ type Dialog =
   | { kind: "guru"; person: Person }
   | { kind: "relate"; id: number; place: NonNullable<TreePlace> }
   | { kind: "moveText"; docId: number; fragment: string; from: string }
+  | { kind: "linkName"; spot: NameSpot; create: boolean }
   | null;
 
 export default function App() {
   const [lang, setLang] = usePersisted<Lang>("language", "es");
   const [theme, setTheme] = usePersisted<Theme>("theme", "system");
-  const [skin, setSkin] = usePersisted<Skin>("skin", "fluent");
-  // 0.6.0: the Windows 11 style becomes the default, once (a later choice stays)
-  useEffect(() => {
-    if (stored("skinFluentOnce", false)) return;
-    try {
-      localStorage.setItem("bio.skinFluentOnce", "true");
-    } catch {
-      /* storage unavailable */
-    }
-    setSkin("fluent");
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // 0.11.3: only the Windows 11 style is left (Whisper: "VS Code" and "Classic" out)
+  const skin = "fluent";
   const [readerStyle, setReaderStyle] = usePersisted<ReaderStyle>("readerStyle", "editor");
   const [fontSize, setFontSize] = usePersisted("fontSize", 18);
   const [titlesOnly, setTitlesOnly] = usePersisted("titlesOnly", false);
@@ -775,6 +769,33 @@ export default function App() {
         const fragment = window.getSelection()?.toString() ?? sel;
         const from = ctx === "reader" ? readerDoc?.person ?? "" : main.kind === "person" ? persons.find((x) => x.id === main.id)?.name ?? "" : "";
         items.push({ label: t.moveText, icon: Scissors, onClick: () => setDialog({ kind: "moveText", docId: moveDoc, fragment, from }) });
+        // a name in the text: to its record, or a new record for it
+        const range = window.getSelection()?.rangeCount ? window.getSelection()!.getRangeAt(0) : null;
+        const part = range ? (range.startContainer.parentElement?.closest<HTMLElement>("section[data-ord]") ?? null) : null;
+        // a name (short, no sentence in it) → link it; a longer piece → a new record with it in its notes
+        const nameLike = sel.length <= 60 && sel.split(" ").length <= 6 && !/[.;:()!?]/.test(sel);
+        if (!nameLike && sel.length >= 15) {
+          const source = from || readerDoc?.title || "";
+          items.push({
+            label: t.newFromText,
+            icon: UserPlus,
+            onClick: () => setDialog({ kind: "person", person: null, prefill: { name: source, notes: fragment.trim() }, from: { docId: moveDoc, fragment, source } }),
+          });
+        }
+        if (range && part && nameLike) {
+          const around = (start: boolean) => {
+            const r = document.createRange();
+            r.selectNodeContents(part);
+            if (start) r.setEnd(range.startContainer, range.startOffset);
+            else r.setStart(range.endContainer, range.endOffset);
+            return r.toString().replace(/\s+/g, " ");
+          };
+          const spot: NameSpot = { docId: moveDoc, ord: Number(part.dataset.ord ?? 0), name: sel, before: around(true).slice(-200), after: around(false).slice(0, 200) };
+          items.push(
+            { label: t.linkName, icon: Link2, onClick: () => setDialog({ kind: "linkName", spot, create: false }) },
+            { label: t.linkNameCreate(short), icon: UserPlus, onClick: () => setDialog({ kind: "linkName", spot, create: true }) },
+          );
+        }
       }
       if (ctx !== "reader") return { ...at, items };
       items.push("sep");
@@ -1170,6 +1191,9 @@ export default function App() {
             onFindMentions={findMentions}
             onSearchIn={searchInPerson}
             onEditDoc={(docId, ord) => editSectionOf(docId, ord ?? 0)}
+            onNewFromText={(docId, fragment, notes, source) =>
+              setDialog({ kind: "person", person: null, prefill: { name: source, notes }, from: { docId, fragment, source } })
+            }
             onGuru={(person) => setDialog({ kind: "guru", person })}
             onReveal={(person) => revealIn("person", person.id)}
             onPhotoChanged={() => {
@@ -1337,12 +1361,10 @@ export default function App() {
           lang={lang}
           status={status}
           theme={theme}
-          skin={skin}
           readerStyle={readerStyle}
           initialTab={dialog.tab}
           onLang={setLang}
           onTheme={setTheme}
-          onSkin={setSkin}
           onReaderStyle={setReaderStyle}
           onClose={() => setDialog(null)}
           onToast={showToast}
@@ -1387,6 +1409,21 @@ export default function App() {
           onDone={(_, name) => {
             setDialog(null);
             showToast(t.moveTextDone(name));
+            reloadPerson();
+            refreshAll();
+          }}
+        />
+      )}
+      {dialog?.kind === "linkName" && (
+        <LinkNameDialog
+          t={t}
+          spot={dialog.spot}
+          create={dialog.create}
+          persons={persons}
+          onClose={() => setDialog(null)}
+          onDone={(_, msg) => {
+            setDialog(null);
+            showToast(msg);
             reloadPerson();
             refreshAll();
           }}
@@ -1497,6 +1534,8 @@ export default function App() {
           t={t}
           person={dialog.person}
           persons={persons}
+          prefill={dialog.prefill}
+          from={dialog.from}
           onClose={() => setDialog(null)}
           onSaved={(id, moved) => {
             setDialog(null);

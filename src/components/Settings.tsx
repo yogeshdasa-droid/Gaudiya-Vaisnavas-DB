@@ -29,7 +29,6 @@ import { ask, Kbd, Modal } from "./ui";
 import type { ReaderStyle } from "./Reader";
 
 export type Theme = "system" | "light" | "dark";
-export type Skin = "vscode" | "fluent" | "classic";
 export type SettingsTab = "general" | "backups" | "review" | "fill" | "replace" | "meaning" | "sources" | "trash" | "help";
 
 const when = (secs: number, lang: Lang) => new Date(secs * 1000).toLocaleString(lang === "es" ? "es-ES" : "en-GB", { dateStyle: "medium", timeStyle: "short" });
@@ -294,12 +293,10 @@ interface Props {
   lang: Lang;
   status: Status | null;
   theme: Theme;
-  skin: Skin;
   readerStyle: ReaderStyle;
   initialTab: SettingsTab;
   onLang: (l: Lang) => void;
   onTheme: (t: Theme) => void;
-  onSkin: (s: Skin) => void;
   onReaderStyle: (s: ReaderStyle) => void;
   onClose: () => void;
   onToast: (msg: string) => void;
@@ -388,15 +385,6 @@ export function Settings(p: Props) {
                     {(["system", "light", "dark"] as Theme[]).map((th) => (
                       <button key={th} className={p.theme === th ? "on" : ""} onClick={() => p.onTheme(th)}>
                         {th === "system" ? t.themeSystem : th === "light" ? t.themeLight : t.themeDark}
-                      </button>
-                    ))}
-                  </div>
-                </Row>
-                <Row label={t.skin} hint={t.skinHint}>
-                  <div className="seg">
-                    {(["vscode", "fluent", "classic"] as Skin[]).map((s) => (
-                      <button key={s} className={p.skin === s ? "on" : ""} onClick={() => p.onSkin(s)}>
-                        {s === "vscode" ? t.skinVscode : s === "fluent" ? t.skinFluent : t.skinClassic}
                       </button>
                     ))}
                   </div>

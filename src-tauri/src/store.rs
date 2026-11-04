@@ -297,10 +297,28 @@ fn find_fragment(full: &str, fragment: &str) -> Option<(usize, usize)> {
     if sel.is_empty() {
         return None;
     }
-    let k = sel.len().min(6);
-    let at = |from: usize, part: &[String]| (from..=src.len().saturating_sub(part.len())).find(|&i| src[i..i + part.len()].iter().map(|w| &w.2).eq(part.iter()));
-    let first = at(0, &sel[..k])?;
-    let last = if sel.len() <= k { first + k - 1 } else { at(first + sel.len() - k, &sel[sel.len() - k..])? + k - 1 };
+    let same = |i: usize, part: &[String]| i + part.len() <= src.len() && src[i..i + part.len()].iter().map(|w| &w.2).eq(part.iter());
+    // the whole piece, word by word: entries that begin alike ("GOVINDA He was a disciple
+    // of…") are not mistaken for one another
+    let (first, last) = if let Some(i) = (0..src.len()).find(|&i| same(i, &sel)) {
+        (i, i + sel.len() - 1)
+    } else {
+        // not word for word (a link or a mark inside): by its first and last words, the
+        // stretch whose length is closest to the piece's
+        let (kh, kt) = (sel.len().min(6), sel.len().min(3));
+        let (head, tail) = (&sel[..kh], &sel[sel.len() - kt..]);
+        let mut best: Option<(usize, usize, usize)> = None;
+        for i in (0..src.len()).filter(|&i| same(i, head)) {
+            let from = i + (sel.len() / 2).max(kh).saturating_sub(kt);
+            let Some(j) = (from..src.len()).find(|&j| same(j, tail)) else { continue };
+            let off = (j + kt - i).abs_diff(sel.len());
+            if best.map_or(true, |b| off < b.2) {
+                best = Some((i, j + kt - 1, off));
+            }
+        }
+        let (i, j, _) = best?;
+        (i, j)
+    };
     let start = full[..src[first].0].rfind('\n').map_or(0, |i| i + 1);
     let end = full[src[last].1..].find('\n').map_or(full.len(), |i| src[last].1 + i + 1);
     Some((start, end))
@@ -313,25 +331,7 @@ pub fn move_text(conn: &mut Connection, doc_id: i64, fragment: &str, to_person: 
     let tx = conn.transaction().map_err(e)?;
     let (collection, dir): (String, String) =
         tx.query_row("SELECT collection, dir FROM docs WHERE id = ?1", [doc_id], |r| Ok((r.get(0)?, r.get(1)?))).map_err(e)?;
-    let full: String = tx
-        .prepare("SELECT text FROM sections WHERE doc_id = ?1 ORDER BY ordinal")
-        .map_err(e)?
-        .query_map([doc_id], |r| r.get::<_, String>(0))
-        .map_err(e)?
-        .collect::<Result<Vec<_>, _>>()
-        .map_err(e)?
-        .iter()
-        .map(|t| if t.ends_with('\n') { t.clone() } else { format!("{t}\n") })
-        .collect();
-    let (a, b) = find_fragment(&full, fragment).ok_or("No se encuentra el trozo seleccionado en el texto")?;
-    let piece = full[a..b].trim().to_string();
-    let rest = format!("{}{}", &full[..a], &full[b..]);
-    if piece.is_empty() {
-        return Err("El trozo seleccionado está vacío".into());
-    }
-    keep_doc_version(&tx, doc_id, true).map_err(e)?;
-    write_sections(&tx, doc_id, &text::split_sections(rest.trim())).map_err(e)?;
-    tx.execute("UPDATE docs SET modified = datetime('now', 'localtime') WHERE id = ?1", [doc_id]).map_err(e)?;
+    let piece = take_fragment(&tx, doc_id, fragment)?;
     let title = title.trim();
     let id = insert_doc(
         &tx,
@@ -352,6 +352,39 @@ pub fn move_text(conn: &mut Connection, doc_id: i64, fragment: &str, to_person: 
     .map_err(e)?;
     tx.commit().map_err(e)?;
     Ok(id)
+}
+
+/// Takes a piece out of a text (its whole lines; the text keeps its earlier
+/// version) and gives it back as written: «Crear ficha con este texto», where
+/// the piece goes to the notes of a new record.
+pub fn cut_text(conn: &mut Connection, doc_id: i64, fragment: &str) -> Res<String> {
+    let tx = conn.transaction().map_err(e)?;
+    let piece = take_fragment(&tx, doc_id, fragment)?;
+    tx.commit().map_err(e)?;
+    Ok(piece)
+}
+
+fn take_fragment(tx: &rusqlite::Transaction, doc_id: i64, fragment: &str) -> Res<String> {
+    let full: String = tx
+        .prepare("SELECT text FROM sections WHERE doc_id = ?1 ORDER BY ordinal")
+        .map_err(e)?
+        .query_map([doc_id], |r| r.get::<_, String>(0))
+        .map_err(e)?
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(e)?
+        .iter()
+        .map(|t| if t.ends_with('\n') { t.clone() } else { format!("{t}\n") })
+        .collect();
+    let (a, b) = find_fragment(&full, fragment).ok_or("No se encuentra el trozo seleccionado en el texto")?;
+    let piece = full[a..b].trim().to_string();
+    let rest = format!("{}{}", &full[..a], &full[b..]);
+    if piece.is_empty() {
+        return Err("El trozo seleccionado está vacío".into());
+    }
+    keep_doc_version(tx, doc_id, true).map_err(e)?;
+    write_sections(tx, doc_id, &text::split_sections(rest.trim())).map_err(e)?;
+    tx.execute("UPDATE docs SET modified = datetime('now', 'localtime') WHERE id = ?1", [doc_id]).map_err(e)?;
+    Ok(piece)
 }
 
 fn valid_date(d: &str) -> bool {
@@ -2227,6 +2260,21 @@ pub fn find_person(tx: &Connection, key: &str) -> rusqlite::Result<Option<i64>> 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_piece_is_found_whole_not_by_its_start() {
+        // two entries that begin alike: the second one is taken, and only it
+        let full = "## GOVINDA\n\nHe was a disciple of Śyāmānanda Prabhu. (Premavilāsa 20)\n\n## GOVINDA\n\nHe was a disciple of Śrīnivāsa Ācārya Prabhu. (Karṇānanda 1)\n\n## GOVINDA\n\nHe was a disciple of Rasikānanda Prabhu.\n";
+        let (a, b) = find_fragment(full, "## GOVINDA\n\nHe was a disciple of Śrīnivāsa Ācārya Prabhu. (Karṇānanda 1)").unwrap();
+        assert_eq!(full[a..b].trim(), "## GOVINDA\n\nHe was a disciple of Śrīnivāsa Ācārya Prabhu. (Karṇānanda 1)");
+        // as selected on screen (no marks): the same
+        let (a, b) = find_fragment(full, "He was a disciple of Śrīnivāsa Ācārya Prabhu. (Karṇānanda 1)").unwrap();
+        assert_eq!(full[a..b].trim(), "He was a disciple of Śrīnivāsa Ācārya Prabhu. (Karṇānanda 1)");
+        // with a link inside: by its first and last words, still the right one
+        let linked = full.replace("Śrīnivāsa Ācārya", "[[Śrīnivāsa Ācārya#ficha-5|Śrīnivāsa]]");
+        let (a, b) = find_fragment(&linked, "He was a disciple of Śrīnivāsa Prabhu. (Karṇānanda 1)").unwrap();
+        assert!(linked[a..b].contains("Karṇānanda") && !linked[a..b].contains("Śyāmānanda"));
+    }
 
     #[test]
     fn a_merge_can_be_undone() {

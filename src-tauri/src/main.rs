@@ -19,6 +19,7 @@ mod search;
 mod semantic;
 mod store;
 mod text;
+mod tiles;
 
 use rusqlite::Connection;
 use serde::Serialize;
@@ -613,6 +614,12 @@ async fn move_text(state: State<'_, AppState>, doc_id: i64, fragment: String, to
     store::move_text(&mut state.conn.lock().unwrap(), doc_id, &fragment, to_person, &title)
 }
 
+/// «Crear ficha con este texto»: the piece leaves its text (which keeps its earlier version).
+#[tauri::command]
+async fn cut_text(state: State<'_, AppState>, doc_id: i64, fragment: String) -> CmdResult<String> {
+    store::cut_text(&mut state.conn.lock().unwrap(), doc_id, &fragment)
+}
+
 /// What does not fit in the records: gurus, disciples, dates (see check::check).
 #[tauri::command]
 async fn check_data(state: State<'_, AppState>) -> CmdResult<Vec<check::Issue>> {
@@ -1009,6 +1016,19 @@ fn serve_file(app: &AppHandle, uri: &str) -> tauri::http::Response<Vec<u8>> {
     let not_found = || tauri::http::Response::builder().status(404).body(Vec::new()).unwrap();
     let path = uri.split("://").nth(1).and_then(|r| r.split_once('/')).map(|(_, p)| p).unwrap_or("");
     let mut parts = path.split(['/', '?']);
+    // tile/z/x/y: a satellite picture of the map, kept on the disk once seen
+    if path.starts_with("tile/") {
+        let n: Vec<u32> = path.split(['/', '?']).skip(1).take(3).filter_map(|s| s.parse().ok()).collect();
+        let db_path = app.state::<AppState>().db_path.clone();
+        return match (n.len() == 3).then(|| tiles::tile(&db_path, n[0], n[1], n[2])).flatten() {
+            Some(data) => tauri::http::Response::builder()
+                .header("Content-Type", tiles::mime_of(&data))
+                .header("Cache-Control", "max-age=31536000, immutable")
+                .body(data)
+                .unwrap(),
+            None => tauri::http::Response::builder().status(404).header("Cache-Control", "no-store").body(Vec::new()).unwrap(),
+        };
+    }
     let (Some(role), Some(id)) = (parts.next(), parts.next().and_then(|s| s.parse::<i64>().ok())) else {
         return not_found();
     };
@@ -1049,7 +1069,13 @@ fn main() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
-        .register_uri_scheme_protocol("bio", |ctx, req| serve_file(ctx.app_handle(), &req.uri().to_string()))
+        // each request on its own thread: a satellite picture coming from the
+        // internet does not hold up the others (nor the window)
+        .register_asynchronous_uri_scheme_protocol("bio", |ctx, req, responder| {
+            let app = ctx.app_handle().clone();
+            let uri = req.uri().to_string();
+            std::thread::spawn(move || responder.respond(serve_file(&app, &uri)));
+        })
         .setup(|app| {
             let dir = app.path().app_data_dir()?;
             std::fs::create_dir_all(&dir)?;
@@ -1192,6 +1218,7 @@ fn main() {
             complete_back,
             check_data,
             move_text,
+            cut_text,
             set_person_photo,
             remove_person_photo,
             create_doc,

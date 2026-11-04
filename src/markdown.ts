@@ -2,6 +2,8 @@ import { marked } from "marked";
 import DOMPurify from "dompurify";
 
 const IMAGE_EXT = /\.(png|jpe?g|gif|bmp|webp|svg|avif)$/i;
+/** "Name#ficha-12": a link to record 12 made by hand («Enlazar con una ficha»). */
+export const FICHA = /#ficha-(\d+)\s*$/;
 
 const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -30,6 +32,9 @@ export function renderMarkdown(src: string): string {
     // Wikilinks [[target|alias]]
     .replace(/\[\[([^\]|]+)(?:\|([^\]]*))?\]\]/g, (_m, target: string, alias?: string) => {
       const label = (alias || target.replace(/#.*/, "")).trim();
+      // [[Name#ficha-12|name]]: linked by hand to that record (by its number, not its name)
+      const id = FICHA.exec(target)?.[1];
+      if (id) return `<a class="person-link" data-person="${id}">${esc(label)}</a>`;
       return `<a data-wikilink="${esc(target.trim())}">${esc(label)}</a>`;
     })
     // #tags
@@ -46,9 +51,12 @@ function sourceInline(s: string): string {
       // `code`
       .replace(/(`+)([^`]+?)\1/g, '<span class="md-code">$1$2$1</span>')
       // [[target|alias]] → clickable, brackets kept
-      .replace(/(!?)\[\[([^\]|]+)((?:\|[^\]]*)?)\]\]/g, (_m, bang: string, target: string, alias: string) =>
-        `<a data-wikilink="${target.replace(/#.*/, "").trim()}">${bang}[[${target}${alias}]]</a>`,
-      )
+      .replace(/(!?)\[\[([^\]|]+)((?:\|[^\]]*)?)\]\]/g, (_m, bang: string, target: string, alias: string) => {
+        const id = FICHA.exec(target)?.[1];
+        return id
+          ? `<a data-person="${id}">${bang}[[${target}${alias}]]</a>`
+          : `<a data-wikilink="${target.replace(/#.*/, "").trim()}">${bang}[[${target}${alias}]]</a>`;
+      })
       // [text](https://…)
       .replace(/\[([^\]]+)\]\(((?:https?:|mailto:)[^)\s]+)\)/g, '<span class="md-punct">[</span><a href="$2">$1</a><span class="md-punct">]($2)</span>')
       // **bold** / __bold__

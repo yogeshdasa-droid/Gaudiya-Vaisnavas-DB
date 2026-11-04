@@ -448,7 +448,10 @@ const SAT_MAX_ZOOM = 400;
 // ---- satellite pictures: Esri World Imagery tiles (Web Mercator), each one put
 // by its four corners on this map (linear in latitude): inside a tile the
 // difference is less than a dot at any zoom
-const SAT_URL = (z: number, x: number, y: number) => `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}`;
+// through the app (tiles.rs): kept on the disk once seen, from the internet only the first time
+const SAT_URL = (z: number, x: number, y: number) =>
+  navigator.userAgent.includes("Windows") ? `http://bio.localhost/tile/${z}/${x}/${y}` : `bio://localhost/tile/${z}/${x}/${y}`;
+type Tile = ReturnType<typeof tilesFor>[number];
 const tileX = (lon: number, z: number) => Math.floor(((lon + 180) / 360) * 2 ** z);
 const tileY = (lat: number, z: number) => {
   const r = (lat * Math.PI) / 180;
@@ -652,18 +655,38 @@ function MapSvg({
 
   // the satellite pictures of the piece in view: a coarse layer under the sharp one,
   // so that while these come there is already something
+  // they follow the view once the wheel (or the drag) stops for a moment, not at
+  // every step: each step asked for a new set and the map jerked
+  const [tileView, setTileView] = useState(view);
+  useEffect(() => {
+    const id = window.setTimeout(() => setTileView(view), 140);
+    return () => window.clearTimeout(id);
+  }, [view]);
   const tiles = useMemo(() => {
     if (!satellite) return [];
-    const lonL = w + (view[0] / width) * (e - w);
-    const lonR = w + ((view[0] + view[2]) / width) * (e - w);
-    const latT = Math.min(84, n - (view[1] / H) * (n - s));
-    const latB = Math.max(-84, n - ((view[1] + vh) / H) * (n - s));
+    const tv = tileView;
+    const tvh = (tv[2] * H) / width;
+    const lonL = w + (tv[0] / width) * (e - w);
+    const lonR = w + ((tv[0] + tv[2]) / width) * (e - w);
+    const latT = Math.min(84, n - (tv[1] / H) * (n - s));
+    const latB = Math.max(-84, n - ((tv[1] + tvh) / H) * (n - s));
     const perDeg = (screenW * (window.devicePixelRatio || 1)) / (lonR - lonL);
     let level = Math.min(18, Math.max(3, Math.ceil(Math.log2((perDeg * 360) / 256))));
     while (level > 3 && tilesFor(latB, latT, lonL, lonR, level).length > 60) level--;
     const coarse = level - 2 >= 3 ? tilesFor(latB, latT, lonL, lonR, level - 2) : [];
     return [...coarse, ...tilesFor(latB, latT, lonL, lonR, level)];
-  }, [satellite, view, screenW, box, width]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [satellite, tileView, screenW, box, width]); // eslint-disable-line react-hooks/exhaustive-deps
+  // the pictures seen before stay under the new ones until these come: no holes
+  // (and no flashing) while zooming
+  const [layers, setLayers] = useState<{ under: Tile[]; over: Tile[] }>({ under: [], over: [] });
+  useEffect(() => {
+    setLayers((l) => {
+      if (!tiles.length) return { under: [], over: [] };
+      const now = new Set(tiles.map((t) => t.key));
+      const under = [...l.under, ...l.over].filter((t, i, all) => !now.has(t.key) && all.findIndex((u) => u.key === t.key) === i);
+      return { under: under.slice(-150), over: tiles };
+    });
+  }, [tiles]);
   return (
     <div className="map-frame-wrap">
       <svg
@@ -683,7 +706,7 @@ function MapSvg({
       >
         <rect className="map-sea" x={minX} y={minY} width={maxX - minX} height={maxY - minY} />
         {satellite ? (
-          tiles.map((tl) => (
+          [...layers.under, ...layers.over].map((tl) => (
             <image
               key={tl.key}
               href={tl.url}

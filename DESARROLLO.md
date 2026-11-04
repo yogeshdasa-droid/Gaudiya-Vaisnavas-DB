@@ -187,7 +187,15 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.11.0)
+## 5. Qué hace hoy (v0.11.3)
+
+### Novedades de la 0.11.3 (04-11-2026) — leer como un libro, satélite guardado en el PC
+- Ficha de un solo texto: todo seguido como un libro (Literata 18 px, ~68ch, justificado, citas en cursiva,
+  «❦ v.2 ❦» entre versiones) con índice «En este texto» a la izquierda; fuera tarjetas y «Leer todo».
+- Mapa satélite: teselas guardadas en «biodata-mapa.db» (`tiles.rs`, protocolo `bio` asíncrono), sin
+  parpadeo al acercar. Solo el estilo Windows 11. Detalle en §7 («✔ 1.º HECHO»). Formato 8 sin cambios.
+- Enlazar un nombre a mano (`[[Nombre#ficha-ID|texto]]`), «Crear ficha con este texto» (el trozo a Notas y
+  fuera del texto) y arreglo de `find_fragment` (cortaba desde una entrada anterior que empezaba igual).
 
 ### Novedades de la 0.11.0 (04-11-2026) — **Tīrthas**, satélite, Inicio nuevo — **DATA_VERSION 8**
 - **Tīrthas** (lugares santos): tablas `places`, `place_persons` (formato 7) y `place_photos` (formato 8).
@@ -629,11 +637,43 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
   copia «antes de …» (`backup.mjs`: VACUUM INTO en Documentos › … › Copias de seguridad) → abrir su app con
   `WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=9334` → `node scripts/datos/lugares.mjs
   <json> 9334` (2 pasadas) → recargar.
-- **▶ 1.º (pedido por Whisper el 04-11): cómo se leen los textos.** No le gusta nada de lo actual en la
-  ficha: (a) las **tarjetas «v.1, v.2…» con «Read all»** → quiere **texto seguido, como un libro**;
-  (b) la **letra** (tipo, tamaño, interlineado); (c) el **ancho** de la columna; (d) **títulos, citas y
-  orden** dentro del texto. Empezar enseñándole 2–3 propuestas (capturas de la app de pruebas o
-  previsualización) antes de tocar nada; él elige.
+- **✔ 1.º HECHO (04-11, sin publicar): cómo se leen los textos en la ficha.** Se le enseñaron 3 propuestas
+  (página HTML con el texto de Śrīvāsa: A libro Literata, B editor más pequeño, C libro con índice) y eligió
+  **«A con la C»**: en la ficha de un solo texto, todo seguido (fuera tarjetas y «Leer todo»), Literata
+  18 px fijos, ~68ch, justificado con guiones (`lang="en"`), títulos en versalitas de color, párrafos que
+  son una cita entera en cursiva con sangría (`SectionView book` → `p.quote`), adorno «❦ v.2 ❦» entre
+  versiones (los trozos «v.3 · 2» siguen sin adorno), índice «En este texto» a la izquierda (`.book-nav`;
+  versiones o, si no hay, los títulos), lápiz/papelera de cada versión al pasar el ratón; personas del mismo
+  nombre numeradas («Isana 1, 2, 3»). El lector completo sigue con su estilo de Ajustes. Código:
+  `PersonView.tsx` (`cardLabels`), `Reader.tsx` (`book`), CSS `.book-layout/.book-orn` (sustituye a
+  `.entry-card*` e `.inline-outline`).
+  **También (Whisper):** fuera los estilos de app «VS Code» y «Clásico»: solo **Windows 11** (`skin`
+  fijo `"fluent"` en `App.tsx`, quitada la fila de Ajustes y el CSS `data-skin="vscode"`).
+  **Mapa satélite más fluido (Whisper: «al hacer zoom va lento y petea, ¿una caché?»):** las teselas van
+  por la app: `http://bio.localhost/tile/z/x/y` → `tiles.rs` las busca en **«biodata-mapa.db»** (junto a la
+  BD; derivado, no va en copias, se puede borrar) y si no están las baja de Esri (ureq con feature `tls`) y
+  las guarda; solo las que se ven, nada por adelantado. El protocolo `bio` es ahora asíncrono (un hilo por
+  petición). En `Panorama.tsx` las teselas siguen la vista 140 ms después de parar la rueda (`tileView`) y
+  las anteriores quedan debajo (`layers.under`) hasta que llegan las nuevas: sin huecos ni parpadeo.
+  Medido: 1.ª vez ~210 ms, desde el disco ~4 ms; sin internet salen las ya vistas.
+  **Enlazar un nombre a mano (pedido por Whisper, después de hacer el instalador 0.11.3):** texto seleccionado
+  (≤ 80 letras) en la ficha o el lector → botón derecho «Enlazar con una ficha…» / «Crear ficha «X»…» →
+  `LinkNameDialog` (`Dialogs.tsx`): escribe en ese sitio `[[Nombre#ficha-ID|texto]]` (`findSpot` busca la
+  aparición cuyo texto alrededor se parece más a lo visto; salta las que ya son enlace; `saveSection` guarda
+  versión). Whisper eligió: por defecto solo ahí, con casilla «Enlazar también en todos los textos» (añade el
+  nombre a «otros nombres»; los de una palabra no se enlazan solos, `personLinks.ts`). `markdown.ts` (`FICHA`)
+  convierte `#ficha-ID` en `data-person` (abre esa ficha aunque haya un texto o una persona del mismo
+  nombre); en Obsidian es un enlace normal. Probado en la copia: «Śacīdevī» → Śacī Devī (1336).
+  Pendiente menor: tras enlazar, la ficha vuelve arriba del texto.
+  **«Crear ficha con este texto» (Whisper: «cortar y borrarlo del sitio, así iría organizando»):** trozo largo
+  seleccionado (no parece un nombre) → menú «Crear ficha con este texto…»; y botón 👤+ en cada entrada de la
+  ficha (junto al lápiz). Abre el formulario normal de ficha nueva (`PersonDialog` con `prefill` {nombre del
+  texto, notas = el trozo} y `from`), con la casilla «Quitar este trozo del texto de X» marcada: al guardar,
+  `cut_text` (`store::cut_text`/`take_fragment`, versión anterior guardada) lo saca del texto.
+  **Arreglado un fallo de `find_fragment`** (también afectaba a «Mover a otra ficha»): buscaba por las 6
+  primeras palabras y en Govinda («GOVINDA He was a disciple of…» ×9) cortaba desde la entrada anterior.
+  Ahora busca el trozo entero palabra por palabra y, si no está tal cual, por el principio (6) y el final
+  (3) eligiendo el tramo de largo más parecido. Prueba `a_piece_is_found_whole_not_by_its_start`.
 - **▶ 2.º «Texto principal» por ficha + Abhidhāna, JUNTOS y por grupos (Whisper: «Junto, por grupos»),
   primero los Seis Gosvāmīs.** Fichas como Śrīvāsa tienen varias versiones que repiten lo mismo (v.1, v.2,
   v.3, v.3·2). Plan acordado: Claude (no la IA local: qwen 4B se inventa cosas) lee todas las versiones y

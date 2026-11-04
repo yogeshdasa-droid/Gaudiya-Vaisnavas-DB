@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, MapPin, ListTree, ListX, FilePen, FileText, FolderInput, GitMerge, History, Scissors, Search, Trash2, Undo2, Upload, UserPlus, UserRound, X } from "lucide-react";
+import { AlertTriangle, MapPin, ListTree, ListX, FilePen, FileText, FolderInput, GitMerge, History, Link2, Scissors, Search, Trash2, Undo2, Upload, UserPlus, UserRound, X } from "lucide-react";
 import { api, DocInfo, EMPTY_PERSON, EMPTY_PLACE, Person, PersonFields, PersonListItem, SectionText, TREE_KINDS, TreeKind, Version, Place, PlaceFields, PLACE_ROLES, PlaceRole } from "../api";
 import { T } from "../i18n";
 import { ask, Modal } from "./ui";
@@ -514,6 +514,162 @@ export function MoveTextDialog({
   );
 }
 
+// ---------------------------------------------------------------- link a name to a record
+
+/** Where a name chosen in the text is: its part, and the text around it as seen. */
+export interface NameSpot {
+  docId: number;
+  ord: number;
+  name: string;
+  before: string;
+  after: string;
+}
+
+/**
+ * The place of the chosen name in the part as written (with its Markdown): of
+ * all the times the name is there (not already inside a link), the one whose
+ * text around it is most like what was seen around the selection. -1: not there.
+ */
+export function findSpot(md: string, spot: NameSpot): { at: number; len: number } {
+  const plain = (s: string) => s.replace(/\[\[[^\]|]*\|([^\]]*)\]\]/g, "$1").replace(/[*_#>`[\]]/g, "").replace(/\s+/g, " ");
+  const pattern = new RegExp(spot.name.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+"), "g");
+  const seenBefore = plain(spot.before);
+  const seenAfter = plain(spot.after);
+  let best = { at: -1, len: 0, score: -1 };
+  for (const m of md.matchAll(pattern)) {
+    const at = m.index!;
+    const head = md.slice(0, at);
+    if (head.lastIndexOf("[[") > head.lastIndexOf("]]")) continue; // already a link
+    const b = plain(md.slice(Math.max(0, at - 160), at));
+    const a = plain(md.slice(at + m[0].length, at + m[0].length + 160));
+    let score = 0;
+    while (score < Math.min(b.length, seenBefore.length) && b[b.length - 1 - score] === seenBefore[seenBefore.length - 1 - score]) score++;
+    let s2 = 0;
+    while (s2 < Math.min(a.length, seenAfter.length) && a[s2] === seenAfter[s2]) s2++;
+    if (score + s2 > best.score) best = { at, len: m[0].length, score: score + s2 };
+  }
+  return { at: best.at, len: best.len };
+}
+
+/** «Enlazar con una ficha» / «Crear ficha»: the name chosen in a text becomes
+ *  a link to a record, there ([[Name#ficha-12|name]]) and, if asked, in every
+ *  text (the name joins the record's other names). */
+export function LinkNameDialog({
+  t,
+  spot,
+  persons,
+  create,
+  onClose,
+  onDone,
+}: {
+  t: T;
+  spot: NameSpot;
+  persons: PersonListItem[];
+  /** begin with «a new record» */
+  create: boolean;
+  onClose: () => void;
+  onDone: (personId: number, msg: string) => void;
+}) {
+  const [mode, setMode] = useState<"existing" | "new">(create ? "new" : "existing");
+  const [q, setQ] = useState(spot.name);
+  const [chosen, setChosen] = useState<PersonListItem | null>(null);
+  const [name, setName] = useState(spot.name);
+  const [everywhere, setEverywhere] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const matches = useMemo(() => filterPersons(persons, q, 12), [persons, q]);
+  const target = mode === "new" ? name.trim() : chosen?.name ?? "";
+
+  const go = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      const [part] = await api.getSections(spot.docId, spot.ord, spot.ord);
+      const { at, len } = part ? findSpot(part.text, spot) : { at: -1, len: 0 };
+      if (at < 0) throw new Error(t.linkNameNotFound(spot.name));
+      const id = mode === "new" ? await api.newPerson({ ...EMPTY_PERSON, name: name.trim() }) : chosen!.id;
+      const label = part.text.slice(at, at + len);
+      const safe = target.replace(/[[\]|#]/g, "");
+      await api.saveSection(spot.docId, spot.ord, `${part.text.slice(0, at)}[[${safe}#ficha-${id}|${label}]]${part.text.slice(at + len)}`);
+      // everywhere: the name as one of the record's other names
+      if (mode === "existing" && everywhere) {
+        const p = await api.getPerson(id);
+        const aka = p.aka.split(",").map((s) => s.trim()).filter(Boolean);
+        const fold = foldName(spot.name);
+        if (foldName(p.name) !== fold && !aka.some((a) => foldName(a) === fold)) {
+          const fields = Object.fromEntries((Object.keys(EMPTY_PERSON) as (keyof PersonFields)[]).map((k) => [k, (p as unknown as PersonFields)[k] ?? ""])) as unknown as PersonFields;
+          await api.updatePerson(id, { ...fields, aka: [...aka, spot.name.trim()].join(", ") });
+        }
+      }
+      onDone(id, mode === "new" ? t.linkNameCreated(target) : everywhere ? t.linkNameEverywhere(spot.name, target) : t.linkNameDone(target));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Modal
+      title={t.linkNameTitle}
+      icon={<Link2 size={18} />}
+      onClose={onClose}
+      footer={
+        <>
+          <span className="grow" />
+          <button className="btn ghost" onClick={onClose}>
+            {t.cancel}
+          </button>
+          <button className="btn" disabled={busy || !target} onClick={go}>
+            {busy ? <span className="spinner light" /> : null} {mode === "new" ? t.linkNameCreateGo : t.linkNameGo}
+          </button>
+        </>
+      }
+    >
+      <blockquote className="move-preview">
+        …{spot.before.slice(-60)}
+        <mark>{spot.name}</mark>
+        {spot.after.slice(0, 60)}…
+      </blockquote>
+      <div className="relate-kinds">
+        <label className="check">
+          <input type="radio" name="link-mode" checked={mode === "existing"} onChange={() => setMode("existing")} /> {t.moveTextExisting}
+        </label>
+        <label className="check">
+          <input type="radio" name="link-mode" checked={mode === "new"} onChange={() => setMode("new")} /> {t.moveTextNew}
+        </label>
+      </div>
+      {mode === "existing" ? (
+        <>
+          <div className="picker">
+            <input value={q} placeholder={t.moveTextSearch} autoFocus onChange={(e) => (setQ(e.target.value), setChosen(null))} />
+            {!chosen && matches.length > 0 && (
+              <div className="picker-list static">
+                {matches.map((m) => (
+                  <button key={m.id} onClick={() => (setChosen(m), setQ(m.name))}>
+                    <UserRound size={13} /> {m.name}
+                    {m.aka && <em>{m.aka}</em>}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <label className="check">
+            <input type="checkbox" checked={everywhere} onChange={(e) => setEverywhere(e.target.checked)} /> {t.linkNameAll}
+          </label>
+          <p className="muted small">{t.linkNameAllHint(spot.name)}</p>
+        </>
+      ) : (
+        <label className="stack">
+          <span>{t.moveTextName}</span>
+          <input value={name} autoFocus onChange={(e) => setName(e.target.value)} />
+        </label>
+      )}
+      <p className="muted small">{t.linkNameHint}</p>
+      {error && <div className="error-box">{error}</div>}
+    </Modal>
+  );
+}
+
 // ---------------------------------------------------------------- recycle bin
 
 export function TrashDialog({ t, doc, onClose, onDone }: { t: T; doc: DocInfo; onClose: () => void; onDone: () => void }) {
@@ -876,6 +1032,8 @@ export function PersonDialog({
   t,
   person,
   persons,
+  prefill,
+  from,
   onClose,
   onSaved,
 }: {
@@ -883,10 +1041,16 @@ export function PersonDialog({
   /** null = new record */
   person: Person | null;
   persons: PersonListItem[];
+  /** a new record begun with these fields (its name, its notes…) */
+  prefill?: Partial<PersonFields>;
+  /** «Crear ficha con este texto»: the piece of a text it comes from, taken
+   *  out of that text on saving (if so chosen) */
+  from?: { docId: number; fragment: string; source: string };
   onClose: () => void;
   /** moved = something changed place in the Guru Paramparā (message) */
   onSaved: (id: number, moved: string | null) => void;
 }) {
+  const [cut, setCut] = useState(true);
   // empty guru / disciples: the ones of the Guru Paramparā, so that they can be changed here
   const [tree] = useState(() => {
     const parent = persons.find((x) => x.id === person?.id)?.tree?.parent;
@@ -895,7 +1059,7 @@ export function PersonDialog({
     return { guru, kids };
   });
   const [initial] = useState<PersonFields>(() => {
-    const base = { ...EMPTY_PERSON, ...(person ?? {}) };
+    const base = { ...EMPTY_PERSON, ...(person ?? {}), ...(person ? {} : prefill ?? {}) };
     if (!base.guru.trim() && tree.guru) base.guru = tree.guru.name;
     if (!base.disciples.trim() && tree.kids.length) base.disciples = tree.kids.map((k) => k.name).join(", ");
     return base;
@@ -912,7 +1076,8 @@ export function PersonDialog({
   const [linksNow] = useState<[number, TreeKind][]>(() => (persons.find((x) => x.id === person?.id)?.links ?? []).map((l) => [l.guru, l.kind]));
   const [links, setLinks] = useState<[number, TreeKind][]>(linksNow);
   const linksChanged = JSON.stringify(links) !== JSON.stringify(linksNow);
-  const dirty = keys.some((k) => f[k] !== (initial[k] ?? "")) || kind !== kindNow || linksChanged;
+  // begun from a text: there is something to save already
+  const dirty = !!(from || prefill) || keys.some((k) => f[k] !== (initial[k] ?? "")) || kind !== kindNow || linksChanged;
   const set = (k: keyof PersonFields) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setF({ ...f, [k]: e.target.value });
   const others = useMemo(() => persons.filter((x) => x.id !== person?.id), [persons, person]);
   const byId = (id: number | null | undefined) => (id ? persons.find((x) => x.id === id) : undefined);
@@ -986,7 +1151,17 @@ export function PersonDialog({
       // the relation with the guru, once the record is in the tree
       if (kind !== kindNow || (moved && kind !== "diksa")) await api.setTreeKind(id, kind).catch(() => {});
       if (linksChanged) await api.setLinks(id, links);
-      onSaved(id, moved);
+      // the piece leaves the text it came from (the record is made already: a failure here only warns)
+      let cutMsg: string | null = null;
+      if (from && cut && !person) {
+        try {
+          await api.cutText(from.docId, from.fragment);
+          cutMsg = t.newFromTextCut(from.source);
+        } catch (e) {
+          cutMsg = t.newFromTextCutFailed(String(e));
+        }
+      }
+      onSaved(id, [moved, cutMsg].filter(Boolean).join(" · ") || null);
     } catch (e) {
       setError(String(e));
       setBusy(false);
@@ -1020,6 +1195,14 @@ export function PersonDialog({
         </>
       }
     >
+      {from && !person && (
+        <div className="from-text">
+          <label className="check">
+            <input type="checkbox" checked={cut} onChange={(e) => setCut(e.target.checked)} /> {t.newFromTextCutBox(from.source)}
+          </label>
+          <p className="muted small">{t.newFromTextHint}</p>
+        </div>
+      )}
       <div className="form-grid">
         <label>
           <span>{t.name}</span>
