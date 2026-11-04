@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ArrowUp, BookOpen, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Pencil, Search, TextSearch, Trash2, Undo2, UserRound, Users, X } from "lucide-react";
-import { api, fileUrl, isNamesake, LifeSpan, NAMESAKES, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
+import { ArrowUp, BookOpen, MapPin, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Pencil, Search, TextSearch, Trash2, Undo2, UserRound, Users, X } from "lucide-react";
+import { api, fileUrl, isNamesake, LifeSpan, NAMESAKES, Place, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
 import { ReaderStyle, SectionView } from "./Reader";
 import type { NameIndex } from "../personLinks";
 import type { Term } from "../fold";
 import { foldName } from "./Sidebar";
+import { placesOfPerson } from "../places";
 
 /** Titles that come and go after a name: "Rupa" = "Rupa Gosvami". */
 const TITLES = new Set(
@@ -49,6 +50,8 @@ interface Props {
   readerStyle: ReaderStyle;
   fontSize: number;
   names: NameIndex | null;
+  places: Place[];
+  onPlace: (id: number) => void;
 }
 
 const NO_TERMS: Term[] = [];
@@ -213,7 +216,7 @@ const INLINE_SECTIONS = 4;
 
 /** A text with its web addresses as links, opened in the browser (pages
  *  with more about the person, a book to download…). */
-function WebLinks({ text, onError }: { text: string; onError: (msg: string) => void }) {
+export function WebLinks({ text, onError }: { text: string; onError: (msg: string) => void }) {
   const parts = text.split(/(https?:\/\/[^\s<>"«»]+[^\s<>"«».,;:!?)\]])/);
   return (
     <>
@@ -529,6 +532,7 @@ export function PersonView(p: Props) {
       {lunar && <span className="lunar">{lunar}</span>}
     </>
   );
+  const myPlaces = placesOfPerson(person.id, person.place, p.places);
   const gurus = byKind(nameList(person.guru, treeGurus));
   const disciples = byKind(nameList(person.disciples, treeDisciples));
 
@@ -542,6 +546,16 @@ export function PersonView(p: Props) {
     ],
     [
       [t.place, person.place, !!person.place.trim()],
+      [
+        t.placesOfPerson,
+        myPlaces.map(({ place, roles }) => (
+          <button key={place.id} className="name-link" title={roles.map((r) => t.placeRoleHints[r]).join("\n\n") || undefined} onClick={() => p.onPlace(place.id)}>
+            <MapPin size={12} /> {place.name}
+            {roles.length > 0 && <span className="muted"> · {roles.map((r) => t.placeRoles[r]).join(", ")}</span>}
+          </button>
+        )),
+        myPlaces.length > 0,
+      ],
       [t.works, person.works, !!person.works.trim()],
     ],
   ];
@@ -703,19 +717,21 @@ export function PersonView(p: Props) {
 
           {hasFacts ? (
             <dl className="facts">
-              {facts
-                .map((col) => col.filter(([, , show]) => show))
-                .filter((col) => col.length > 0)
-                .map((col) => (
-                  <div key={col[0][0]} className="facts-col">
-                    {col.map(([label, value]) => (
+              {/* the cards flow down and across as many columns as fit: no
+                  empty space under a short card (gurus, dates, place, works) */}
+              {facts.flat().some(([, , show]) => show) && (
+                <div className="facts-flow">
+                  {facts
+                    .flat()
+                    .filter(([, , show]) => show)
+                    .map(([label, value]) => (
                       <div key={label} className="fact">
                         <dt>{label}</dt>
                         <dd>{value}</dd>
                       </div>
                     ))}
-                  </div>
-                ))}
+                </div>
+              )}
               {disciples.length > 0 && (
                 <div className="fact wide">
                   <dt>

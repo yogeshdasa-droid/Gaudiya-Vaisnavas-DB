@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useState } from "react";
-import { CalendarDays, Clock, Moon, Sparkles, UserRound } from "lucide-react";
+import { CalendarDays, ChevronRight, Clock, Moon, Sparkles, UserRound } from "lucide-react";
 import { api, CalDay, CalEvent, fileUrl } from "../api";
 import { Lang, T } from "../i18n";
 
@@ -16,11 +16,26 @@ function dayName(date: string, lang: Lang, t: T, i: number): string {
 
 /** Today's lunar day and the events of today and the coming days.
  *  As a page (`page`): more days and every event, not only people and Ekādaśīs. */
-export function Calendar({ t, lang, reload, onPerson, page }: { t: T; lang: Lang; reload: number; onPerson: (id: number) => void; page?: boolean }) {
+export function Calendar({
+  t,
+  lang,
+  reload,
+  onPerson,
+  page,
+  onOpen,
+}: {
+  t: T;
+  lang: Lang;
+  reload: number;
+  onPerson: (id: number) => void;
+  page?: boolean;
+  /** Home: only today, in one line, with a button to the whole calendar */
+  onOpen?: () => void;
+}) {
   const [days, setDays] = useState<CalDay[] | null>(null);
   useEffect(() => {
-    api.upcoming(new Date(), page ? AHEAD_PAGE : AHEAD).then(setDays, () => setDays([]));
-  }, [reload, page]);
+    api.upcoming(new Date(), page ? AHEAD_PAGE : onOpen ? 1 : AHEAD).then(setDays, () => setDays([]));
+  }, [reload, page, onOpen]);
   if (!days?.length) return page ? <CalendarPage t={t}>{days && <p className="muted">{t.nothingToday}</p>}</CalendarPage> : null;
   const [today, ...rest] = days;
   // the coming days on Home: people and Ekādaśīs (the rest only today, to keep it short)
@@ -56,6 +71,26 @@ export function Calendar({ t, lang, reload, onPerson, page }: { t: T; lang: Lang
       </span>
     );
   };
+
+  if (onOpen)
+    return (
+      <section className="calendar compact">
+        <div className="cal-today">
+          <div className="cal-day">
+            <strong>{t.today}</strong>
+            {today.labels.map((l) => (
+              <span key={l} className="lunar">
+                <Moon size={12} /> {l}
+              </span>
+            ))}
+          </div>
+          <div className="cal-events">{today.events.length ? today.events.map(chip) : <span className="muted small">{t.nothingToday}</span>}</div>
+          <button className="btn ghost cal-open" onClick={onOpen} title={t.calendarHint}>
+            <CalendarDays size={15} /> {t.calendarShort} <ChevronRight size={14} />
+          </button>
+        </div>
+      </section>
+    );
 
   const body = (
     <section className="calendar">

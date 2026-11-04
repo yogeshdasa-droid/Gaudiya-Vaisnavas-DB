@@ -1,4 +1,4 @@
-import { BarChart3, CalendarDays, Clock3, HelpCircle, History, Home as HomeIcon, Library as LibIcon, Network, Settings as Gear, Star, Users } from "lucide-react";
+import { BarChart3, CalendarDays, Clock3, HelpCircle, History, Home as HomeIcon, Library as LibIcon, MapPin, Network, Settings as Gear, Star, Users } from "lucide-react";
 import { T } from "../i18n";
 import type { SideTab } from "./Sidebar";
 
@@ -23,12 +23,13 @@ export function Rail({ t, compact, view, sideTab, sideOpen, onView, onSide, onSe
   const views: [RailView, typeof Gear, string][] = [
     ["home", HomeIcon, t.home],
     ["calendar", CalendarDays, t.calendarShort],
-    ["tree", Network, t.parampara],
+    ["tree", Network, t.paramparaTree],
     ["timeline", Clock3, t.timeline],
     ["panorama", BarChart3, t.panorama],
   ];
   const panels: [SideTab, typeof Gear, string][] = [
-    ["persons", Users, t.persons],
+    ["persons", Users, t.vaisnavas],
+    ["places", MapPin, t.tirthas],
     ["library", LibIcon, t.library],
     ["bookmarks", Star, t.bookmarks],
     ["history", History, t.history],

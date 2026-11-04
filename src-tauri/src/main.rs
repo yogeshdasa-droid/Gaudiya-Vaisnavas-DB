@@ -12,6 +12,7 @@ mod fill;
 mod fold;
 mod import;
 mod overview;
+mod places;
 mod replace;
 mod sanskrit;
 mod search;
@@ -936,6 +937,33 @@ async fn list_distinct(state: State<'_, AppState>) -> CmdResult<Vec<(i64, i64)>>
     store::list_distinct(&state.conn.lock().unwrap())
 }
 
+// ---------------------------------------------------------------- holy places
+
+#[tauri::command]
+async fn list_places(state: State<'_, AppState>) -> CmdResult<Vec<places::Place>> {
+    places::list(&state.conn.lock().unwrap())
+}
+
+#[tauri::command]
+async fn save_place(state: State<'_, AppState>, id: Option<i64>, fields: places::PlaceFields) -> CmdResult<i64> {
+    places::save(&mut state.conn.lock().unwrap(), id, &fields)
+}
+
+#[tauri::command]
+async fn delete_place(state: State<'_, AppState>, id: i64) -> CmdResult<()> {
+    places::delete(&mut state.conn.lock().unwrap(), id)
+}
+
+#[tauri::command]
+async fn set_place_photo(state: State<'_, AppState>, id: i64, path: String) -> CmdResult<()> {
+    places::set_photo(&state.conn.lock().unwrap(), id, std::path::Path::new(&path))
+}
+
+#[tauri::command]
+async fn remove_place_photo(state: State<'_, AppState>, id: i64) -> CmdResult<()> {
+    places::remove_photo(&state.conn.lock().unwrap(), id)
+}
+
 // ---------------------------------------------------------------- earlier versions
 
 #[tauri::command]
@@ -984,14 +1012,18 @@ fn serve_file(app: &AppHandle, uri: &str) -> tauri::http::Response<Vec<u8>> {
     let (Some(role), Some(id)) = (parts.next(), parts.next().and_then(|s| s.parse::<i64>().ok())) else {
         return not_found();
     };
-    if !["cover", "original", "photo", "image"].contains(&role) {
+    if !["cover", "original", "photo", "image", "placephoto"].contains(&role) {
         return not_found();
     }
     let state = app.state::<AppState>();
     let Ok(conn) = state.conn.lock() else { return not_found() };
-    if role == "photo" || role == "image" {
+    if role == "photo" || role == "image" || role == "placephoto" {
         // can change at any time: never cached
-        let found = if role == "photo" { search::get_photo(&conn, id) } else { search::get_image(&conn, id) };
+        let found = match role {
+            "photo" => search::get_photo(&conn, id),
+            "placephoto" => places::get_photo(&conn, id),
+            _ => search::get_image(&conn, id),
+        };
         return match found {
             Ok(Some((mime, data))) => tauri::http::Response::builder()
                 .header("Content-Type", mime)
@@ -1217,6 +1249,11 @@ fn main() {
             unmark_distinct,
             set_tag,
             list_distinct,
+            list_places,
+            save_place,
+            delete_place,
+            set_place_photo,
+            remove_place_photo,
             open_external,
             path_kinds,
             replace_preview,

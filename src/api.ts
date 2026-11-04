@@ -193,6 +193,35 @@ export function isNamesake(p: PersonListItem): boolean {
   return p.tags.split(",").some((x) => x.trim().toLowerCase() === NAMESAKES.toLowerCase());
 }
 
+/** How a record is tied to a holy place (format 7). */
+export const PLACE_ROLES = ["sripata", "samadhi", "birth", "lived", "other"] as const;
+export type PlaceRole = (typeof PLACE_ROLES)[number];
+
+export interface PlaceFields {
+  name: string;
+  /** other spellings, comma separated: found in the records' "Place" */
+  aka: string;
+  /** district, state */
+  region: string;
+  /** where exactly ("2 miles from Kāṭwā station") */
+  location: string;
+  /** what there is there (Markdown) */
+  about: string;
+  source: string;
+  lat: number | null;
+  lon: number | null;
+  people: { personId: number; role: PlaceRole }[];
+}
+
+export interface Place extends PlaceFields {
+  id: number;
+  modified: string;
+  /** a picture chosen for it (served at /placephoto/<id>) */
+  hasPhoto: boolean;
+}
+
+export const EMPTY_PLACE: PlaceFields = { name: "", aka: "", region: "", location: "", about: "", source: "", lat: null, lon: null, people: [] };
+
 /** Where a record goes in the Guru Paramparā (null = take it out). */
 export type TreePlace = { parent: number | null; before: number | null } | null;
 
@@ -447,7 +476,7 @@ export const api = {
   deleteCopy: (path: string) => invoke<void>("delete_copy", { path }),
   /** returns the copy kept of what there was before */
   restoreCopy: (path: string) => invoke<string>("restore_copy", { path }),
-  listVersions: (kind: "doc" | "person", target: number) => invoke<Version[]>("list_versions", { kind, target }),
+  listVersions: (kind: "doc" | "person" | "place", target: number) => invoke<Version[]>("list_versions", { kind, target }),
   restoreVersion: (id: number) => invoke<void>("restore_version", { id }),
   versionsSize: () => invoke<[number, number]>("versions_size"),
   clearVersions: () => invoke<void>("clear_versions"),
@@ -477,6 +506,11 @@ export const api = {
   reviewDocs: () => invoke<{ empty: ReviewDoc[]; oddTitles: ReviewDoc[] }>("review_docs"),
   markDistinct: (ids: number[]) => invoke<void>("mark_distinct", { ids }),
   listDistinct: () => invoke<[number, number][]>("list_distinct"),
+  listPlaces: () => invoke<Place[]>("list_places"),
+  savePlace: (id: number | null, fields: PlaceFields) => invoke<number>("save_place", { id, fields }),
+  deletePlace: (id: number) => invoke<void>("delete_place", { id }),
+  setPlacePhoto: (id: number, path: string) => invoke<void>("set_place_photo", { id, path }),
+  removePlacePhoto: (id: number) => invoke<void>("remove_place_photo", { id }),
   unmarkDistinct: (a: number, b: number) => invoke<void>("unmark_distinct", { a, b }),
   /** merges into a record that can be undone (newest first): the names that went away */
   listMerges: (person: number) => invoke<{ id: number; saved: string; names: string[] }[]>("list_merges", { person }),
@@ -645,7 +679,7 @@ export interface PullProgress {
 }
 
 /** URL of a file stored in the database (cover image, original PDF, or a record's picture by person id). */
-export function fileUrl(role: "cover" | "original" | "photo" | "image", docId: number): string {
+export function fileUrl(role: "cover" | "original" | "photo" | "image" | "placephoto", docId: number): string {
   return navigator.userAgent.includes("Windows") ? `http://bio.localhost/${role}/${docId}` : `bio://localhost/${role}/${docId}`;
 }
 

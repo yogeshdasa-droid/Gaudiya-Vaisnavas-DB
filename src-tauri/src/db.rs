@@ -16,7 +16,10 @@ use std::path::Path;
 ///    the records already in the tree).
 /// 6: + person_links (more gurus of a record besides its place in the tree,
 ///    e.g. its śikṣā gurus; created empty on open).
-pub const DATA_VERSION: u32 = 6;
+/// 7: + places (holy places: where they are, what there is) and
+///    place_persons (who has a śrīpāṭa, samādhi… there); created empty on open.
+/// 8: + place_photos (the picture of a place; created empty on open).
+pub const DATA_VERSION: u32 = 8;
 /// Bump when the folding rules or the FTS layout change: the search tables
 /// are rebuilt from `sections` / `docs` / `persons` (no data is lost).
 pub const FTS_VERSION: &str = "1";
@@ -169,6 +172,38 @@ CREATE TABLE IF NOT EXISTS person_distinct(
     b INTEGER NOT NULL,
     PRIMARY KEY(a, b)
 );
+
+-- holy places (format 7): one entry per village or town, with where it is
+-- and what there is there (from the Gauḍīya Vaiṣṇava Abhidhāna and others)
+CREATE TABLE IF NOT EXISTS places(
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    aka TEXT NOT NULL DEFAULT '',       -- other spellings, comma separated: found in the records' "Place"
+    region TEXT NOT NULL DEFAULT '',    -- district, state: "Bardhamān, West Bengal"
+    location TEXT NOT NULL DEFAULT '',  -- where exactly: "2 miles from Kāṭwā station"
+    about TEXT NOT NULL DEFAULT '',     -- what there is there (Markdown)
+    source TEXT NOT NULL DEFAULT '',    -- where it was read
+    lat REAL,                           -- for the map; NULL = not known
+    lon REAL,
+    created TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    modified TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
+);
+
+-- the records tied to a place (format 7): their śrīpāṭa, samādhi, birth…
+CREATE TABLE IF NOT EXISTS place_persons(
+    place_id INTEGER NOT NULL,
+    person_id INTEGER NOT NULL,
+    role TEXT NOT NULL DEFAULT 'other', -- places::ROLES
+    PRIMARY KEY(place_id, person_id, role)
+);
+CREATE INDEX IF NOT EXISTS place_persons_person ON place_persons(person_id);
+
+-- the picture of a place (format 8), like person_photos
+CREATE TABLE IF NOT EXISTS place_photos(
+    place_id INTEGER PRIMARY KEY,
+    mime TEXT NOT NULL,
+    data BLOB NOT NULL
+);
 "#;
 
 const FTS_SCHEMA: &str = r#"
@@ -282,6 +317,33 @@ mod tests {
         init(&conn).unwrap();
         let n: i64 = conn.query_row("SELECT COUNT(*) FROM person_links", [], |r| r.get(0)).unwrap();
         assert_eq!(n, 0);
-        assert_eq!(get_meta(&conn, "data").unwrap().as_deref(), Some("6"));
+        assert_eq!(get_meta(&conn, "data").unwrap().as_deref(), Some(DATA_VERSION.to_string().as_str()));
+    }
+
+    #[test]
+    fn format_6_gets_places() {
+        let conn = Connection::open_in_memory().unwrap();
+        conn.execute_batch(
+            "CREATE TABLE meta(key TEXT PRIMARY KEY, value TEXT NOT NULL); INSERT INTO meta VALUES('data', '6');
+             CREATE TABLE persons(id INTEGER PRIMARY KEY, name TEXT NOT NULL, key TEXT NOT NULL);
+             INSERT INTO persons(id, name, key) VALUES(1, 'Rūpa', 'rupa');",
+        )
+        .unwrap();
+        init(&conn).unwrap();
+        let n: i64 = conn.query_row("SELECT COUNT(*) FROM places", [], |r| r.get(0)).unwrap();
+        assert_eq!(n, 0);
+        let kept: String = conn.query_row("SELECT name FROM persons WHERE id = 1", [], |r| r.get(0)).unwrap();
+        assert_eq!(kept, "Rūpa");
+        assert_eq!(get_meta(&conn, "data").unwrap().as_deref(), Some(DATA_VERSION.to_string().as_str()));
+    }
+
+    #[test]
+    fn format_7_gets_place_photos() {
+        let conn = Connection::open_in_memory().unwrap();
+        conn.execute_batch("CREATE TABLE meta(key TEXT PRIMARY KEY, value TEXT NOT NULL); INSERT INTO meta VALUES('data', '7');").unwrap();
+        init(&conn).unwrap();
+        let n: i64 = conn.query_row("SELECT COUNT(*) FROM place_photos", [], |r| r.get(0)).unwrap();
+        assert_eq!(n, 0);
+        assert_eq!(get_meta(&conn, "data").unwrap().as_deref(), Some("8"));
     }
 }

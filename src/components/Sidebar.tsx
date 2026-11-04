@@ -1,11 +1,11 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { BookMarked, ChevronRight, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
-import { api, Bookmark, DocListItem, hueOf, Marks, PersonListItem, sortDisciples, TreePlace } from "../api";
+import { BookMarked, ChevronRight, MapPin, Plus, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
+import { api, Bookmark, DocListItem, hueOf, Marks, PersonListItem, Place, sortDisciples, TreePlace } from "../api";
 import { foldWord } from "../fold";
 import { possibleRepeats } from "./Review";
 import { Lang, T } from "../i18n";
 
-export type SideTab = "persons" | "library" | "bookmarks" | "history";
+export type SideTab = "persons" | "places" | "library" | "bookmarks" | "history";
 
 /** A text or record to show in its tree (`n` tells two requests apart). */
 export type Reveal = { kind: "doc" | "person"; id: number; n: number };
@@ -270,6 +270,7 @@ function PersonList({
     return { shown: treeFirst(named), mentions: treeFirst(tagged.filter((p) => extra.has(p.id) && !ids.has(p.id))) };
   }, [filter, tag, persons, fieldHits]);
 
+  // the places whose name, spellings, district or text have all the words
   // collections that are not about people (Bhajans & Kirtans…): a group of
   // their own after the records, with their texts
   const topics = useMemo(() => {
@@ -526,6 +527,7 @@ function PersonList({
               ))}
             </>
           )}
+
         </>
       ) : (
         <>
@@ -621,6 +623,64 @@ function PersonList({
   );
 }
 
+// ---------------------------------------------------------------- tīrthas
+
+/** The holy places, by name as in a dictionary (Āṭapura with the A's), with a filter
+ *  that also looks in their spellings, district and text. */
+function PlaceList({ t, lang, places, activeId, onPlace }: { t: T; lang: Lang; places: Place[]; activeId: number | null; onPlace: (id: number) => void }) {
+  const [filter, setFilter] = useState("");
+  const sorted = useMemo(() => [...places].sort((a, b) => foldName(a.name).localeCompare(foldName(b.name))), [places]);
+  const shown = useMemo(() => {
+    const words = foldName(filter).split(" ").filter(Boolean);
+    if (!words.length) return sorted;
+    return sorted.filter((pl) => {
+      const f = ` ${foldName(`${pl.name} ${pl.aka} ${pl.region} ${pl.location} ${pl.about}`)}`;
+      return words.every((w) => f.includes(` ${w}`));
+    });
+  }, [filter, sorted]);
+  let letter = "";
+  return (
+    <div className="fade-in">
+      <div className="person-filter">
+        <Search size={14} />
+        <input value={filter} placeholder={t.filterPlaces} title={t.placesHint} spellCheck={false} onChange={(e) => setFilter(e.target.value)} />
+        {filter && (
+          <button className="icon-btn" onClick={() => setFilter("")}>
+            <X size={13} />
+          </button>
+        )}
+      </div>
+      {places.length === 0 && <div className="side-empty">{t.placesEmpty}</div>}
+      {places.length > 0 && shown.length === 0 && <div className="side-empty">{t.noPlaces}</div>}
+      {shown.length > 0 && (
+        <div className="letter mentions-head">
+          {t.tirthas} <span className="count">{shown.length.toLocaleString(lang)}</span>
+        </div>
+      )}
+      {shown.map((pl) => {
+        const first = foldWord(pl.name.trim()[0] ?? "#").toUpperCase() || "#";
+        const header = !filter && first !== letter ? (letter = first) : null;
+        return (
+          <div key={pl.id}>
+            {header && <div className="letter">{header}</div>}
+            <div
+              data-ctx="place"
+              data-id={pl.id}
+              className={`tree-row person place${activeId === pl.id ? " active" : ""}`}
+              onClick={() => onPlace(pl.id)}
+              title={[pl.name, pl.aka, pl.region].filter(Boolean).join(" · ")}
+            >
+              <MapPin size={13} className="place-icon" />
+              <span className="name">{pl.name}</span>
+              {pl.region && <span className="place-region">{pl.region.split(",")[0]}</span>}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------- sidebar
 
 interface Props {
@@ -650,6 +710,10 @@ interface Props {
   reveal: Reveal | null;
   marks: Marks;
   onMark: (id: number) => void;
+  places: Place[];
+  activePlaceId: number | null;
+  onPlace: (id: number) => void;
+  onNewPlace: () => void;
 }
 
 /** Indent of each level of the Guru Paramparā, in px. */
@@ -724,7 +788,8 @@ export function Sidebar(p: Props) {
     });
 
   const tabs: [SideTab, typeof LibIcon, string][] = [
-    ["persons", Users, t.persons],
+    ["persons", Users, t.vaisnavas],
+    ["places", MapPin, t.tirthas],
     ["library", LibIcon, t.library],
     ["bookmarks", Star, t.bookmarks],
     ["history", History, t.history],
@@ -759,6 +824,8 @@ export function Sidebar(p: Props) {
             onMark={p.onMark}
           />
         )}
+
+        {p.tab === "places" && <PlaceList t={t} lang={p.lang} places={p.places} activeId={p.activePlaceId} onPlace={p.onPlace} />}
 
         {p.tab === "library" && (
           <div className="fade-in">
@@ -845,6 +912,13 @@ export function Sidebar(p: Props) {
           ))}
       </div>
 
+      {p.tab === "places" && (
+        <div className="side-actions">
+          <button onClick={p.onNewPlace}>
+            <Plus size={15} /> {t.newPlace}
+          </button>
+        </div>
+      )}
       {(p.tab === "persons" || p.tab === "library") && (
         <div className="side-actions">
           <button onClick={p.onNewPerson}>

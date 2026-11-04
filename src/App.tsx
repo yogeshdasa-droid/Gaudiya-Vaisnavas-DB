@@ -55,6 +55,7 @@ import {
   nextMark,
   Person,
   PersonListItem,
+  Place,
   Replaced,
   SearchResult,
   SectionText,
@@ -69,7 +70,8 @@ import {
 import { dicts, Lang } from "./i18n";
 import { buildNameIndex } from "./personLinks";
 import { checkUpdate, installUpdate, Update } from "./update";
-import { EditDialog, GuruDialog, MoveTextDialog, RelateDialog, ImportDialog, MergeDialog, PersonDialog, TrashDialog, VersionsDialog } from "./components/Dialogs";
+import { EditDialog, GuruDialog, MoveTextDialog, RelateDialog, ImportDialog, MergeDialog, PersonDialog, PlaceDialog, TrashDialog, VersionsDialog } from "./components/Dialogs";
+import { PlaceView } from "./components/PlaceView";
 import { Home, RecentDoc } from "./components/Home";
 import { EMPTY_FILTERS, Filters, hasFilter, Results } from "./components/Results";
 import { Reader, ReaderStyle, ReaderTarget } from "./components/Reader";
@@ -106,7 +108,8 @@ function usePersisted<T>(key: string, fallback: T) {
   return [v, setV] as const;
 }
 
-type Main = { kind: "home" } | { kind: "timeline" } | { kind: "panorama" } | { kind: "calendar" } | { kind: "tree" } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number };
+/** panorama.place: open on the map at that place (`n` tells two requests apart) */
+type Main = { kind: "home" } | { kind: "timeline" } | { kind: "panorama"; place?: { id: number; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "tree" } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number };
 
 type Dialog =
   | { kind: "settings"; tab: SettingsTab }
@@ -114,8 +117,9 @@ type Dialog =
   | { kind: "trash"; doc: DocInfo }
   | { kind: "import"; paths: string[]; person?: { id: number; name: string } }
   | { kind: "person"; person: Person | null }
+  | { kind: "place"; place: Place | null }
   | { kind: "merge"; person: Person; suggested: number[] }
-  | { kind: "versions"; what: "doc" | "person"; target: number; label: string }
+  | { kind: "versions"; what: "doc" | "person" | "place"; target: number; label: string }
   | { kind: "duplicates" }
   | { kind: "guru"; person: Person }
   | { kind: "relate"; id: number; place: NonNullable<TreePlace> }
@@ -169,6 +173,7 @@ export default function App() {
     [docs],
   );
   const [persons, setPersons] = useState<PersonListItem[]>([]);
+  const [places, setPlaces] = useState<Place[]>([]);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [dialog, setDialog] = useState<Dialog>(null);
   // a record or text opened from Settings: the tab to come back to
@@ -243,7 +248,7 @@ export default function App() {
   const [, setNavTick] = useState(0);
   const samePlace = (a: Main, b: Main) =>
     a.kind === b.kind &&
-    (a.kind === "person" ? a.id === (b as typeof a).id : a.kind === "doc" ? a.target.docId === (b as typeof a).target.docId : true);
+    (a.kind === "person" || a.kind === "place" ? a.id === (b as typeof a).id : a.kind === "doc" ? a.target.docId === (b as typeof a).target.docId : true);
   const withPosition = (m: Main): Main =>
     m.kind === "doc" ? { ...m, target: { ...m.target, ordinal: readingOrd.current.get(m.target.docId) ?? m.target.ordinal } } : m;
   useEffect(() => {
@@ -355,6 +360,7 @@ export default function App() {
     refreshStatus();
     api.listDocs().then(setDocs).catch(() => {});
     api.listPersons().then(setPersons).catch(() => {});
+    api.listPlaces().then(setPlaces).catch(() => {});
     api.listBookmarks().then(setBookmarks).catch(() => {});
     api
       .search({ query: "", titlesOnly: false, prefix: false, sort: "relevance", collections: [], dir: null, docId: null, personId: null, offset: 0, limit: 1 })
@@ -610,6 +616,18 @@ export default function App() {
       .deletePerson(p.id)
       .then(() => {
         showToast(t.personDeleted);
+        setMain({ kind: "home" });
+        refreshAll();
+      })
+      .catch(fail);
+  };
+  const openPlace = useCallback((id: number) => setMain({ kind: "place", id }), []);
+  const deletePlace = async (pl: Place) => {
+    if (!(await ask(t.deletePlaceAsk(pl.name)))) return;
+    api
+      .deletePlace(pl.id)
+      .then(() => {
+        showToast(t.placeDeleted);
         setMain({ kind: "home" });
         refreshAll();
       })
@@ -1045,6 +1063,10 @@ export default function App() {
               onPerson={openPerson}
               onNewPerson={() => setDialog({ kind: "person", person: null })}
               onMovePerson={movePerson}
+              places={places}
+              activePlaceId={main.kind === "place" ? main.id : null}
+              onPlace={openPlace}
+              onNewPlace={() => setDialog({ kind: "place", place: null })}
               docs={docs}
               activeDir={filters.scope?.dir ?? null}
               activeDocId={target?.docId ?? null}
@@ -1151,8 +1173,30 @@ export default function App() {
             readerStyle={readerStyle}
             fontSize={fontSize}
             names={nameIndex}
+            places={places}
+            onPlace={openPlace}
           />
         )}
+        {main.kind === "place" &&
+          (() => {
+            const pl = places.find((x) => x.id === main.id);
+            return pl ? (
+              <PlaceView
+                t={t}
+                lang={lang}
+                place={pl}
+                persons={persons}
+                reload={dataTick}
+                onPerson={openPerson}
+                onEdit={(place) => setDialog({ kind: "place", place })}
+                onDelete={deletePlace}
+                onVersions={(place) => setDialog({ kind: "versions", what: "place", target: place.id, label: place.name })}
+                onMap={(place) => setMain({ kind: "panorama", place: { id: place.id, n: Date.now() } })}
+                onToast={showToast}
+                onChanged={() => api.listPlaces().then(setPlaces).catch(fail)}
+              />
+            ) : null;
+          })()}
         {main.kind === "home" && (
           <Home
             t={t}
@@ -1171,10 +1215,15 @@ export default function App() {
             onTimeline={() => setMain({ kind: "timeline" })}
             onTree={() => setMain({ kind: "tree" })}
             onPanorama={() => setMain({ kind: "panorama" })}
+            places={places}
+            onPlace={openPlace}
+            onCalendar={() => setMain({ kind: "calendar" })}
           />
         )}
         {main.kind === "timeline" && <Timeline t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} onOpenDoc={openDoc} />}
-        {main.kind === "panorama" && <Panorama t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} />}
+        {main.kind === "panorama" && (
+          <Panorama t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} places={places} onPlace={openPlace} focus={main.place} status={status} />
+        )}
         {main.kind === "calendar" && <Calendar t={t} lang={lang} reload={dataTick} onPerson={openPerson} page />}
         {main.kind === "tree" && <TreeView t={t} persons={persons} onPerson={openPerson} marks={marks} onMark={cycleMark} />}
       </main>
@@ -1413,6 +1462,25 @@ export default function App() {
             setDialog(null);
             showToast(t.importStarted);
             refreshStatus();
+          }}
+        />
+      )}
+      {dialog?.kind === "place" && (
+        <PlaceDialog
+          t={t}
+          place={dialog.place}
+          persons={persons}
+          onClose={() => setDialog(null)}
+          onSaved={(id) => {
+            setDialog(null);
+            showToast(t.placeSaved);
+            api
+              .listPlaces()
+              .then((list) => {
+                setPlaces(list);
+                openPlace(id);
+              })
+              .catch(fail);
           }}
         />
       )}

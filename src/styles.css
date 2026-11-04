@@ -2744,6 +2744,17 @@ body.dragging-person * {
   gap: 10px;
   margin: 26px 0 0;
 }
+/* the short cards, as newspaper columns: each one goes to the first free place */
+.facts-flow {
+  grid-column: 1 / -1;
+  columns: 240px;
+  column-gap: 10px;
+  margin-bottom: -10px;
+}
+.facts-flow > .fact {
+  break-inside: avoid;
+  margin-bottom: 10px;
+}
 .facts-col {
   display: flex;
   flex-direction: column;
@@ -5483,6 +5494,16 @@ h2 .h2-action {
 .map-place.on .map-dot {
   fill-opacity: 0.95;
 }
+/* the place chosen (clicked, or opened with «See on the map»): red with a ring */
+.map-place.on .map-dot {
+  fill: #e5484d;
+  stroke: #fff;
+  stroke-width: 2.5;
+}
+.map-place.on .map-label {
+  fill: #ff8a8d;
+  font-weight: 700;
+}
 .map-label {
   fill: var(--text);
   paint-order: stroke;
@@ -5529,4 +5550,168 @@ h2 .h2-action {
 }
 .contemporaries .name-link .muted {
   font-weight: 500;
+}
+
+/* ---- holy places (format 7) */
+.group-head-wrap {
+  position: relative;
+}
+.group-head-wrap .group-head {
+  padding-right: 34px;
+}
+.group-head-wrap .group-add {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+}
+.tree-row.place .place-icon {
+  color: hsl(140 45% 50%);
+}
+.tree-row.place .place-region {
+  font-size: 11px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 45%;
+}
+.place-view .place-cover {
+  cursor: pointer;
+  background: linear-gradient(135deg, hsl(140 40% 38%), hsl(170 45% 32%));
+}
+.place-view .place-seal {
+  cursor: default;
+  border-color: color-mix(in srgb, hsl(140 45% 50%) 50%, transparent);
+  background: color-mix(in srgb, hsl(140 45% 50%) 14%, transparent);
+  color: hsl(140 45% 58%);
+}
+.name-link.inline {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--accent-text);
+  text-decoration: underline dotted;
+  cursor: pointer;
+}
+.map-open-place {
+  margin-left: 10px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.lunar-hint.bad {
+  color: var(--danger, #e06c6c);
+}
+
+/* ---- map: drawing / satellite */
+.map-style {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 2px 0 12px;
+}
+.map-credit {
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  padding: 1px 7px;
+  border-radius: 4px;
+  font-size: 10.5px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+}
+svg.satellite .map-sea {
+  fill: #0b1220;
+}
+svg.satellite .map-state {
+  stroke: rgba(255, 255, 255, 0.35);
+}
+svg.satellite .map-border {
+  stroke: rgba(255, 255, 255, 0.7);
+}
+svg.satellite .map-region {
+  fill: rgba(255, 255, 255, 0.55);
+}
+svg.satellite .map-dot {
+  fill-opacity: 0.85;
+  stroke: #fff;
+}
+/* ---- Home: today in one line, things of the day */
+.calendar.compact .cal-today {
+  align-items: center;
+}
+.calendar.compact .cal-events {
+  flex: 1;
+}
+.calendar.compact .cal-open {
+  margin-left: auto;
+}
+.of-day {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+}
+.of-day-card {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.of-day-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+.of-day-card .pc-cover {
+  flex-shrink: 0;
+  width: 64px;
+  height: 84px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: var(--accent-grad);
+}
+.of-day-card .pc-cover.place {
+  background: linear-gradient(135deg, hsl(140 40% 38%), hsl(170 45% 32%));
+}
+.of-day-card .pc-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.of-day-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.of-day-text em {
+  font-style: normal;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent-text);
+}
+.of-day-text strong {
+  font-size: 16px;
+}
+/* a label with an explanation on hover (the relations of a place) */
+.facts dt.has-hint {
+  cursor: help;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
 }

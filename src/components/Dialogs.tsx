@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, ListTree, ListX, FilePen, FileText, FolderInput, GitMerge, History, Scissors, Search, Trash2, Undo2, Upload, UserPlus, UserRound, X } from "lucide-react";
-import { api, DocInfo, EMPTY_PERSON, Person, PersonFields, PersonListItem, SectionText, TREE_KINDS, TreeKind, Version } from "../api";
+import { AlertTriangle, MapPin, ListTree, ListX, FilePen, FileText, FolderInput, GitMerge, History, Scissors, Search, Trash2, Undo2, Upload, UserPlus, UserRound, X } from "lucide-react";
+import { api, DocInfo, EMPTY_PERSON, EMPTY_PLACE, Person, PersonFields, PersonListItem, SectionText, TREE_KINDS, TreeKind, Version, Place, PlaceFields, PLACE_ROLES, PlaceRole } from "../api";
 import { T } from "../i18n";
 import { ask, Modal } from "./ui";
 import { foldName } from "./Sidebar";
@@ -1082,8 +1082,9 @@ export function PersonDialog({
 // ---------------------------------------------------------------- earlier versions
 
 /** Readable text of a version: the text itself, or the record's fields. */
-function versionText(t: T, kind: "doc" | "person", data: string): string {
+function versionText(t: T, kind: "doc" | "person" | "place", data: string): string {
   try {
+    if (kind === "place") return placeText(t, JSON.parse(data) as PlaceFields);
     if (kind === "doc") return (JSON.parse(data) as { text: string }[]).map((s) => s.text.trimEnd()).join("\n\n");
     const f = JSON.parse(data) as PersonFields;
     const rows: [string, string][] = [
@@ -1116,7 +1117,7 @@ export function VersionsDialog({
   onRestored,
 }: {
   t: T;
-  kind: "doc" | "person";
+  kind: "doc" | "person" | "place";
   target: number;
   label: string;
   onClose: () => void;
@@ -1260,6 +1261,178 @@ export function MergeDialog({
             </span>
           </label>
         ))}
+      </div>
+      {error && <div className="error-box">{error}</div>}
+    </Modal>
+  );
+}
+
+// ---------------------------------------------------------------- holy places
+
+/** Readable text of a place's version. */
+function placeText(t: T, f: PlaceFields): string {
+  const rows: [string, string][] = [
+    [t.placeName, f.name],
+    [t.placeAka, f.aka],
+    [t.placeRegion, f.region],
+    [t.placeLocation, f.location],
+    [t.placeAbout, f.about],
+    [t.placeSource, f.source],
+    [t.placeCoords, f.lat != null && f.lon != null ? `${f.lat}, ${f.lon}` : ""],
+  ];
+  return rows
+    .filter(([, v]) => v?.trim())
+    .map(([k, v]) => `${k}: ${v}`)
+    .join("\n\n");
+}
+
+const coordsText = (f: PlaceFields) => (f.lat != null && f.lon != null ? `${f.lat}, ${f.lon}` : "");
+
+/** "23.62, 88.09" → [23.62, 88.09]; "" → [null, null]; anything else → undefined. */
+function parseCoords(s: string): [number | null, number | null] | undefined {
+  if (!s.trim()) return [null, null];
+  const m = s.trim().match(/^(-?\d+(?:[.,]\d+)?)\s*[,;\s]\s*(-?\d+(?:[.,]\d+)?)$/);
+  if (!m) return undefined;
+  const la = Number(m[1].replace(",", "."));
+  const lo = Number(m[2].replace(",", "."));
+  return Math.abs(la) <= 90 && Math.abs(lo) <= 180 ? [la, lo] : undefined;
+}
+
+export function PlaceDialog({
+  t,
+  place,
+  persons,
+  onClose,
+  onSaved,
+}: {
+  t: T;
+  /** null = new place */
+  place: Place | null;
+  persons: PersonListItem[];
+  onClose: () => void;
+  onSaved: (id: number) => void;
+}) {
+  const [initial] = useState<PlaceFields>(() => {
+    const { id: _id, modified: _m, ...fields } = place ?? { ...EMPTY_PLACE, id: 0, modified: "" };
+    return { ...EMPTY_PLACE, ...fields };
+  });
+  const [f, setF] = useState<PlaceFields>(initial);
+  const [coords, setCoords] = useState(() => coordsText(initial));
+  const [q, setQ] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const parsed = parseCoords(coords);
+  const dirty = JSON.stringify(f) !== JSON.stringify(initial) || coords !== coordsText(initial);
+  const set = (k: keyof PlaceFields) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setF({ ...f, [k]: e.target.value });
+  const matches = useMemo(() => filterPersons(persons, q, 12), [persons, q]);
+  const name = (id: number) => persons.find((p) => p.id === id)?.name ?? "?";
+
+  const close = async () => {
+    if (!dirty || (await ask(t.unsaved))) onClose();
+  };
+  const save = async () => {
+    if (!parsed) return setError(t.placeCoordsBad);
+    setBusy(true);
+    setError(null);
+    try {
+      const id = await api.savePlace(place?.id ?? null, { ...f, lat: parsed[0], lon: parsed[1] });
+      onSaved(id);
+    } catch (e) {
+      setError(String(e));
+      setBusy(false);
+    }
+  };
+  useCtrlS(dirty && !busy && !!f.name.trim() && !!parsed, save);
+
+  const field = (k: keyof PlaceFields, label: string, hint?: string) => (
+    <label>
+      <span>{label}</span>
+      <input value={f[k] as string} onChange={set(k)} spellCheck={false} />
+      {hint && <em className="lunar-hint">{hint}</em>}
+    </label>
+  );
+
+  return (
+    <Modal
+      wide
+      title={place ? t.editPlace : t.newPlace}
+      icon={<MapPin size={18} />}
+      onClose={close}
+      footer={
+        <>
+          <span className="grow" />
+          <button className="btn ghost" onClick={close}>
+            {t.cancel}
+          </button>
+          <button className="btn" disabled={!dirty || busy || !f.name.trim() || !parsed} onClick={save}>
+            {busy ? <span className="spinner light" /> : null} {t.save} <kbd className="kbd on-accent">Ctrl S</kbd>
+          </button>
+        </>
+      }
+    >
+      <div className="form-grid">
+        <label>
+          <span>{t.placeName}</span>
+          <input value={f.name} onChange={set("name")} autoFocus={!place} spellCheck={false} />
+        </label>
+        {field("aka", t.placeAka, t.placeAkaHint)}
+        {field("region", t.placeRegion, t.placeRegionHint)}
+        {field("location", t.placeLocation, t.placeLocationHint)}
+        <label>
+          <span>{t.placeCoords}</span>
+          <input value={coords} onChange={(e) => setCoords(e.target.value)} spellCheck={false} />
+          <em className={`lunar-hint${parsed ? "" : " bad"}`}>{parsed ? t.placeCoordsHint : t.placeCoordsBad}</em>
+        </label>
+        {field("source", t.placeSource, t.placeSourceHint)}
+      </div>
+      <div className="more-gurus">
+        <span className="more-gurus-title">{t.placePeople}</span>
+        {f.people.map((p, i) => (
+          <div key={`${p.personId}-${i}`} className="more-guru">
+            <UserRound size={14} />
+            <span className="grow">{name(p.personId)}</span>
+            <select
+              value={p.role}
+              title={t.placeRoleHints[p.role]}
+              onChange={(e) => setF({ ...f, people: f.people.map((x, j) => (j === i ? { ...x, role: e.target.value as PlaceRole } : x)) })}
+            >
+              {PLACE_ROLES.map((r) => (
+                <option key={r} value={r} title={t.placeRoleHints[r]}>
+                  {t.placeRoles[r]}
+                </option>
+              ))}
+            </select>
+            <button className="icon-btn" title={t.delete} onClick={() => setF({ ...f, people: f.people.filter((_, j) => j !== i) })}>
+              <X size={14} />
+            </button>
+          </div>
+        ))}
+        <div className="picker">
+          <input value={q} placeholder={t.placeAddPerson} onChange={(e) => setQ(e.target.value)} />
+          {q.trim() && matches.length > 0 && (
+            <div className="picker-list">
+              {matches.map((m) => (
+                <button
+                  key={m.id}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    setF({ ...f, people: [...f.people, { personId: m.id, role: "sripata" }] });
+                    setQ("");
+                  }}
+                >
+                  <UserRound size={13} /> {m.name}
+                  {m.aka && <em>{m.aka}</em>}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="form-grid one">
+        <label>
+          <span>{t.placeAbout}</span>
+          <textarea className="notes-editor" value={f.about} placeholder={t.placeAboutHint} onChange={set("about")} />
+        </label>
       </div>
       {error && <div className="error-box">{error}</div>}
     </Modal>

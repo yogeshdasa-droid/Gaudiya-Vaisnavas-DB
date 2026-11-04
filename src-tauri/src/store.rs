@@ -676,7 +676,7 @@ struct VersionSection {
 }
 
 /// Keeps the current state of a text or record as a version, before it changes.
-fn keep_version(tx: &Connection, kind: &str, target: i64, label: &str, data: &str, always: bool) -> rusqlite::Result<()> {
+pub(crate) fn keep_version(tx: &Connection, kind: &str, target: i64, label: &str, data: &str, always: bool) -> rusqlite::Result<()> {
     let last: Option<(String, f64)> = tx
         .query_row(
             "SELECT data, (julianday('now', 'localtime') - julianday(saved)) * 1440 FROM history
@@ -762,7 +762,8 @@ pub fn restore_version(conn: &mut Connection, id: i64) -> Res<()> {
             write_sections(&tx, target, &sections).map_err(e)?;
             tx.execute("UPDATE docs SET modified = datetime('now', 'localtime') WHERE id = ?1", [target]).map_err(e)?;
         }
-        _ => {
+        "place" => crate::places::restore(&tx, target, &data)?,
+        "person" => {
             let f: PersonFields = serde_json::from_str(&data).map_err(e)?;
             if get_fields(&tx, target).optional().map_err(e)?.is_none() {
                 return Err("La ficha ya no existe".into());
@@ -770,6 +771,7 @@ pub fn restore_version(conn: &mut Connection, id: i64) -> Res<()> {
             keep_person_version(&tx, target, true).map_err(e)?;
             write_person(&tx, target, &f)?;
         }
+        _ => return Err("Esa versión no se puede recuperar desde aquí".into()),
     }
     tx.commit().map_err(e)
 }
@@ -895,6 +897,7 @@ pub fn delete_person(conn: &mut Connection, id: i64) -> Res<()> {
     tx.execute("DELETE FROM person_images WHERE person_id = ?1", [id]).map_err(e)?;
     tx.execute("DELETE FROM person_distinct WHERE a = ?1 OR b = ?1", [id]).map_err(e)?;
     tx.execute("DELETE FROM person_links WHERE person_id = ?1 OR guru_id = ?1", [id]).map_err(e)?;
+    crate::places::forget_person(&tx, id).map_err(e)?;
     tx.execute("DELETE FROM persons WHERE id = ?1", [id]).map_err(e)?;
     tx.execute("DELETE FROM persons_fts WHERE rowid = ?1", [id]).map_err(e)?;
     for d in docs {
@@ -1393,7 +1396,7 @@ pub fn join_person_texts(conn: &mut Connection, only: Option<i64>, progress: imp
 }
 
 /// An image file: (file name, mime type, bytes).
-fn read_image(path: &std::path::Path) -> Res<(String, &'static str, Vec<u8>)> {
+pub(crate) fn read_image(path: &std::path::Path) -> Res<(String, &'static str, Vec<u8>)> {
     let ext = path.extension().and_then(|x| x.to_str()).unwrap_or("").to_lowercase();
     let mime = match ext.as_str() {
         "jpg" | "jpeg" => "image/jpeg",
@@ -1487,6 +1490,9 @@ struct MergeUndo {
     tree: Vec<(i64, Option<i64>, i64, String)>,
     /// person_links rows of the records: (person, guru, kind)
     links: Vec<(i64, i64, String)>,
+    /// the places of each record (format 7): (person, place, role)
+    #[serde(default)]
+    places: Vec<(i64, i64, String)>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -1564,8 +1570,14 @@ fn merge_snapshot(tx: &Connection, into: i64, from: &[i64]) -> Res<MergeUndo> {
             }
         }
     }
+    let mut places = Vec::new();
+    for &id in &all {
+        for (place, role) in crate::places::links_of(tx, id).map_err(e)? {
+            places.push((id, place, role));
+        }
+    }
     let into_photo = tx.query_row("SELECT 1 FROM person_photos WHERE person_id = ?1", [into], |_| Ok(())).optional().map_err(e)?.is_some();
-    Ok(MergeUndo { into, into_fields: get_fields(tx, into).map_err(e)?, into_photo, removed, tree, links })
+    Ok(MergeUndo { into, into_fields: get_fields(tx, into).map_err(e)?, into_photo, removed, tree, links, places })
 }
 
 #[derive(Serialize)]
@@ -1657,6 +1669,13 @@ pub fn undo_merge(conn: &mut Connection, history_id: i64) -> Res<()> {
         tx.execute("INSERT OR IGNORE INTO person_links(person_id, guru_id, kind) VALUES(?1, ?2, ?3)", params![person, guru, kind])
             .map_err(e)?;
     }
+    // and the places of each one (a merge saved before format 7 has none: left as they are)
+    if !m.places.is_empty() {
+        for &id in &ids {
+            let mine: Vec<(i64, String)> = m.places.iter().filter(|p| p.0 == id).map(|p| (p.1, p.2.clone())).collect();
+            crate::places::restore_links(&tx, id, &mine).map_err(e)?;
+        }
+    }
     write_person(&tx, m.into, &m.into_fields)?;
     tx.execute("DELETE FROM history WHERE id = ?1", [history_id]).map_err(e)?;
     tx.commit().map_err(e)
@@ -1714,6 +1733,7 @@ pub fn merge_persons(conn: &mut Connection, into: i64, from: &[i64]) -> Res<()> 
         tx.execute("UPDATE OR IGNORE person_links SET person_id = ?1 WHERE person_id = ?2", params![into, other]).map_err(e)?;
         tx.execute("UPDATE OR IGNORE person_links SET guru_id = ?1 WHERE guru_id = ?2", params![into, other]).map_err(e)?;
         tx.execute("DELETE FROM person_links WHERE person_id = ?1 OR guru_id = ?1 OR person_id = guru_id", [other]).map_err(e)?;
+        crate::places::merge(&tx, into, other).map_err(e)?;
         tx.execute("DELETE FROM history WHERE kind = 'person' AND target = ?1", [other]).map_err(e)?;
         tx.execute("DELETE FROM persons WHERE id = ?1", [other]).map_err(e)?;
         tx.execute("DELETE FROM persons_fts WHERE rowid = ?1", [other]).map_err(e)?;

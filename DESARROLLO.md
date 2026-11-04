@@ -54,7 +54,8 @@ Si no se restaura nada, la primera vez intenta importar las carpetas de `DEFAULT
 
 1. **Nunca borrar datos del usuario.** Tablas de datos: `persons`, `docs`, `sections`, `files`,
    `bookmarks`, `meta`, `person_photos`, `person_tree` y (formato 4) `history`, `person_tags`,
-   `person_images`, `person_distinct`, `calendar_events`. Si cambia su estructura → subir `DATA_VERSION` en
+   `person_images`, `person_distinct`, `calendar_events`, (formato 6) `person_links`, (formato 7) `places`,
+   `place_persons`, (formato 8) `place_photos`. Si cambia su estructura → subir `DATA_VERSION` en
    `src-tauri/src/db.rs` y escribir una migración que conserve todo. Un programa viejo se niega
    a abrir una base de datos de formato más nuevo (para no estropearla).
 2. Tablas **derivadas** (se pueden reconstruir): `sections_fts`, `docs_fts`, `persons_fts`.
@@ -186,7 +187,20 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.9.1)
+## 5. Qué hace hoy (v0.11.0)
+
+### Novedades de la 0.11.0 (04-11-2026) — **Tīrthas**, satélite, Inicio nuevo — **DATA_VERSION 8**
+- **Tīrthas** (lugares santos): tablas `places`, `place_persons` (formato 7) y `place_photos` (formato 8).
+  Botón propio en el lateral; página de cada lugar (dónde está, qué hay, fuente, personas por relación
+  —Śrīpāṭa, Samādhi, Āvirbhāva-sthāna, Vāsa-sthāna, Otros— con explicación al pasar el ratón; fichas que
+  lo nombran en «Lugar»; **foto**); tarjeta «Tīrthas» en cada ficha. 50 lugares en la BD de Whisper
+  (tandas 1–4 de `scripts/datos/lugares-N.json`, sacados del Abhidhāna); la tanda 5 (Purī) y la ficha de
+  Kāśī Miśra (`kasi-misra.mjs`) se aplican después de que Whisper actualice a la 0.11.0.
+- Mapa: «Dibujo / Satélite» (teselas Esri), mapa «Vraja de cerca», punto elegido en rojo, clic = acercar
+  a los vecinos (≤10 km o pegados), doble clic = bajar a las fichas, zoom hasta ~1 km.
+- Inicio: «Hoy», Seguir leyendo, Marcadores, «Del día»; cifras en Panorama › Estado. Lateral:
+  «Paramparā Tree», «Vaiṣṇavas», «Tīrthas». Tarjetas de la ficha sin huecos.
+- (0.10.0–0.10.6 fueron instaladores de prueba en el PC de Whisper, sin publicar.)
 
 ### Novedades de la 0.9.1 (03-11-2026) — foco en la **Guru Paramparā**, mapa con fondo
 - **Mapa dibujado, sin internet** en Panorama › Mapa: tierra, mar, ríos (Gaṅgā, Yamunā…, con nombre),
@@ -598,6 +612,129 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 ---
 
 ## 7. Pendientes e ideas
+
+### Hecho el 04-11-2026 (sin publicar): **Lugares**, DATA_VERSION 7
+- Whisper eligió «apartado propio». Tablas nuevas `places` (name, aka, region, location, about, source,
+  lat, lon) y `place_persons` (place_id, person_id, role ∈ sripata|samadhi|birth|lived|other).
+  Código: `src-tauri/src/places.rs` (+3 pruebas), `src/places.ts` (reconocer un lugar escrito de varias
+  formas: palabras sin «a» final y sin espacios), `components/PlaceView.tsx`, `PlaceDialog` en `Dialogs.tsx`.
+- Uniones / deshacer unión / borrar ficha llevan también sus lugares (`MergeUndo.places`, con
+  `serde(default)` para uniones viejas). Versiones: `history.kind = 'place'` (borrar un lugar se deshace
+  desde «Versiones anteriores»). `restore_version` ya no trata un tipo desconocido como ficha.
+- Barra lateral: grupo «Lugares» (con +) debajo de «Vaiṣṇava-maṇḍala»; el filtro busca también en lugares.
+  Ficha: tarjeta «Lugares» (los que la listan + los que nombra su campo «Lugar»). Mapa: los lugares con
+  coordenadas se suman a `PLACES` (o ocupan su punto); «Ver en el mapa» / «Abrir el lugar».
+- Ficha: las tarjetas cortas fluyen en columnas (`.facts-flow`, CSS `columns`): sin huecos (lo pidió Whisper).
+- Mapa: zoom hasta ×40; desde ×2 los puntos no crecen (los pueblos cercanos se separan).
+- Después de instalar la 0.10.0 (sin instalador aún): al pulsar un punto del mapa la página baja lo justo
+  para ver sus personas (`.map-picked`, `scrollIntoView` «nearest»); antes quedaba fuera de la pantalla.
+- Probado en una copia (scratchpad) con app:dev. Versión **0.10.0** (instalador hecho el 04-11, sin publicar).
+- **Lugares, tanda 1** (Whisper la revisó: «sí, así»; textos en **inglés**): `scripts/datos/lugares-1.json`
+  (12 lugares: Jājigrāma, Kāñcanagaḍiyā, Āṭapura, Budhurī, Saptagrāma, Māliháṭi, Varāhanagara, Khānākula,
+  Jhāmaṭapura ×2, Kenduli, Khaḍadaha) + `scripts/datos/lugares.mjs <json> [puerto]` (por nombre; dos
+  pasadas = la segunda no cambia nada). **Aplicada en la app de Whisper** (0.10.0 instalada el 04-11
+  con «Do not uninstall»; copia «antes de la 0.10.0» en Documentos).
+  Búsqueda en el libro: scripts del scratchpad `look.mjs` (cabeceras), `ctx.mjs` (líneas alrededor).
+- **Datos cambiados en la BD de Whisper (04-11, copia «antes de Jayadeva y Ravi Raya»)**, script
+  `scripts/datos/jayadeva-ravi.mjs`: 598 Jayadeva (el poeta, s. XII) sin guru y fuera de la Paramparā
+  (estaba bajo Śrīnivāsa: imposible; venía del *Jayadeva-caritra* de Vanamālī dāsa, discípulo de
+  Śrīnivāsa; no hay un Jayadeva discípulo de Śrīnivāsa en las fuentes; sí un Jayadeva dāsa discípulo de
+  Rasikānanda, sin ficha); 597 Jayadeva Gosvāmī sin guru «Lakṣmaṇ Sen» (era su rey); 1317 Ravi Rāya guru =
+  Narottama + en notas la variante del Abhidhāna (Śrīnivāsa) — Whisper: registrar las dos con su fuente.
+- **Hecho (sin instalador aún):** punto elegido en rojo con aro y encima de los demás; lista «Lugares»
+  ordenada sin diacríticos; **modo satélite** (`tilesFor` en `Panorama.tsx`: teselas Esri por sus cuatro
+  esquinas, capa gruesa (nivel −2) debajo de la fina, ≤60 teselas, zoom hasta ×400; sin internet → aviso y
+  dibujo; `localStorage bio.mapStyle`). CSP es `null`: no hizo falta tocar `tauri.conf.json`.
+  Probado: a ×400 se ve Jājigrāma junto a la vía Kāṭwā–Bardhamān.
+- **Lugares, tanda 2** (Whisper: «vale»): `scripts/datos/lugares-2.json`, 12 lugares grandes de Bengala
+  (Ekacakrā, Kheturī, Pānihāṭi, Kumārahaṭṭa, Kulīnagrāma, Śrīkhaṇḍa, Kāṭwā, Ambikā-Kālnā, Śāntipura,
+  Rāmakeli, Gopīvallabhapura, Viṣṇupura). Va con la **0.10.1** (satélite + rojo + lista ordenada).
+  Avisado sin tocar: repetidas? Narahari 979/980, Anupama 55/56, Gadādhara dāsa 272/1815; Rāmadāsa 1264
+  guru Bhūgarbha vs Abhidhāna «discípulo de Śrīnivāsa»; Vṛndāvana dāsa nació en Nati (Abhidhāna) vs Māmagāchi.
+  Siguiente: Navadvīpa–Māyāpur (entrada enorme) y luego Vraja / Purī.
+- **Aplicado en la BD de Whisper (0.10.1 instalada; copia «antes de Ramadasa y lugares-2»)**:
+  tanda 2 de lugares + `scripts/datos/ramadasa.mjs`: 1264 «Rāmadāsa» mezclaba 10 entradas → se queda
+  el discípulo de Bhūgarbha (está bajo él en la Paramparā); nuevas 1948 R. (disciple of Śrīnivāsa,
+  Viṣṇupura), 1949 R. (son of Śivānanda Sen), 1950 R. (Kuraṅgākṣī), 1951 R. (disciple of Rasikānanda,
+  Janhagram; con las 3 citas del Rasika-maṅgala, decidido por Whisper); la entrada «sakhā de Caitanya,
+  ver Abhirāma» → Abhirāma Ṭhākura (6) con aka «Rāmadāsa». 1740 Vṛndāvana dāsa: Lugar = Māmagāchi + nota
+  «según el Abhidhāna, nació en Nati» (en Kumārahaṭṭa enlazado como «other»). `lugares.mjs` acepta
+  también el nombre exacto de la ficha en lugar del id.
+- **0.10.2 (04-11):** Inicio nuevo (Whisper eligió «Hoy + leer + del día»): línea «Hoy» (`Calendar`
+  con `onOpen`: solo hoy + botón al calendario), Seguir leyendo, Marcadores, «Del día» (una ficha de la
+  Paramparā y un lugar con texto, `ofTheDay` por fecha); fuera las cifras (→ Panorama › Estado,
+  `StatTiles`), «fichas con más textos» y colecciones. Lateral y árbol: «Paramparā Tree». Mapa: un punto
+  de `PLACES` solo lo ocupa el lugar que nombra su **primera** clave (Godrumadvīpa no se queda Navadvīpa).
+- **Lugares, tanda 3 (Navadvīpa, 13)**: `scripts/datos/lugares-3.json` (Whisper: «sí, así»). **Aplicada**
+  en la BD de Whisper con la 0.10.2 instalada (copia «antes de lugares-3 Navadvipa»): 37 lugares en total.
+  Siguiente: Vraja (Vṛndāvana, Rādhā-kuṇḍa, Govardhana…) y Purī / Orissa.
+- **0.10.3 (04-11)**: lo de abajo + en «Qué hay allí» los nombres enlazan también sin «Śrī/Śrīla/Śrīmatī»
+  y sin importar mayúsculas. **Lugares, tanda 4 (Vraja, 13)**: `scripts/datos/lugares-4.json` (Whisper: «sí»):
+  Vṛndāvana, templos de Govindajī, Madana-mohana, Rādhā-Dāmodara, Rādhā-ramaṇa, Gokulānanda, Gopīnātha,
+  Śyāmasundara (con sus samādhis), Dhīra-samīra, Kāliya-daha, Keśī-ghāṭa, Rādhā-kuṇḍa, Govardhana.
+  Coordenadas de los templos aproximadas (comprobar con satélite). **Aplicada** con la 0.10.5 instalada
+  (copia «antes de lugares-4 Vraja»): **50 lugares** en la BD de Whisper. Siguiente: Mathurā, Nandagrāma,
+  Varṣāṇā, Gokula…; luego Purī / Orissa.
+- **0.10.5** (la 0.10.3 y la 0.10.4 se compilaron pero no se instalaron): además, en el mapa **un clic**
+  selecciona y, si hay otros puntos pegados (a menos de 40 px), **acerca el mapa al grupo** (`zoomReq`;
+  otro clic, más cerca); **doble clic** baja a sus personas; «Ver en el mapa» también acerca. Zoom máximo
+  ≈ 1 km de lado en cualquier mapa (`(e − w) / 0.01`), también en el dibujo. Probado: dos clics en
+  Vṛndāvana enseñan los templos separados.
+- **Lugares, tanda 5 (Purī y Orissa, 12)**: `scripts/datos/lugares-5.json` (ensayada en la copia; falta el
+  visto bueno de Whisper). Jagannātha Purī (fiestas, maṭhas gauḍīyas, tīrthas), Gambhīrā, samādhi de
+  Haridāsa, Ṭoṭā-gopīnātha, Guṇḍicā, Narendra-sarovara, Ālālanātha, Beṇṭapura (Rāmānanda Rāya), Kaṭaka,
+  Sākṣi-gopāla, Remuṇā (samādhi de Mādhavendra Purī), Jājapura. Kāśī Miśra no tiene ficha.
+- **0.10.6:** tercer mapa **«Vraja de cerca»** (`VRAJA` en `Panorama.tsx`), con su recuadro en el mapa
+  grande (`frames`), como el de Bengala (lo pidió Whisper). El clic en un punto enseña primero los lugares a menos de ~10 km (si el mapa muestra mucho
+  más que ellos: Navadvīpa y sus islas), y después los que están pegados (< 40 px). Recordar a Whisper:
+  el número de un punto son **fichas** (personas), no lugares.
+- **(En la 0.10.5)** botón **«Tīrthas»** (lugares) en el lateral y en las
+  pestañas de la barra lateral, debajo de «Vaiṣṇavas» (antes «Personas/People»); Whisper eligió estos
+  nombres. Los lugares salen ya solo ahí (`PlaceList` en `Sidebar.tsx`: por letras, su filtro, «Nuevo
+  lugar»); el grupo «Lugares» de la lista de personas se quitó. Sello y tarjeta de la ficha: «Tīrthas».
+- Relaciones con un lugar en sánscrito: Śrīpāṭa, Samādhi, **Āvirbhāva-sthāna**
+  (antes «Nació aquí»), **Vāsa-sthāna** (antes «Vivió aquí»), Otros; con su explicación al pasar el ratón
+  (`placeRoleHints` en i18n; la de Śrīpāṭa es el texto que pidió Whisper). Los valores guardados no
+  cambian (`birth`, `lived`…): solo los nombres que se ven.
+  Avisado sin tocar: repetidas? Viṣṇupriyā 1715/1881, Śacī 1336/1864, Gaura Kiśora 1819/314, Sārvabhauma
+  1381/1657, Sāraṅga 1378/1379; Nārāyaṇī (1006 nodriza / 1007 vacía) sin enlazar; Mādhava dāsa 860 dice
+  Phuliyā (no Kuliyā); el samādhi de Gaura Kiśora: el Abhidhāna lo pone en la ciudad de Navadvīpa.
+- **Criterio de Whisper para fuentes que no coinciden:** no «corregir» una con otra; dejar lo más
+  aceptado y anotar la otra versión con su fuente. Antes, mirar si la ficha mezcla personas distintas
+  (entonces se separa, no es un conflicto).
+- (Plan que se siguió) **mapa en modo satélite.** Interruptor «Dibujo / Satélite» en
+  Panorama › Mapa; teselas de Esri World Imagery (con su atribución), necesita internet (sin conexión,
+  el dibujo); zoom mucho mayor para comprobar las coordenadas de los lugares. Ojo: las teselas son
+  Mercator y nuestro mapa es lineal en latitud → o se reproyecta o se usa Leaflet; permitir la URL en la
+  CSP de `tauri.conf.json`. Hacerlo después de aplicar los lugares.
+- Avisado, sin tocar: 597 y 598 parecen la misma persona; Bhāgavata Ācārya 105 = 1791? (las une Whisper).
+- ⚠ Kaspersky bloqueó `bash.exe` (PDM:Exploit.Win32.Generic) por un `node -e` largo: usar PowerShell +
+  scripts en archivos.
+
+### Para el 04-11-2026: el **Abhidhāna** en bengalí y la sección «Lugares»
+Whisper dejó en `C:\Users\Yoges\Desktop\BIOGRAPHYS\` el *Śrī Śrī Gauḍīya Vaiṣṇava Abhidhāna* (Haridāsa Dāsa)
+en texto: `Abhidhana_Part3_Biographies_Bengali.txt` (5,7 MB, biografías) y `Abhidhana_Part4_Tirthas_Bengali.txt`
+(2 MB, lugares). Es OCR: columnas mezcladas y letras mal leídas → **no se importa tal cual**, se consulta
+entrada por entrada. **Si el Abhidhāna no coincide con una ficha, solo avisar a Whisper** (no cambiar).
+Para buscar en él: plegar con NFD, quitar el nukta (়), ī→i, ū→u, quitar ঁ; las entradas empiezan por
+«Nombre__distrito…» (o `_`, `-`). Scripts de prueba del 03-11 en el scratchpad (`places.mjs`, `look2.mjs`).
+
+**Plan pedido por Whisper (03-11, noche):**
+1. **Sección nueva «Lugares» en el árbol, debajo de «Otros vaiṣṇavas»**: una entrada por sitio con
+   **dónde está y qué hay allí**, sacado del Abhidhāna. Ejemplo que dio Whisper:
+   - Jājigrāma: en Bardhamān, a 2 millas de la estación de Kāṭwā; es el śrīpāṭa de Śrīnivāsa Ācārya.
+   - Kāñcanagaḍiyā: en Murshidabad, a una milla de la estación de Bājārsāhu; es el śrīpāṭa de Dvija
+     Haridāsa y de sus hijos Śrīdāsa y Gokula Dāsa, y allí está su samādhi.
+   - Āṭapura: en Hugli; es el śrīpāṭa de Parameśvara Dāsa Ṭhākura.
+   - Budhurī: en Murshidabad, cerca de la estación de Bhagavāngolā; es el śrīpāṭa de Rāmacandra Kavirāja.
+   Por decidir al empezar: cómo guardarlos (¿fichas de un tipo «lugar»? ¿tabla nueva → DATA_VERSION 7 +
+   migración?), enlazar cada lugar con las fichas que viven/tienen śrīpāṭa allí, y con el mapa.
+2. **Mapa** (`PLACES` en `Panorama.tsx`): de 382 fichas con «Lugar», solo 174 salen en el mapa
+   (60 de las 208 que faltan son de la Guru Paramparā). Añadir formas de escribir («Śrī Khaṇḍa», «Kuliā»,
+   «Katoa», «Vishnupura», «Khaḍadaha») y lugares nuevos (Khaḍadaha, Saptagrāma, Jājigrāma, Kāñcanagaḍiyā,
+   Māliháṭi, Budhurī, Jhāmaṭapura, Bodhakhānā, Āṭapura, Varāhanagara, Kenduli, Khānākula…). Las
+   coordenadas no vienen en el libro: las pone Claude (aproximadas) y el libro confirma el sitio.
+3. Luego, **los seis Gosvāmīs** (abajo) usando también las biografías del Abhidhāna.
 
 ### Para la próxima sesión (después del 03-11-2026) — dónde nos quedamos
 Publicada la **0.9.1** (§5). El 03-11-2026 se trabajaron los **datos** de Whisper por grupos, leyendo

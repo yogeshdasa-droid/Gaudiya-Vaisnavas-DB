@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { BarChart3, Clock, Clock3, Database, Network, FileText, HardDrive, Star, Upload, UserRound, Users } from "lucide-react";
-import { Bookmark, fileUrl, hueOf, PersonListItem, SearchResult, Status } from "../api";
+import { BarChart3, Clock, Clock3, Database, MapPin, Network, FileText, HardDrive, Sparkles, Star, Upload, UserRound, Users } from "lucide-react";
+import { Bookmark, fileUrl, hueOf, PersonListItem, Place, SearchResult, Status } from "../api";
 import { Lang, T } from "../i18n";
 import { AnimatedNumber } from "./ui";
 import { Calendar } from "./Calendar";
@@ -29,18 +29,51 @@ interface Props {
   onTimeline: () => void;
   onTree: () => void;
   onPanorama: () => void;
+  places: Place[];
+  onPlace: (id: number) => void;
+  onCalendar: () => void;
 }
 
-export function Home({ t, lang, status, facets, persons, recent, bookmarks, onCollection, onPerson, onRecent, onBookmark, onImportDefaults, reload, onTimeline, onTree, onPanorama }: Props) {
-  const max = Math.max(1, ...facets.map((f) => f.count));
-  const top = useMemo(() => [...persons].sort((a, b) => b.docs - a.docs).slice(0, 12), [persons]);
+/** The size of the library: records, texts, original files, database (Panorama › Status). */
+export function StatTiles({ t, lang, status }: { t: T; lang: Lang; status: Status | null }) {
   const stats = [
     { icon: Users, value: status?.persons ?? 0, label: t.statPersons },
     { icon: FileText, value: status?.docs ?? 0, label: t.statDocs },
     { icon: HardDrive, value: status?.filesMb ?? 0, label: t.statFiles, fmt: (n: number) => `${Math.round(n).toLocaleString(lang)} MB` },
     { icon: Database, value: (status?.dbSize ?? 0) / 1048576, label: t.statDb, fmt: (n: number) => `${Math.round(n).toLocaleString(lang)} MB` },
   ];
+  return (
+    <div className="stats">
+      {stats.map((s, i) => (
+        <div key={i} className="stat" style={{ animationDelay: `${i * 60}ms` }}>
+          <s.icon size={18} />
+          <strong>
+            <AnimatedNumber value={s.value} format={s.fmt ?? ((n) => Math.round(n).toLocaleString(lang))} />
+          </strong>
+          <span>{s.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** The same one all day, another one tomorrow. */
+function ofTheDay<X>(list: X[]): X | null {
+  if (!list.length) return null;
+  const d = new Date();
+  const day = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000);
+  return list[(day * 7919) % list.length];
+}
+
+export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, onRecent, onBookmark, onImportDefaults, reload, onTimeline, onTree, onPanorama, places, onPlace, onCalendar }: Props) {
   const empty = status !== null && status.docs === 0 && !status.busy;
+  // something to discover each day: a record of the Guru Paramparā and a holy place
+  const person = useMemo(() => ofTheDay([...persons].filter((p) => p.tree).sort((a, b) => a.id - b.id)), [persons]);
+  const place = useMemo(() => ofTheDay([...places].filter((p) => p.about.trim()).sort((a, b) => a.id - b.id)), [places]);
+  const firstLine = (s: string) => {
+    const one = s.split("\n")[0].trim();
+    return one.length > 220 ? one.slice(0, 220).replace(/\s+\S*$/, "") + "…" : one;
+  };
   return (
     <div className="home">
       <div className="home-inner">
@@ -67,18 +100,6 @@ export function Home({ t, lang, status, facets, persons, recent, bookmarks, onCo
           </div>
         </header>
 
-        <div className="stats">
-          {stats.map((s, i) => (
-            <div key={i} className="stat" style={{ animationDelay: `${i * 60}ms` }}>
-              <s.icon size={18} />
-              <strong>
-                <AnimatedNumber value={s.value} format={s.fmt ?? ((n) => Math.round(n).toLocaleString(lang))} />
-              </strong>
-              <span>{s.label}</span>
-            </div>
-          ))}
-        </div>
-
         {empty && (
           <div className="empty-state">
             <Upload size={34} />
@@ -90,52 +111,7 @@ export function Home({ t, lang, status, facets, persons, recent, bookmarks, onCo
           </div>
         )}
 
-        {!empty && <Calendar t={t} lang={lang} reload={reload} onPerson={onPerson} />}
-
-        {top.length > 0 && top[0].docs > 1 && (
-          <section>
-            <h2>
-              <Users size={14} /> {t.topPersons}
-            </h2>
-            <div className="person-grid">
-              {top.map((p, i) => (
-                <button key={p.id} data-ctx="person" data-id={p.id} className="person-card" style={{ animationDelay: `${i * 35}ms` }} onClick={() => onPerson(p.id)}>
-                  <span className="pc-cover">{p.hasPhoto ? (
-                      <img src={fileUrl("photo", p.id)} alt="" loading="lazy" />
-                    ) : p.coverDoc ? (
-                      <img src={fileUrl("cover", p.coverDoc)} alt="" loading="lazy" />
-                    ) : (
-                      <UserRound size={22} />
-                    )}</span>
-                  <span className="pc-name">{p.name}</span>
-                  <span className="pc-count">{t.documents(p.docs)}</span>
-                </button>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {facets.length > 0 && (
-          <section>
-            <h2>{t.collections}</h2>
-            <div className="collection-grid">
-              {facets.map((f, i) => (
-                <button
-                  key={f.name}
-                  className="collection-card"
-                  style={{ "--h": hueOf(f.name), animationDelay: `${i * 40}ms` } as React.CSSProperties}
-                  onClick={() => onCollection(f.name)}
-                >
-                  <span className="cc-name">{f.name}</span>
-                  <span className="cc-count">{t.documents(f.count)}</span>
-                  <span className="cc-bar">
-                    <span style={{ width: `${Math.max(4, (f.count / max) * 100)}%` }} />
-                  </span>
-                </button>
-              ))}
-            </div>
-          </section>
-        )}
+        {!empty && <Calendar t={t} lang={lang} reload={reload} onPerson={onPerson} onOpen={onCalendar} />}
 
         <div className="home-cols">
           {recent.length > 0 && (
@@ -171,6 +147,47 @@ export function Home({ t, lang, status, facets, persons, recent, bookmarks, onCo
             </section>
           )}
         </div>
+
+        {(person || place) && (
+          <section>
+            <h2>
+              <Sparkles size={14} /> {t.ofTheDay}
+            </h2>
+            <div className="of-day">
+              {person && (
+                <button className="of-day-card" data-ctx="person" data-id={person.id} onClick={() => onPerson(person.id)}>
+                  <span className="pc-cover">
+                    {person.hasPhoto ? (
+                      <img src={fileUrl("photo", person.id)} alt="" loading="lazy" />
+                    ) : person.coverDoc ? (
+                      <img src={fileUrl("cover", person.coverDoc)} alt="" loading="lazy" />
+                    ) : (
+                      <UserRound size={22} />
+                    )}
+                  </span>
+                  <span className="of-day-text">
+                    <em>{t.personOfDay}</em>
+                    <strong>{person.name}</strong>
+                    {person.aka && <span className="muted small">{person.aka}</span>}
+                  </span>
+                </button>
+              )}
+              {place && (
+                <button className="of-day-card" onClick={() => onPlace(place.id)}>
+                  <span className="pc-cover place">
+                    {place.hasPhoto ? <img src={`${fileUrl("placephoto", place.id)}?v=${encodeURIComponent(place.modified)}`} alt="" loading="lazy" /> : <MapPin size={22} />}
+                  </span>
+                  <span className="of-day-text">
+                    <em>{t.placeOfDay}</em>
+                    <strong>{place.name}</strong>
+                    {place.region && <span className="muted small">{place.region}</span>}
+                    <span className="small">{firstLine(place.about)}</span>
+                  </span>
+                </button>
+              )}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
