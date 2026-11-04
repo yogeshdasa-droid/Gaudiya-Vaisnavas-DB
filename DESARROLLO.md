@@ -187,7 +187,13 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.11.3)
+## 5. Qué hace hoy (v0.11.4)
+
+### Novedades de la 0.11.4 (04-11-2026, **publicada en GitHub**) — «Texto principal»
+- Colección **«Texto principal»**: si una ficha tiene un texto en ella, la ficha lo lee entero como libro y
+  los demás textos van en «Otras versiones (N)». Los títulos largos del índice ya no se cortan.
+- Sin cambio de formato (DATA_VERSION 8). Datos de los Seis Gosvāmīs: `scripts/datos/gosvamis*` +
+  `scripts/datos/textoprincipal.mjs` (aplicar en la BD real tras instalar; ver CONTINUAR.md).
 
 ### Novedades de la 0.11.3 (04-11-2026, **publicada en GitHub**) — leer como un libro, satélite guardado en el PC
 - Ficha de un solo texto: todo seguido como un libro (Literata 18 px, ~68ch, justificado, citas en cursiva,
@@ -674,6 +680,23 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
   primeras palabras y en Govinda («GOVINDA He was a disciple of…» ×9) cortaba desde la entrada anterior.
   Ahora busca el trozo entero palabra por palabra y, si no está tal cual, por el principio (6) y el final
   (3) eligiendo el tramo de largo más parecido. Prueba `a_piece_is_found_whole_not_by_its_start`.
+- **✔ 2.º, grupo 1 HECHO EN LA COPIA (04-11, sin aplicar en la BD de Whisper): los Seis Gosvāmīs.**
+  Decisión técnica: el texto principal es un doc más de la ficha en la colección **«Texto principal»**
+  (`MAIN_TEXT` en `api.ts`), SIN cambio de formato. `PersonView`: si la ficha tiene uno, se lee él (como libro,
+  todas sus partes seguidas, sin tarjetas ni barra de partes, sin quitar títulos) y los demás textos van
+  debajo en `<details>` «Otras versiones (N)». Textos en `scripts/datos/gosvamis/main-<id>.md`; cambios de
+  campos en `scripts/datos/gosvamis.json`; se aplican con `node scripts/datos/textoprincipal.mjs
+  gosvamis.json gosvamis [puerto]` (comprueba nombres; 2 pasadas = la 2.ª no cambia nada; ojo: un texto
+  > 24 KB se guarda en varias partes: el script compara todo y al reemplazar vacía antes las partes viejas).
+  **Regla nueva de Whisper (04-11): el Abhidhāna manda** — su versión va al campo y al texto, la otra se anota
+  con su fuente, y se corrige sin preguntar (memoria `abhidhana-source`). Cambios de campos del grupo 1:
+  Jīva fechas 1433–1518 Śaka y discípulos (fuera Gopāla Bhaṭṭa, era un error de lectura); Rūpa aka Dabira Khāsa
+  (no Sakara Mallika) y fechas de la tabla del Abhidhāna 1392–1476 Śaka; Sanātana aka Sākara Mallika; Raghunātha
+  Bhaṭṭa aka Bhaṭṭa Raghunātha; Raghunātha dāsa guru dīkṣā Yadunandana Ācārya (Abhidhāna) y fecha 1428 Śaka;
+  Gopāla Bhaṭṭa desaparición Āṣāḍha **Śukla** Pañcamī 1507 Śaka y discípulo Gopīnātha Pūjārī. El Abhidhāna
+  se contradice: título de Sanātana (entrada Jīva: Sākara Mallika; entrada Sanātana: su puesto era «Dabir Khās»)
+  y fecha de Sanātana (entrada ~1410 Śaka; tabla 1383): se usó la entrada y se anotó lo otro.
+  Para aplicarlo en la BD de Whisper hace falta antes la versión con la vista del texto principal (0.11.4).
 - **▶ 2.º «Texto principal» por ficha + Abhidhāna, JUNTOS y por grupos (Whisper: «Junto, por grupos»),
   primero los Seis Gosvāmīs.** Fichas como Śrīvāsa tienen varias versiones que repiten lo mismo (v.1, v.2,
   v.3, v.3·2). Plan acordado: Claude (no la IA local: qwen 4B se inventa cosas) lee todas las versiones y

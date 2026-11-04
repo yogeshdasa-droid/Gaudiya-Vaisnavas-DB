@@ -2977,10 +2977,11 @@ h2 .h2-action {
   background: none;
   color: var(--text-2);
   font: inherit;
+  line-height: 1.35;
   text-align: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* long headings wrap instead of being cut ("Navadvīpa and Nityā…") */
+  white-space: normal;
+  overflow-wrap: anywhere;
   cursor: pointer;
 }
 .book-nav button:hover {
@@ -5571,4 +5572,24 @@ svg.satellite .map-dot {
 }
 .from-text p {
   margin: 4px 0 0;
+}
+
+/* under a record's main text: the versions it was written from, closed */
+.other-versions {
+  margin-top: 14px;
+}
+.other-versions > summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 4px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.other-versions > summary:hover {
+  color: var(--accent-text);
+}
+.other-versions .text-cards {
+  margin-top: 8px;
 }

@@ -1,0 +1,60 @@
+[
+  {
+    "id": 618,
+    "name": "Śrīla Jīva Gosvāmī",
+    "main": "main-618.md",
+    "fields": {
+      "appearance": "1433 Śaka (1511), Bhādra Śukla Dvādaśī (Gauḍīya Vaiṣṇava Abhidhāna; other dates given: 1455 Śaka (1533); 1435 or 1445 Śaka (1513 or 1523))",
+      "disappearance": "1518 Śaka (1596), Pauṣa Śukla Tṛtīyā, in Vṛndāvana (Gauḍīya Vaiṣṇava Abhidhāna; other date given: 1540 Śaka (1618))",
+      "disciples": "Śrīnivāsa Ācārya (śikṣā), Narottama Dāsa Ṭhākura (śikṣā), Śyāmānanda Prabhu (śikṣā)"
+    }
+  },
+  {
+    "id": 1325,
+    "name": "Śrīla Rūpa Gosvāmī",
+    "main": "main-1325.md",
+    "fields": {
+      "aka": "Dabira Khāsa, Rūpa",
+      "appearance": "1392 Śaka (about 1470) (Gauḍīya Vaiṣṇava Abhidhāna, family table; other dates given: 1415 Śaka (1493); 1411 Śaka (1489))",
+      "disappearance": "1476 Śaka (about 1554), Śrāvaṇa Śukla Dvādaśī, in Vṛndāvana (Gauḍīya Vaiṣṇava Abhidhāna, family table; other dates given: 1486 Śaka (1564); 1490 Śaka (1568))"
+    }
+  },
+  {
+    "id": 1353,
+    "name": "Śrī Sanātana Gosvāmī",
+    "main": "main-1353.md",
+    "fields": {
+      "aka": "Sākara Mallika",
+      "appearance": "about 1410 Śaka (1488) (Gauḍīya Vaiṣṇava Abhidhāna; its family table: 1383 Śaka)",
+      "disappearance": "1480 Śaka (1558), Āṣāḍha Pūrṇimā, in Vṛndāvana"
+    }
+  },
+  {
+    "id": 1202,
+    "name": "Śrī Raghunātha Bhaṭṭa Gosvāmī",
+    "main": "main-1202.md",
+    "fields": {
+      "aka": "Bhaṭṭa Raghunātha"
+    }
+  },
+  {
+    "id": 1206,
+    "name": "Śrīla Raghunātha Dāsa Gosvāmī",
+    "main": "main-1206.md",
+    "fields": {
+      "aka": "Dāsa Gosvāmī",
+      "appearance": "1428 Śaka (about 1506) (other date given: 1495)",
+      "guru": "Yadunandana Ācārya (dīkṣā), Svarūpa Dāmodara (śikṣā), Śrīla Rūpa Gosvāmī (śikṣā)"
+    }
+  },
+  {
+    "id": 343,
+    "name": "Śrī Gopāla Bhaṭṭa Gosvāmī",
+    "main": "main-343.md",
+    "fields": {
+      "appearance": "1422 Śaka (1500), Pauṣa Kṛṣṇa Tṛtīyā (Gauḍīya Vaiṣṇava Abhidhāna; other sources: Pauṣa Kṛṣṇa Trayodaśī, 1503)",
+      "disappearance": "1507 Śaka (1585), Āṣāḍha Śukla Pañcamī (Gauḍīya Vaiṣṇava Abhidhāna; other source: 1578)",
+      "disciples": "Śrīnivāsa Ācārya, Gopīnātha Pūjārī Gosvāmī"
+    }
+  }
+]

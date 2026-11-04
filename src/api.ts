@@ -110,6 +110,10 @@ export interface PersonFields {
   tags: string;
 }
 
+/** The collection of a record's main text: all its versions written as one
+ *  (the record shows it, and the others under «Otras versiones»). */
+export const MAIN_TEXT = "Texto principal";
+
 export const EMPTY_PERSON: PersonFields = {
   name: "",
   aka: "",

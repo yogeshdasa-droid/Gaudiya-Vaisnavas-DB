@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { ArrowUp, BookOpen, MapPin, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Pencil, Search, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
-import { api, fileUrl, isNamesake, LifeSpan, NAMESAKES, Place, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
+import { api, fileUrl, isNamesake, LifeSpan, MAIN_TEXT, NAMESAKES, Place, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
 import { ReaderStyle, SectionView } from "./Reader";
@@ -356,7 +356,12 @@ export function PersonView(p: Props) {
   };
 
   // A record with a single text shows it right here, no click needed.
-  const single = person && person.id === p.id && person.docs.length === 1 ? person.docs[0] : null;
+  // …or its main text («Texto principal»: all the versions in one, written for the record),
+  // with the other versions below it, closed
+  const main = person && person.id === p.id ? person.docs.find((d) => d.collection === MAIN_TEXT) ?? null : null;
+  const single = main ?? (person && person.id === p.id && person.docs.length === 1 ? person.docs[0] : null);
+  const otherVersions = main && person ? person.docs.filter((d) => d.id !== main.id) : [];
+  const isMain = !!main;
   // with several parts (texts joined into one): one part at a time, chosen
   // in a bar like the reader's
   const [inline, setInline] = useState<{ docId: number; sections: SectionText[]; total: number; toc: TocEntry[]; ord: number; all: boolean } | null>(null);
@@ -371,7 +376,8 @@ export function PersonView(p: Props) {
         // joined parts (not the pages of a PDF): all of them, to be seen as cards
         const joined = doc.sections > 1 && toc.length > 1;
         const all = joined && doc.sections <= MAX_CARD_PARTS && !toc.some((e) => PAGE_MARK.test(e.heading ?? ""));
-        const n = all ? doc.sections : joined ? 1 : Math.min(doc.sections, INLINE_SECTIONS);
+        // a main text is one text: all its parts (a long text is stored in several), read in a row
+        const n = isMain ? doc.sections : all ? doc.sections : joined ? 1 : Math.min(doc.sections, INLINE_SECTIONS);
         const sections = n ? await api.getSections(doc.id, 0, n - 1) : [];
         if (!cancelled) setInline({ docId: doc.id, sections, total: doc.sections, toc, ord: 0, all });
       })
@@ -384,10 +390,10 @@ export function PersonView(p: Props) {
   // several people of the same name (or several joined parts): one card each,
   // all in sight, each opened where it is
   const cards = useMemo(() => {
-    if (!inline || !person) return null;
+    if (!inline || !person || isMain) return null;
     const list = entriesOf(inline.sections, [person.name, single?.title ?? ""]);
     return (inline.all && list.length > 1) || (inline.total === 1 && list.length > 1) ? list : null;
-  }, [inline, person, single?.title]);
+  }, [inline, person, single?.title, isMain]);
   /** the name of each entry in the book ("v.2"), or null when it only goes on
    *  with the one before ("v.3 · 2": a long text cut in parts) */
   const cardLabels = useMemo(() => {
@@ -423,7 +429,7 @@ export function PersonView(p: Props) {
       p.onToast(String(e));
     }
   };
-  const parts = inline && !cards && inline.total > 1 && inline.toc.length > 1 ? inline : null;
+  const parts = inline && !cards && !isMain && inline.total > 1 && inline.toc.length > 1 ? inline : null;
   const goPart = (ord: number) => {
     if (!parts || ord < 0 || ord >= parts.total) return;
     api.getSections(parts.docId, ord, ord).then(
@@ -802,7 +808,7 @@ export function PersonView(p: Props) {
           {single ? (
             <section>
               <h2>
-                <BookOpen size={14} /> {t.texts} <span className="pill">1</span>
+                <BookOpen size={14} /> {main ? t.mainText : t.texts} {!main && <span className="pill">1</span>}
               </h2>
               <div className="inline-doc" ref={textRef}>
                 {/* stays at the top while the text is read */}
@@ -914,9 +920,9 @@ export function PersonView(p: Props) {
                     inline.sections.map((s) => (
                       <SectionView
                         key={s.id}
-                        s={withoutRepeatedTitles(s, [person.name, single.title, s.heading ?? ""])}
+                        s={isMain ? s : withoutRepeatedTitles(s, [person.name, single.title, s.heading ?? ""])}
                         terms={NO_TERMS}
-                        multi={inline.total > 1}
+                        multi={inline.total > 1 && !isMain}
                         source={false}
                         book
                         names={p.names}
@@ -933,9 +939,36 @@ export function PersonView(p: Props) {
                 )}
                 </div>
               </div>
-              <button className="link-btn add-text-link" onClick={() => p.onAddText(person)}>
-                <FilePlus2 size={14} /> {t.addText}
-              </button>
+              {otherVersions.length > 0 ? (
+                // the texts it was written from: kept, found by the search, here closed
+                <details className="other-versions">
+                  <summary>
+                    <History size={14} /> {t.otherVersions} <span className="pill">{otherVersions.length}</span>
+                    <span className="muted small"> · {t.otherVersionsHint}</span>
+                  </summary>
+                  <div className="text-cards">
+                    {otherVersions.map((d) => (
+                      <button key={d.id} data-ctx="doc" data-id={d.id} className="text-card" onClick={() => p.onOpenDoc(d.id)}>
+                        {d.hasCover ? <img src={fileUrl("cover", d.id)} alt="" loading="lazy" /> : <FileText size={22} />}
+                        <span className="tc-title">{d.title}</span>
+                        <span className="tc-meta">
+                          <CollectionChip name={d.collection} />
+                          <span className="kind">{d.kind === "new" ? "" : d.kind.toUpperCase()}</span>
+                          <span>{formatSize(d.size, lang)}</span>
+                        </span>
+                      </button>
+                    ))}
+                    <button className="text-card add" onClick={() => p.onAddText(person)}>
+                      <FilePlus2 size={22} />
+                      <span className="tc-title">{t.addText}</span>
+                    </button>
+                  </div>
+                </details>
+              ) : (
+                <button className="link-btn add-text-link" onClick={() => p.onAddText(person)}>
+                  <FilePlus2 size={14} /> {t.addText}
+                </button>
+              )}
             </section>
           ) : (
           <section>

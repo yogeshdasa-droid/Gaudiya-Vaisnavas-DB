@@ -1,0 +1,71 @@
+## In short
+
+Śrī Gopāla Bhaṭṭa Gosvāmī, one of the six Gosvāmīs of Vṛndāvana, was the son of **Veṅkaṭa Bhaṭṭa**, a Śrī-Vaiṣṇava brāhmaṇa of Śrī Raṅgam in South India. As a boy he served Śrī Caitanya Mahāprabhu when the Lord spent the four months of Cāturmāsya (1511) in his father's house. After his parents' death he went to Vṛndāvana, where Rūpa and Sanātana received him as a brother and Mahāprabhu sent him His own kaupīna and seat. From one of his śālagrāma-śilās appeared **Śrī Rādhā-ramaṇa**, the only Deity of the Gosvāmīs still in Vṛndāvana. He is associated with Sanātana in the *Hari-bhakti-vilāsa*, wrote the *Sat-kriyā-sāra-dīpikā*, prepared the notes of the *Ṣaṭ-sandarbha*, and was the dīkṣā guru of **Śrīnivāsa Ācārya** and of Gopīnātha Pūjārī. In Kṛṣṇa-līlā he is **Anaṅga Mañjarī** (some say Guṇa Mañjarī) (*Gaura-gaṇoddeśa-dīpikā* 184).
+
+## Dates
+
+- **Appearance:** 1422 Śaka (1500 AD) (*Abhidhāna*; other texts), on the third day of the dark fortnight of Pauṣa (Pauṣa Kṛṣṇa Tṛtīyā).
+- **Disappearance:** 1507 Śaka (1585 AD), on the fifth day of the bright fortnight of Āṣāḍha (Āṣāḍha Śukla Pañcamī) (*Abhidhāna*; another text: "the fifth day of the light fortnight of Āṣāḍha, 1585").
+- *Other dates given:* birth in 1503 AD, on Pauṣa Kṛṣṇa Trayodaśī (*Gaura-pārṣada-caritāvalī* and others); death in 1578 AD (1500 Śaka), on the sixth day of the dark fortnight (of Śrāvaṇa, says one text), at the age of 75. The record's field gives Āṣāḍha *Kṛṣṇa* Pañcamī.
+
+## Family
+
+His father **Veṅkaṭa Bhaṭṭa** was a Vaiṣṇava brāhmaṇa of **Śrī Raṅga-kṣetra**, of the Rāmānuja sampradāya (its Baḍagalai branch), living at the village of **Belaguṇḍi** near Śrī Raṅgam, on the bank of the **Kāverī** (Tiruchirapalli district) (*Abhidhāna*). Since people of that province do not keep the name Veṅkaṭa, it is thought the family came from elsewhere, though they had long lived there (Śrīla Bhaktivedānta Svāmī Prabhupāda). Veṅkaṭa had two brothers: **Trimalla (Tirumalla) Bhaṭṭa** — the eldest and head of the family, in one account — and **Prabodhānanda Sarasvatī**, a tridaṇḍi sannyāsī of the Rāmānuja line. All three were learned ācāryas, initiated in the Śrī sampradāya and devoted servants of Lakṣmī-Nārāyaṇa. Śrī Raṅgam, on the Kāverī about ten miles west of Kumbhakonam, has the largest Viṣṇu temple in India, with seven walls and seven roads; Yāmunācārya and Rāmānujācārya once supervised it.
+
+## The Lord in his father's house
+
+In **1511**, on His tour of South India, Mahāprabhu came to Śrī Raṅga-kṣetra, bathed in the Kāverī and danced and chanted in the temple of Raṅganātha, so that all were amazed. **Veṅkaṭa Bhaṭṭa** joined His kīrtana, fell at His feet and invited Him to stay at his house for the four months of **Cāturmāsya**; he washed the Lord's feet and his whole family drank the water (*Caitanya-caritāmṛta* 2.9.79–86). The Lord stayed in a room by the Kāverī; many Śrī-Vaiṣṇavas of Śrī Raṅgam were converted and invited Him in turn, more than He could accept.
+
+**Gopāla**, Veṅkaṭa's son, was then a boy of about **eight** (seven, in another account). When he bowed down, the Lord took him on His lap and caressed him, and called him to give him His remnants — a blessing that he would become a great ācārya. Gopāla served the Lord day and night: he went with Him to bathe in the Kāverī carrying His cloth, ḍora and kaupīna, washed and dried His clothes, and cooked for Him.
+
+**Lakṣmī and the gopīs.** The Lord, pleased with Veṅkaṭa's pure devotion to Lakṣmī-Nārāyaṇa, became his friend and joked with him: "Your Lakṣmī, the most chaste of women, always on Nārāyaṇa's chest — why does she want the company of My Kṛṣṇa, a cowherd boy, and perform austerities for Him?" — "Kṛṣṇa and Nārāyaṇa are one; in Kṛṣṇa there is a special charm of conjugal rasa, so her chastity is not harmed." — "Then why could Lakṣmī not enter the rāsa dance, while the personified Vedas (śrutis) could?" Veṅkaṭa confessed he could not understand, and begged the Lord, whom he knew to be Kṛṣṇa Himself, to explain. The Lord said: Kṛṣṇa attracts everyone by the sweetness of His love; the people of Vraja know Him not as God but as the son of Nanda, as their son or friend, and He is won only by spontaneous love; the gopīs are His dearest. Lakṣmī wanted Kṛṣṇa while keeping her own form, and did not follow the gopīs; the śrutis followed in their footsteps, took birth as gopīs in Vraja and entered the rāsa. Kṛṣṇa attracts Lakṣmī, but Nārāyaṇa cannot attract the gopīs: when Kṛṣṇa once showed Himself to them as four-armed Nārāyaṇa, they simply bowed and passed on — only before Rādhā could He not keep that form. Yet one must not make distinctions between the Lord's forms (*Caitanya-caritāmṛta* 2.9). Veṅkaṭa fell at His feet; he, his brothers and the boy Gopāla, who listened to these talks, became followers of Śrī Caitanya and worshippers of Rādhā-Kṛṣṇa.
+
+**The vision.** When the Lord announced His departure, Veṅkaṭa fainted and Gopāla fell unconscious at His feet; to console him the Lord stayed a few more days. In a dream-like vision Gopāla saw all the pastimes of Navadvīpa and took part in them, and the Lord showed him His form as two-armed Śyāmasundara with the flute and then returned to His own form. He told him: "You will meet two jewels, Rūpa and Sanātana, to whom I have given My mind to publish My teachings; through your disciples especially they will spread to every town and village." Then: "Stay and serve your father and mother; when they have left this world, go to Vṛndāvana and join Rūpa and Sanātana; always hear and chant Kṛṣṇa's glories." One account adds that the Lord told him to serve his father as his guru.
+
+## Studies and the journey to Vṛndāvana
+
+Gopāla soon mastered grammar, poetry, rhetoric and Vedānta, and learned the bhakti-śāstras from his uncle **Prabodhānanda Sarasvatī**, whom he accepted as his spiritual master (*Bhakti-ratnākara*, first wave). Prabodhānanda — author of the *Rādhā-rasa-sudhā-nidhi*, which prays to be Śrī Rādhā's maidservant and wishes that Kṛṣṇa Himself would weep and search for Rādhā — had been made a rasika Vaiṣṇava by Mahāprabhu; after Veṅkaṭa's death he too went to Vraja and wandered the twelve forests, living at Kāmyavana and calling out for Rādhā, Lalitā and Viśākhā. Always remembering the Lord's feet, Gopāla nursed his aged parents; before dying they told him: "When we are gone, go to Vṛndāvana and take shelter of Śrī Caitanya." His fame for learning and devotion grew, and he defeated all who opposed the Gauḍīya conclusions.
+
+He then went to Vṛndāvana (by way of the Himalayas, says one account). **Rūpa and Sanātana**, who had heard of him from the Lord, received him as a brother, and their lifelong friendship began; Lokanātha, Bhūgarbha, Kāśīśvara Paṇḍita, Paramānanda and Kṛṣṇadāsa loved to hear him tell of the Lord's stay in Śrī Raṅgam. Rūpa sent word to Purī (in one telling, Rūpa also wrote that Govinda-deva had asked in a dream for Gopāla Bhaṭṭa as His pūjārī; tradition says he served Govinda for a time). Mahāprabhu, delighted, told the devotees about him and sent him, through Rūpa, His own **ḍora (thread), kaupīna and outer cloth**, and a small **black wooden seat (piṛā)** about twelve inches high, which are still worshipped at the Rādhā-ramaṇa temple (*Abhidhāna*). His letter told him: "Do not depend on security or keep a fixed residence; help Rūpa and Sanātana compile the scriptures and study them." Gopāla accepted the bābājī dress as the Lord's mercy and, like Rūpa and Sanātana, lived without a home, spending his nights in the groves by the kuṇḍas, studying and writing.
+
+## Śrī Rādhā-ramaṇa
+
+Gopāla Bhaṭṭa worshipped **twelve śālagrāma-śilās**, which he carried in a cloth bag hung from his neck. According to the *Abhidhāna* and the record's texts he found them on the bank of the **Gaṇḍakī** while travelling in the north; one account says that, feeling unqualified, he went back to return them to the river, and they jumped back into his hands again and again; another (Śrī Śrīmad Bhaktivedānta Nārāyaṇa Mahārāja) says a large śālagrāma followed him while he bathed in the **Gomatī** in the Himalayas, asking to be served.
+
+Still he longed to serve the Lord in a form with face, arms and feet. A rich man gave him fine cloth and ornaments for the Lord; he placed them before the śilās, offered ārati, and after his bhajana late at night covered them with a basket. In the morning, after his bath in the Yamunā, he found that one of them — the **Dāmodara-śilā** — had become a beautiful threefold-bending Deity of Kṛṣṇa playing the flute (at midnight, in one account, the śālagrāma said to him, "Gopāla Bhaṭṭa, see how beautiful I am"). Weeping with joy he offered prayers; Rūpa, Sanātana and the other Gosvāmīs came running, and the Deity was named **Śrī Rādhā-ramaṇa-deva**, it is said because He appeared near the place of the rāsa dance, at **Rādhā-ramaṇa-gherā** near Sevā-kuñja and Nidhuvana. He has the face of Govinda, the chest of Gopīnātha and the feet of Madana-mohana. He appeared on the **full moon of Vaiśākha**, when His abhiṣeka is still celebrated; the year is given as 1542 AD (eight years after Mahāprabhu's disappearance), or as "1599" (saṁvat 1599 = 1542 AD; one text writes "1599 of the Christian era"). *Another view* (*Anurāga-vallī* p. 14): Rūpa Gosvāmī was connected with the making of the Deity.
+
+Śrī Rādhā-ramaṇa is about twelve inches tall. In Aurangzeb's time He was not taken away but hidden in Vṛndāvana (*Abhidhāna*) — perhaps His small size saved Him — so that of all the Gosvāmīs' Deities He alone is still in Vṛndāvana. There is no Deity of Śrīmatī Rādhārāṇī beside Him; a silver crown on the left of the throne represents Her. The old temple is gone; the present one, outside the north wall of Nidhuvana, was built by **Sāh Kundan Lāl** of Lucknow and his brother **Sāh Phundan Lāl** (completed in 1826).
+
+Once, long after, serving Rādhā-ramaṇa and burning with separation from Mahāprabhu, Gopāla Bhaṭṭa felt he was unfaithful to his promise to his father to worship Śrī Caitanya; at once Rādhā-ramaṇa showed him the form of **Śrī Gaurāṅga** (*Bhakti-ratnākara*, fourth wave).
+
+## Gopīnātha Pūjārī
+
+Once, visiting the village of **Devavandya** (Saharanpur district, near Haridvāra) to preach, Gopāla Bhaṭṭa was caught by a storm and sheltered in the house of a devout, childless brāhmaṇa, whom he blessed with a son; the brāhmaṇa promised his first son for the Lord's service. About ten years later a boy appeared at his hut in Vṛndāvana: "My father has sent me to serve you; my name is Gopīnātha" (another text calls him Gopāla). He became **Gopīnātha Pūjārī Gosvāmī**, a lifelong brahmacārī who served Rādhā-ramaṇa until his death. Since Gopāla Bhaṭṭa was celibate, he asked Gopīnātha's younger brother **Dāmodara dāsa** — initiated by Gopīnātha — to marry; Dāmodara's sons were Harinātha, Mathurānātha and Harināma, and from this family the line of Rādhā-ramaṇa's servants continues unbroken.
+
+## His humility
+
+When Kṛṣṇadāsa Kavirāja asked the senior Vaiṣṇavas of Vṛndāvana for their blessings to write the *Caitanya-caritāmṛta*, Gopāla Bhaṭṭa gave his on condition that his name not be used — so he is mentioned there only once or twice, and little else is known of him beyond the *Bhakti-ratnākara*.
+
+His **samādhi** is behind the Rādhā-ramaṇa temple.
+
+## Guru and disciples
+
+- **Guru:** Śrī Caitanya Mahāprabhu, who blessed and instructed him and sent him His own kaupīna and seat; his uncle **Prabodhānanda Sarasvatī**, his teacher in the bhakti-śāstras and, in some accounts, his spiritual master; his father Veṅkaṭa Bhaṭṭa, his śikṣā guru.
+- **Disciples:** **Śrīnivāsa Ācārya** (dīkṣā); **Gopīnātha Pūjārī Gosvāmī** (dīkṣā).
+
+## Works
+
+- *Hari-bhakti-vilāsa*, the Vaiṣṇava smṛti — its authorship is shared and debated: the book itself names Gopāla Bhaṭṭa and says it was written for the satisfaction of Raghunātha dāsa, Rūpa and Sanātana; Jīva Gosvāmī and Kṛṣṇadāsa Kavirāja give it to Sanātana; the *Bhakti-ratnākara* (1.19–98) says that Gopāla Bhaṭṭa wished to compile a Vaiṣṇava smṛti, and **Sanātana wrote it and spread it under Gopāla Bhaṭṭa's name**; Manohara dāsa's *Anurāga-vallī* says Sanātana wrote the treatise and Gopāla Bhaṭṭa added the scriptural quotations. Some say Sanātana gave the outline, Gopāla Bhaṭṭa collected the evidence from the Purāṇas, nigamas and āgamas, and Sanātana guided the selection; some think Sanātana let it go out under the name of a brāhmaṇa from an orthodox South Indian family because of his own past association with Muslims. One text says Gopāla Bhaṭṭa later made a shorter version and added Sanātana's *Dig-darśinī*. "Śrī Caitanya manifested it in both their hearts."
+- *Sat-kriyā-sāra-dīpikā* — the ten saṁskāras for Vaiṣṇava householders: marriage (without the worship of Gaṇeśa and the demigods), birth rites, the sacred thread, the beginning of studies, funerals, and the samādhi of Vaiṣṇava sannyāsīs.
+- *Saṁskāra-dīpikā* — rules and names for Vaiṣṇava sannyāsīs (one text).
+- A foreword (introduction) to Jīva Gosvāmī's *Ṣaṭ-sandarbha*, whose six theses he originated: at the beginning of the *Tattva-sandarbha* Jīva says that "a devotee from South India, born a brāhmaṇa and a very intimate friend of Rūpa and Sanātana" had written a book without arranging it systematically, and that he, Jīva, has put it in order.
+- *Śrī Kṛṣṇa-vallabhā*, a commentary on Bilvamaṅgala Ṭhākura's *Kṛṣṇa-karṇāmṛta* (*Bhakti-ratnākara* 1.228; *Anurāga-vallī*; *Sādhana-dīpikā*, ninth class, p. 257).
+- Songs in the *Pada-kalpataru* (nos. 1019, 2834 and 2937 or 2967) and a verse (38) in the *Padyāvalī*.
+
+## In Kṛṣṇa-līlā
+
+**Anaṅga Mañjarī**, Śrīmatī Rādhārāṇī's younger sister; some say **Guṇa Mañjarī** (*Gaura-gaṇoddeśa-dīpikā* 184: "In my opinion, Anaṅga Mañjarī is now Gopāla Bhaṭṭa; some say he was Guṇa Mañjarī").
+
+## Sources
+
+The record's texts (*Caitanya-caritāmṛta* 2.9; *Bhakti-ratnākara*; *Gaura-pārṣada-caritāvalī*; Śrīla Bhakti Ballabh Tīrtha Mahārāja; Śrī Śrīmad Bhaktivedānta Nārāyaṇa Mahārāja, class of 23 October 1996; Śrīla Bhaktivedānta Svāmī Prabhupāda; a book on the Six Gosvāmīs quoting D. Haberman) and the *Śrī Śrī Gauḍīya Vaiṣṇava Abhidhāna* (Haridāsa Dāsa), entry «Gopāla Bhaṭṭa» (pp. 1085–1086).
