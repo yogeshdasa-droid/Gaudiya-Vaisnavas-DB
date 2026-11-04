@@ -629,7 +629,21 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
   copia «antes de …» (`backup.mjs`: VACUUM INTO en Documentos › … › Copias de seguridad) → abrir su app con
   `WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=9334` → `node scripts/datos/lugares.mjs
   <json> 9334` (2 pasadas) → recargar.
-- **▶ LO SIGUIENTE (pedido por Whisper): el Abhidhāna de BIOGRAFÍAS** (`Abhidhana_Part3_Biographies_Bengali.txt`,
+- **▶ 1.º (pedido por Whisper el 04-11): cómo se leen los textos.** No le gusta nada de lo actual en la
+  ficha: (a) las **tarjetas «v.1, v.2…» con «Read all»** → quiere **texto seguido, como un libro**;
+  (b) la **letra** (tipo, tamaño, interlineado); (c) el **ancho** de la columna; (d) **títulos, citas y
+  orden** dentro del texto. Empezar enseñándole 2–3 propuestas (capturas de la app de pruebas o
+  previsualización) antes de tocar nada; él elige.
+- **▶ 2.º «Texto principal» por ficha + Abhidhāna, JUNTOS y por grupos (Whisper: «Junto, por grupos»),
+  primero los Seis Gosvāmīs.** Fichas como Śrīvāsa tienen varias versiones que repiten lo mismo (v.1, v.2,
+  v.3, v.3·2). Plan acordado: Claude (no la IA local: qwen 4B se inventa cosas) lee todas las versiones y
+  escribe UN texto principal en inglés, ordenado (vida, familia, guru y discípulos, obras, identidad en
+  Kṛṣṇa-līlā), sin repetir y sin perder datos; si las versiones discrepan, las dos con su fuente; añade lo
+  del Abhidhāna. La ficha muestra ese texto directamente; **las versiones originales NO se borran**: quedan
+  tras «Otras versiones (N)» y la búsqueda las sigue encontrando. Hace falta en la app: marcar un texto
+  como principal (¿campo nuevo → DATA_VERSION 9, o una etiqueta/colección «Texto principal» sin cambiar el
+  formato? decidir) y la vista «Otras versiones». Por grupo: Whisper revisa → copia → guardar.
+- **▶ 3.º el Abhidhāna de BIOGRAFÍAS** (dentro del 2.º) (`Abhidhana_Part3_Biographies_Bengali.txt`,
   ~130.000 líneas para los scripts; OCR a dos columnas). Whisper da por terminados los lugares (Part4).
   Método acordado: **por grupos, empezando por los Seis Gosvāmīs** (Rūpa 1325, Sanātana 1353, Jīva 618,
   Raghunātha Bhaṭṭa 1202, Raghunātha dāsa 1206, Gopāla Bhaṭṭa 343) y su círculo (Anupama 56, Kumāra,
