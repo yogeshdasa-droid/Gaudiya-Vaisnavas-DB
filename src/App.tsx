@@ -111,7 +111,7 @@ function usePersisted<T>(key: string, fallback: T) {
 }
 
 /** panorama.place: open on the map at that place (`n` tells two requests apart) */
-type Main = { kind: "home" } | { kind: "timeline" } | { kind: "panorama"; place?: { id: number; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "tree" } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number };
+type Main = { kind: "home" } | { kind: "timeline" } | { kind: "panorama"; place?: { id: number; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "tree"; focus?: { id: number; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number };
 
 type Dialog =
   | { kind: "settings"; tab: SettingsTab }
@@ -1196,6 +1196,7 @@ export default function App() {
             }
             onGuru={(person) => setDialog({ kind: "guru", person })}
             onReveal={(person) => revealIn("person", person.id)}
+            onShowInTree={(person) => setMain({ kind: "tree", focus: { id: person.id, n: Date.now() } })}
             onPhotoChanged={() => {
               reloadPerson();
               refreshAll();
@@ -1257,7 +1258,7 @@ export default function App() {
           <Panorama t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} places={places} onPlace={openPlace} focus={main.place} status={status} />
         )}
         {main.kind === "calendar" && <Calendar t={t} lang={lang} reload={dataTick} onPerson={openPerson} page />}
-        {main.kind === "tree" && <TreeView t={t} persons={persons} onPerson={openPerson} marks={marks} onMark={cycleMark} />}
+        {main.kind === "tree" && <TreeView t={t} persons={persons} onPerson={openPerson} marks={marks} onMark={cycleMark} focus={main.focus} />}
       </main>
 
       <footer className="statusbar">

@@ -3936,6 +3936,98 @@ h2 .h2-action {
   stroke: var(--accent);
   stroke-width: 2;
 }
+/* format 9: the sources disagree (long dashes), family (green dots) */
+.tree-link.disputed,
+.tree-link.disputed.strong {
+  stroke-dasharray: 11 5;
+}
+.tree-link.family,
+.tree-link.family.disputed {
+  stroke: #3f9d5a;
+  stroke-width: 1.6;
+  stroke-dasharray: 1.5 4;
+  stroke-linecap: round;
+}
+/* the word on a line («Gayā 1508», «son», «?») */
+.tree-word {
+  font-size: 10.5px;
+  fill: var(--muted);
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  pointer-events: auto;
+}
+.tree-word.family {
+  fill: #3f9d5a;
+}
+.tree-word.disputed {
+  font-style: italic;
+}
+/* top to bottom: the groups and the list boxes */
+.tree-group rect {
+  fill: color-mix(in srgb, var(--accent) 7%, transparent);
+  stroke: color-mix(in srgb, var(--accent) 45%, transparent);
+  stroke-width: 1;
+}
+.tree-group text {
+  fill: var(--accent-text);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.tree-list > rect {
+  fill: var(--surface);
+  stroke: var(--accent);
+  stroke-width: 1.2;
+}
+.tree-list .tree-node rect.tree-list-row {
+  fill: transparent;
+  stroke: none;
+}
+.tree-list .tree-node:hover rect.tree-list-row {
+  fill: var(--accent-soft);
+}
+.tree-list .tree-node.mark-yellow rect.tree-list-row {
+  fill: rgba(245, 197, 66, 0.4);
+}
+.tree-list .tree-node.mark-green rect.tree-list-row {
+  fill: rgba(74, 190, 110, 0.36);
+}
+.tree-list .tree-node.mark-blue rect.tree-list-row {
+  fill: rgba(80, 150, 255, 0.36);
+}
+.tree-list .tree-node text {
+  font-size: 12px;
+}
+/* «Ver en el árbol»: the record brought from its ficha */
+.tree-node.lit rect,
+.tree-list .tree-node.lit rect.tree-list-row {
+  fill: rgba(245, 197, 66, 0.55);
+  stroke: #f5c542;
+  stroke-width: 3;
+  animation: tree-lit 1s ease-in-out 4;
+}
+@keyframes tree-lit {
+  50% {
+    stroke-width: 6;
+  }
+}
+.tree-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.tree-bar .seg button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.tree-legend {
+  margin-top: 2px;
+}
 .tree-mix {
   display: flex;
   flex-wrap: wrap;

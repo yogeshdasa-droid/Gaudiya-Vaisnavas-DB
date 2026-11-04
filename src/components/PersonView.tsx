@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ArrowUp, BookOpen, MapPin, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Pencil, Search, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
+import { ArrowUp, BookOpen, MapPin, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Search, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
 import { api, fileUrl, isNamesake, LifeSpan, MAIN_TEXT, NAMESAKES, Place, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
@@ -45,6 +45,8 @@ interface Props {
   onNewFromText: (docId: number, fragment: string, notes: string, source: string) => void;
   onGuru: (p: Person) => void;
   onReveal: (p: Person) => void;
+  /** opens the drawn Paramparā Tree with this record in the middle, lit up */
+  onShowInTree: (p: Person) => void;
   onPhotoChanged: () => void;
   onToast: (msg: string) => void;
   /** some records were called different people: the lists that mark repeated ones are read again */
@@ -669,6 +671,11 @@ export function PersonView(p: Props) {
                 <button className="btn ghost" onClick={() => p.onGuru(person)} title={t.guruTitle}>
                   <ListTree size={15} /> {t.guruButton}
                 </button>
+                {me?.tree && (
+                  <button className="btn ghost" onClick={() => p.onShowInTree(person)} title={t.showInTreeHint}>
+                    <Network size={15} /> {t.showInTree}
+                  </button>
+                )}
                 <button className="icon-btn" onClick={() => p.onReveal(person)} title={t.revealInTree}>
                   <LocateFixed size={17} />
                 </button>

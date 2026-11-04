@@ -182,13 +182,24 @@ export interface PersonListItem {
   docs: number;
   coverDoc: number | null;
   hasPhoto: boolean;
-  /** place in the Guru Paramparā; null = "Other Vaiṣṇavas" */
-  tree: { parent: number | null; pos: number; kind: TreeKind } | null;
+  /** place in the Guru Paramparā; null = "Other Vaiṣṇavas".
+   *  group: the box it is drawn in («Pañca-tattva»); note / disputed: on the line to its guru. */
+  tree: { parent: number | null; pos: number; kind: TreeKind; group: string; note: string; disputed: boolean } | null;
   /** labels, comma separated */
   tags: string;
   /** more gurus besides its place in the tree (its śikṣā gurus) */
-  links: { guru: number; kind: TreeKind }[];
+  links: TreeLinkItem[];
+  /** its relatives drawn in the tree: relative = the elder (father, uncle…), note = how («son») */
+  family: { relative: number; note: string; disputed: boolean }[];
 }
+export interface TreeLinkItem {
+  guru: number;
+  kind: TreeKind;
+  note: string;
+  disputed: boolean;
+}
+/** As the backend sends a record of the list: the family lines among the links. */
+type RawPersonListItem = Omit<PersonListItem, "links" | "family"> & { links: (Omit<TreeLinkItem, "kind"> & { kind: TreeKind | "family" })[] };
 
 /** The label of the "Namesakes" group: records with the same name as others
  *  who are other people (from other times). Never marked as repeated. */
@@ -431,7 +442,14 @@ export const api = {
   getSections: (docId: number, from: number, to: number) => invoke<SectionText[]>("get_sections", { docId, from, to }),
   resolveLink: (target: string) => invoke<LinkTarget>("resolve_link", { target }),
 
-  listPersons: () => invoke<PersonListItem[]>("list_persons"),
+  listPersons: () =>
+    invoke<RawPersonListItem[]>("list_persons").then((ps) =>
+      ps.map((p) => ({
+        ...p,
+        links: p.links.filter((l): l is TreeLinkItem => l.kind !== "family"),
+        family: p.links.filter((l) => l.kind === "family").map((l) => ({ relative: l.guru, note: l.note, disputed: l.disputed })),
+      })),
+    ),
   getPerson: (id: number) => invoke<Person>("get_person", { id }),
   searchPersons: (query: string) => invoke<number[]>("search_persons", { query }),
   newPerson: (fields: PersonFields) => invoke<number>("new_person", { fields }),
@@ -442,6 +460,14 @@ export const api = {
   setTreeKind: (id: number, kind: TreeKind) => invoke<void>("set_tree_kind", { id, kind }),
   /** writes guru and disciple in both records; returns how many changed */
   setLinks: (id: number, links: [number, TreeKind][]) => invoke<void>("set_links", { id, links }),
+  /** the drawn tree as an SVG file */
+  saveTreeSvg: (path: string, svg: string) => invoke<void>("save_tree_svg", { path, svg }),
+  /** the group records are drawn in, in the tree ("" = none) */
+  setTreeGroup: (ids: number[], group: string) => invoke<number>("set_tree_group", { ids, group }),
+  /** a word on a line and «disputed»: to its guru in the tree (guru null) or to another guru / relative */
+  setLineInfo: (id: number, guru: number | null, note: string, disputed: boolean) => invoke<number>("set_line_info", { id, guru, note, disputed }),
+  /** its relatives drawn in the tree: [relative, «son»…] (replaces the list) */
+  setFamily: (id: number, relatives: [number, string][]) => invoke<void>("set_family", { id, relatives }),
   treeMarks: () => invoke<string>("tree_marks").then((s) => JSON.parse(s) as Marks),
   setTreeMarks: (marks: Marks) => invoke<void>("set_tree_marks", { marks: JSON.stringify(marks) }),
   relate: (disciple: number, guru: number, kind: TreeKind, oldGuru: number | null) => invoke<number>("relate", { disciple, guru, kind, oldGuru }),

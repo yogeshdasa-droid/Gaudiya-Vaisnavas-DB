@@ -131,7 +131,8 @@ pub fn check(conn: &Connection) -> rusqlite::Result<Vec<Issue>> {
     }
     let mut links: HashMap<i64, Vec<(i64, String)>> = HashMap::new();
     {
-        let mut st = conn.prepare("SELECT person_id, guru_id, kind FROM person_links")?;
+        // family lines (format 9) are not guru and disciple
+        let mut st = conn.prepare("SELECT person_id, guru_id, kind FROM person_links WHERE kind <> 'family'")?;
         for row in st.query_map([], |r| Ok((r.get::<_, i64>(0)?, r.get::<_, i64>(1)?, r.get::<_, String>(2)?)))? {
             let (p, g, k) = row?;
             links.entry(p).or_default().push((g, k));

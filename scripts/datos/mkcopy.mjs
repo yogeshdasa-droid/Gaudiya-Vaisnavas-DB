@@ -1,0 +1,12 @@
+import { DatabaseSync } from "node:sqlite";
+import fs from "node:fs";
+import path from "node:path";
+const src = path.join(process.env.APPDATA, "com.whispers.biodata", "biodata.db");
+const dir = process.argv[2];
+fs.mkdirSync(dir, { recursive: true });
+const out = path.join(dir, "biodata.db");
+if (fs.existsSync(out)) fs.rmSync(out);
+const db = new DatabaseSync(src, { readOnly: true });
+db.exec(`VACUUM INTO '${out.replace(/'/g, "''")}'`);
+db.close();
+console.log(out, fs.statSync(out).size);

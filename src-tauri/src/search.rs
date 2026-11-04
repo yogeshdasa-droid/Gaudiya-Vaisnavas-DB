@@ -605,8 +605,12 @@ pub struct PersonListItem {
 #[derive(Serialize, Clone)]
 pub struct TreeLink {
     pub guru: i64,
-    /// diksa | siksa | associate
+    /// diksa | siksa | associate … | family (`guru` is then the relative)
     pub kind: String,
+    /// a word on the line: «Gayā 1508», «son» (format 9)
+    pub note: String,
+    /// the sources do not agree (format 9)
+    pub disputed: bool,
 }
 
 #[derive(Serialize)]
@@ -615,12 +619,18 @@ pub struct TreeNode {
     pub pos: i64,
     /// relation with the guru above: diksa | siksa | associate
     pub kind: String,
+    /// the group it is drawn in: «Pañca-tattva»… (format 9)
+    pub group: String,
+    pub note: String,
+    pub disputed: bool,
 }
 
 pub fn list_persons(conn: &Connection) -> rusqlite::Result<Vec<PersonListItem>> {
     let mut links: std::collections::HashMap<i64, Vec<TreeLink>> = std::collections::HashMap::new();
-    let mut ls = conn.prepare("SELECT person_id, guru_id, kind FROM person_links ORDER BY rowid")?;
-    for l in ls.query_map([], |r| Ok((r.get::<_, i64>(0)?, TreeLink { guru: r.get(1)?, kind: r.get(2)? })))? {
+    let mut ls = conn.prepare("SELECT person_id, guru_id, kind, note, disputed FROM person_links ORDER BY rowid")?;
+    for l in ls.query_map([], |r| {
+        Ok((r.get::<_, i64>(0)?, TreeLink { guru: r.get(1)?, kind: r.get(2)?, note: r.get(3)?, disputed: r.get(4)? }))
+    })? {
         let (p, l) = l?;
         links.entry(p).or_default().push(l);
     }
@@ -632,13 +642,20 @@ pub fn list_persons(conn: &Connection) -> rusqlite::Result<Vec<PersonListItem>> 
                 EXISTS(SELECT 1 FROM person_photos ph WHERE ph.person_id = p.id),
                 t.person_id IS NOT NULL, t.parent_id, t.pos,
                 COALESCE((SELECT group_concat(tag, ', ') FROM person_tags g WHERE g.person_id = p.id), ''),
-                t.kind
+                t.kind, t.grp, t.note, t.disputed
          FROM persons p LEFT JOIN person_tree t ON t.person_id = p.id
          ORDER BY p.name COLLATE NOCASE",
     )?;
     let rows = st.query_map([], |r| {
         let tree = if r.get::<_, bool>(6)? {
-            Some(TreeNode { parent: r.get(7)?, pos: r.get(8)?, kind: r.get(10)? })
+            Some(TreeNode {
+                parent: r.get(7)?,
+                pos: r.get(8)?,
+                kind: r.get(10)?,
+                group: r.get(11)?,
+                note: r.get(12)?,
+                disputed: r.get(13)?,
+            })
         } else {
             None
         };

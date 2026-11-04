@@ -19,7 +19,11 @@ use std::path::Path;
 /// 7: + places (holy places: where they are, what there is) and
 ///    place_persons (who has a śrīpāṭa, samādhi… there); created empty on open.
 /// 8: + place_photos (the picture of a place; created empty on open).
-pub const DATA_VERSION: u32 = 8;
+/// 9: + person_tree.grp (the group it is drawn in: «Pañca-tattva»…),
+///    person_tree.note / .disputed and person_links.note / .disputed (a word
+///    on the line: «Gayā 1508»; the sources do not agree); person_links.kind
+///    may be 'family' (the note says how: son, wife…). Empty for old files.
+pub const DATA_VERSION: u32 = 9;
 /// Bump when the folding rules or the FTS layout change: the search tables
 /// are rebuilt from `sections` / `docs` / `persons` (no data is lost).
 pub const FTS_VERSION: &str = "1";
@@ -112,7 +116,10 @@ CREATE TABLE IF NOT EXISTS person_tree(
     person_id INTEGER PRIMARY KEY,
     parent_id INTEGER,              -- NULL = first level
     pos INTEGER NOT NULL DEFAULT 0, -- order among the disciples of the same guru
-    kind TEXT NOT NULL DEFAULT 'diksa' -- diksa | siksa | associate (format 5)
+    kind TEXT NOT NULL DEFAULT 'diksa', -- diksa | siksa | associate (format 5)
+    grp TEXT NOT NULL DEFAULT '',   -- the group it is drawn in (format 9)
+    note TEXT NOT NULL DEFAULT '',  -- a word on the line to its guru (format 9)
+    disputed INTEGER NOT NULL DEFAULT 0 -- the sources do not agree (format 9)
 );
 CREATE INDEX IF NOT EXISTS person_tree_parent ON person_tree(parent_id, pos);
 
@@ -121,7 +128,9 @@ CREATE INDEX IF NOT EXISTS person_tree_parent ON person_tree(parent_id, pos);
 CREATE TABLE IF NOT EXISTS person_links(
     person_id INTEGER NOT NULL,     -- the disciple
     guru_id INTEGER NOT NULL,
-    kind TEXT NOT NULL DEFAULT 'siksa', -- store::TREE_KINDS
+    kind TEXT NOT NULL DEFAULT 'siksa', -- store::TREE_KINDS (+ 'family', format 9)
+    note TEXT NOT NULL DEFAULT '',  -- format 9
+    disputed INTEGER NOT NULL DEFAULT 0, -- format 9
     PRIMARY KEY(person_id, guru_id)
 );
 CREATE INDEX IF NOT EXISTS person_links_guru ON person_links(guru_id);
@@ -260,6 +269,20 @@ fn init_schema(conn: &Connection) -> rusqlite::Result<bool> {
     if !has_kind {
         conn.execute_batch("ALTER TABLE person_tree ADD COLUMN kind TEXT NOT NULL DEFAULT 'diksa';")?;
     }
+    // format 9: group, note and «disputed» on the lines of the tree
+    for (table, col, def) in [
+        ("person_tree", "grp", "TEXT NOT NULL DEFAULT ''"),
+        ("person_tree", "note", "TEXT NOT NULL DEFAULT ''"),
+        ("person_tree", "disputed", "INTEGER NOT NULL DEFAULT 0"),
+        ("person_links", "note", "TEXT NOT NULL DEFAULT ''"),
+        ("person_links", "disputed", "INTEGER NOT NULL DEFAULT 0"),
+    ] {
+        let has: bool =
+            conn.query_row(&format!("SELECT COUNT(*) FROM pragma_table_info('{table}') WHERE name = '{col}'"), [], |r| r.get(0))?;
+        if !has {
+            conn.execute_batch(&format!("ALTER TABLE {table} ADD COLUMN {col} {def};"))?;
+        }
+    }
     set_meta(conn, "data", &DATA_VERSION.to_string())?;
     let stale = get_meta(conn, "fts")?.as_deref() != Some(FTS_VERSION);
     if stale {
@@ -344,6 +367,29 @@ mod tests {
         init(&conn).unwrap();
         let n: i64 = conn.query_row("SELECT COUNT(*) FROM place_photos", [], |r| r.get(0)).unwrap();
         assert_eq!(n, 0);
-        assert_eq!(get_meta(&conn, "data").unwrap().as_deref(), Some("8"));
+        assert_eq!(get_meta(&conn, "data").unwrap().as_deref(), Some(DATA_VERSION.to_string().as_str()));
+    }
+
+    #[test]
+    fn format_8_tree_gets_group_note_disputed() {
+        // a format-8 file: the tree and the links without the new columns
+        let conn = Connection::open_in_memory().unwrap();
+        conn.execute_batch(
+            "CREATE TABLE meta(key TEXT PRIMARY KEY, value TEXT NOT NULL); INSERT INTO meta VALUES('data', '8');
+             CREATE TABLE person_tree(person_id INTEGER PRIMARY KEY, parent_id INTEGER, pos INTEGER NOT NULL DEFAULT 0, kind TEXT NOT NULL DEFAULT 'diksa');
+             CREATE TABLE person_links(person_id INTEGER NOT NULL, guru_id INTEGER NOT NULL, kind TEXT NOT NULL DEFAULT 'siksa', PRIMARY KEY(person_id, guru_id));
+             INSERT INTO person_tree VALUES(1, NULL, 0, 'diksa'), (2, 1, 0, 'siksa');
+             INSERT INTO person_links VALUES(2, 3, 'siksa');",
+        )
+        .unwrap();
+        init(&conn).unwrap();
+        let (g, n, d): (String, String, i64) =
+            conn.query_row("SELECT grp, note, disputed FROM person_tree WHERE person_id = 2", [], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?))).unwrap();
+        assert_eq!((g.as_str(), n.as_str(), d), ("", "", 0));
+        let (k, n, d): (String, String, i64) =
+            conn.query_row("SELECT kind, note, disputed FROM person_links", [], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?))).unwrap();
+        assert_eq!((k.as_str(), n.as_str(), d), ("siksa", "", 0));
+        assert_eq!(get_meta(&conn, "data").unwrap().as_deref(), Some("9"));
+        init(&conn).unwrap(); // a second open changes nothing
     }
 }

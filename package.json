@@ -1,7 +1,7 @@
 {
   "name": "gaudiya-vaisnavas-db",
   "private": true,
-  "version": "0.11.4",
+  "version": "0.12.0",
   "description": "Gaudiya Vaisnavas DB: biografias vaisnavas autosuficientes",
   "type": "module",
   "scripts": {
@@ -12,6 +12,7 @@
     "app:build": "node scripts/build.mjs"
   },
   "dependencies": {
+    "@dagrejs/dagre": "1.1.4",
     "@fontsource-variable/inter": "5.3.0",
     "@fontsource-variable/literata": "5.3.0",
     "@tauri-apps/api": "2.12.4",

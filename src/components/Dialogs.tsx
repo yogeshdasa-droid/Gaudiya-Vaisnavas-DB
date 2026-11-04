@@ -1017,6 +1017,42 @@ function namedIds(field: string, persons: PersonListItem[], picked: Map<string, 
   return out;
 }
 
+/** The gurus named in a «Guru» field, each with the kind its brackets say:
+ *  «Rūpa Gosvāmī (śikṣā)» → siksa; no brackets → disciple (unspecified). */
+function gurusWithKind(field: string, persons: PersonListItem[], picked: Map<string, number>): [number, TreeKind][] {
+  const parts: string[] = [];
+  let depth = 0;
+  let cur = "";
+  for (const ch of field) {
+    if (ch === "(") depth++;
+    if (ch === ")") depth = Math.max(0, depth - 1);
+    if (depth === 0 && /[;,\n]/.test(ch)) {
+      parts.push(cur);
+      cur = "";
+    } else cur += ch;
+  }
+  parts.push(cur);
+  const out: [number, TreeKind][] = [];
+  for (const part of parts) {
+    const id = namedIds(part, persons, picked)[0];
+    if (!id || out.some(([g]) => g === id)) continue;
+    const said = (part.match(/\(([^)]*)\)/)?.[1] ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+    const kind: TreeKind = /vani/.test(said)
+      ? "vani"
+      : /siksa|shiksa/.test(said)
+        ? "siksa"
+        : /diksa|initiat/.test(said)
+          ? "diksa"
+          : /sannyasa/.test(said)
+            ? "sannyasa"
+            : /vesa|babaji/.test(said)
+              ? "vesa"
+              : "disciple";
+    out.push([id, kind]);
+  }
+  return out;
+}
+
 function LunarHint({ t, text }: { t: T; text: string }) {
   const [label, setLabel] = useState<string | null | undefined>(undefined);
   useEffect(() => {
@@ -1150,7 +1186,20 @@ export function PersonDialog({
       const moved = await place(id, f.name.trim());
       // the relation with the guru, once the record is in the tree
       if (kind !== kindNow || (moved && kind !== "diksa")) await api.setTreeKind(id, kind).catch(() => {});
-      if (linksChanged) await api.setLinks(id, links);
+      // the other gurus written in «Guru» that are in the tree get their line there too (Whisper, 04-11),
+      // except the ones taken out by hand from «Otros gurus en el árbol»
+      const inTreeNow = !!me?.tree || !!moved;
+      const parentNow = plan.guru ?? me?.tree?.parent ?? null;
+      const removedByHand = new Set(linksNow.map(([g]) => g).filter((g) => !links.some(([x]) => x === g)));
+      const more = inTreeNow
+        ? gurusWithKind(fields.guru, others, picked).filter(
+            ([g]) => g !== parentNow && !!byId(g)?.tree && !links.some(([x]) => x === g) && !removedByHand.has(g),
+          )
+        : [];
+      const linksNext = [...links, ...more];
+      if (linksChanged || more.length) await api.setLinks(id, linksNext);
+      const added = more.map(([g, k]) => t.treeLinkAdded(byId(g)!.name, t.treeKindShort[k]));
+      const movedMsg = [moved, ...added].filter(Boolean).join(" · ") || null;
       // the piece leaves the text it came from (the record is made already: a failure here only warns)
       let cutMsg: string | null = null;
       if (from && cut && !person) {
@@ -1161,7 +1210,7 @@ export function PersonDialog({
           cutMsg = t.newFromTextCutFailed(String(e));
         }
       }
-      onSaved(id, [moved, cutMsg].filter(Boolean).join(" · ") || null);
+      onSaved(id, [movedMsg, cutMsg].filter(Boolean).join(" · ") || null);
     } catch (e) {
       setError(String(e));
       setBusy(false);

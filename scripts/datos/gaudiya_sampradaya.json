@@ -1,0 +1,1837 @@
+{
+  "grupos": [
+    {
+      "id": "linea_previa",
+      "nombre": "Línea anterior a Caitanya"
+    },
+    {
+      "id": "discipulos_madhavendra",
+      "nombre": "Discípulos de Mādhavendra Purī"
+    },
+    {
+      "id": "panca_tattva",
+      "nombre": "Pañca-tattva"
+    },
+    {
+      "id": "rama_nityananda",
+      "nombre": "Rama de Nityānanda"
+    },
+    {
+      "id": "doce_gopalas",
+      "nombre": "Doce gopālas"
+    },
+    {
+      "id": "rama_advaita",
+      "nombre": "Rama de Advaita"
+    },
+    {
+      "id": "rama_gadadhara",
+      "nombre": "Rama de Gadādhara"
+    },
+    {
+      "id": "rama_srivasa",
+      "nombre": "Rama de Śrīvāsa"
+    },
+    {
+      "id": "asociados",
+      "nombre": "Asociados de Caitanya"
+    },
+    {
+      "id": "seis_gosvamis",
+      "nombre": "Los seis Gosvāmīs y Kṛṣṇadāsa"
+    },
+    {
+      "id": "tres_acaryas",
+      "nombre": "Los tres ācāryas"
+    },
+    {
+      "id": "rama_srinivasa",
+      "nombre": "Rama de Śrīnivāsa"
+    },
+    {
+      "id": "rama_narottama",
+      "nombre": "Rama de Narottama"
+    },
+    {
+      "id": "rama_syamananda",
+      "nombre": "Rama de Śyāmānanda"
+    },
+    {
+      "id": "era_moderna",
+      "nombre": "De Viśvanātha a Bhaktisiddhānta"
+    },
+    {
+      "id": "ramas_bss",
+      "nombre": "Ramas tras Bhaktisiddhānta"
+    }
+  ],
+  "tipos_relacion": [
+    {
+      "id": "diksa",
+      "descripcion": "Iniciación formal"
+    },
+    {
+      "id": "siksa",
+      "descripcion": "Instrucción espiritual"
+    },
+    {
+      "id": "sannyasa",
+      "descripcion": "Orden de renuncia"
+    },
+    {
+      "id": "babaji_vesa",
+      "descripcion": "Hábito de bābājī"
+    },
+    {
+      "id": "familia",
+      "descripcion": "Parentesco"
+    },
+    {
+      "id": "asociado",
+      "descripcion": "Asociado / compañero"
+    }
+  ],
+  "personas": [
+    {
+      "id": "madhva",
+      "nombre": "Madhva",
+      "nombre_ascii": "Madhva",
+      "fechas": "1238–1317",
+      "grupo": "linea_previa",
+      "notas": "Fundador de la escuela dvaita."
+    },
+    {
+      "id": "padmanabha",
+      "nombre": "Padmanābha Tīrtha",
+      "nombre_ascii": "Padmanabha Tirtha",
+      "fechas": null,
+      "grupo": "linea_previa",
+      "notas": null
+    },
+    {
+      "id": "nrhari",
+      "nombre": "Nṛhari Tīrtha",
+      "nombre_ascii": "Nrhari Tirtha",
+      "fechas": null,
+      "grupo": "linea_previa",
+      "notas": null
+    },
+    {
+      "id": "madhava_t",
+      "nombre": "Mādhava Tīrtha",
+      "nombre_ascii": "Madhava Tirtha",
+      "fechas": null,
+      "grupo": "linea_previa",
+      "notas": null
+    },
+    {
+      "id": "aksobhya",
+      "nombre": "Akṣobhya Tīrtha",
+      "nombre_ascii": "Aksobhya Tirtha",
+      "fechas": null,
+      "grupo": "linea_previa",
+      "notas": null
+    },
+    {
+      "id": "jayatirtha",
+      "nombre": "Jaya Tīrtha",
+      "nombre_ascii": "Jaya Tirtha",
+      "fechas": null,
+      "grupo": "linea_previa",
+      "notas": null
+    },
+    {
+      "id": "jnanasindhu",
+      "nombre": "Jñānasindhu",
+      "nombre_ascii": "Jnanasindhu",
+      "fechas": null,
+      "grupo": "linea_previa",
+      "notas": null
+    },
+    {
+      "id": "dayanidhi",
+      "nombre": "Dayānidhi",
+      "nombre_ascii": "Dayanidhi",
+      "fechas": null,
+      "grupo": "linea_previa",
+      "notas": null
+    },
+    {
+      "id": "vidyanidhi",
+      "nombre": "Vidyānidhi",
+      "nombre_ascii": "Vidyanidhi",
+      "fechas": null,
+      "grupo": "linea_previa",
+      "notas": null
+    },
+    {
+      "id": "rajendra",
+      "nombre": "Rājendra",
+      "nombre_ascii": "Rajendra",
+      "fechas": null,
+      "grupo": "linea_previa",
+      "notas": null
+    },
+    {
+      "id": "jayadharma",
+      "nombre": "Jayadharma",
+      "nombre_ascii": "Jayadharma",
+      "fechas": null,
+      "grupo": "linea_previa",
+      "notas": null
+    },
+    {
+      "id": "purusottama_t",
+      "nombre": "Puruṣottama Tīrtha",
+      "nombre_ascii": "Purusottama Tirtha",
+      "fechas": null,
+      "grupo": "linea_previa",
+      "notas": null
+    },
+    {
+      "id": "brahmanya",
+      "nombre": "Brahmaṇya Tīrtha",
+      "nombre_ascii": "Brahmanya Tirtha",
+      "fechas": null,
+      "grupo": "linea_previa",
+      "notas": null
+    },
+    {
+      "id": "vyasatirtha",
+      "nombre": "Vyāsa Tīrtha",
+      "nombre_ascii": "Vyasa Tirtha",
+      "fechas": "1460–1539",
+      "grupo": "linea_previa",
+      "notas": null
+    },
+    {
+      "id": "laksmipati",
+      "nombre": "Lakṣmīpati Tīrtha",
+      "nombre_ascii": "Laksmipati Tirtha",
+      "fechas": null,
+      "grupo": "linea_previa",
+      "notas": "Según la Gauḍīya Maṭha, también inició a Nityānanda."
+    },
+    {
+      "id": "madhavendra",
+      "nombre": "Mādhavendra Purī",
+      "nombre_ascii": "Madhavendra Puri",
+      "fechas": "s. XV",
+      "grupo": "linea_previa",
+      "notas": "La 'semilla' del árbol de la devoción (CC Ādi 9). Deidad de Gopāla en Govardhana."
+    },
+    {
+      "id": "isvara",
+      "nombre": "Īśvara Purī",
+      "nombre_ascii": "Isvara Puri",
+      "fechas": null,
+      "grupo": "discipulos_madhavendra",
+      "notas": "Gurú de dīkṣā de Caitanya (Gayā, 1508)."
+    },
+    {
+      "id": "kesava_bharati",
+      "nombre": "Keśava Bhāratī",
+      "nombre_ascii": "Kesava Bharati",
+      "fechas": null,
+      "grupo": "discipulos_madhavendra",
+      "notas": "Dio sannyāsa a Caitanya (Katwa, 1510)."
+    },
+    {
+      "id": "pundarika",
+      "nombre": "Puṇḍarīka Vidyānidhi",
+      "nombre_ascii": "Pundarika Vidyanidhi",
+      "fechas": null,
+      "grupo": "discipulos_madhavendra",
+      "notas": "Gurú de Gadādhara Paṇḍita."
+    },
+    {
+      "id": "paramananda",
+      "nombre": "Paramānanda Purī",
+      "nombre_ascii": "Paramananda Puri",
+      "fechas": null,
+      "grupo": "discipulos_madhavendra",
+      "notas": "Vivió con Caitanya en Purī."
+    },
+    {
+      "id": "brahmananda",
+      "nombre": "Brahmānanda Purī",
+      "nombre_ascii": "Brahmananda Puri",
+      "fechas": null,
+      "grupo": "discipulos_madhavendra",
+      "notas": null
+    },
+    {
+      "id": "ranga",
+      "nombre": "Raṅga Purī",
+      "nombre_ascii": "Ranga Puri",
+      "fechas": null,
+      "grupo": "discipulos_madhavendra",
+      "notas": null
+    },
+    {
+      "id": "raghupati",
+      "nombre": "Raghupati Upādhyāya",
+      "nombre_ascii": "Raghupati Upadhyaya",
+      "fechas": null,
+      "grupo": "discipulos_madhavendra",
+      "notas": null
+    },
+    {
+      "id": "visnupuri",
+      "nombre": "Viṣṇu Purī",
+      "nombre_ascii": "Visnu Puri",
+      "fechas": null,
+      "grupo": "discipulos_madhavendra",
+      "notas": null
+    },
+    {
+      "id": "krsnananda",
+      "nombre": "Kṛṣṇānanda Purī",
+      "nombre_ascii": "Krsnananda Puri",
+      "fechas": null,
+      "grupo": "discipulos_madhavendra",
+      "notas": null
+    },
+    {
+      "id": "sukhananda",
+      "nombre": "Sukhānanda Purī",
+      "nombre_ascii": "Sukhananda Puri",
+      "fechas": null,
+      "grupo": "discipulos_madhavendra",
+      "notas": null
+    },
+    {
+      "id": "nrsimha_t",
+      "nombre": "Nṛsiṁha Tīrtha",
+      "nombre_ascii": "Nrsimha Tirtha",
+      "fechas": null,
+      "grupo": "discipulos_madhavendra",
+      "notas": null
+    },
+    {
+      "id": "caitanya",
+      "nombre": "Śrī Caitanya Mahāprabhu",
+      "nombre_ascii": "Sri Caitanya Mahaprabhu",
+      "fechas": "1486–1534",
+      "grupo": "panca_tattva",
+      "notas": "Bhakta-rūpa. Autor del Śikṣāṣṭaka."
+    },
+    {
+      "id": "nityananda",
+      "nombre": "Nityānanda Prabhu",
+      "nombre_ascii": "Nityananda Prabhu",
+      "fechas": "1474–c.1540",
+      "grupo": "panca_tattva",
+      "notas": "Bhakta-svarūpa (Balarāma)."
+    },
+    {
+      "id": "advaita",
+      "nombre": "Advaita Ācārya",
+      "nombre_ascii": "Advaita Acarya",
+      "fechas": null,
+      "grupo": "panca_tattva",
+      "notas": "Bhakta-avatāra (Mahā-Viṣṇu). Vivió en Śāntipur."
+    },
+    {
+      "id": "gadadhara",
+      "nombre": "Gadādhara Paṇḍita",
+      "nombre_ascii": "Gadadhara Pandita",
+      "fechas": null,
+      "grupo": "panca_tattva",
+      "notas": "Bhakta-śakti (Rādhā). Deidad de Ṭoṭā-Gopīnātha."
+    },
+    {
+      "id": "srivasa",
+      "nombre": "Śrīvāsa Ṭhākura",
+      "nombre_ascii": "Srivasa Thakura",
+      "fechas": null,
+      "grupo": "panca_tattva",
+      "notas": "Śuddha-bhakta (Nārada). Kīrtana en su casa de Navadvīpa."
+    },
+    {
+      "id": "jahnava",
+      "nombre": "Jāhnavā Devī",
+      "nombre_ascii": "Jahnava Devi",
+      "fechas": null,
+      "grupo": "rama_nityananda",
+      "notas": "Esposa de Nityānanda; presidió el festival de Kheturi."
+    },
+    {
+      "id": "vasudha",
+      "nombre": "Vasudhā Devī",
+      "nombre_ascii": "Vasudha Devi",
+      "fechas": null,
+      "grupo": "rama_nityananda",
+      "notas": "Esposa de Nityānanda, madre de Vīrabhadra."
+    },
+    {
+      "id": "virabhadra",
+      "nombre": "Vīrabhadra Gosvāmī",
+      "nombre_ascii": "Virabhadra Gosvami",
+      "fechas": null,
+      "grupo": "rama_nityananda",
+      "notas": "Hijo de Nityānanda."
+    },
+    {
+      "id": "ramai",
+      "nombre": "Rāmacandra (Rāmāi) Gosvāmī",
+      "nombre_ascii": "Ramacandra (Ramai) Gosvami",
+      "fechas": null,
+      "grupo": "rama_nityananda",
+      "notas": "Hijo adoptivo de Jāhnavā; nieto de Vaṁśīvadana."
+    },
+    {
+      "id": "vamsivadana",
+      "nombre": "Vaṁśīvadana Ṭhākura",
+      "nombre_ascii": "Vamsivadana Thakura",
+      "fechas": null,
+      "grupo": "rama_nityananda",
+      "notas": "Su linaje familiar llega a Vipina-vihārī Gosvāmī."
+    },
+    {
+      "id": "abhirama",
+      "nombre": "Abhirāma (Rāmadāsa)",
+      "nombre_ascii": "Abhirama (Ramadasa)",
+      "fechas": null,
+      "grupo": "doce_gopalas",
+      "notas": null
+    },
+    {
+      "id": "sundarananda",
+      "nombre": "Sundarānanda",
+      "nombre_ascii": "Sundarananda",
+      "fechas": null,
+      "grupo": "doce_gopalas",
+      "notas": null
+    },
+    {
+      "id": "dhananjaya",
+      "nombre": "Dhanañjaya Paṇḍita",
+      "nombre_ascii": "Dhananjaya Pandita",
+      "fechas": null,
+      "grupo": "doce_gopalas",
+      "notas": null
+    },
+    {
+      "id": "gauridasa",
+      "nombre": "Gaurīdāsa Paṇḍita",
+      "nombre_ascii": "Gauridasa Pandita",
+      "fechas": null,
+      "grupo": "doce_gopalas",
+      "notas": "De Ambikā-Kālnā."
+    },
+    {
+      "id": "kamalakara",
+      "nombre": "Kamalākara Pippalāi",
+      "nombre_ascii": "Kamalakara Pippalai",
+      "fechas": null,
+      "grupo": "doce_gopalas",
+      "notas": null
+    },
+    {
+      "id": "uddharana",
+      "nombre": "Uddhāraṇa Datta Ṭhākura",
+      "nombre_ascii": "Uddharana Datta Thakura",
+      "fechas": null,
+      "grupo": "doce_gopalas",
+      "notas": null
+    },
+    {
+      "id": "mahesa",
+      "nombre": "Maheśa Paṇḍita",
+      "nombre_ascii": "Mahesa Pandita",
+      "fechas": null,
+      "grupo": "doce_gopalas",
+      "notas": null
+    },
+    {
+      "id": "purusottama_d",
+      "nombre": "Puruṣottama Dāsa",
+      "nombre_ascii": "Purusottama Dasa",
+      "fechas": null,
+      "grupo": "doce_gopalas",
+      "notas": null
+    },
+    {
+      "id": "paramesvari",
+      "nombre": "Parameśvarī Dāsa",
+      "nombre_ascii": "Paramesvari Dasa",
+      "fechas": null,
+      "grupo": "doce_gopalas",
+      "notas": null
+    },
+    {
+      "id": "kalakrsnadasa",
+      "nombre": "Kālā Kṛṣṇadāsa",
+      "nombre_ascii": "Kala Krsnadasa",
+      "fechas": null,
+      "grupo": "doce_gopalas",
+      "notas": null
+    },
+    {
+      "id": "hrdaya",
+      "nombre": "Hṛdaya Caitanya",
+      "nombre_ascii": "Hrdaya Caitanya",
+      "fechas": null,
+      "grupo": "rama_nityananda",
+      "notas": null
+    },
+    {
+      "id": "vrndavanadasa",
+      "nombre": "Vṛndāvana dāsa Ṭhākura",
+      "nombre_ascii": "Vrndavana dasa Thakura",
+      "fechas": null,
+      "grupo": "rama_nityananda",
+      "notas": "Autor del Caitanya-bhāgavata."
+    },
+    {
+      "id": "acyutananda",
+      "nombre": "Acyutānanda",
+      "nombre_ascii": "Acyutananda",
+      "fechas": null,
+      "grupo": "rama_advaita",
+      "notas": "Hijo de Advaita."
+    },
+    {
+      "id": "yadunandana",
+      "nombre": "Yadunandana Ācārya",
+      "nombre_ascii": "Yadunandana Acarya",
+      "fechas": null,
+      "grupo": "rama_advaita",
+      "notas": null
+    },
+    {
+      "id": "haridasa",
+      "nombre": "Haridāsa Ṭhākura",
+      "nombre_ascii": "Haridasa Thakura",
+      "fechas": "m. c.1527",
+      "grupo": "rama_advaita",
+      "notas": "Nāmācārya. Murió en Purī."
+    },
+    {
+      "id": "isana",
+      "nombre": "Īśāna Nāgara",
+      "nombre_ascii": "Isana Nagara",
+      "fechas": null,
+      "grupo": "rama_advaita",
+      "notas": "Advaita-prakāśa (atribución discutida)."
+    },
+    {
+      "id": "bhugarbha",
+      "nombre": "Bhūgarbha Gosvāmī",
+      "nombre_ascii": "Bhugarbha Gosvami",
+      "fechas": null,
+      "grupo": "rama_gadadhara",
+      "notas": null
+    },
+    {
+      "id": "nayanananda",
+      "nombre": "Nayanānanda Miśra",
+      "nombre_ascii": "Nayanananda Misra",
+      "fechas": null,
+      "grupo": "rama_gadadhara",
+      "notas": "Sobrino de Gadādhara."
+    },
+    {
+      "id": "narayani",
+      "nombre": "Nārāyaṇī",
+      "nombre_ascii": "Narayani",
+      "fechas": null,
+      "grupo": "rama_srivasa",
+      "notas": "Sobrina de Śrīvāsa."
+    },
+    {
+      "id": "svarupa",
+      "nombre": "Svarūpa Dāmodara",
+      "nombre_ascii": "Svarupa Damodara",
+      "fechas": null,
+      "grupo": "asociados",
+      "notas": "Secretario de Caitanya en Purī."
+    },
+    {
+      "id": "ramananda",
+      "nombre": "Rāmānanda Rāya",
+      "nombre_ascii": "Ramananda Raya",
+      "fechas": null,
+      "grupo": "asociados",
+      "notas": "Diálogos de CC Madhya 8."
+    },
+    {
+      "id": "sarvabhauma",
+      "nombre": "Sārvabhauma Bhaṭṭācārya",
+      "nombre_ascii": "Sarvabhauma Bhattacarya",
+      "fechas": null,
+      "grupo": "asociados",
+      "notas": null
+    },
+    {
+      "id": "murari",
+      "nombre": "Murāri Gupta",
+      "nombre_ascii": "Murari Gupta",
+      "fechas": null,
+      "grupo": "asociados",
+      "notas": "Autor del Kaḍacā."
+    },
+    {
+      "id": "sivananda",
+      "nombre": "Śivānanda Sena",
+      "nombre_ascii": "Sivananda Sena",
+      "fechas": null,
+      "grupo": "asociados",
+      "notas": null
+    },
+    {
+      "id": "karnapura",
+      "nombre": "Kavi Karṇapūra",
+      "nombre_ascii": "Kavi Karnapura",
+      "fechas": null,
+      "grupo": "asociados",
+      "notas": "Gaura-gaṇoddeśa-dīpikā."
+    },
+    {
+      "id": "mukunda",
+      "nombre": "Mukunda Datta",
+      "nombre_ascii": "Mukunda Datta",
+      "fechas": null,
+      "grupo": "asociados",
+      "notas": null
+    },
+    {
+      "id": "vasughosa",
+      "nombre": "Vāsudeva Ghoṣa",
+      "nombre_ascii": "Vasudeva Ghosa",
+      "fechas": null,
+      "grupo": "asociados",
+      "notas": null
+    },
+    {
+      "id": "narahari",
+      "nombre": "Narahari Sarakāra Ṭhākura",
+      "nombre_ascii": "Narahari Sarakara Thakura",
+      "fechas": null,
+      "grupo": "asociados",
+      "notas": null
+    },
+    {
+      "id": "vakresvara",
+      "nombre": "Vakreśvara Paṇḍita",
+      "nombre_ascii": "Vakresvara Pandita",
+      "fechas": null,
+      "grupo": "asociados",
+      "notas": null
+    },
+    {
+      "id": "gopalaguru",
+      "nombre": "Gopāla Guru Gosvāmī",
+      "nombre_ascii": "Gopala Guru Gosvami",
+      "fechas": null,
+      "grupo": "asociados",
+      "notas": null
+    },
+    {
+      "id": "dhyanacandra",
+      "nombre": "Dhyānacandra Gosvāmī",
+      "nombre_ascii": "Dhyanacandra Gosvami",
+      "fechas": null,
+      "grupo": "asociados",
+      "notas": null
+    },
+    {
+      "id": "lokanatha",
+      "nombre": "Lokanātha Gosvāmī",
+      "nombre_ascii": "Lokanatha Gosvami",
+      "fechas": null,
+      "grupo": "asociados",
+      "notas": "Enviado a Vrindavan por Caitanya."
+    },
+    {
+      "id": "prabodhananda",
+      "nombre": "Prabodhānanda Sarasvatī",
+      "nombre_ascii": "Prabodhananda Sarasvati",
+      "fechas": null,
+      "grupo": "asociados",
+      "notas": "Tío de Gopāla Bhaṭṭa."
+    },
+    {
+      "id": "rupa",
+      "nombre": "Rūpa Gosvāmī",
+      "nombre_ascii": "Rupa Gosvami",
+      "fechas": "c.1489–1564",
+      "grupo": "seis_gosvamis",
+      "notas": "Bhakti-rasāmṛta-sindhu."
+    },
+    {
+      "id": "sanatana",
+      "nombre": "Sanātana Gosvāmī",
+      "nombre_ascii": "Sanatana Gosvami",
+      "fechas": "c.1488–1558",
+      "grupo": "seis_gosvamis",
+      "notas": "Hari-bhakti-vilāsa."
+    },
+    {
+      "id": "jiva",
+      "nombre": "Jīva Gosvāmī",
+      "nombre_ascii": "Jiva Gosvami",
+      "fechas": "c.1513–1598",
+      "grupo": "seis_gosvamis",
+      "notas": "Ṣaṭ-sandarbha."
+    },
+    {
+      "id": "gopalabhatta",
+      "nombre": "Gopāla Bhaṭṭa Gosvāmī",
+      "nombre_ascii": "Gopala Bhatta Gosvami",
+      "fechas": null,
+      "grupo": "seis_gosvamis",
+      "notas": "Deidad: Rādhā-Ramaṇa."
+    },
+    {
+      "id": "raghunathabhatta",
+      "nombre": "Raghunātha Bhaṭṭa Gosvāmī",
+      "nombre_ascii": "Raghunatha Bhatta Gosvami",
+      "fechas": null,
+      "grupo": "seis_gosvamis",
+      "notas": null
+    },
+    {
+      "id": "raghunathadasa",
+      "nombre": "Raghunātha dāsa Gosvāmī",
+      "nombre_ascii": "Raghunatha dasa Gosvami",
+      "fechas": null,
+      "grupo": "seis_gosvamis",
+      "notas": "Vivió en Rādhā-kuṇḍa."
+    },
+    {
+      "id": "krsnadasa",
+      "nombre": "Kṛṣṇadāsa Kavirāja",
+      "nombre_ascii": "Krsnadasa Kaviraja",
+      "fechas": null,
+      "grupo": "seis_gosvamis",
+      "notas": "Autor del Caitanya-caritāmṛta."
+    },
+    {
+      "id": "srinivasa",
+      "nombre": "Śrīnivāsa Ācārya",
+      "nombre_ascii": "Srinivasa Acarya",
+      "fechas": null,
+      "grupo": "tres_acaryas",
+      "notas": null
+    },
+    {
+      "id": "narottama",
+      "nombre": "Narottama dāsa Ṭhākura",
+      "nombre_ascii": "Narottama dasa Thakura",
+      "fechas": null,
+      "grupo": "tres_acaryas",
+      "notas": "Organizó el festival de Kheturi."
+    },
+    {
+      "id": "syamananda",
+      "nombre": "Śyāmānanda Paṇḍita",
+      "nombre_ascii": "Syamananda Pandita",
+      "fechas": null,
+      "grupo": "tres_acaryas",
+      "notas": "Predicó en Orissa."
+    },
+    {
+      "id": "ramacandrakav",
+      "nombre": "Rāmacandra Kavirāja",
+      "nombre_ascii": "Ramacandra Kaviraja",
+      "fechas": null,
+      "grupo": "rama_srinivasa",
+      "notas": null
+    },
+    {
+      "id": "govindadasa",
+      "nombre": "Govinda dāsa Kavirāja",
+      "nombre_ascii": "Govinda dasa Kaviraja",
+      "fechas": null,
+      "grupo": "rama_srinivasa",
+      "notas": "Poeta."
+    },
+    {
+      "id": "virahamvira",
+      "nombre": "Vīra Hamvīra",
+      "nombre_ascii": "Vira Hamvira",
+      "fechas": null,
+      "grupo": "rama_srinivasa",
+      "notas": "Rey de Viṣṇupura."
+    },
+    {
+      "id": "hemalata",
+      "nombre": "Hemalatā Ṭhākurāṇī",
+      "nombre_ascii": "Hemalata Thakurani",
+      "fechas": null,
+      "grupo": "rama_srinivasa",
+      "notas": "Hija de Śrīnivāsa."
+    },
+    {
+      "id": "gatigovinda",
+      "nombre": "Gati Govinda",
+      "nombre_ascii": "Gati Govinda",
+      "fechas": null,
+      "grupo": "rama_srinivasa",
+      "notas": "Hijo de Śrīnivāsa."
+    },
+    {
+      "id": "radhamohana",
+      "nombre": "Rādhāmohana Ṭhākura",
+      "nombre_ascii": "Radhamohana Thakura",
+      "fechas": "s. XVIII",
+      "grupo": "rama_srinivasa",
+      "notas": "Descendiente de Śrīnivāsa."
+    },
+    {
+      "id": "ganganarayana",
+      "nombre": "Gaṅgānārāyaṇa Cakravartī",
+      "nombre_ascii": "Ganganarayana Cakravarti",
+      "fechas": null,
+      "grupo": "rama_narottama",
+      "notas": null
+    },
+    {
+      "id": "ramakrsnabh",
+      "nombre": "Rāmakṛṣṇa Bhaṭṭācārya",
+      "nombre_ascii": "Ramakrsna Bhattacarya",
+      "fechas": null,
+      "grupo": "rama_narottama",
+      "notas": null
+    },
+    {
+      "id": "krsnacarana",
+      "nombre": "Kṛṣṇacaraṇa Cakravartī",
+      "nombre_ascii": "Krsnacarana Cakravarti",
+      "fechas": null,
+      "grupo": "rama_narottama",
+      "notas": null
+    },
+    {
+      "id": "radharamana",
+      "nombre": "Rādhāramaṇa Cakravartī",
+      "nombre_ascii": "Radharamana Cakravarti",
+      "fechas": null,
+      "grupo": "rama_narottama",
+      "notas": null
+    },
+    {
+      "id": "visvanatha",
+      "nombre": "Viśvanātha Cakravartī",
+      "nombre_ascii": "Visvanatha Cakravarti",
+      "fechas": "c.1626–1708",
+      "grupo": "era_moderna",
+      "notas": null
+    },
+    {
+      "id": "rasikananda",
+      "nombre": "Rasikānanda (Rasika Murāri)",
+      "nombre_ascii": "Rasikananda (Rasika Murari)",
+      "fechas": null,
+      "grupo": "rama_syamananda",
+      "notas": null
+    },
+    {
+      "id": "radhadamodara",
+      "nombre": "Rādhā-Dāmodara dāsa",
+      "nombre_ascii": "Radha-Damodara dasa",
+      "fechas": null,
+      "grupo": "rama_syamananda",
+      "notas": "Hay generaciones intermedias tras Rasikānanda."
+    },
+    {
+      "id": "baladeva",
+      "nombre": "Baladeva Vidyābhūṣaṇa",
+      "nombre_ascii": "Baladeva Vidyabhusana",
+      "fechas": "s. XVIII",
+      "grupo": "era_moderna",
+      "notas": "Govinda-bhāṣya."
+    },
+    {
+      "id": "jagannatha",
+      "nombre": "Jagannātha dāsa Bābājī",
+      "nombre_ascii": "Jagannatha dasa Babaji",
+      "fechas": "m. 1894",
+      "grupo": "era_moderna",
+      "notas": null
+    },
+    {
+      "id": "vipina",
+      "nombre": "Vipina-vihārī Gosvāmī",
+      "nombre_ascii": "Vipina-vihari Gosvami",
+      "fechas": null,
+      "grupo": "era_moderna",
+      "notas": null
+    },
+    {
+      "id": "bhaktivinoda",
+      "nombre": "Bhaktivinoda Ṭhākura",
+      "nombre_ascii": "Bhaktivinoda Thakura",
+      "fechas": "1838–1914",
+      "grupo": "era_moderna",
+      "notas": null
+    },
+    {
+      "id": "bhagavatadasa",
+      "nombre": "Bhāgavata dāsa Bābājī",
+      "nombre_ascii": "Bhagavata dasa Babaji",
+      "fechas": null,
+      "grupo": "era_moderna",
+      "notas": null
+    },
+    {
+      "id": "gaurakisora",
+      "nombre": "Gaurakiśora dāsa Bābājī",
+      "nombre_ascii": "Gaurakisora dasa Babaji",
+      "fechas": "m. 1915",
+      "grupo": "era_moderna",
+      "notas": null
+    },
+    {
+      "id": "bss",
+      "nombre": "Bhaktisiddhānta Sarasvatī",
+      "nombre_ascii": "Bhaktisiddhanta Sarasvati",
+      "fechas": "1874–1937",
+      "grupo": "era_moderna",
+      "notas": "Fundador de la Gauḍīya Maṭha."
+    },
+    {
+      "id": "prabhupada",
+      "nombre": "A.C. Bhaktivedanta Swami Prabhupāda",
+      "nombre_ascii": "A.C. Bhaktivedanta Swami Prabhupada",
+      "fechas": "1896–1977",
+      "grupo": "ramas_bss",
+      "notas": "ISKCON (1966)."
+    },
+    {
+      "id": "sridhara",
+      "nombre": "Bhakti Rakṣaka Śrīdhara",
+      "nombre_ascii": "Bhakti Raksaka Sridhara",
+      "fechas": null,
+      "grupo": "ramas_bss",
+      "notas": "Śrī Caitanya Sārasvata Maṭha."
+    },
+    {
+      "id": "kesava_bp",
+      "nombre": "Bhakti Prajñāna Keśava",
+      "nombre_ascii": "Bhakti Prajnana Kesava",
+      "fechas": null,
+      "grupo": "ramas_bss",
+      "notas": "Gauḍīya Vedānta Samiti."
+    },
+    {
+      "id": "narayana",
+      "nombre": "Bhaktivedanta Nārāyaṇa Gosvāmī",
+      "nombre_ascii": "Bhaktivedanta Narayana Gosvami",
+      "fechas": null,
+      "grupo": "ramas_bss",
+      "notas": null
+    },
+    {
+      "id": "dayita",
+      "nombre": "Bhakti Dayita Mādhava",
+      "nombre_ascii": "Bhakti Dayita Madhava",
+      "fechas": null,
+      "grupo": "ramas_bss",
+      "notas": "Śrī Caitanya Gauḍīya Maṭha."
+    },
+    {
+      "id": "pramod",
+      "nombre": "Bhakti Pramod Purī",
+      "nombre_ascii": "Bhakti Pramod Puri",
+      "fechas": null,
+      "grupo": "ramas_bss",
+      "notas": "Gopīnātha Gauḍīya Maṭha."
+    },
+    {
+      "id": "bon",
+      "nombre": "Bhakti Hṛdaya Bon",
+      "nombre_ascii": "Bhakti Hrdaya Bon",
+      "fechas": null,
+      "grupo": "ramas_bss",
+      "notas": "Institute of Oriental Philosophy."
+    },
+    {
+      "id": "vilasatirtha",
+      "nombre": "Bhakti Vilāsa Tīrtha",
+      "nombre_ascii": "Bhakti Vilasa Tirtha",
+      "fechas": null,
+      "grupo": "ramas_bss",
+      "notas": "Śrī Caitanya Maṭha (Māyāpur)."
+    }
+  ],
+  "relaciones": [
+    {
+      "desde": "madhva",
+      "hacia": "padmanabha",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Sucesión según Baladeva; vínculo con Madhva discutido por historiadores"
+    },
+    {
+      "desde": "padmanabha",
+      "hacia": "nrhari",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Sucesión según Baladeva; vínculo con Madhva discutido por historiadores"
+    },
+    {
+      "desde": "nrhari",
+      "hacia": "madhava_t",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Sucesión según Baladeva; vínculo con Madhva discutido por historiadores"
+    },
+    {
+      "desde": "madhava_t",
+      "hacia": "aksobhya",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Sucesión según Baladeva; vínculo con Madhva discutido por historiadores"
+    },
+    {
+      "desde": "aksobhya",
+      "hacia": "jayatirtha",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Sucesión según Baladeva; vínculo con Madhva discutido por historiadores"
+    },
+    {
+      "desde": "jayatirtha",
+      "hacia": "jnanasindhu",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Sucesión según Baladeva; vínculo con Madhva discutido por historiadores"
+    },
+    {
+      "desde": "jnanasindhu",
+      "hacia": "dayanidhi",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Sucesión según Baladeva; vínculo con Madhva discutido por historiadores"
+    },
+    {
+      "desde": "dayanidhi",
+      "hacia": "vidyanidhi",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Sucesión según Baladeva; vínculo con Madhva discutido por historiadores"
+    },
+    {
+      "desde": "vidyanidhi",
+      "hacia": "rajendra",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Sucesión según Baladeva; vínculo con Madhva discutido por historiadores"
+    },
+    {
+      "desde": "rajendra",
+      "hacia": "jayadharma",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Sucesión según Baladeva; vínculo con Madhva discutido por historiadores"
+    },
+    {
+      "desde": "jayadharma",
+      "hacia": "purusottama_t",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Sucesión según Baladeva; vínculo con Madhva discutido por historiadores"
+    },
+    {
+      "desde": "purusottama_t",
+      "hacia": "brahmanya",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Sucesión según Baladeva; vínculo con Madhva discutido por historiadores"
+    },
+    {
+      "desde": "brahmanya",
+      "hacia": "vyasatirtha",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Sucesión según Baladeva; vínculo con Madhva discutido por historiadores"
+    },
+    {
+      "desde": "vyasatirtha",
+      "hacia": "laksmipati",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Sucesión según Baladeva; vínculo con Madhva discutido por historiadores"
+    },
+    {
+      "desde": "laksmipati",
+      "hacia": "madhavendra",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Sucesión según Baladeva; vínculo con Madhva discutido por historiadores"
+    },
+    {
+      "desde": "madhavendra",
+      "hacia": "isvara",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "madhavendra",
+      "hacia": "advaita",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "madhavendra",
+      "hacia": "pundarika",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "madhavendra",
+      "hacia": "paramananda",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "madhavendra",
+      "hacia": "brahmananda",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "madhavendra",
+      "hacia": "ranga",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "madhavendra",
+      "hacia": "raghupati",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "madhavendra",
+      "hacia": "visnupuri",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "madhavendra",
+      "hacia": "krsnananda",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "madhavendra",
+      "hacia": "sukhananda",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "madhavendra",
+      "hacia": "nrsimha_t",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "madhavendra",
+      "hacia": "kesava_bharati",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Según la tradición"
+    },
+    {
+      "desde": "laksmipati",
+      "hacia": "nityananda",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Según la Gauḍīya Maṭha; otras fuentes: Mādhavendra Purī"
+    },
+    {
+      "desde": "isvara",
+      "hacia": "caitanya",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": "Gayā, 1508"
+    },
+    {
+      "desde": "kesava_bharati",
+      "hacia": "caitanya",
+      "tipo": "sannyasa",
+      "discutida": false,
+      "nota": "Katwa, 1510"
+    },
+    {
+      "desde": "pundarika",
+      "hacia": "gadadhara",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "nityananda",
+      "hacia": "jahnava",
+      "tipo": "familia",
+      "discutida": false,
+      "nota": "esposa"
+    },
+    {
+      "desde": "nityananda",
+      "hacia": "vasudha",
+      "tipo": "familia",
+      "discutida": false,
+      "nota": "esposa"
+    },
+    {
+      "desde": "nityananda",
+      "hacia": "virabhadra",
+      "tipo": "familia",
+      "discutida": false,
+      "nota": "hijo"
+    },
+    {
+      "desde": "jahnava",
+      "hacia": "virabhadra",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "jahnava",
+      "hacia": "ramai",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": "hijo adoptivo"
+    },
+    {
+      "desde": "vamsivadana",
+      "hacia": "ramai",
+      "tipo": "familia",
+      "discutida": false,
+      "nota": "abuelo"
+    },
+    {
+      "desde": "vamsivadana",
+      "hacia": "vipina",
+      "tipo": "familia",
+      "discutida": false,
+      "nota": "linaje familiar (varias generaciones)"
+    },
+    {
+      "desde": "nityananda",
+      "hacia": "vrndavanadasa",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "srivasa",
+      "hacia": "narayani",
+      "tipo": "familia",
+      "discutida": false,
+      "nota": "tío"
+    },
+    {
+      "desde": "narayani",
+      "hacia": "vrndavanadasa",
+      "tipo": "familia",
+      "discutida": false,
+      "nota": "madre"
+    },
+    {
+      "desde": "gauridasa",
+      "hacia": "hrdaya",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "hrdaya",
+      "hacia": "syamananda",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "advaita",
+      "hacia": "acyutananda",
+      "tipo": "familia",
+      "discutida": false,
+      "nota": "hijo"
+    },
+    {
+      "desde": "advaita",
+      "hacia": "yadunandana",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "advaita",
+      "hacia": "haridasa",
+      "tipo": "asociado",
+      "discutida": true,
+      "nota": "Vivió con Advaita; las fuentes antiguas no detallan iniciación formal"
+    },
+    {
+      "desde": "advaita",
+      "hacia": "isana",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "gadadhara",
+      "hacia": "bhugarbha",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "gadadhara",
+      "hacia": "nayanananda",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": "sobrino"
+    },
+    {
+      "desde": "sivananda",
+      "hacia": "karnapura",
+      "tipo": "familia",
+      "discutida": false,
+      "nota": "hijo"
+    },
+    {
+      "desde": "vakresvara",
+      "hacia": "gopalaguru",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "gopalaguru",
+      "hacia": "dhyanacandra",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "caitanya",
+      "hacia": "rupa",
+      "tipo": "siksa",
+      "discutida": false,
+      "nota": "Prayāga"
+    },
+    {
+      "desde": "caitanya",
+      "hacia": "sanatana",
+      "tipo": "siksa",
+      "discutida": false,
+      "nota": "Benarés"
+    },
+    {
+      "desde": "caitanya",
+      "hacia": "raghunathabhatta",
+      "tipo": "siksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "caitanya",
+      "hacia": "gopalabhatta",
+      "tipo": "siksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "prabodhananda",
+      "hacia": "gopalabhatta",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "rupa",
+      "hacia": "jiva",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "yadunandana",
+      "hacia": "raghunathadasa",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "svarupa",
+      "hacia": "raghunathadasa",
+      "tipo": "siksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "rupa",
+      "hacia": "raghunathadasa",
+      "tipo": "siksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "raghunathadasa",
+      "hacia": "krsnadasa",
+      "tipo": "siksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "rupa",
+      "hacia": "krsnadasa",
+      "tipo": "siksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "gopalabhatta",
+      "hacia": "srinivasa",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "lokanatha",
+      "hacia": "narottama",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": "Único discípulo de Lokanātha"
+    },
+    {
+      "desde": "jiva",
+      "hacia": "srinivasa",
+      "tipo": "siksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "jiva",
+      "hacia": "narottama",
+      "tipo": "siksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "jiva",
+      "hacia": "syamananda",
+      "tipo": "siksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "krsnadasa",
+      "hacia": "narottama",
+      "tipo": "siksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "caitanya",
+      "hacia": "svarupa",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "asociado directo"
+    },
+    {
+      "desde": "caitanya",
+      "hacia": "ramananda",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "asociado directo"
+    },
+    {
+      "desde": "caitanya",
+      "hacia": "sarvabhauma",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "asociado directo"
+    },
+    {
+      "desde": "caitanya",
+      "hacia": "murari",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "asociado directo"
+    },
+    {
+      "desde": "caitanya",
+      "hacia": "sivananda",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "asociado directo"
+    },
+    {
+      "desde": "caitanya",
+      "hacia": "mukunda",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "asociado directo"
+    },
+    {
+      "desde": "caitanya",
+      "hacia": "vasughosa",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "asociado directo"
+    },
+    {
+      "desde": "caitanya",
+      "hacia": "narahari",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "asociado directo"
+    },
+    {
+      "desde": "caitanya",
+      "hacia": "vakresvara",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "asociado directo"
+    },
+    {
+      "desde": "caitanya",
+      "hacia": "lokanatha",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "asociado directo"
+    },
+    {
+      "desde": "caitanya",
+      "hacia": "haridasa",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "asociado directo"
+    },
+    {
+      "desde": "srinivasa",
+      "hacia": "ramacandrakav",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "srinivasa",
+      "hacia": "govindadasa",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "srinivasa",
+      "hacia": "virahamvira",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "srinivasa",
+      "hacia": "hemalata",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "srinivasa",
+      "hacia": "gatigovinda",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "srinivasa",
+      "hacia": "hemalata",
+      "tipo": "familia",
+      "discutida": false,
+      "nota": "hija"
+    },
+    {
+      "desde": "srinivasa",
+      "hacia": "gatigovinda",
+      "tipo": "familia",
+      "discutida": false,
+      "nota": "hijo"
+    },
+    {
+      "desde": "srinivasa",
+      "hacia": "radhamohana",
+      "tipo": "familia",
+      "discutida": false,
+      "nota": "descendiente"
+    },
+    {
+      "desde": "narottama",
+      "hacia": "ganganarayana",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "narottama",
+      "hacia": "ramakrsnabh",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "ganganarayana",
+      "hacia": "krsnacarana",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": "hijo adoptivo"
+    },
+    {
+      "desde": "krsnacarana",
+      "hacia": "radharamana",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "radharamana",
+      "hacia": "visvanatha",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "syamananda",
+      "hacia": "rasikananda",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "rasikananda",
+      "hacia": "radhadamodara",
+      "tipo": "diksa",
+      "discutida": true,
+      "nota": "Generaciones intermedias"
+    },
+    {
+      "desde": "radhadamodara",
+      "hacia": "baladeva",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "visvanatha",
+      "hacia": "baladeva",
+      "tipo": "siksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "baladeva",
+      "hacia": "jagannatha",
+      "tipo": "siksa",
+      "discutida": true,
+      "nota": "Según la Gauḍīya Maṭha; salto de generaciones"
+    },
+    {
+      "desde": "vipina",
+      "hacia": "bhaktivinoda",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "jagannatha",
+      "hacia": "bhaktivinoda",
+      "tipo": "siksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "jagannatha",
+      "hacia": "bhagavatadasa",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "bhagavatadasa",
+      "hacia": "gaurakisora",
+      "tipo": "babaji_vesa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "bhaktivinoda",
+      "hacia": "gaurakisora",
+      "tipo": "siksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "gaurakisora",
+      "hacia": "bss",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": "1900"
+    },
+    {
+      "desde": "bhaktivinoda",
+      "hacia": "bss",
+      "tipo": "siksa",
+      "discutida": false,
+      "nota": "padre"
+    },
+    {
+      "desde": "bhaktivinoda",
+      "hacia": "bss",
+      "tipo": "familia",
+      "discutida": false,
+      "nota": "padre"
+    },
+    {
+      "desde": "bss",
+      "hacia": "prabhupada",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": "1933"
+    },
+    {
+      "desde": "kesava_bp",
+      "hacia": "prabhupada",
+      "tipo": "sannyasa",
+      "discutida": false,
+      "nota": "1959"
+    },
+    {
+      "desde": "bss",
+      "hacia": "sridhara",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "bss",
+      "hacia": "kesava_bp",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "bss",
+      "hacia": "dayita",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "bss",
+      "hacia": "pramod",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "bss",
+      "hacia": "bon",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "bss",
+      "hacia": "vilasatirtha",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "kesava_bp",
+      "hacia": "narayana",
+      "tipo": "diksa",
+      "discutida": false,
+      "nota": null
+    },
+    {
+      "desde": "nityananda",
+      "hacia": "abhirama",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "Uno de los doce gopālas"
+    },
+    {
+      "desde": "nityananda",
+      "hacia": "sundarananda",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "Uno de los doce gopālas"
+    },
+    {
+      "desde": "nityananda",
+      "hacia": "dhananjaya",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "Uno de los doce gopālas"
+    },
+    {
+      "desde": "nityananda",
+      "hacia": "gauridasa",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "Uno de los doce gopālas"
+    },
+    {
+      "desde": "nityananda",
+      "hacia": "kamalakara",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "Uno de los doce gopālas"
+    },
+    {
+      "desde": "nityananda",
+      "hacia": "uddharana",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "Uno de los doce gopālas"
+    },
+    {
+      "desde": "nityananda",
+      "hacia": "mahesa",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "Uno de los doce gopālas"
+    },
+    {
+      "desde": "nityananda",
+      "hacia": "purusottama_d",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "Uno de los doce gopālas"
+    },
+    {
+      "desde": "nityananda",
+      "hacia": "paramesvari",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "Uno de los doce gopālas"
+    },
+    {
+      "desde": "nityananda",
+      "hacia": "kalakrsnadasa",
+      "tipo": "asociado",
+      "discutida": false,
+      "nota": "Uno de los doce gopālas"
+    }
+  ]
+}

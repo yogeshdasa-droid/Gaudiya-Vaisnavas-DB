@@ -590,6 +590,33 @@ async fn set_tree_marks(state: State<'_, AppState>, marks: String) -> CmdResult<
     db::set_meta(&state.conn.lock().unwrap(), "tree_marks", &marks).map_err(err)
 }
 
+/// The drawn Paramparā Tree saved as a picture (SVG) where the user chose.
+#[tauri::command]
+async fn save_tree_svg(path: String, svg: String) -> CmdResult<()> {
+    if !path.to_lowercase().ends_with(".svg") {
+        return Err("El dibujo se guarda como .svg".into());
+    }
+    std::fs::write(&path, svg).map_err(err)
+}
+
+/// The group records are drawn in, in the tree (format 9).
+#[tauri::command]
+async fn set_tree_group(state: State<'_, AppState>, ids: Vec<i64>, group: String) -> CmdResult<usize> {
+    store::set_tree_group(&state.conn.lock().unwrap(), &ids, &group)
+}
+
+/// A word on a line of the tree and whether it is disputed (format 9).
+#[tauri::command]
+async fn set_line_info(state: State<'_, AppState>, id: i64, guru: Option<i64>, note: String, disputed: bool) -> CmdResult<usize> {
+    store::set_line_info(&state.conn.lock().unwrap(), id, guru, &note, disputed)
+}
+
+/// The relatives of a record drawn in the tree: (relative, «son»…) (format 9).
+#[tauri::command]
+async fn set_family(state: State<'_, AppState>, id: i64, relatives: Vec<(i64, String)>) -> CmdResult<()> {
+    store::set_family(&mut state.conn.lock().unwrap(), id, &relatives)
+}
+
 /// The other gurus of a record besides its place in the tree (its śikṣā gurus).
 #[tauri::command]
 async fn set_links(state: State<'_, AppState>, id: i64, links: Vec<(i64, String)>) -> CmdResult<()> {
@@ -1210,6 +1237,10 @@ fn main() {
             move_person,
             set_tree_kind,
             set_links,
+            set_tree_group,
+            set_line_info,
+            set_family,
+            save_tree_svg,
             tree_marks,
             set_tree_marks,
             relate,

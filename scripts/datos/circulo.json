@@ -1,0 +1,64 @@
+[
+  {
+    "id": 56,
+    "name": "Anupama",
+    "main": "main-56.md",
+    "fields": {
+      "aka": "Vallabha, Śrī Vallabha, Anupama Mallika",
+      "disappearance": "1436 Śaka (1514), on the bank of the Gaṅgā, on the way from Vṛndāvana to Gauḍa with Rūpa Gosvāmī (Bhakti-ratnākara 1.668–669)",
+      "place": "Born in Bāklā-Candradvīpa; grew up and lived at Rāmakeli (Gauḍa), head of Husain Shah's mint"
+    }
+  },
+  {
+    "id": 808,
+    "name": "Kumāradeva",
+    "main": "main-808.md",
+    "fields": {
+      "disappearance": "shortly after the birth of his youngest son Vallabha (Anupama), in Bāklā-Candradvīpa (Gauḍīya Vaiṣṇava Abhidhāna)",
+      "place": "Naihāṭī; then Bāklā-Candradvīpa (Jessore, later Fateyabad)",
+      "notes": "He was the father of Rūpa and Sanātana Gosvāmī.\n\nFather of Sanātana, Rūpa and Vallabha (Anupama); grandfather of Jīva Gosvāmī. Only son of Mukunda; Bharadvāja-gotra Yajurvedī brāhmaṇa (Gauḍīya Vaiṣṇava Abhidhāna)."
+    }
+  },
+  {
+    "id": 844,
+    "name": "Lokanātha Gosvāmī",
+    "main": "main-844.md",
+    "fields": {
+      "aka": "Lokanāth Dāsa Gosvāmī, Lokanātha Prabhu",
+      "appearance": "about 1405 Śaka (1483), at Tālakhaḍi, Jessore (Gauḍīya Vaiṣṇava Abhidhāna, entry Padmanābha Cakravartī)",
+      "disappearance": "1510 Śaka (1588) (Gauḍīya Vaiṣṇava Abhidhāna), Āṣāḍha Kṛṣṇa Aṣṭamī (B. V. Tīrtha; other texts: Śrāvaṇa Kṛṣṇa Aṣṭamī, or Śrāvaṇa Śukla Aṣṭamī), at Khadiravana (Khāyarā); samādhi by Śrī Yugala-kuṇḍa, and at the Gokulānanda temple",
+      "place": "Tālakhaḍi, Jessore (East Bengal); Vṛndāvana: Kiśorī-kuṇḍa at Umarāo near Chatravana, later Khadiravana (Khāyarā)",
+      "guru": "Śrī Caitanya Mahāprabhu (Prema-vilāsa 20; Gauḍīya Vaiṣṇava Abhidhāna); other texts: Advaita Ācārya, Sanātana Gosvāmī"
+    }
+  },
+  {
+    "id": 759,
+    "name": "Śrī Kṛṣṇadāsa Kavirāja Gosvāmī",
+    "main": "main-759.md",
+    "fields": {
+      "aka": "Kṛṣṇadāsa Kavirāja Gosvāmī, Kavirāja Gosvāmī",
+      "appearance": "1428 Śaka (1506), at Jhāmaṭapura (Gauḍīya Vaiṣṇava Abhidhāna, which also gives 1418 Śaka with a query); other dates given: 1496; 1482 Śaka (1560)",
+      "disappearance": "Āśvina Śukla Dvādaśī, after the disappearance of Raghunātha dāsa Gosvāmī (year not known; c. 1615 in another text); samādhi at Rādhākuṇḍa",
+      "place": "Born at Jhāmaṭapura, near Kāṭoyā and Naihāṭī (Barddhamān district); lived in Vṛndāvana and at Rādhākuṇḍa until the end of his life",
+      "disciples": "Mukunda Dāsa Gosvāmī, Viṣṇudāsa (Gauḍīya Vaiṣṇava Abhidhāna); Narottama dāsa Ṭhākura (śikṣā, in the record)",
+      "works": "Śrī Caitanya-caritāmṛta, Śrī Govinda-līlāmṛta, Sāraṅga-raṅgadā (commentary on the Kṛṣṇa-karṇāmṛta); attributed: Svarūpa-varṇana (Svarūpa-nirṇaya)"
+    }
+  },
+  {
+    "id": 150,
+    "name": "Bhūgarbha Gosvāmī",
+    "main": "main-150.md",
+    "fields": {
+      "disappearance": "Kārtika Śukla Caturdaśī, in Vṛndāvana; samādhi beside Rūpa Gosvāmī's in the courtyard of the Rādhā-Dāmodara temple",
+      "disciples": "Caitanya dāsa (pūjārī of Śrī Govinda-deva), Kumudānanda Cakravartī (other reading: Mukundānanda), Premī Kṛṣṇadāsa"
+    }
+  },
+  {
+    "id": 386,
+    "name": "Gopīnātha Pūjārī",
+    "main": "main-386.md",
+    "fields": {
+      "place": "Devavana, near Hardwar (Sahāranpur district); Vṛndāvana (service of Śrī Rādhā-ramaṇa)"
+    }
+  }
+]

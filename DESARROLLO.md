@@ -187,7 +187,28 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.11.4)
+## 5. Qué hace hoy (v0.12.0)
+
+### Novedades de la 0.12.0 (04-11-2026, **publicada en GitHub**) — el árbol como un árbol impreso
+- **Formato 9** (`DATA_VERSION 9`): `person_tree.grp` (grupo en que se dibuja: «Pañca-tattva»…),
+  `person_tree.note/.disputed` y `person_links.note/.disputed` (palabra en la línea, «las fuentes no
+  coinciden»); `person_links.kind` puede ser **`family`** (guru_id = el pariente mayor; note = cómo: «son»,
+  «wife»). Las líneas de familia van aparte de los gurus: `store::set_family` (no las toca `set_links`,
+  `relate` las ignora, `check.rs` las salta). Al mover una ficha bajo otro guru se borra la nota de la línea
+  vieja. Comandos nuevos: `set_tree_group`, `set_line_info`, `set_family`, `save_tree_svg`. `api.listPersons`
+  separa `links` (gurus) y `family`. Prueba `group_note_disputed_family` y `format_8_tree_gets_group_note_disputed`.
+- **Paramparā Tree** (`TreeView.tsx`): botón **«De izquierda a derecha / De arriba abajo»** (localStorage
+  `bio.treeDir`). De arriba abajo: `treeLayoutTB.ts` con **dagre 1.1.4** (npm, `@dagrejs/dagre`): grupos en un
+  recuadro ajustado a sus miembros, los discípulos hoja de un guru (≥ 4, sin grupo ni otras líneas) en una
+  **lista**, y las **cadenas** de un guru – un discípulo (Madhva → Padmanābha → …) en una caja. Líneas:
+  continua dīkṣā, rayas śikṣā, **rayas largas + «?» discutida**, **verde de puntos familia**, palabras de las
+  notas en la línea. Las líneas de los otros gurus se ven siempre (tenues, 35 %) y el deslizador las resalta.
+  **«Exportar (SVG)»**: el dibujo tal cual, con los colores escritos (se abre en el navegador; PDF desde allí).
+- **Ficha:** botón **«Ver en el árbol»** (App `main.focus`): abre el árbol dibujado con la ficha en el centro,
+  resaltada 6 s (si no está en la vista de línea, pasa a «Todo»). **Al guardar una ficha**, los otros gurus
+  escritos en «Guru» que están en el árbol se añaden como líneas (`gurusWithKind` en `Dialogs.tsx`: el
+  paréntesis da el tipo — «(śikṣā)», «(dīkṣā)», «(sannyāsa)», «(veśa)», «(vāṇī)»; sin paréntesis:
+  «discípulo sin especificar»), salvo los quitados a mano en «Otros gurus en el árbol».
 
 ### Novedades de la 0.11.4 (04-11-2026, **publicada en GitHub**) — «Texto principal»
 - Colección **«Texto principal»**: si una ficha tiene un texto en ella, la ficha lo lee entero como libro y
@@ -629,6 +650,11 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 7. Pendientes e ideas
 
+### ▶▶ Para la próxima sesión (después del 04-11-2026, noche) — LEER CONTINUAR.md
+Publicada la **0.12.0**. Whisper la instala el 05-11. Luego: copia → su app (9334) →
+`node scripts/datos/parampara-grupos.mjs scripts/datos/gaudiya_sampradaya.json 9334` (×2). Detalle y lista de
+pendientes en `CONTINUAR.md` (local).
+
 ### ▶ Para la próxima sesión (después del 04-11-2026) — dónde nos quedamos
 - **Publicada la 0.11.0** en GitHub (Tīrthas, satélite, Inicio nuevo; formato 8). Whisper actualiza desde
   la app (actualizador). La 0.11.1 (puntos de distrito en el mapa + arreglo de «Abiertos recientemente»)
@@ -697,6 +723,13 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
   se contradice: título de Sanātana (entrada Jīva: Sākara Mallika; entrada Sanātana: su puesto era «Dabir Khās»)
   y fecha de Sanātana (entrada ~1410 Śaka; tabla 1383): se usó la entrada y se anotó lo otro.
   Para aplicarlo en la BD de Whisper hace falta antes la versión con la vista del texto principal (0.11.4).
+- **✔ Grupo 1 aplicado en la BD de Whisper (04-11, tras instalar la 0.11.4).** **Grupo 2 (círculo de los
+  Gosvāmīs) HECHO EN LA COPIA:** Anupama 56, Kumaradeva 808, Lokanātha 844, Kṛṣṇadāsa Kavirāja 759,
+  Bhūgarbha 150, Gopīnātha Pūjārī 386 (`circulo.json` + `circulo/`). Del Abhidhāna: Lokanātha n. ~1405 Śaka,
+  salió de casa Agrahāyaṇa 1431, m. 1510 Śaka, guru Mahāprabhu (Prema-vilāsa 20; la ficha tenía Sanātana),
+  4 hermanos; Bhūgarbha = tío paterno de Lokanātha; Kavirāja n. 1428 Śaka, discípulos Mukunda dāsa y
+  Viṣṇudāsa (fuera Mīnaketana Rāmadāsa: era sirviente de Nityānanda); Kumudānanda (o Mukundānanda).
+  El último texto de Lokanātha lleva pegada la biografía de Locana dāsa (ya está en la ficha 1845).
 - **▶ 2.º «Texto principal» por ficha + Abhidhāna, JUNTOS y por grupos (Whisper: «Junto, por grupos»),
   primero los Seis Gosvāmīs.** Fichas como Śrīvāsa tienen varias versiones que repiten lo mismo (v.1, v.2,
   v.3, v.3·2). Plan acordado: Claude (no la IA local: qwen 4B se inventa cosas) lee todas las versiones y
@@ -1213,6 +1246,16 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **04-11-2026 — v0.12.0 (formato 9)**: árbol de arriba abajo con grupos, listas y cadenas (dagre), líneas de
+  familia / discutidas / notas, exportar SVG, «Ver en el árbol», gurus del campo Guru → líneas del árbol.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.12.0
+- **04-11-2026 — datos (Paramparā del archivo de Whisper)**: `gaudiya_sampradaya.json` (copia en
+  `scripts/datos/`) aplicado con `parampara-json.mjs` en la BD real (copia «antes de Parampara del archivo»):
+  las 112 relaciones no familiares iguales al archivo; 12 gopālas como asociados; Prabhupāda dīkṣā de BSS;
+  fichas nuevas 1958–1960. Antes, el mismo día: grupos 2 (círculo de los Gosvāmīs), 3a y 3b (Navadvīpa) con
+  «Texto principal» (`circulo*`, `navadvipa1*`, `navadvipa2*`); Lokanātha y Śrīvāsa bajo Mahāprabhu.
+- **04-11-2026 — v0.11.4**: colección «Texto principal»; Seis Gosvāmīs aplicados.
 
 - **03-11-2026 — v0.9.1**: mapa dibujado con zoom, la Guru Paramparā primero (búsqueda, filtro, Panorama,
   sello en la ficha, «Otros vaiṣṇavas» plegado), «Sin especificar», arreglo de «Mover a otra ficha».

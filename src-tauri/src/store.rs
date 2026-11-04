@@ -1792,6 +1792,61 @@ pub struct TreePlace {
 /// They are only values of `kind`: no change of DATA_VERSION.
 /// `disciple`: the source says «disciple» without saying whether dīkṣā or śikṣā.
 pub const TREE_KINDS: &[&str] = &["diksa", "siksa", "disciple", "vani", "sannyasa", "vesa", "associate"];
+/// The kinds of the other lines (person_links): the same, and `family`
+/// (format 9): `guru_id` is then the relative (father, uncle…) and the note
+/// says how («son», «niece»). A family line never writes guru / disciples;
+/// it is kept with `set_family`, apart from the gurus of `set_links`.
+pub const LINK_KINDS: &[&str] = &["diksa", "siksa", "disciple", "vani", "sannyasa", "vesa", "associate", "family"];
+
+/// The relatives of a record drawn in the tree (format 9): (relative, how:
+/// «son», «niece»…). The list replaces the one there was; its other gurus
+/// are not touched.
+pub fn set_family(conn: &mut Connection, id: i64, relatives: &[(i64, String)]) -> Res<()> {
+    let tx = conn.transaction().map_err(e)?;
+    let kept: std::collections::HashMap<i64, bool> = {
+        let mut st = tx.prepare("SELECT guru_id, disputed FROM person_links WHERE person_id = ?1 AND kind = 'family'").map_err(e)?;
+        let rows = st.query_map([id], |r| Ok((r.get(0)?, r.get(1)?))).map_err(e)?;
+        rows.collect::<rusqlite::Result<_>>().map_err(e)?
+    };
+    tx.execute("DELETE FROM person_links WHERE person_id = ?1 AND kind = 'family'", [id]).map_err(e)?;
+    for (rel, note) in relatives {
+        if *rel == id {
+            continue;
+        }
+        // a relative who is also a guru stays a guru: that line is drawn already
+        tx.execute(
+            "INSERT OR IGNORE INTO person_links(person_id, guru_id, kind, note, disputed) VALUES(?1, ?2, 'family', ?3, ?4)",
+            params![id, rel, note.trim(), kept.get(rel).copied().unwrap_or(false)],
+        )
+        .map_err(e)?;
+    }
+    tx.commit().map_err(e)
+}
+
+/// The group a record is drawn in (format 9): «Pañca-tattva», «Los seis
+/// Gosvāmīs»… ("" = none). Only records in the tree have one.
+pub fn set_tree_group(conn: &Connection, ids: &[i64], group: &str) -> Res<usize> {
+    let mut n = 0;
+    for id in ids {
+        n += conn.execute("UPDATE person_tree SET grp = ?2 WHERE person_id = ?1", params![id, group.trim()]).map_err(e)?;
+    }
+    Ok(n)
+}
+
+/// A word on a line and whether the sources disagree (format 9): the line
+/// of `id` to its guru in the tree (`guru` None), or to one of its other
+/// gurus / relatives (`guru` Some).
+pub fn set_line_info(conn: &Connection, id: i64, guru: Option<i64>, note: &str, disputed: bool) -> Res<usize> {
+    let n = match guru {
+        None => conn.execute("UPDATE person_tree SET note = ?2, disputed = ?3 WHERE person_id = ?1", params![id, note.trim(), disputed]),
+        Some(g) => conn.execute(
+            "UPDATE person_links SET note = ?3, disputed = ?4 WHERE person_id = ?1 AND guru_id = ?2",
+            params![id, g, note.trim(), disputed],
+        ),
+    }
+    .map_err(e)?;
+    Ok(n)
+}
 
 /// Sets whether a record is the dīkṣā or śikṣā disciple of the guru above
 /// it in the tree, or an associate (pārṣada) placed beside him.
@@ -1809,7 +1864,14 @@ pub fn set_tree_kind(conn: &Connection, id: i64, kind: &str) -> Res<()> {
 pub fn set_links(conn: &mut Connection, id: i64, links: &[(i64, String)]) -> Res<()> {
     let tx = conn.transaction().map_err(e)?;
     let parent = tree_parent(&tx, id).map_err(e)?.flatten();
-    tx.execute("DELETE FROM person_links WHERE person_id = ?1", [id]).map_err(e)?;
+    // the note and «disputed» of a line that stays are kept (format 9)
+    let kept: std::collections::HashMap<i64, (String, bool)> = {
+        let mut st = tx.prepare("SELECT guru_id, note, disputed FROM person_links WHERE person_id = ?1 AND kind <> 'family'").map_err(e)?;
+        let rows = st.query_map([id], |r| Ok((r.get(0)?, (r.get(1)?, r.get(2)?)))).map_err(e)?;
+        rows.collect::<rusqlite::Result<_>>().map_err(e)?
+    };
+    // its relatives (set_family) stay
+    tx.execute("DELETE FROM person_links WHERE person_id = ?1 AND kind <> 'family'", [id]).map_err(e)?;
     for (guru, kind) in links {
         if !TREE_KINDS.contains(&kind.as_str()) {
             return Err(format!("Tipo de relación desconocido: {kind}"));
@@ -1817,8 +1879,12 @@ pub fn set_links(conn: &mut Connection, id: i64, links: &[(i64, String)]) -> Res
         if *guru == id || Some(*guru) == parent {
             continue;
         }
-        tx.execute("INSERT OR REPLACE INTO person_links(person_id, guru_id, kind) VALUES(?1, ?2, ?3)", params![id, guru, kind])
-            .map_err(e)?;
+        let (note, disputed) = kept.get(guru).cloned().unwrap_or_default();
+        tx.execute(
+            "INSERT OR REPLACE INTO person_links(person_id, guru_id, kind, note, disputed) VALUES(?1, ?2, ?3, ?4, ?5)",
+            params![id, guru, kind, note, disputed],
+        )
+        .map_err(e)?;
     }
     tx.commit().map_err(e)?;
     // a guru not in the tree (Bipin Bihārī for Bhaktivinoda) goes in at the
@@ -1885,10 +1951,15 @@ pub fn move_person(conn: &mut Connection, id: i64, place: Option<TreePlace>) -> 
                     return Err("El guru no está en la Guru Paramparā.".into());
                 }
             }
+            let old = tree_parent(&tx, id).map_err(e)?;
             let mut siblings: Vec<i64> = tree_children(&tx, parent).map_err(e)?.into_iter().filter(|&s| s != id).collect();
             let at = before.and_then(|b| siblings.iter().position(|&s| s == b)).unwrap_or(siblings.len());
             siblings.insert(at, id);
             tree_write(&tx, parent, &siblings).map_err(e)?;
+            // under another guru: the word on the old line does not belong to the new one
+            if old.is_some() && old != Some(parent) {
+                tx.execute("UPDATE person_tree SET note = '', disputed = 0 WHERE person_id = ?1", [id]).map_err(e)?;
+            }
         }
     }
     tx.commit().map_err(e)
@@ -1981,13 +2052,13 @@ impl Pending {
 
     /// `disciple` is the `kind` disciple of `guru` (see `relate`).
     fn relate(&mut self, conn: &Connection, disciple: i64, guru: i64, kind: &str, old_guru: Option<i64>) -> Res<()> {
-        if !TREE_KINDS.contains(&kind) {
+        if !LINK_KINDS.contains(&kind) {
             return Err(format!("Tipo de relación desconocido: {kind}"));
         }
         if let Some(o) = old_guru.filter(|&o| o != guru && o != disciple) {
             self.unrelate(conn, disciple, o)?;
         }
-        if kind == "associate" || disciple == guru {
+        if kind == "associate" || kind == "family" || disciple == guru {
             return Ok(());
         }
         let mut d = self.take(conn, disciple)?;
@@ -2502,6 +2573,54 @@ He passed away on the eleventh lunar day.");
         // a deleted guru leaves no line behind
         delete_person(&mut conn, vamana).unwrap();
         assert_eq!(links(&conn, narayana), vec![(prabhupada, s("siksa"))]);
+    }
+
+    #[test]
+    fn group_note_disputed_family() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        crate::db::init(&conn).unwrap();
+        let tx = conn.transaction().unwrap();
+        let [isvara, cai, nitai, virabhadra, madhava] =
+            ["Īśvara Purī", "Caitanya", "Nityānanda", "Vīrabhadra", "Mādhava"].map(|n| create_person(&tx, n).unwrap());
+        tx.commit().unwrap();
+        move_person(&mut conn, isvara, Some(TreePlace { parent: None, before: None })).unwrap();
+        move_person(&mut conn, madhava, Some(TreePlace { parent: None, before: None })).unwrap();
+        move_person(&mut conn, cai, Some(TreePlace { parent: Some(isvara), before: None })).unwrap();
+        move_person(&mut conn, nitai, Some(TreePlace { parent: Some(madhava), before: None })).unwrap();
+        move_person(&mut conn, virabhadra, Some(TreePlace { parent: Some(nitai), before: None })).unwrap();
+        let get = |c: &Connection, id: i64| crate::search::list_persons(c).unwrap().into_iter().find(|p| p.id == id).unwrap();
+        let s = |k: &str| k.to_string();
+        // the group and the word on the line to its guru
+        assert_eq!(set_tree_group(&conn, &[cai, nitai], "Pañca-tattva").unwrap(), 2);
+        set_line_info(&conn, cai, None, "Gayā 1508", false).unwrap();
+        set_line_info(&conn, nitai, None, "according to the Gauḍīya Maṭha", true).unwrap();
+        let t = get(&conn, cai).tree.unwrap();
+        assert_eq!((t.group.as_str(), t.note.as_str(), t.disputed), ("Pañca-tattva", "Gayā 1508", false));
+        // family lines: apart from the gurus, never written as guru
+        set_links(&mut conn, virabhadra, &[(cai, "siksa".into())]).unwrap();
+        set_line_info(&conn, virabhadra, Some(cai), "", true).unwrap();
+        set_family(&mut conn, virabhadra, &[(madhava, "grandson".into())]).unwrap();
+        assert!(set_tree_kind(&conn, virabhadra, "family").is_err());
+        assert!(set_links(&mut conn, virabhadra, &[(madhava, "family".into())]).is_err());
+        let lines = |c: &Connection| {
+            let mut v = get(c, virabhadra).links.iter().map(|x| (x.guru, x.kind.clone(), x.note.clone(), x.disputed)).collect::<Vec<_>>();
+            v.sort();
+            v
+        };
+        assert_eq!(lines(&conn), vec![(cai, s("siksa"), s(""), true), (madhava, s("family"), s("grandson"), false)]);
+        // the gurus written again (from its record): the relatives and the words stay
+        set_links(&mut conn, virabhadra, &[(cai, "siksa".into())]).unwrap();
+        assert_eq!(lines(&conn), vec![(cai, s("siksa"), s(""), true), (madhava, s("family"), s("grandson"), false)]);
+        set_family(&mut conn, virabhadra, &[]).unwrap();
+        assert_eq!(lines(&conn), vec![(cai, s("siksa"), s(""), true)]);
+        assert_eq!(relate(&mut conn, virabhadra, madhava, "family", None).unwrap(), 0);
+        // moved under another guru: the word of the old line goes; the group stays
+        move_person(&mut conn, nitai, Some(TreePlace { parent: Some(isvara), before: None })).unwrap();
+        let t = get(&conn, nitai).tree.unwrap();
+        assert_eq!((t.group.as_str(), t.note.as_str(), t.disputed), ("Pañca-tattva", "", false));
+        // reordered under the same guru: the word stays
+        move_person(&mut conn, cai, Some(TreePlace { parent: Some(isvara), before: Some(nitai) })).unwrap();
+        assert_eq!(get(&conn, cai).tree.unwrap().note, "Gayā 1508");
     }
 
     #[test]
