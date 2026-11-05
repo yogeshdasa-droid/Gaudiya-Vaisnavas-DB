@@ -253,8 +253,9 @@ fn order_by(sort: &str, rank: &str) -> String {
         "title" => "d.title COLLATE NOCASE, s.ordinal".into(),
         "person" => "p.name IS NULL, p.name COLLATE NOCASE, d.title COLLATE NOCASE, s.ordinal".into(),
         "path" => "d.dir COLLATE NOCASE, d.title COLLATE NOCASE, s.ordinal".into(),
-        // the Guru Paramparā first: the focus of the library
-        _ => format!("{IN_TREE} DESC, {rank}, d.id, s.ordinal"),
+        // the Guru Paramparā first: the focus of the library; then the texts of the other
+        // records, and last the books that are no one's (Whisper, 05-11-2026: «las fichas primero»)
+        _ => format!("{IN_TREE} DESC, d.person_id IS NULL, {rank}, d.id, s.ordinal"),
     }
 }
 
@@ -858,6 +859,39 @@ pub fn add_bookmark(conn: &Connection, doc_id: i64, ordinal: i64, note: &str) ->
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// Whisper (05-11-2026): the texts of the records first, the books that are no one's last,
+    /// even when the book matches better.
+    #[test]
+    fn record_texts_before_books() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        crate::db::init(&conn).unwrap();
+        let book = crate::store::create_doc(&mut conn, None, "Big book", "Libros").unwrap();
+        crate::store::save_section(&mut conn, book, 0, "Gadadhara Gadadhara Gadadhara Gadadhara, the book says.\n").unwrap();
+        let p = crate::store::create_person(&conn, "Gadadhara").unwrap();
+        let text = crate::store::create_doc(&mut conn, Some(p), "His life", "Fichas").unwrap();
+        crate::store::save_section(&mut conn, text, 0, "A long life of many pages, where the name Gadadhara is written once among other words.\n").unwrap();
+        let r = search(
+            &conn,
+            &SearchParams {
+                query: "gadadhara".into(),
+                titles_only: false,
+                prefix: false,
+                sort: String::new(),
+                collections: vec![],
+                dir: None,
+                doc_id: None,
+                person_id: None,
+                parampara_only: false,
+                kinds: vec![],
+                offset: 0,
+                limit: None,
+            },
+        )
+        .unwrap();
+        let order: Vec<i64> = r.hits.iter().map(|h| h.doc_id).collect();
+        assert_eq!(order, vec![text, book]);
+    }
 
     #[test]
     fn query_syntax() {

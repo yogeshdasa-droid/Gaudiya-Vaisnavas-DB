@@ -1,0 +1,49 @@
+{
+  "doc": 2978,
+  "records": [
+    {
+      "key": "poet",
+      "id": 525,
+      "name": "Jagadānanda Ṭhākura",
+      "fields": {
+        "name": "Jagadānanda Ṭhākura (Śrīkhaṇḍa, Jofalāi)",
+        "aka": "Jagadānanda",
+        "appearance": "Between 1620 and 1630 Śaka (1698-1708 CE)",
+        "disappearance": "5 Āśvina 1702 Śaka (1780 CE), at Jofalāi",
+        "place": "Śrīkhaṇḍa (family home); Āgaraḍihi Dakṣiṇakhaṇḍa; Jofalāi (Birbhum); Āmalālā Sunurī (Pañcakoṭa)",
+        "works": "Jagadānandera Padāvalī (published by Kālidāsa Nātha and Dhīrānanda Ṭhākura); a Bengali Gīta-govinda (Burdwan Sāhitya-sabhā ms. 185); Citrapada-kāvya",
+        "notes": "Vaidya; a padakartā of the family of Mukunda Sarakāra of Śrīkhaṇḍa, the intimate devotee of Lord Caitanya. Father: Nityānanda; grandfather: Paramānanda; brothers: Sarvānanda, Kṛṣṇānanda and Saccidānanda (he was the second of four). He installed Deities of Lord Gaurāṅga at Jofalāi and at Āmalālā Sunurī, a village given to him by the king of Pañcakoṭa (Gauḍīya Vaiṣṇava Abhidhāna, «Jagadānanda Ṭhākura»).\n\nThis record mixed four Jagadānandas; on 05-11-2026 the other three got their own records: the descendant of Śrīnivāsa Ācārya, the author of the Śyāmacandrodaya of Maṅgaladihi, and the author of the Vaṁśī-līlāmṛta. (The verse in the Padyāvalī is of Jagadānanda Paṇḍita, not his.)"
+      }
+    },
+    {
+      "key": "srinivasa",
+      "name": "Jagadānanda (descendant of Śrīnivāsa Ācārya)",
+      "fields": {
+        "notes": "Born in the family of Śrīnivāsa Ācārya. His six sons: Yādavendu, Rādhāmohana, Bhuvanamohana, Gauramohana, Śyāmasundara and Madanamohana (Gauḍīya Vaiṣṇava Abhidhāna, «Jagadānanda Ṭhākura» 4)."
+      }
+    },
+    {
+      "key": "mangaladihi",
+      "name": "Jagadānanda (Maṅgaladihi, author of the Śyāmacandrodaya)",
+      "fields": {
+        "place": "Maṅgaladihi (Birbhum)",
+        "works": "Śrī Śyāmacandrodaya; kīrtana padas",
+        "notes": "Fourth in descent from Pānuā Gopāla of Maṅgaladihi (Birbhum). He wrote the Śrī Śyāmacandrodaya in Bengali tripadī metre and kīrtana songs, and made the Ṭhākura family of Maṅgaladihi shine (Gauḍīya Vaiṣṇava Abhidhāna, «Jagadānanda Ṭhākura» 3)."
+      }
+    },
+    {
+      "key": "vamsi",
+      "name": "Jagadānanda (author of the Vaṁśī-līlāmṛta)",
+      "fields": {
+        "guru": "Vaṁśīvadana of Kuliyā",
+        "works": "Vaṁśī-līlāmṛta (the life of his guru Vaṁśīvadana)",
+        "notes": "He wrote the Vaṁśī-līlāmṛta, a life of his guru Vaṁśīvadana of Kuliyā: «I bow to Śrī Jagadānanda of sweet character, who described the book Vaṁśī-līlāmṛta» (Gauḍīya Vaiṣṇava Abhidhāna, «Jagadānanda Ṭhākura» 2)."
+      }
+    }
+  ],
+  "pieces": [
+    { "to": "srinivasa", "title": "Jagadānanda (descendant of Śrīnivāsa)", "start": "## JAGADĀNANDA ṬHĀKUR\n\nHe was born in the family line of Śrīnivāsa", "end": "## JAGADĀNANDA ṬHĀKUR\n\nHe was the fourth generation" },
+    { "to": "mangaladihi", "title": "Jagadānanda (Maṅgaladihi)", "start": "## JAGADĀNANDA ṬHĀKUR\n\nHe was the fourth generation", "end": "## JAGADĀNANDA ṬHĀKUR\n\nHe wrote the book entitled Vamsililamrta" },
+    { "to": "vamsi", "title": "Jagadānanda (Vaṁśī-līlāmṛta)", "start": "## JAGADĀNANDA ṬHĀKUR\n\nHe wrote the book entitled Vamsililamrta", "end": "## JAGADĀNANDA ṬHĀKUR\n\nBy caste a vaidya" }
+  ]
+}

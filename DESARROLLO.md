@@ -187,7 +187,17 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.12.1)
+## 5. Qué hace hoy (v0.12.2)
+
+### Novedades de la 0.12.2 (05-11-2026) — las fichas primero en la búsqueda
+- `search.rs` `order_by` (orden «Relevancia»): primero los textos de fichas del árbol (como antes), luego los de
+  las demás fichas (`d.person_id IS NULL`) y al final los libros sin ficha, aunque coincidan más. Prueba
+  `record_texts_before_books`.
+- **Datos (05-11, en la BD de Whisper, no en el programa):** la Biblioteca tiene ahora las colecciones «Fichas»
+  (todo texto con ficha; desaparecen «Obsidian Biografías» y «Calibre»), «Texto principal», «Libros» (17 textos
+  sin ficha) y «Mis textos» (`scripts/datos/biblioteca-ordenar.mjs`); 9 copias exactas a la papelera. Fichas que
+  mezclaban personas separadas con `govinda-split.mjs <plan.json>`: Govinda (420), Haridāsa (476), Jagadānanda
+  Ṭhākura (525). Libros que eran fichas: `libros-sin-ficha.mjs`. Grupos Purī 1–3 con texto principal.
 
 ### Novedades de la 0.12.1 (05-11-2026) — la Guru Paramparā de la barra lateral, más ordenada
 - **Carpetas «Pārṣadas» y «Śikṣā»** bajo cada guru (`Sidebar.tsx`: `FOLDERS`, `folderOf`, filas
@@ -1259,6 +1269,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **05-11-2026 — v0.12.2**: en la búsqueda, los textos de las fichas antes que los libros sin ficha. Datos del día:
+  Biblioteca ordenada (Fichas / Libros), Govinda, Haridāsa y Jagadānanda Ṭhākura separados, grupos Purī 1–3.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.12.2
 - **05-11-2026 — v0.12.1**: carpetas «Pārṣadas» / «Śikṣā» en la Guru Paramparā de la barra lateral, interruptor
   Todo / Dīkṣā / Śikṣā, Expandir / Plegar todo. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.12.1
 - **05-11-2026 — datos**: grupos «Navadvīpa 3» (Gaṅgādāsa 289, Śrīrāma Paṇḍita 1961, Śrīpati Paṇḍita 1962 nueva,

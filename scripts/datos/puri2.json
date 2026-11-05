@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1075,
+    "name": "Paramānanda Purī",
+    "main": "main-1075.md",
+    "fields": {
+      "aka": "Purī Gosāñi, Purī Gosvāmī",
+      "place": "Tirhut (Trihuta), born; Purī, with Lord Caitanya",
+      "notes": "Dear disciple of Mādhavendra Purī; the middle of the nine roots of the tree of devotion (Caitanya-caritāmṛta Ādi 9.13). Lord Caitanya respected him as His guru; with Svarūpa Dāmodara, one of the two who knew the Lord's heart (Caitanya-caritāmṛta Ādi 10.125). Met the Lord at Ṛṣabha-parvata; lived in Purī near Him (his well: Caitanya-bhāgavata Antya 3).\n\nIn Kṛṣṇa-līlā: Uddhava (Gaura-gaṇoddeśa-dīpikā 118)."
+    }
+  },
+  {
+    "id": 140,
+    "name": "Bhavananda Rāya Pattanayaka",
+    "main": "main-140.md",
+    "fields": {
+      "aka": "Bhavānanda Rāya, Rāya Bhavānanda",
+      "place": "Bentapur, near Ālālanātha (Purī district)",
+      "disciples": "",
+      "works": "Perhaps verses 30 and 89 of the Padyāvalī",
+      "notes": "Father of Rāmānanda Rāya. Five sons: Rāmānanda (eldest), Gopīnātha Paṭṭanāyaka, Kalānidhi, Sudhānidhi and Vāṇīnātha (Caitanya-caritāmṛta Ādi 10.133); he gave them all to the service of Lord Caitanya, and Vāṇīnātha as His servant (Madhya 10.49-61). Kavi Karṇapūra praised him; Acyutānanda called him a gopī.\n\nIn Kṛṣṇa-līlā: King Pāṇḍu (Gaura-gaṇoddeśa-dīpikā 122); his wife was Kuntī."
+    }
+  },
+  {
+    "id": 385,
+    "name": "Gopīnātha Pattanayaka",
+    "main": "main-385.md",
+    "fields": {
+      "aka": "Gopīnātha Paṭṭanāyaka",
+      "place": "Orissa; collector at Mālajāṭhyā Daṇḍapāṭa"
+    }
+  },
+  {
+    "id": 1642,
+    "name": "Vaninatha PattanayakaNayaki",
+    "main": "main-1642.md",
+    "fields": {
+      "name": "Vāṇīnātha Paṭṭanāyaka",
+      "aka": "Nāyaka Vāṇīnātha, Vāṇīnātha Rāya, Vaninatha Pattanayaka",
+      "place": "Purī",
+      "notes": "Son of Bhavānanda Rāya and brother of Rāmānanda Rāya (Caitanya-caritāmṛta Ādi 10.133). His father gave him to Lord Caitanya as His servant, and from then on he stayed always with the Lord (Madhya 10.61). He took great care in serving prasāda to the Vaiṣṇavas at Nīlācala (Antya 9.55; Vaiṣṇava-vandanā of Jīva 165, Devakīnandana 65, Vṛndāvana dāsa 57)."
+    }
+  },
+  {
+    "id": 1410,
+    "name": "Śikhi-Māhiti",
+    "main": "main-1410.md",
+    "fields": {
+      "aka": "Śikhi Māhiti",
+      "place": "Purī (Orissa)",
+      "works": "Mādalā Pāñji (the chronicle of the Jagannātha temple)",
+      "notes": "Kāyastha of Orissa, scribe of the Jagannātha temple. Brother of Murāri Māhiti and Mādhavī Devī. One of the 'three and a half' intimate devotees of Lord Caitanya (Caitanya-caritāmṛta Antya 2.104-106). He first doubted the Lord, and surrendered after dreaming of Him merging with Jagannātha (Caitanya-carita-mahākāvya 13).\n\nIn Kṛṣṇa-līlā: Rāgalekhā, Rādhā's maidservant (his sister Mādhavī was Kalākeli) (Gaura-gaṇoddeśa-dīpikā 189). The Guru-bhakti-gītā of Acyutānanda calls him the gopī Śaśikalā."
+    }
+  },
+  {
+    "id": 869,
+    "name": "Mādhavī Devī",
+    "main": "main-869.md",
+    "fields": {
+      "aka": "Mādhavī Dāsī, Mādhavī Mātā",
+      "place": "Purī (Orissa); the Gopīnātha Deity at Bentapur",
+      "notes": "Kāyastha lady of Orissa, youngest sister of Śikhi Māhiti and Murāri Māhiti (Caitanya-caritāmṛta Ādi 10.137). The 'half' of Lord Caitanya's three and a half intimate devotees (Antya 2.104-106). Established the Gopīnātha Deity at Bentapur. Said to have written the Puruṣottama-deva-nāṭaka.\n\nIn Kṛṣṇa-līlā: Kalākeli, a maidservant of Śrī Rādhā (Gaura-gaṇoddeśa-dīpikā 189)."
+    }
+  },
+  {
+    "new": true,
+    "name": "Mādhavī (wife of Raghu Cakravartī)",
+    "move": { "doc": 876, "from": "## MĀDHAVĪ DEVĪ", "find": "She was the wife of Ragava", "title": "Mādhavī Devī (wife of Raghu Cakravartī)" },
+    "fields": {
+      "aka": "Mādhavī Devī",
+      "notes": "Wife of Raghu (Rāghava) Cakravartī. Her daughter Lakṣmīpriyā was the second wife of Śrīnivāsa Ācārya (Bhakti-ratnākara 13.206). In a dream an old, radiant brāhmaṇa from Śāntipura told her that Śrīnivāsa Ācārya was to be her daughter's husband (Gauḍīya Vaiṣṇava Abhidhāna).\n\nHusband: Raghu Cakravartī. Daughter: Lakṣmīpriyā. Son-in-law: Śrīnivāsa Ācārya."
+    }
+  },
+  {
+    "id": 1099,
+    "name": "Pradyumna Miśra",
+    "main": "main-1099.md",
+    "fields": {
+      "place": "Śrīhaṭṭa (Sylhet); later Purī (Orissa)",
+      "notes": "Brāhmaṇa devotee of Lord Caitanya in Purī (Caitanya-caritāmṛta Ādi 10.131). The Lord sent him to hear Kṛṣṇa-kathā from Rāmānanda Rāya (Antya 5.4-67). Not the Lord's cousin of the same name (own record).\n\nIn Kṛṣṇa-līlā: Lord Gaura entered him (āveśa) (Gaura-gaṇoddeśa-dīpikā 74)."
+    }
+  },
+  {
+    "new": true,
+    "name": "Pradyumna Miśra (cousin of Lord Caitanya)",
+    "move": { "doc": 1108, "from": "## PRADYUMNA MIŚRA", "find": "He was a cousin-brother of Lord Caitanya", "title": "Pradyumna Miśra (cousin of Lord Caitanya)" },
+    "fields": {
+      "place": "Buruṅgā, Śrīhaṭṭa (Sylhet)",
+      "notes": "A cousin of Lord Caitanya (some say a nephew), of the family of Kīrti Miśra of Buruṅgā in Śrīhaṭṭa. According to Bimanbihari Majumdar he is not the Pradyumna Miśra of Purī."
+    }
+  },
+  {
+    "id": 1952,
+    "name": "Kāśī Miśra",
+    "main": "../puri1/main-1952.md",
+    "fields": {}
+  }
+]
