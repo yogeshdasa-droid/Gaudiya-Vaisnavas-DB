@@ -650,7 +650,12 @@ export function PersonView(p: Props) {
                   <ListTree size={13} /> {t.parampara}
                 </button>
               )}
-              <h1>{person.name}</h1>
+              <h1>
+                {person.name}{" "}
+                <span className="record-number" title={t.recordNumberHint}>
+                  #{person.id}
+                </span>
+              </h1>
               {person.aka && <div className="aka">{person.aka}</div>}
               {tags.length > 0 && (
                 <div className="tags">

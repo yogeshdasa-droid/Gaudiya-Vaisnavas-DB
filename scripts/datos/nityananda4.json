@@ -1,0 +1,60 @@
+[
+  {
+    "id": 1833,
+    "name": "Kholāvecā Śrīdhara",
+    "main": "main-1833.md",
+    "fields": {
+      "aka": "Śrīdhara Paṇḍita, Śrīdhara Ṭhākura",
+      "disappearance": "Jyeṣṭha Pūrṇimā, the day of Snāna-yātrā (Gauḍīya calendar)",
+      "place": "Navadvīpa (at the edge of Nadia, Māyāpur); his stall in the bazaar at Bāmanpukur",
+      "guru": "Śrī Caitanya Mahāprabhu",
+      "notes": "A poor brāhmaṇa of Navadvīpa who sold banana leaves, stalks and flowers; half his earnings went to the worship of the Gaṅgā. Young Nimāi haggled with him every day and ate from his leaf plates (Caitanya-bhāgavata Madhya 9). The Lord drank from his broken water pot; at the mahā-prakāśa he saw the Lord as Śyāmasundara and asked only to have «that brāhmaṇa who snatched my banana leaves» as his Lord birth after birth. «The Lord's dear servant» (Caitanya-caritāmṛta Ādi 10.67). Counted among the twelve gopālas.\n\nIn Kṛṣṇa-līlā: Kusumāsava (Madhumaṅgala), who made Kṛṣṇa laugh (Gaura-gaṇoddeśa-dīpikā 133)."
+    }
+  },
+  {
+    "id": 1213,
+    "name": "Raghunātha Vaidya Upadhyaya",
+    "main": "main-1213.md",
+    "fields": {
+      "name": "Raghunātha Vaidya Upādhyāya",
+      "aka": "Raghunātha Vaidya Upadhyaya",
+      "notes": "Of Nityānanda's branch (Caitanya-caritāmṛta Ādi 11.26; Caitanya-bhāgavata Antya 5.726). Went with Nityānanda from Purī to Bengal by Lord Caitanya's order and on the way was overcome by the mood of Revatī (Caitanya-bhāgavata Antya 5.231-239). Present at the Kheturī festival.\n\nNot Raghunātha Vaidya of Caitanya's branch, nor Raghunātha Vaidya, disciple of Narottama (their own records)."
+    }
+  },
+  {
+    "id": 1214,
+    "name": "Raghunātha Vaidya",
+    "fields": {
+      "name": "Raghunātha Vaidya (disciple of Narottama)",
+      "notes": "A disciple of Narottama Ṭhākura: «Raghunātha Vaidya and Miśra Haladhara» (Prema-vilāsa 20; Gauḍīya Vaiṣṇava Abhidhāna, «Raghunātha Vaidya» 2).\n\nNot Raghunātha Vaidya of Caitanya's branch in Purī (his own record since 05-11-2026), nor Raghunātha Vaidya Upādhyāya of Nityānanda's branch."
+    }
+  },
+  {
+    "new": true,
+    "name": "Raghunātha Vaidya (Caitanya's branch, Purī)",
+    "fields": {
+      "guru": "Śrī Caitanya Mahāprabhu",
+      "place": "Purī (Nīlācala)",
+      "notes": "Of Śrī Caitanya's branch, a companion of the Lord in Nīlācala: «Raghunātha Vaidya and Raghunātha dāsa» (Caitanya-caritāmṛta Ādi 10.124-126; Gauḍīya Vaiṣṇava Abhidhāna, «Raghunātha Vaidya» 1). He is mentioned in Murāri Gupta's Kṛṣṇa-caitanya-carita (4.17.21).\n\nNot Raghunātha Vaidya, disciple of Narottama, nor Raghunātha Vaidya Upādhyāya of Nityānanda's branch."
+    }
+  },
+  {
+    "id": 1436,
+    "name": "Śrīdhara Brahmacārī",
+    "fields": {
+      "guru": "Gadādhara Paṇḍita",
+      "disciples": "",
+      "works": "",
+      "notes": "Of Gadādhara Paṇḍita's branch: «the best of the branches, Śrīdhara Brahmacārī» (Caitanya-caritāmṛta Ādi 12.79). In Kṛṣṇa-līlā: Candralatikā, Rādhā's maidservant (Gaura-gaṇoddeśa-dīpikā 194, 199; Śākhā-nirṇayāmṛta 5).\n\nNot Śrīdhara Svāmī, the commentator on the Bhāgavatam (his own record since 05-11-2026)."
+    }
+  },
+  {
+    "id": 765,
+    "name": "Kṛṣṇadāsa Sarakhela",
+    "fields": {
+      "place": "Śāligrāma (Nadia)",
+      "guru": "Śrī Nityānanda",
+      "notes": "Younger brother of Sūryadāsa Sarakhela, of Śāligrāma; of Nityānanda's branch: «Sūryadāsa Sarakhela and his younger brother Kṛṣṇadāsa Sarakhela had firm faith in Nityānanda» (Caitanya-caritāmṛta Ādi 11.25). One of the six sons of Kaṁsāri Miśra; brother of Gaurīdāsa Paṇḍita. The Gauḍīya Vaiṣṇava Abhidhāna names Kaṁsāri's fifth son Dīna Kṛṣṇadāsa, a poet who wrote songs on the glories of his elder brother Gaurīdāsa — probably the same person."
+    }
+  }
+]

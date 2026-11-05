@@ -1,0 +1,37 @@
+{
+  "docs": [
+    {
+      "doc": 864,
+      "pieces": [
+        { "find": "He belonged to Śrī Caitanya sakhā", "back": true, "end": "He was the disciple and son of Śrī Nityānanda", "endBack": true, "toName": "Mādhava Ācārya (Caitanya's branch)", "title": "Mādhava Ācārya (Caitanya's branch)",
+          "fields": { "notes": "Of Śrī Caitanya's branch (Caitanya-caritāmṛta Ādi 10.119; Gauḍīya Vaiṣṇava Abhidhāna, «Mādhava Ācārya» 1). Not Mādhava Ācārya, husband of Nityānanda's daughter Gaṅgā Devī." } },
+        { "find": "He was a contemporary of Śrī Gaurāṅga and belonged to Gadādhara", "back": true, "toName": "Mādhava Ācārya (Gadādhara's branch)", "title": "Mādhava Ācārya (Gadādhara's branch)",
+          "fields": { "notes": "A contemporary of Lord Gaurāṅga, of Gadādhara Paṇḍita's branch (Prema-vilāsa 19; Sakhā-nirṇayāmṛta 32; Gaura-gaṇoddeśa-dīpikā 169). The Vaiṣṇava-vandanā praises a Mādhava Ācārya, poet of the Śrī Kṛṣṇa-maṅgala (Gauḍīya Vaiṣṇava Abhidhāna, «Mādhava Ācārya» 3). Not Mādhava Ācārya, husband of Nityānanda's daughter Gaṅgā Devī." } }
+      ]
+    },
+    {
+      "doc": 294,
+      "pieces": [
+        { "find": "This Gaṅgā Devī was the mother of Puṇḍarīka", "back": true, "toName": "Gaṅgā Devī (mother of Puṇḍarīka Vidyānidhi)", "title": "Gaṅgā Devī (mother of Puṇḍarīka Vidyānidhi)",
+          "fields": { "notes": "Mother of Puṇḍarīka Vidyānidhi and wife of Bāṇeśvara Brahmacārī (Gauḍīya Vaiṣṇava Abhidhāna, «Gaṅgā Devī» 1). Not Gaṅgā Devī, daughter of Śrī Nityānanda." } }
+      ]
+    },
+    {
+      "doc": 1075,
+      "pieces": [
+        { "find": "## Padmāvatī Devī She was the wife of Śrīnivāsa", "drop": "## Padmāvatī Devī", "heading": "## GAURĀṄGAPRIYĀ (PADMĀVATĪ)", "toId": 320, "title": "Gaurāṅgapriyā (Padmāvatī)" },
+        { "find": "Pāgala Haranatha In 1865", "drop": "Pāgala Haranatha", "heading": "## PĀGALA HARANĀTHA", "toName": "Pāgala Haranātha", "title": "Pāgala Haranātha",
+          "fields": { "appearance": "1865 CE, at Sonāmukhī (Bankura)", "notes": "Born in 1865 to Jayarāma Bandyopādhyāya and Bhagavatī Sundarī at Sonāmukhī (Bankura). Worked under the king of Kashmir from 1893; known for supernatural powers. His life is told in the Pāgala Haranātha." } }
+      ]
+    },
+    {
+      "doc": 580,
+      "pieces": [
+        { "find": "She was the mother of Kāśīnātha", "back": true, "toName": "Jāhnavī Devī (mother of Kāśīnātha of Cātarā)", "title": "Jāhnavī Devī (mother of Kāśīnātha)",
+          "fields": { "notes": "Mother of Kāśīnātha Paṇḍita of Cātarā; she went to Lord Caitanya in Purī and brought her son back (Gauḍīya Vaiṣṇava Abhidhāna, «Jāhnavī Devī»). Not Jāhnavā Mātā, wife of Śrī Nityānanda." } },
+        { "find": "She was the wife of Puruṣottama dāsa", "back": true, "toName": "Jāhnavā (wife of Puruṣottama dāsa)", "title": "Jāhnavā (wife of Puruṣottama dāsa)",
+          "fields": { "notes": "Wife of Puruṣottama dāsa Ṭhākura, son of Sadāśiva Kavirāja; mother of Kānu Ṭhākura (Śiśu Kṛṣṇadāsa). She died soon after his birth, and Nityānanda took the child to Khaḍadaha (Gauḍīya Vaiṣṇava Abhidhāna, «Jāhnavā Devī» 2). Not Jāhnavā Mātā, wife of Śrī Nityānanda." } }
+      ]
+    }
+  ]
+}

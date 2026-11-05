@@ -187,7 +187,18 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.12.2)
+## 5. Qué hace hoy (v0.12.3)
+
+### Novedades de la 0.12.3 (05-11-2026) — ir a una ficha por su número
+- **Pedido por Whisper** (para ir a las fichas repetidas que Claude le nombra): en «Filtrar personas…», `#1139` (o
+  `1139`) enseña solo esa ficha, sin mirar las etiquetas (`Sidebar.tsx`, en `shown`). La cabecera de cada ficha
+  muestra su número en gris junto al nombre («Puruṣottama Ṭhākura #1139»; `PersonView.tsx`, `.record-number`,
+  textos `recordNumberHint` / `filterPersonsHint`). Al hablar con Whisper: nombrar las fichas como «#1139».
+- **Datos (05-11, en la BD de Whisper):** los doce gopālas y el círculo de Nityānanda con texto principal
+  (`scripts/datos/nityananda1–4.json` + carpetas). Script nuevo `nit3-split.mjs <plan.json>`: corta trozos de un
+  texto por el texto exacto (aunque estén en la misma línea) y los lleva a su ficha; separadas así Gaṅgā Devī,
+  Mādhava Ācārya, Padmāvatī, otras Jāhnavās, Śrīdhara Svāmī (de Śrīdhara Brahmacārī). `tithi.mjs <puerto> fechas`
+  da el mes y tithi de un día del calendario (comando `upcoming`). Fichas nuevas 1987–1996.
 
 ### Novedades de la 0.12.2 (05-11-2026) — las fichas primero en la búsqueda
 - `search.rs` `order_by` (orden «Relevancia»): primero los textos de fichas del árbol (como antes), luego los de
@@ -673,9 +684,10 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 ## 7. Pendientes e ideas
 
 ### ▶▶ Para la próxima sesión (después del 05-11-2026) — LEER CONTINUAR.md
-Publicada la **0.12.1** (carpetas en la Guru Paramparā). Biografías por grupos: hechos Navadvīpa 3 y Purī 1;
-siguiente, más asociados de Purī (Paramānanda Purī, Pradyumna Miśra, Bhavānanda Rāya y sus hijos, Govinda,
-Śikhi Māhiti, Pratāparudra…). Detalle en `CONTINUAR.md` (local).
+Publicada la **0.12.3** (ir a una ficha por «#número»). Biografías por grupos: hechos Purī 1–3 y el círculo de
+Nityānanda (doce gopālas, familia); siguiente, **los asociados de Advaita**. Fichas repetidas pendientes de que
+Whisper las una: #5/#6, #207/#208/#1814, #1139/#1129, #576/#574, #1703/#1880/#1701, #664/#677, #1437/#1833.
+Detalle en `CONTINUAR.md` (local).
 
 ### ▶ Para la próxima sesión (después del 04-11-2026) — dónde nos quedamos
 - **Publicada la 0.11.0** en GitHub (Tīrthas, satélite, Inicio nuevo; formato 8). Whisper actualiza desde
@@ -1269,6 +1281,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **05-11-2026 — v0.12.3**: «#1139» en «Filtrar personas…» va a esa ficha; el número se ve en la cabecera. Datos
+  del día: los doce gopālas y el círculo de Nityānanda (texto principal; Sundarānanda, Puruṣottama Nāgara, Gaṅgā
+  Devī, Mādhava Ācārya, Padmāvatī, Raghunātha Vaidya y Śrīdhara Brahmacārī separados).
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.12.3
 - **05-11-2026 — v0.12.2**: en la búsqueda, los textos de las fichas antes que los libros sin ficha. Datos del día:
   Biblioteca ordenada (Fichas / Libros), Govinda, Haridāsa y Jagadānanda Ṭhākura separados, grupos Purī 1–3.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.12.2

@@ -288,6 +288,9 @@ function PersonList({
   // the records with that name first; below, those that only name it in their
   // fields or notes (else the one looked for is lost among them)
   const { shown, mentions } = useMemo(() => {
+    // a record's number («1139» or «#1139»): that record, whatever its tags
+    const num = /^\s*#?\s*(\d+)\s*$/.exec(filter);
+    if (num) return { shown: persons.filter((p) => p.id === Number(num[1])), mentions: [] };
     const words = foldName(filter).split(" ").filter(Boolean);
     const tagged = tag ? persons.filter((p) => tagsOf(p).includes(tag)) : persons;
     if (!words.length) return { shown: tagged, mentions: [] };
