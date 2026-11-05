@@ -2520,7 +2520,45 @@ button.logo {
   top: 50%;
   border-top-width: 1px;
 }
+/* Todo / Dīkṣā / Śikṣā above the Guru Paramparā of the side bar */
+.seg.side-tree-line {
+  display: flex;
+  margin: 2px 8px 6px;
+}
+.seg.side-tree-line button {
+  flex: 1;
+  padding: 3px 6px;
+  font-size: 12px;
+}
+.side-tree-fold {
+  display: flex;
+  gap: 4px;
+  margin: 0 8px 6px;
+}
+.side-tree-fold .btn {
+  flex: 1;
+  justify-content: center;
+  gap: 4px;
+  padding: 3px 6px;
+  font-size: 12px;
+}
+/* the folder of the pārṣadas / śikṣā disciples of a guru (closed at first) */
+.parampara .tree-row.tree-folder {
+  gap: 4px;
+  position: relative;
+  cursor: pointer;
+  color: var(--accent-text);
+  font-style: italic;
+}
+.parampara .tree-row.tree-folder .folder-icon {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+.parampara .tree-row.tree-folder .count {
+  font-style: normal;
+}
 .parampara .tree-row.person:hover .tree-lines,
+.parampara .tree-row.tree-folder:hover .tree-lines,
 .parampara .tree-row.person.active .tree-lines {
   --tree-line: var(--muted);
 }

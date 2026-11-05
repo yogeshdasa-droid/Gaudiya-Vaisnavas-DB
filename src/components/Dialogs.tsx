@@ -330,6 +330,7 @@ export function RelateDialog({
   t,
   id,
   place,
+  as,
   persons,
   onClose,
   onDone,
@@ -337,14 +338,17 @@ export function RelateDialog({
   t: T;
   id: number;
   place: { parent: number | null; before: number | null };
+  /** the relation already chosen (dropped in the folder of pārṣadas / śikṣā) */
+  as?: TreeKind;
   persons: PersonListItem[];
   onClose: () => void;
   onDone: (msg: string) => void;
 }) {
   const me = persons.find((x) => x.id === id);
   const guru = persons.find((x) => x.id === place.parent);
-  const oldGuru = persons.find((x) => x.id === me?.tree?.parent);
-  const [kind, setKind] = useState<TreeKind>(me?.tree?.kind ?? "diksa");
+  // the same guru (only the relation changes): nothing to take out
+  const oldGuru = me?.tree?.parent === place.parent ? undefined : persons.find((x) => x.id === me?.tree?.parent);
+  const [kind, setKind] = useState<TreeKind>(as ?? me?.tree?.kind ?? "diksa");
   const [unlink, setUnlink] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -68,6 +68,7 @@ import {
   Sort,
   Status,
   TreePlace,
+  TreeKind,
 } from "./api";
 import { dicts, Lang } from "./i18n";
 import { buildNameIndex } from "./personLinks";
@@ -124,7 +125,7 @@ type Dialog =
   | { kind: "versions"; what: "doc" | "person" | "place"; target: number; label: string }
   | { kind: "duplicates" }
   | { kind: "guru"; person: Person }
-  | { kind: "relate"; id: number; place: NonNullable<TreePlace> }
+  | { kind: "relate"; id: number; place: NonNullable<TreePlace>; as?: TreeKind }
   | { kind: "moveText"; docId: number; fragment: string; from: string }
   | { kind: "linkName"; spot: NameSpot; create: boolean }
   | null;
@@ -635,10 +636,12 @@ export default function App() {
       })
       .catch(fail);
   };
-  const movePerson = (id: number, place: TreePlace) => {
-    // under another guru: ask how they are related, and write it in both records
+  const movePerson = (id: number, place: TreePlace, as?: TreeKind) => {
+    // under another guru, or into / out of a folder (pārṣadas, śikṣā) of the same one:
+    // ask how they are related, and write it in both records
     const now = persons.find((p) => p.id === id)?.tree;
-    if (place && place.parent != null && (!now || now.parent !== place.parent)) return setDialog({ kind: "relate", id, place });
+    const otherKind = !!as && !!now && as !== now.kind;
+    if (place && place.parent != null && (!now || now.parent !== place.parent || otherKind)) return setDialog({ kind: "relate", id, place, as });
     // out of the tree, or to its first level: the records may forget that guru too
     const guru = now?.parent != null && place?.parent == null ? persons.find((p) => p.id === now.parent) : undefined;
     const name = persons.find((p) => p.id === id)?.name ?? "";
@@ -1435,6 +1438,7 @@ export default function App() {
           t={t}
           id={dialog.id}
           place={dialog.place}
+          as={dialog.as}
           persons={persons}
           onClose={() => setDialog(null)}
           onDone={(msg) => {

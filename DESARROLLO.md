@@ -187,7 +187,19 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.12.0)
+## 5. Qué hace hoy (v0.12.1)
+
+### Novedades de la 0.12.1 (05-11-2026) — la Guru Paramparā de la barra lateral, más ordenada
+- **Carpetas «Pārṣadas» y «Śikṣā»** bajo cada guru (`Sidebar.tsx`: `FOLDERS`, `folderOf`, filas
+  `type: "folder"`): sus asociados y sus discípulos de śikṣā/vāṇī **sin discípulos propios** (los que tienen
+  rama siguen a la vista: Mahāprabhu es śikṣā de Lord Kṛṣṇa) van en una carpeta **justo debajo del guru**,
+  cerrada al empezar (abiertas en localStorage `bio.treeFoldersOpen`). Solo es cómo se ve: nada en la BD.
+  Soltar a alguien en una carpeta (o junto a uno de dentro) abre «¿Cómo se relacionan?» (`RelateDialog`, prop
+  `as`) con esa relación marcada; mismo guru → sin «quitar del guru anterior». App `movePerson(id, place, as)`.
+- **Interruptor «Todo / Dīkṣā / Śikṣā»** encima de la lista (`bio.sideTreeLine`): en Dīkṣā / Śikṣā cada uno va
+  bajo su guru de esa línea (`arrange` exportado de `TreeView.tsx`), sin carpetas y sin arrastrar; «Ver en el
+  árbol» de una ficha que no está en esa línea vuelve a «Todo».
+- **«Expandir todo» / «Plegar todo»** (en «Todo» abre/cierra también las carpetas).
 
 ### Novedades de la 0.12.0 (04-11-2026, **publicada en GitHub**) — el árbol como un árbol impreso
 - **Formato 9** (`DATA_VERSION 9`): `person_tree.grp` (grupo en que se dibuja: «Pañca-tattva»…),
@@ -650,10 +662,10 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 7. Pendientes e ideas
 
-### ▶▶ Para la próxima sesión (después del 04-11-2026, noche) — LEER CONTINUAR.md
-Publicada la **0.12.0**. Whisper la instala el 05-11. Luego: copia → su app (9334) →
-`node scripts/datos/parampara-grupos.mjs scripts/datos/gaudiya_sampradaya.json 9334` (×2). Detalle y lista de
-pendientes en `CONTINUAR.md` (local).
+### ▶▶ Para la próxima sesión (después del 05-11-2026) — LEER CONTINUAR.md
+Publicada la **0.12.1** (carpetas en la Guru Paramparā). Biografías por grupos: hechos Navadvīpa 3 y Purī 1;
+siguiente, más asociados de Purī (Paramānanda Purī, Pradyumna Miśra, Bhavānanda Rāya y sus hijos, Govinda,
+Śikhi Māhiti, Pratāparudra…). Detalle en `CONTINUAR.md` (local).
 
 ### ▶ Para la próxima sesión (después del 04-11-2026) — dónde nos quedamos
 - **Publicada la 0.11.0** en GitHub (Tīrthas, satélite, Inicio nuevo; formato 8). Whisper actualiza desde
@@ -1247,6 +1259,12 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **05-11-2026 — v0.12.1**: carpetas «Pārṣadas» / «Śikṣā» en la Guru Paramparā de la barra lateral, interruptor
+  Todo / Dīkṣā / Śikṣā, Expandir / Plegar todo. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.12.1
+- **05-11-2026 — datos**: grupos «Navadvīpa 3» (Gaṅgādāsa 289, Śrīrāma Paṇḍita 1961, Śrīpati Paṇḍita 1962 nueva,
+  Rāmāi 1268, Sudarsana 1477) y «Purī 1» (Svarūpa Dāmodara 1513, Rāmānanda Rāya 1283, Sārvabhauma 1381,
+  Gopīnātha Ācārya 383, Kāśī Miśra 1952) con texto principal, en la BD real (copias «antes de Navadvipa 3» y
+  «antes de Puri 1»). `textoprincipal.mjs` acepta `new`, `fields.name`, `main` opcional y `move`.
 - **04-11-2026 — v0.12.0 (formato 9)**: árbol de arriba abajo con grupos, listas y cadenas (dagre), líneas de
   familia / discutidas / notas, exportar SVG, «Ver en el árbol», gurus del campo Guru → líneas del árbol.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.12.0

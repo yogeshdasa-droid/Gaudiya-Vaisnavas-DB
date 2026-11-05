@@ -44,7 +44,7 @@ export type TreeDir = "lr" | "tb";
 
 /** For each record drawn: the guru it goes under (null: it starts a branch)
  *  and how they are related; and the other lines to draw. */
-function arrange(persons: PersonListItem[], line: TreeLine) {
+export function arrange(persons: PersonListItem[], line: TreeLine) {
   const inTree = persons.filter((p) => p.tree);
   const ids = new Set(inTree.map((p) => p.id));
   const treeParent = (p: PersonListItem) => (p.tree!.parent !== null && ids.has(p.tree!.parent) ? p.tree!.parent : null);

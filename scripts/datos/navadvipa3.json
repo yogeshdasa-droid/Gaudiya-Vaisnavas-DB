@@ -1,0 +1,52 @@
+[
+  {
+    "id": 289,
+    "name": "Gaṅgā Dāsa Paṇḍit",
+    "main": "main-289.md",
+    "fields": {
+      "aka": "Gaṅgādāsa Paṇḍita",
+      "place": "Navadvīpa",
+      "notes": "Teacher of grammar of Śrī Caitanya Mahāprabhu in Navadvīpa (Caitanya-caritāmṛta Ādi 15.5). Branch of Lord Caitanya, very dear to Him (Caitanya-caritāmṛta Ādi 10.29).\n\nIn Kṛṣṇa-līlā: Sāndīpani Muni; Vasiṣṭha, the guru of Rāmacandra, is also in him (Gaura-gaṇoddeśa-dīpikā 53)."
+    }
+  },
+  {
+    "new": true,
+    "name": "Śrīrāma Paṇḍita",
+    "main": "main-srirama.md",
+    "move": { "doc": 1279, "from": "## RAMAI", "find": "He was the younger brother of Śrīvāsa", "title": "Ramai (Śrīrāma Paṇḍita)" },
+    "fields": {
+      "aka": "Rāmāi, Śrī Rāma Paṇḍita, Srirama",
+      "place": "Navadvīpa and Kumārahaṭṭa; family from Śrīhaṭṭa",
+      "notes": "Younger brother of Śrīvāsa Paṇḍita; son of Jaladhara Paṇḍita (Prema-vilāsa 23). Branch of Lord Caitanya (Caitanya-caritāmṛta Ādi 10.8).\n\nIn Kṛṣṇa-līlā: Parvata Muni, the dear friend of Nārada (Gaura-gaṇoddeśa-dīpikā 90)."
+    }
+  },
+  {
+    "new": true,
+    "name": "Śrīpati Paṇḍita",
+    "main": "main-sripati.md",
+    "fields": {
+      "aka": "Śrīpati, Sripati",
+      "place": "Navadvīpa and Kumārahaṭṭa; family from Śrīhaṭṭa",
+      "notes": "Brother of Śrīvāsa Paṇḍita; son of Jaladhara Paṇḍita (Prema-vilāsa 23). Branch of Lord Caitanya (Caitanya-caritāmṛta Ādi 10.9)."
+    }
+  },
+  {
+    "id": 1268,
+    "name": "Ramai",
+    "main": "main-1268.md",
+    "fields": {
+      "name": "Rāmāi (servant of the Lord in Purī)",
+      "aka": "Ramai",
+      "place": "Jagannātha Purī",
+      "notes": "Servant of Śrī Caitanya Mahāprabhu in Purī: with Nandāi and Govinda he did all the work of the Lord's house, and filled twenty-two pots of water every day (Caitanya-caritāmṛta Ādi 10.143–144). Branch of Lord Caitanya.\n\nIn Kṛṣṇa-līlā: Payoda, a servant of Kṛṣṇa (Gaura-gaṇoddeśa-dīpikā 139)."
+    }
+  },
+  {
+    "id": 1477,
+    "name": "Sudarsana",
+    "fields": {
+      "aka": "Sudarśana Paṇḍita",
+      "notes": "He was a devotee of Lord Gaurāṅga. Nothing is known about him, other than that he was a teacher of Lord Gaurāṅga, with Gaṅgādāsa Paṇḍita (Caitanya-maṅgala Ādi p. 64, Nāmāmṛta-samudra 61, Vaiṣṇava-vandanā; Gauḍīya Vaiṣṇava Abhidhāna).\n\nIn Kṛṣṇa-līlā: the Gauḍīya Vaiṣṇava Abhidhāna places Vasiṣṭha Muni, Rāmacandra's guru, in Gaṅgādāsa Paṇḍita (Gaura-gaṇoddeśa-dīpikā 53); this record said before that Sudarśana was Vasiṣṭha."
+    }
+  }
+]

@@ -1,7 +1,8 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { BookMarked, ChevronRight, MapPin, Plus, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
-import { api, Bookmark, DocListItem, hueOf, Marks, PersonListItem, Place, sortDisciples, TreePlace } from "../api";
+import { BookMarked, ChevronRight, ChevronsDownUp, ChevronsUpDown,MapPin, Plus, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
+import { api, Bookmark, DocListItem, hueOf, Marks, PersonListItem, Place, sortDisciples, TreeKind, TreePlace } from "../api";
 import { foldWord } from "../fold";
+import { arrange, TreeLine } from "./TreeView";
 import { possibleRepeats } from "./Review";
 import { Lang, T } from "../i18n";
 
@@ -152,7 +153,16 @@ const Tree = memo(function Tree(p: TreeProps) {
 
 // ---------------------------------------------------------------- persons
 
-type Drop = { kind: "inside" | "before" | "after"; target: number } | { kind: "root" } | { kind: "out" };
+type Drop = { kind: "inside" | "before" | "after"; target: number } | { kind: "folder"; target: number; fk: FolderKind } | { kind: "root" } | { kind: "out" };
+
+/** Under each guru of the tree, the pārṣadas and the śikṣā disciples go in a
+ *  folder of their own, closed at first (Whisper, 05-11-2026). Only a way of
+ *  showing the list: nothing is stored but which folders are open. */
+type FolderKind = "siksa" | "associate";
+const FOLDERS: FolderKind[] = ["associate", "siksa"];
+const LINES: TreeLine[] = ["all", "diksa", "siksa"];
+const folderOf = (k: TreeKind | undefined): FolderKind | null => (k === "associate" ? "associate" : k === "siksa" || k === "vani" ? "siksa" : null);
+const folderKey = (parent: number, fk: FolderKind) => `${parent}:${fk}`;
 
 interface Drag {
   id: number;
@@ -184,7 +194,7 @@ function useStoredSet<K>(key: string) {
       else n.delete(k);
       return n;
     });
-  return [s, toggle] as const;
+  return [s, toggle, setS] as const;
 }
 
 function PersonList({
@@ -210,7 +220,7 @@ function PersonList({
   onMark: (id: number) => void;
   activeId: number | null;
   onPerson: (id: number) => void;
-  onMove: (id: number, place: TreePlace) => void;
+  onMove: (id: number, place: TreePlace, kind?: TreeKind) => void;
   tag: string | null;
   onTag: (tag: string | null) => void;
   docs: DocListItem[];
@@ -221,7 +231,26 @@ function PersonList({
   const [filter, setFilter] = useState("");
   const [fieldHits, setFieldHits] = useState<number[]>([]);
   const [closedGroups, toggleGroup] = useStoredSet<string>("personGroups");
-  const [closed, toggleNode] = useStoredSet<number>("treeClosed");
+  const [closed, toggleNode, setClosed] = useStoredSet<number>("treeClosed");
+  // the folders of pārṣadas / śikṣā that are open (they start closed)
+  const [openFolders, toggleFolder, setOpenFolders] = useStoredSet<string>("treeFoldersOpen");
+  // the whole tree, or only the dīkṣā or the śikṣā line (as in the drawn tree)
+  const [line, setLineState] = useState<TreeLine>(() => {
+    try {
+      const v = localStorage.getItem("bio.sideTreeLine") as TreeLine | null;
+      return v && LINES.includes(v) ? v : "all";
+    } catch {
+      return "all";
+    }
+  });
+  const setLine = (l: TreeLine) => {
+    setLineState(l);
+    try {
+      localStorage.setItem("bio.sideTreeLine", l);
+    } catch {
+      /* storage unavailable */
+    }
+  };
   useEffect(() => {
     if (otherFolded) return;
     otherFolded = true;
@@ -286,19 +315,31 @@ function PersonList({
   }, [docs]);
 
   // the Guru Paramparā: the disciples of each record, in their order
-  const { kids, parentOf, others } = useMemo(() => {
+  // (in a line view each one goes under its guru of that line, as in the drawn tree)
+  const { kids, parentOf, kindOf, others } = useMemo(() => {
     const ids = new Set(persons.filter((p) => p.tree).map((p) => p.id));
     const kids = new Map<number | null, PersonListItem[]>();
     const parentOf = new Map<number, number | null>();
+    const kindOf = new Map<number, TreeKind | null>();
+    const under = line === "all" ? null : arrange(persons, line).under;
     for (const p of persons) {
       if (!p.tree) continue;
-      const parent = p.tree.parent !== null && ids.has(p.tree.parent) ? p.tree.parent : null;
+      let parent: number | null;
+      if (under) {
+        const u = under.get(p.id);
+        if (!u) continue;
+        parent = u.parent;
+        kindOf.set(p.id, u.kind);
+      } else {
+        parent = p.tree.parent !== null && ids.has(p.tree.parent) ? p.tree.parent : null;
+        kindOf.set(p.id, parent !== null ? p.tree.kind : null);
+      }
       parentOf.set(p.id, parent);
       kids.set(parent, [...(kids.get(parent) ?? []), p]);
     }
     sortDisciples(kids);
-    return { kids, parentOf, others: persons.filter((p) => !p.tree) };
-  }, [persons]);
+    return { kids, parentOf, kindOf, others: persons.filter((p) => !p.tree) };
+  }, [persons, line]);
 
   // the Vaiṣṇava-maṇḍala (everyone outside the tree) by name: the many
   // Haridāsas, Govindas… together, under the name as written in them
@@ -318,19 +359,55 @@ function PersonList({
 
   const rows = useMemo(() => {
     // guides: for each guru above, whether more of his disciples come below (a line goes on down)
-    const out: { p: PersonListItem; depth: number; hasKids: boolean; guides: boolean[]; last: boolean }[] = [];
+    type Row =
+      | { type: "person"; p: PersonListItem; depth: number; hasKids: boolean; guides: boolean[]; last: boolean }
+      | { type: "folder"; parent: number; fk: FolderKind; n: number; depth: number; guides: boolean[]; last: boolean; open: boolean };
+    const out: Row[] = [];
+    const person = (p: PersonListItem, depth: number, guides: boolean[], last: boolean) => {
+      const hasKids = (kids.get(p.id)?.length ?? 0) > 0;
+      out.push({ type: "person", p, depth, hasKids, guides, last });
+      if (hasKids && !closed.has(p.id)) walk(p.id, depth + 1, depth ? [...guides, !last] : guides);
+    };
     const walk = (parent: number | null, depth: number, guides: boolean[]) => {
       const list = kids.get(parent) ?? [];
-      list.forEach((p, i) => {
-        const hasKids = (kids.get(p.id)?.length ?? 0) > 0;
-        const last = i === list.length - 1;
-        out.push({ p, depth, hasKids, guides, last });
-        if (hasKids && !closed.has(p.id)) walk(p.id, depth + 1, depth ? [...guides, !last] : guides);
+      // the first level has no guru: no folders there; and one with disciples of his own
+      // stays in sight (Mahāprabhu is Kṛṣṇa's śikṣā disciple: the whole tree would be hidden)
+      // (only in the whole tree: a line view is already one kind)
+      const fold = (p: PersonListItem) => (line !== "all" || parent === null || kids.has(p.id) ? null : folderOf(kindOf.get(p.id) ?? undefined));
+      const main = list.filter((p) => !fold(p));
+      const folders = FOLDERS.map((fk) => [fk, list.filter((p) => fold(p) === fk)] as const).filter(([, ps]) => ps.length);
+      // the folders first, just under their guru (at the end it is not clear whose they are)
+      const count = main.length + folders.length;
+      folders.forEach(([fk, ps], j) => {
+        const last = j === count - 1;
+        const open = openFolders.has(folderKey(parent!, fk));
+        out.push({ type: "folder", parent: parent!, fk, n: ps.length, depth, guides, last, open });
+        const inner = depth ? [...guides, !last] : guides;
+        if (open) ps.forEach((p, i) => person(p, depth + 1, inner, i === ps.length - 1));
       });
+      main.forEach((p, i) => person(p, depth, guides, folders.length + i === count - 1));
     };
     walk(null, 0, []);
     return out;
-  }, [kids, closed]);
+  }, [kids, kindOf, closed, openFolders, line]);
+
+  // open or close the whole tree at once (Whisper: «Dīkṣā» and then everything open, to see it well)
+  const expandAll = () => {
+    setClosed(new Set());
+    if (line !== "all") return;
+    const keys = new Set<string>();
+    for (const [parent, list] of kids)
+      if (parent !== null)
+        for (const p of list) {
+          const fk = kids.has(p.id) ? null : folderOf(kindOf.get(p.id) ?? undefined);
+          if (fk) keys.add(folderKey(parent, fk));
+        }
+    setOpenFolders(keys);
+  };
+  const collapseAll = () => {
+    setClosed(new Set([...kids.keys()].filter((k): k is number => k !== null)));
+    if (line === "all") setOpenFolders(new Set());
+  };
 
   // a deep tree in a narrow panel: the levels come closer so that the names
   // are always seen (from INDENT down to MIN_INDENT px a level)
@@ -359,9 +436,20 @@ function PersonList({
     revealed = reveal.n;
     setFilter("");
     if (tag) onTag(null);
+    // not in this line view: the whole tree (it comes back here with the new list)
+    if (line !== "all" && !parentOf.has(reveal.id) && persons.find((q) => q.id === reveal.id)?.tree) {
+      revealed = -1;
+      return setLine("all");
+    }
     if (parentOf.has(reveal.id)) {
       toggleGroup("tree", false);
       for (let x = parentOf.get(reveal.id); x != null; x = parentOf.get(x)) toggleNode(x, false);
+      // and the folders on the way (pārṣadas / śikṣā)
+      for (let x: number | null | undefined = reveal.id; x != null; x = parentOf.get(x)) {
+        const up = parentOf.get(x);
+        const fk = folderOf(persons.find((q) => q.id === x)?.tree?.kind);
+        if (up != null && fk) toggleFolder(folderKey(up, fk), true);
+      }
     } else toggleGroup("other", false);
     scrollToRow(`[data-ctx="person"][data-id="${reveal.id}"]`);
   }, [reveal, parentOf]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -381,13 +469,15 @@ function PersonList({
     if (kind === "out") return parentOf.has(id) ? { kind: "out" } : null;
     const target = Number(el.dataset.id);
     if (isWithin(target, id)) return null;
+    if (kind === "folder") return { kind: "folder", target, fk: el.dataset.fk as FolderKind };
     const r = el.getBoundingClientRect();
     const f = (y - r.top) / r.height;
     return { kind: f < 0.28 ? "before" : f > 0.72 ? "after" : "inside", target };
   };
 
   const startDrag = (e: React.MouseEvent, p: PersonListItem) => {
-    if (e.button !== 0 || filter) return;
+    // (in a line view the places are not the real ones: no dragging there)
+    if (e.button !== 0 || filter || line !== "all") return;
     const x0 = e.clientX;
     const y0 = e.clientY;
     const scroller = (e.currentTarget as HTMLElement).closest(".side-scroll");
@@ -426,10 +516,24 @@ function PersonList({
         toggleNode(d.target, false);
         return onMove(p.id, { parent: d.target, before: null });
       }
+      // into a folder: that relation (a vāṇī disciple stays vāṇī in the śikṣā one)
+      const asFolder = (fk: FolderKind): TreeKind | undefined =>
+        folderOf(p.tree?.kind) === fk ? undefined : fk === "associate" ? "associate" : "siksa";
+      if (d.kind === "folder") {
+        toggleNode(d.target, false);
+        toggleFolder(folderKey(d.target, d.fk), true);
+        return onMove(p.id, { parent: d.target, before: null }, asFolder(d.fk));
+      }
       const parent = parentOf.get(d.target) ?? null;
       const sibs = (kids.get(parent) ?? []).map((s) => s.id).filter((s) => s !== p.id);
       const at = sibs.indexOf(d.target) + (d.kind === "after" ? 1 : 0);
-      onMove(p.id, { parent, before: sibs[at] ?? null });
+      // next to one in a folder: into that folder; next to one outside the folders: out of them
+      const targetKind = persons.find((x) => x.id === d.target)?.tree?.kind;
+      // (only those without disciples of their own are in the folders)
+      const tf = parent === null || kids.has(d.target) ? null : folderOf(targetKind);
+      const inFolder = !kids.has(p.id) && folderOf(p.tree?.kind);
+      const kind = tf ? asFolder(tf) : parent !== null && inFolder ? targetKind : undefined;
+      onMove(p.id, { parent, before: sibs[at] ?? null }, kind);
     };
     window.addEventListener("mousemove", move);
     window.addEventListener("mouseup", end);
@@ -440,9 +544,12 @@ function PersonList({
     if (d.kind === "root") return t.dropRoot;
     if (d.kind === "out") return t.dropOut;
     const n = persons.find((x) => x.id === d.target)?.name ?? "";
+    if (d.kind === "folder") return t.dropFolder(t.treeFolder[d.fk], n);
     return d.kind === "inside" ? t.dropInside(n) : d.kind === "before" ? t.dropBefore(n) : t.dropAfter(n);
   };
-  const dropClass = (id: number) => (drag?.drop && "target" in drag.drop && drag.drop.target === id ? ` drop-${drag.drop.kind}` : "");
+  const dropClass = (id: number) =>
+    drag?.drop && "target" in drag.drop && drag.drop.kind !== "folder" && drag.drop.target === id ? ` drop-${drag.drop.kind}` : "";
+  const folderHot = (parent: number, fk: FolderKind) => drag?.drop?.kind === "folder" && drag.drop.target === parent && drag.drop.fk === fk;
 
   const personRow = (p: PersonListItem, inTree = false, caret?: React.ReactNode, depth = 0, lines?: React.ReactNode) => (
     <div
@@ -464,7 +571,7 @@ function PersonList({
       {lines}
       {caret}
       <span className="name">{p.name}</span>
-      {inTree && p.tree && p.tree.parent !== null && <span className={`tree-kind ${p.tree.kind}`}>{t.treeKindShort[p.tree.kind]}</span>}
+      {inTree && kindOf.get(p.id) && <span className={`tree-kind ${kindOf.get(p.id)}`}>{t.treeKindShort[kindOf.get(p.id)!]}</span>}
       {inTree && p.links.length > 0 && (
         <span
           className="tree-kind siksa"
@@ -533,8 +640,54 @@ function PersonList({
         <>
           {groupHead("tree", t.parampara, parentOf.size, "root", t.paramparaHint)}
           {!closedGroups.has("tree") && (
+            <div className="seg side-tree-line">
+              {LINES.map((l) => (
+                <button key={l} className={line === l ? "on" : ""} title={t.treeLineHint[l]} onClick={() => setLine(l)}>
+                  {t.sideTreeLine[l]}
+                </button>
+              ))}
+            </div>
+          )}
+          {!closedGroups.has("tree") && (
+            <div className="side-tree-fold">
+              <button className="btn ghost small" title={t.expandAllHint} onClick={expandAll}>
+                <ChevronsUpDown size={13} /> {t.expandAll}
+              </button>
+              <button className="btn ghost small" title={t.collapseAllHint} onClick={collapseAll}>
+                <ChevronsDownUp size={13} /> {t.collapseAll}
+              </button>
+            </div>
+          )}
+          {!closedGroups.has("tree") && (
             <div className="parampara" ref={treeBox}>
-              {rows.map(({ p, depth, hasKids, guides, last }) => (
+              {rows.map((r) => {
+                if (r.type === "folder") {
+                  const { parent, fk, n, depth, guides, last, open } = r;
+                  return (
+                    <div key={`f${parent}:${fk}`}>
+                      <div
+                        data-drop="folder"
+                        data-id={parent}
+                        data-fk={fk}
+                        className={`tree-row tree-folder ${fk}${folderHot(parent, fk) ? " drop-inside" : ""}`}
+                        style={{ paddingLeft: 4 + depth * indent, marginLeft: -shift }}
+                        title={t.treeFolderHint[fk]}
+                        onClick={() => {
+                          follow(depth + (open ? 0 : 1));
+                          toggleFolder(folderKey(parent, fk));
+                        }}
+                      >
+                        {depth > 0 && treeLines(guides, last, fk, indent)}
+                        <ChevronRight size={13} className={`caret ${open ? "open" : ""}`} />
+                        {open ? <FolderOpen size={14} className="folder-icon" /> : <Folder size={14} className="folder-icon" />}
+                        <span className="name">{t.treeFolder[fk]}</span>
+                        <span className="count">{n.toLocaleString(lang)}</span>
+                      </div>
+                    </div>
+                  );
+                }
+                const { p, depth, hasKids, guides, last } = r;
+                return (
                 <div key={p.id}>
                   {personRow(
                     p,
@@ -554,10 +707,11 @@ function PersonList({
                       <span className="caret-space" />
                     ),
                     depth,
-                    depth > 0 && treeLines(guides, last, p.tree?.kind ?? "diksa", indent),
+                    depth > 0 && treeLines(guides, last, kindOf.get(p.id) ?? "diksa", indent),
                   )}
                 </div>
-              ))}
+                );
+              })}
               {rows.length === 0 && (
                 <div data-drop="root" className={`side-empty small${drag?.drop?.kind === "root" ? " drop-hot" : ""}`}>
                   {t.paramparaEmpty}
@@ -692,7 +846,7 @@ interface Props {
   activePersonId: number | null;
   onPerson: (id: number) => void;
   onNewPerson: () => void;
-  onMovePerson: (id: number, place: TreePlace) => void;
+  onMovePerson: (id: number, place: TreePlace, kind?: TreeKind) => void;
   docs: DocListItem[];
   activeDir: string | null;
   activeDocId: number | null;
