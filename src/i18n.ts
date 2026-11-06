@@ -273,11 +273,13 @@ const es = {
   allToNamesakesHint: "Todas estas fichas, también esta, son personas distintas con el mismo nombre: no se vuelven a proponer ni salen en rojo (etiqueta «Homónimos»)",
   dropInside: (n: string) => `Discípulo de ${n}`,
   dropFolder: (folder: string, n: string) => `A «${folder}» de ${n}`,
-  treeFolder: { siksa: "Śikṣā", associate: "Pārṣadas" } as Record<"siksa" | "associate", string>,
+  treeFolder: { siksa: "Śikṣā", associate: "Pārṣadas", disciples: "Discípulos" } as Record<"siksa" | "associate" | "disciples", string>,
   treeFolderHint: {
     siksa: "Discípulos de śikṣā y vāṇī. Arrastra aquí a alguien para que sea discípulo de śikṣā de este guru.",
     associate: "Asociados (pārṣadas), no discípulos. Arrastra aquí a alguien para que sea pārṣada de este devoto.",
-  } as Record<"siksa" | "associate", string>,
+    disciples:
+      "Los discípulos que no tienen discípulos propios (este guru tiene muchos: así la lista es más corta). Los que tienen discípulos siguen debajo del guru.",
+  } as Record<"siksa" | "associate" | "disciples", string>,
   dropBefore: (n: string) => `Antes de ${n}`,
   dropAfter: (n: string) => `Después de ${n}`,
   dropRoot: "Al primer nivel de la Paramparā",
@@ -1157,10 +1159,12 @@ const en: Dict = {
   allToNamesakesHint: "All these records, this one too, are different people with the same name: not proposed again nor shown in red (label “Homónimos”)",
   dropInside: (n) => `Disciple of ${n}`,
   dropFolder: (folder, n) => `Into «${folder}» of ${n}`,
-  treeFolder: { siksa: "Śikṣā", associate: "Pārṣadas" },
+  treeFolder: { siksa: "Śikṣā", associate: "Pārṣadas", disciples: "Disciples" },
   treeFolderHint: {
     siksa: "Śikṣā and vāṇī disciples. Drag someone here to make them a śikṣā disciple of this guru.",
     associate: "Associates (pārṣadas), not disciples. Drag someone here to make them a pārṣada of this devotee.",
+    disciples:
+      "The disciples who have no disciples of their own (this guru has many: so the list is shorter). Those with disciples stay under the guru.",
   },
   dropBefore: (n) => `Before ${n}`,
   dropAfter: (n) => `After ${n}`,

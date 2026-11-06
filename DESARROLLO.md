@@ -187,7 +187,18 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.12.5)
+## 5. Qué hace hoy (v0.12.6)
+
+### Novedades de la 0.12.6 (06-11-2026) — carpeta «Discípulos» en la Guru Paramparā
+- **Pedido por Whisper**: en la Guru Paramparā lateral, un guru con **más de 4 discípulos** directos enseña los que
+  **no tienen discípulos propios** dentro de una carpeta **«Discípulos»** (cerrada al principio, aparte de «Pārṣadas»
+  y «Śikṣā»); los que tienen discípulos siguen a la vista bajo el guru. También en las vistas Dīkṣā / Śikṣā.
+  «Expandir todo» y «Mostrar en el árbol» la abren; arrastrar a ella deja la relación (pārṣada / śikṣā → dīkṣā).
+- Código: `Sidebar.tsx` (`MANY_DISCIPLES = 4`, `FolderKind` «disciples», en `walk` y en `expandAll`), textos
+  `treeFolder.disciples` y `treeFolderHint.disciples` en `i18n.ts`.
+- Datos (scripts en `scripts/datos/`, `grupo2*`): grupo 2 del Abhidhāna, la rama de Gadādhara Paṇḍita — 13 textos
+  principales, 27 fichas de su rama puestas bajo él, Jayarāma Tarkālaṅkāra fuera (su maestro fue el lógico Gadādhara),
+  Kavivallabha dāsa (#722, antes «Keśivallabha») bajo un Uddhava discípulo de Narahari, dos uniones de Vāṇīnātha.
 
 ### Novedades de la 0.12.5 (06-11-2026) — «Plegar hacia atrás» en la Guru Paramparā
 - **Pedido por Whisper**: botón derecho sobre alguien de la Guru Paramparā lateral con dos o más gurus encima →
@@ -1308,6 +1319,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **06-11-2026 — v0.12.6**: carpeta «Discípulos» en la Guru Paramparā lateral (gurus con más de 4 discípulos). Datos:
+  grupo 2 del Abhidhāna (rama de Gadādhara Paṇḍita).
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.12.6
 - **06-11-2026 — v0.12.5**: «Plegar hacia atrás» en la Guru Paramparā lateral. Datos del día: rama «Other Vaiṣṇava
   lines», huérfanos colocados bajo su guru, grupo 1 del Abhidhāna (Mahāprabhu y Nityānanda).
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.12.5

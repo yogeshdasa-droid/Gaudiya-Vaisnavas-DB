@@ -158,8 +158,11 @@ type Drop = { kind: "inside" | "before" | "after"; target: number } | { kind: "f
 /** Under each guru of the tree, the pārṣadas and the śikṣā disciples go in a
  *  folder of their own, closed at first (Whisper, 05-11-2026). Only a way of
  *  showing the list: nothing is stored but which folders are open. */
-type FolderKind = "siksa" | "associate";
+type FolderKind = "siksa" | "associate" | "disciples";
 const FOLDERS: FolderKind[] = ["associate", "siksa"];
+/** A guru with more disciples than this: those without disciples of their own
+ *  go in a folder «Disciples»; those with disciples stay under him (Whisper, 06-11-2026). */
+const MANY_DISCIPLES = 4;
 const LINES: TreeLine[] = ["all", "diksa", "siksa"];
 const folderOf = (k: TreeKind | undefined): FolderKind | null => (k === "associate" ? "associate" : k === "siksa" || k === "vani" ? "siksa" : null);
 const folderKey = (parent: number, fk: FolderKind) => `${parent}:${fk}`;
@@ -396,8 +399,16 @@ function PersonList({
       // stays in sight (Mahāprabhu is Kṛṣṇa's śikṣā disciple: the whole tree would be hidden)
       // (only in the whole tree: a line view is already one kind)
       const fold = (p: PersonListItem) => (line !== "all" || parent === null || kids.has(p.id) ? null : folderOf(kindOf.get(p.id) ?? undefined));
-      const main = list.filter((p) => !fold(p));
-      const folders = FOLDERS.map((fk) => [fk, list.filter((p) => fold(p) === fk)] as const).filter(([, ps]) => ps.length);
+      let main = list.filter((p) => !fold(p));
+      const folders: (readonly [FolderKind, PersonListItem[]])[] = FOLDERS.map((fk) => [fk, list.filter((p) => fold(p) === fk)] as const).filter(([, ps]) => ps.length);
+      // many disciples: those without disciples in a folder of their own, the others in sight
+      if (parent !== null && main.length > MANY_DISCIPLES) {
+        const leaves = main.filter((p) => !kids.has(p.id));
+        if (leaves.length > 1) {
+          main = main.filter((p) => kids.has(p.id));
+          folders.push(["disciples", leaves]);
+        }
+      }
       // the folders first, just under their guru (at the end it is not clear whose they are)
       const count = main.length + folders.length;
       folders.forEach(([fk, ps], j) => {
@@ -450,20 +461,22 @@ function PersonList({
   const expandAll = () => {
     setBack(null);
     setClosed(new Set());
-    if (line !== "all") return;
     const keys = new Set<string>();
     for (const [parent, list] of kids)
-      if (parent !== null)
-        for (const p of list) {
-          const fk = kids.has(p.id) ? null : folderOf(kindOf.get(p.id) ?? undefined);
-          if (fk) keys.add(folderKey(parent, fk));
-        }
+      if (parent !== null) {
+        keys.add(folderKey(parent, "disciples"));
+        if (line === "all")
+          for (const p of list) {
+            const fk = kids.has(p.id) ? null : folderOf(kindOf.get(p.id) ?? undefined);
+            if (fk) keys.add(folderKey(parent, fk));
+          }
+      }
     setOpenFolders(keys);
   };
   const collapseAll = () => {
     setBack(null);
     setClosed(new Set([...kids.keys()].filter((k): k is number => k !== null)));
-    if (line === "all") setOpenFolders(new Set());
+    setOpenFolders(new Set());
   };
 
   // a deep tree in a narrow panel: the levels come closer so that the names
@@ -508,6 +521,8 @@ function PersonList({
         const up = parentOf.get(x);
         const fk = folderOf(persons.find((q) => q.id === x)?.tree?.kind);
         if (up != null && fk) toggleFolder(folderKey(up, fk), true);
+        // (one without disciples may be in the folder «Disciples» of his guru)
+        if (up != null && !kids.has(x)) toggleFolder(folderKey(up, "disciples"), true);
       }
     } else toggleGroup("other", false);
     scrollToRow(`[data-ctx="person"][data-id="${reveal.id}"]`);
@@ -576,8 +591,11 @@ function PersonList({
         return onMove(p.id, { parent: d.target, before: null });
       }
       // into a folder: that relation (a vāṇī disciple stays vāṇī in the śikṣā one)
+      // (into «Disciples»: as it was, or dīkṣā if it was a pārṣada / śikṣā)
       const asFolder = (fk: FolderKind): TreeKind | undefined =>
-        folderOf(p.tree?.kind) === fk ? undefined : fk === "associate" ? "associate" : "siksa";
+        fk === "disciples"
+          ? folderOf(p.tree?.kind) ? "diksa" : undefined
+          : folderOf(p.tree?.kind) === fk ? undefined : fk === "associate" ? "associate" : "siksa";
       if (d.kind === "folder") {
         toggleNode(d.target, false);
         toggleFolder(folderKey(d.target, d.fk), true);
