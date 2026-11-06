@@ -1329,6 +1329,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **06-11-2026 — scripts de datos (sin versión nueva)**: grupos 5 y 6 del Abhidhāna (Viśvanātha, Baladeva, Narahari
+  Cakravartī, Rādhāmohana; los bābājīs de los siglos XVIII–XX: Gaṅgāmātā, Siddha Kṛṣṇadāsa de Govardhana y su línea,
+  Nityānanda dāsa y Madhusūdana dāsa fuera de «Other Vaiṣṇava lines»); Lakṣmīpriyā Mātā pārṣada de Mahāprabhu;
+  Giridhārī dāsa con veśa de Siddha Kṛṣṇadāsa (`grupo5*`, `grupo6*`).
 - **06-11-2026 — v0.12.7**: elegir de la lista el guru que ya ponía la ficha la coloca en el árbol. Datos: grupos 3 y 4
   del Abhidhāna; 125 fichas colocadas bajo su guru; cinco uniones.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.12.7
