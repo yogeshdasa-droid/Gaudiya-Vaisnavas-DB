@@ -187,7 +187,20 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.12.3)
+## 5. Qué hace hoy (v0.12.4)
+
+### Novedades de la 0.12.4 (06-11-2026) — enlaces a archivos en las notas
+- **Pedido por Whisper** (para abrir el PDF de un libro desde la ficha): en las notas, una línea que sea una ruta del
+  PC (`E:\…\libro.pdf`, `\\servidor\…`, `file:///…`, con o sin comillas) sale como enlace y se abre con su programa
+  (`open_external` → `open_path`). También `[palabra](<ruta o web>)` y `[palabra](https://…)`: se ve solo la palabra.
+  Código: `noteLinks` / `WebLinks` en `PersonView.tsx` (sirve también para las notas de los Tīrthas).
+- En «Editar ficha», botón **«Enlazar…»** junto a «Notas» (`NotesEditor` en `Dialogs.tsx`): seleccionar la palabra,
+  «Elegir archivo…» (o pegar la ruta / web) → «Crear enlace» escribe `[palabra](<ruta>)`. Textos `link*` y
+  `notesHint` en `i18n.ts`; estilos `.notes-head`, `.link-maker`.
+- **Datos (06-11, en la BD de Whisper):** Bhaktivinoda 3 y 4 (discípulos de Bhaktisiddhānta y de Keśava, con texto
+  principal y fechas del calendario), libros recopilatorios repartidos en las fichas (`libros-saints.json`,
+  `libros-acaryas.json` con `nit3-split.mjs`), `sindup.mjs --ficha` (quita lo que ya cuentan otros textos de la
+  misma ficha), Sanatkumāra-saṁhitā pasada a libro, Raghunātha dāsa Gosvāmī sacado de la ficha #1207. Detalle en CONTINUAR.md.
 
 ### Novedades de la 0.12.3 (05-11-2026) — ir a una ficha por su número
 - **Pedido por Whisper** (para ir a las fichas repetidas que Claude le nombra): en «Filtrar personas…», `#1139` (o
@@ -1281,6 +1294,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **06-11-2026 — v0.12.4**: enlaces a archivos del PC en las notas (rutas sueltas y «Enlazar…» en el editor). Datos
+  del día: Bhaktivinoda 3–4, libros «Vaiṣṇava Saints» y «Gauḍīya Vaiṣṇava Ācāryas» repartidos en las fichas.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.12.4
 - **05-11-2026 — v0.12.3**: «#1139» en «Filtrar personas…» va a esa ficha; el número se ve en la cabecera. Datos
   del día: los doce gopālas y el círculo de Nityānanda (texto principal; Sundarānanda, Puruṣottama Nāgara, Gaṅgā
   Devī, Mādhava Ācārya, Padmāvatī, Raghunātha Vaidya y Śrīdhara Brahmacārī separados).

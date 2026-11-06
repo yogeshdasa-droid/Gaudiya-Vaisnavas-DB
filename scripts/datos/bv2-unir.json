@@ -1,0 +1,17 @@
+[
+  { "into": 127, "name": "Bhaktikevala Audulomi", "from": [{ "id": 1797, "name": "Bhakti Keval Audulomi" }], "trash": [1830],
+    "fields": { "name": "Bhakti Kevala Auḍulomi Mahārāja" } },
+  { "into": 1377, "name": "Saranga Gosvāmī Mahārāja", "from": [{ "id": 1870, "name": "Śrīla Bhakti Sharanga Gosvāmī" }],
+    "fields": { "name": "Bhakti Sāraṅga Gosvāmī Mahārāja" } },
+  { "into": 122, "name": "Bhakti Pradip Tīrtha", "from": [{ "id": 1096, "name": "Pradip Thirta Majaraj" }], "trash": [122],
+    "fields": { "name": "Bhakti Pradīpa Tīrtha Mahārāja" } },
+  { "into": 1799, "name": "Bhakti Pramod Purī", "from": [{ "id": 1118, "name": "Promode Purī Gosvāmī" }],
+    "fields": { "name": "Bhakti Pramoda Purī Gosvāmī Mahārāja" } },
+  { "into": 1839, "name": "Kṛṣṇa dāsa bābājī", "from": [{ "id": 1853, "name": "Prabhupāda's Godbrother Akiñcana Kṛṣṇadās Bābājī Mahārāj" }],
+    "fields": { "name": "Akiñcana Kṛṣṇadāsa Bābājī Mahārāja" } },
+  { "into": 1811, "name": "Bhakti Vilās Tīrtha", "from": [{ "id": 1840, "name": "Kunjabihari Vidyābhūṣaṇa bābājī" }],
+    "fields": { "name": "Bhakti Vilāsa Tīrtha Gosvāmī Mahārāja" } },
+  { "into": 1810, "name": "Śrīla Bhaktivedānta Vāmana Gosvāmī Mahārāja", "from": [{ "id": 1885, "name": "Bhakti Vedānta Vāmana" }], "trash": [3096] },
+  { "into": 123, "name": "Bhakti Prasād Purī", "from": [{ "id": 49, "name": "Ananta Vāsudeva" }],
+    "fields": { "name": "Bhakti Prasāda Purī Gosvāmī" } }
+]

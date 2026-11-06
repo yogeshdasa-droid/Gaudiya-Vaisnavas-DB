@@ -1,0 +1,30 @@
+[
+  { "into": 677, "name": "Kanu Ṭhākura", "from": [{ "id": 664, "name": "Kanai Ṭhākura (Kanu Ṭhākura, Sisu Kṛṣṇadāsa)" }] },
+  { "into": 1833, "name": "Kholāvecā Śrīdhara", "from": [{ "id": 1437, "name": "Śrīdhara" }], "trash": [1454] },
+  { "into": 1065, "name": "Padmanābha (father of Lokanātha)", "from": [{ "id": 1884, "name": "Padmanābha Cakravartī" }] },
+  { "into": 639, "name": "Kālīya Kṛṣṇa Dāsa Ṭhākura", "from": [{ "id": 624, "name": "Kāla-Kṛṣṇa" }],
+    "fields": { "aka": "Kāla Kṛṣṇadāsa, Kālā Kṛṣṇadāsa, Kāliyā Kṛṣṇadāsa, Kāla-Kṛṣṇa" } },
+  { "into": 1466, "name": "Śrīnivāsa Ācārya", "from": [{ "id": 1465, "name": "Śrīnivāsa  Ṭhākura" }],
+    "fields": { "aka": "Śrīnivāsa Ācārya Ṭhākura, Ācārya Prabhu, Śrīnivāsa Ācārya Prabhu, Śrīnivāsa Ṭhākura" } },
+  { "into": 1535, "name": "Śyāmānanda Paṇḍita", "from": [{ "id": 230, "name": "Duhkhini Kṛṣṇa Dāsa" }],
+    "fields": { "aka": "Duḥkhī Kṛṣṇadāsa, Śyāmānanda Prabhu, Duḥkhī, Kṛṣṇadāsa, Duḥkhinī Kṛṣṇadāsa" } },
+  { "into": 15, "name": "Śrī Advaita Ācārya Prabhu", "from": [{ "id": 658, "name": "Kamalākṣa" }] },
+  { "into": 1336, "name": "Śacī Devī", "from": [{ "id": 1864, "name": "Śacī Mātā" }, { "id": 1953, "name": "Śrīmatī Śacīdevī" }], "trash": [2110],
+    "fields": { "aka": "Śacī Mātā, Āi, Śacīdevī" } },
+  { "into": 1484, "name": "Sudhanidhi Rāya", "from": [{ "id": 1483, "name": "Sudhanidhi PattanayakaRaya" }],
+    "fields": {
+      "name": "Sudhānidhi Rāya",
+      "aka": "Sudhānidhi Paṭṭanāyaka, Sudhanidhi Rāya, Sudhākara",
+      "place": "Orissa",
+      "notes": "Kāyastha of Orissa, son of Bhavānanda Rāya and younger brother of Rāmānanda Rāya; one of the five brothers who were branches of Śrī Caitanya (Caitanya-caritāmṛta Ādi 10.133).\n\nIn Kṛṣṇa-līlā: one of the nine nidhis (Gaura-gaṇoddeśa-dīpikā 102-103); Acyutānanda dāsa (Gurubhakti-gītā, vol. 3, p. 176) calls him Sudhākara, the gopī Manoharī."
+    } },
+  { "into": 1378, "name": "Saranga Ṭhākura", "from": [{ "id": 1379, "name": "SarangadasaThakurSarangadeva" }],
+    "fields": {
+      "name": "Sāraṅga Ṭhākura",
+      "aka": "Sāraṅgadāsa Ṭhākura, Sāraṅgadeva, Saranga Ṭhākura",
+      "disappearance": "Agrahāyaṇa Kṛṣṇa Trayodaśī (Gauḍīya calendar)",
+      "place": "Māmgāchi (Modadruma-dvīpa, Navadvīpa), under a bakula tree; born at Budhan (Abhirāma: Kuliyā); samādhi at Garbetā (Midnapore)",
+      "disciples": "Ṭhākura Murāri (Sāraṅga Murāri)",
+      "notes": "Branch of Śrī Caitanya: «Bhāgavatācārya, Ṭhākura Sāraṅgadāsa» (Caitanya-caritāmṛta Ādi 10.113). Lived under a bakula tree in Navadvīpa and crossed the Gaṅgā every evening for the Lord's kīrtana. On the Lord's order he gave dīkṣā to the first person he met: a dead boy floating on the Gaṅgā, who came back to life and became Ṭhākura Murāri (not Murāri Gupta). The Gauḍīya Vaiṣṇava Abhidhāna has two entries, Sāraṅgadāsa Ṭhākura and Sāraṅgadeva, «probably the same person».\n\nIn Kṛṣṇa-līlā: Nāndīmukhī (some say Prahlāda) (Gaura-gaṇoddeśa-dīpikā 172)."
+    } }
+]

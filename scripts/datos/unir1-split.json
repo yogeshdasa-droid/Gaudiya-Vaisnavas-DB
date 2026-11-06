@@ -1,0 +1,28 @@
+{
+  "docs": [
+    {
+      "doc": 1016,
+      "pieces": [
+        {
+          "find": "## NĀRĀYAṆĪ DEVĪ\n\nShe was the wife of Śrī Vīrabhadra",
+          "end": "## NĀRĀYAṆĪ DEVĪ\n\nShe lived in Vṛndāvana",
+          "toName": "Nārāyaṇī Devī (wife of Vīrabhadra)",
+          "title": "Nārāyaṇī Devī",
+          "fields": {
+            "guru": "Śrī Jāhnavā Mātā (dīkṣā)",
+            "notes": "Wife of Śrī Vīrabhadra Gosvāmī, son of Nityānanda Prabhu; daughter of Yadunandana Ācārya and Lakṣmī Devī; her sister Śrīdevī (Śrīmatī) was also married to Vīrabhadra. Both received dīkṣā from Jāhnavā Mātā."
+          }
+        },
+        {
+          "find": "## NĀRĀYAṆĪ DEVĪ\n\nShe lived in Vṛndāvana",
+          "toName": "Nārāyaṇī Devī (wife of Gaṅgānārāyaṇa)",
+          "title": "Nārāyaṇī Devī",
+          "fields": {
+            "guru": "Narottama Ṭhākura",
+            "notes": "Disciple of Narottama Ṭhākura; lived in Vṛndāvana. Wife of Gaṅgānārāyaṇa Cakravartī; daughter Viṣṇupriyā (Bhakti-ratnākara 13.252)."
+          }
+        }
+      ]
+    }
+  ]
+}

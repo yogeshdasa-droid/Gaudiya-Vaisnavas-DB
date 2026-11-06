@@ -5,6 +5,7 @@
 // The piece may get a new heading ("heading") and lose some words at its start ("drop").
 // What is left stays in the doc (earlier version kept); if nothing is left the doc goes to the bin.
 // A second run changes nothing (a piece already moved is not found any more).
+// Optional per doc: "owner": {"toId"|"toName"} → first the whole doc goes to that record (if it is not there yet).
 import fs from "node:fs";
 const [, , file, port = "9333"] = process.argv;
 const plan = JSON.parse(fs.readFileSync(file, "utf8"));
@@ -36,14 +37,25 @@ const out = await run(`(async () => {
       return id;
     };
     for (const d of plan.docs) {
-      const info = await inv("get_doc", { id: d.doc }).catch(() => null);
+      let info = await inv("get_doc", { id: d.doc }).catch(() => null);
       if (!info) { log.push("doc " + d.doc + ": not found"); continue; }
+      if (d.owner) {
+        const to = await target(d.owner);
+        if (info.doc.personId !== to) {
+          const m = info.doc;
+          await inv("update_doc", { docId: d.doc, meta: { title: m.title, date: m.date ?? "", collection: m.collection, personId: to } });
+          log.push("doc " + d.doc + ": now belongs to " + to);
+          info = await inv("get_doc", { id: d.doc });
+        }
+      }
       const secs = await inv("get_sections", { docId: d.doc, from: 0, to: info.doc.sections - 1 });
       const t = secs.map((s) => (s.text.endsWith("\\n") ? s.text : s.text + "\\n")).join("");
       // where each piece starts
       const starts = [];
       for (const pc of d.pieces) {
-        let a = t.indexOf(pc.find);
+        // "nth": 2 → the second place where «find» appears (for texts imported twice)
+        let a = -1;
+        for (let k = 0; k < (pc.nth || 1); k++) { a = t.indexOf(pc.find, a + 1); if (a < 0) break; }
         if (a >= 0 && pc.back) { const h = t.lastIndexOf("##", a); if (h >= 0 && a - h < 200) a = h; }
         starts.push(a);
       }

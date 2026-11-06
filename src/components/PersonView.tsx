@@ -221,28 +221,50 @@ function cardTitle(title: string, name: string): string {
 /** How much of a single text is shown inside the record (the rest in the reader). */
 const INLINE_SECTIONS = 4;
 
-/** A text with its web addresses as links, opened in the browser (pages
- *  with more about the person, a book to download…). */
+/** Links in a text (notes of a record or a place):
+ *  - [word](<target>) or [word](https://…) → the word, opening the target (made with «Link…» in the editor);
+ *  - web addresses (https://…) → opened in the browser;
+ *  - a line that is a path of a file of the PC (E:\…\book.pdf, \\server\…, file:///…) → opened with its program.
+ *  Exported for the tests. */
+export function noteLinks(text: string): ({ text: string } | { text: string; target: string })[] {
+  const re =
+    /\[([^\]\n]+)\]\(<([^>\n]+)>\)|\[([^\]\n]+)\]\(((?:https?:\/\/|mailto:|file:\/\/\/)[^\s)]+)\)|(https?:\/\/[^\s<>"«»]+[^\s<>"«».,;:!?)\]])|(?<=^|\n)[ \t]*["“«]?((?:[A-Za-z]:[\\/]|\\\\|file:\/\/\/)[^\n"”»]*[^\s"”»])["”»]?[ \t]*(?=\n|$)/g;
+  const out: ({ text: string } | { text: string; target: string })[] = [];
+  let at = 0;
+  for (const m of text.matchAll(re)) {
+    if (m.index! > at) out.push({ text: text.slice(at, m.index) });
+    if (m[1]) out.push({ text: m[1], target: m[2].trim() });
+    else if (m[3]) out.push({ text: m[3], target: m[4] });
+    else if (m[5]) out.push({ text: m[5], target: m[5] });
+    else out.push({ text: m[6], target: m[6] });
+    at = m.index! + m[0].length;
+  }
+  if (at < text.length) out.push({ text: text.slice(at) });
+  return out;
+}
+
+/** «file:///E:/x%20y.pdf» → «E:/x y.pdf» (the opener wants a path). */
+const openTarget = (t: string) => (t.startsWith("file:///") ? decodeURI(t.slice(8)) : t);
+
 export function WebLinks({ text, onError }: { text: string; onError: (msg: string) => void }) {
-  const parts = text.split(/(https?:\/\/[^\s<>"«»]+[^\s<>"«».,;:!?)\]])/);
   return (
     <>
-      {parts.map((s, i) =>
-        i % 2 ? (
+      {noteLinks(text).map((p, i) =>
+        "target" in p ? (
           <a
             key={i}
-            href={s}
-            className="web-link"
-            title={s}
+            href={/^(https?:|mailto:)/.test(p.target) ? p.target : "#"}
+            className={/^(https?:|mailto:)/.test(p.target) ? "web-link" : "web-link file-link"}
+            title={p.target}
             onClick={(e) => {
               e.preventDefault();
-              api.openExternal(s).catch((err) => onError(String(err)));
+              api.openExternal(openTarget(p.target)).catch((err) => onError(String(err)));
             }}
           >
-            {s}
+            {p.text}
           </a>
         ) : (
-          s
+          <span key={i}>{p.text}</span>
         ),
       )}
     </>

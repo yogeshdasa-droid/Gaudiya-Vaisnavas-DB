@@ -1,0 +1,8 @@
+[
+  { "into": 1798, "name": "Śrīla Bhakti Prajñana Keśava Gosvāmī Mahārāja", "from": [{ "id": 1101, "name": "Prajñāna Keśava Mahārāja" }], "trash": [1110],
+    "fields": { "name": "Śrīla Bhakti Prajñāna Keśava Gosvāmī Mahārāja" } },
+  { "into": 1795, "name": "Hrydaya Bon Maharaja", "from": [{ "id": 508, "name": "Hrydaya Bon Mahārāja" }], "trash": [513],
+    "fields": { "name": "Śrīla Bhakti Hṛdaya Bon Mahārāja" } },
+  { "into": 2007, "name": "Sri-rupa Siddhanti Gosvami Maharaja", "from": [{ "id": 1467, "name": "Srirupa Siddhanti Gosvāmī Mahārāja" }],
+    "fields": { "name": "Bhakti Śrīrūpa Siddhāntī Gosvāmī Mahārāja" } }
+]

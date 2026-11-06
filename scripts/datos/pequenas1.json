@@ -1,0 +1,22 @@
+[
+  { "name": "Harirāma Ācārya", "new": true,
+    "fields": {
+      "aka": "Harirāma Cakravartī",
+      "place": "Goyās (confluence of the Ganges and the Padmā); descendants at Saidābād",
+      "guru": "Rāmacandra Kavirāja (dīkṣā)",
+      "notes": "Elder son of the Śākta Śivāi (Śivānanda) Ācārya of Goyās and elder brother of Rāmakṛṣṇa Ācārya. Bringing goats home for the Durgā-pūjā sacrifice, the two brothers met Narottama Ṭhākura and Rāmacandra Kavirāja, let the animals go and fell at Narottama's feet; Rāmakṛṣṇa took dīkṣā from Narottama, Harirāma from Rāmacandra Kavirāja (Narottama-vilāsa 9-10, 17). Their angry father brought the paṇḍita Murāri of Mithilā to defeat them, but Balarāma Kavirāja defeated him (Narottama-vilāsa 10). Brought Gaṅgānārāyaṇa Cakravartī to Narottama. Praised in Bhakti-ratnākara 15 (Gauḍīya Vaiṣṇava Abhidhāna, «Harirāma Ācārya»). Not the same as Harirāma Vyāsa of Oṛchā."
+    } },
+  { "id": 747, "name": "Kṛṣṇacaraṇa Cakravartī",
+    "fields": {
+      "notes": "Of the branch of Narottama Ṭhākura. Youngest son of Rāmakṛṣṇa Ācārya and Kanakalatikā Devī, nephew of Harirāma Ācārya; adopted by Gaṅgānārāyaṇa Cakravartī, who had no son, and initiated by him (Narottama-vilāsa 12; Gauḍīya Vaiṣṇava Abhidhāna). Guru of Rādhāramaṇa Cakravartī, in the line of Viśvanātha Cakravartī."
+    } },
+  { "id": 533, "name": "Jagadīśa Miśra",
+    "fields": {
+      "guru": "Śrī Advaita Ācārya Prabhu",
+      "notes": "Sixth son of Śrī Advaita Ācārya and Sītā Ṭhākurāṇī, a branch of Advaita: «Advaita's other son Svarūpa, a branch named Jagadīśa» (Caitanya-caritāmṛta Ādi 12.27). Twin of Svarūpa (Advaita-prakāśa 15; Prema-vilāsa 24), born in Jyaiṣṭha 1508 CE by those books, though Acyutānanda's age makes that year impossible.\n\nBrothers: Acyutānanda, Kṛṣṇa Miśra, Gopāla Miśra, Balarāma Miśra, Svarūpa Ācārya. Not Jagadīśa Paṇḍita of Yaśaḍā."
+    } },
+  { "id": 85, "name": "Balarāma Miśra",
+    "fields": {
+      "notes": "Son of Śrī Advaita Ācārya and Sītā Ṭhākurāṇī: «Ācārya's other son Śrī Balarāma» (Caitanya-caritāmṛta Ādi 12.27; Gauḍīya Vaiṣṇava Abhidhāna).\n\nBrothers: Acyutānanda, Kṛṣṇa Miśra, Gopāla Miśra, Svarūpa Ācārya, Jagadīśa Miśra."
+    } }
+]

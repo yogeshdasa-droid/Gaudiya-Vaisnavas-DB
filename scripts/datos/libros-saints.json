@@ -1,0 +1,15 @@
+{
+  "docs": [
+    { "doc": 2299, "pieces": [
+      { "find": "1—Śrīnivās Ācārya", "toId": 1466,
+        "heading": "## ŚRĪNIVĀSA ĀCĀRYA (Satyarāja dāsa, «Vaiṣṇava Saints», ch. 1)",
+        "title": "Śrīnivāsa Ācārya (from «Vaiṣṇava Saints» by Satyarāja dāsa)" },
+      { "find": "2—Narottam Dās Ṭhākura", "toId": 1010,
+        "heading": "## NAROTTAMA DĀSA ṬHĀKURA (Satyarāja dāsa, «Vaiṣṇava Saints», ch. 2)",
+        "title": "Narottama dāsa Ṭhākura (from «Vaiṣṇava Saints» by Satyarāja dāsa)" },
+      { "find": "3—Śyāmānanda Paṇḍit", "end": "Appendix\n", "toId": 1535,
+        "heading": "## ŚYĀMĀNANDA PAṆḌITA (Satyarāja dāsa, «Vaiṣṇava Saints», ch. 3)",
+        "title": "Śyāmānanda Paṇḍita (from «Vaiṣṇava Saints» by Satyarāja dāsa)" }
+    ] }
+  ]
+}

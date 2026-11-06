@@ -1,0 +1,22 @@
+{
+  "docs": [
+    {
+      "doc": 1074,
+      "pieces": [
+        { "find": "He was the paternal great-grandfather of Śrī Rūpa", "end": "As a student Padmanābha", "heading": "## PADMANĀBHA (ANCESTOR OF RŪPA AND SANĀTANA)", "toName": "Padmanābha (ancestor of Rūpa and Sanātana)", "title": "Padmanābha (ancestor of Rūpa and Sanātana)",
+          "fields": { "place": "Karṇāṭa; Śikhareśvara; Navahaṭṭa (Naihāṭī) on the Bhāgīrathī", "notes": "Paternal great-grandfather of Rūpa, Sanātana and Anupama, great-grandson of Jagadguru Sarvajña. Left Karṇāṭa after a family feud and settled in the kingdom of Śikhareśvara; in old age built a house at Navahaṭṭa on the Bhāgīrathī, helped by King Danujamardana. Eighteen daughters and five sons; the youngest son Mukunda was the father of Kumāradeva, father of Rūpa, Sanātana and Anupama (Gauḍīya Vaiṣṇava Abhidhāna). Not Padmanābha Cakravartī, father of Lokanātha Gosvāmī." } },
+        { "find": "Padmanābha Cakravartī He was a kulīn", "drop": "Padmanābha Cakravartī", "end": "Padmanābha Miśra He was", "heading": "## PADMANĀBHA CAKRAVARTĪ", "toId": 1884, "title": "Padmanābha Cakravartī" },
+        { "find": "Padmanābha Miśra He was the third son", "drop": "Padmanābha Miśra", "heading": "## PADMANĀBHA MIŚRA", "toName": "Padmanābha Miśra (son of Upendra Miśra)", "title": "Padmanābha Miśra",
+          "fields": { "notes": "The third son of Upendra Miśra, grandfather of Lord Caitanya; so an uncle of the Lord (Caitanya-caritāmṛta Ādi 13.57)." } }
+      ]
+    },
+    {
+      "doc": 1432,
+      "pieces": [
+        { "find": "Śītala Ṭhākura Rāya He was the disciple", "drop": "Śītala Ṭhākura Rāya", "end": "Sitanatha Dāsa Bābājī He was", "heading": "## ŚĪTALA ṬHĀKURA RĀYA", "toName": "Śītala Ṭhākura Rāya", "title": "Śītala Ṭhākura Rāya",
+          "fields": { "guru": "Śrī Narottama dāsa Ṭhākura", "notes": "A disciple of Narottama Ṭhākura (Prema-vilāsa 20; Narottama-vilāsa 12)." } },
+        { "find": "Sitanatha Dāsa Bābājī He was an Odiya", "drop": "Sitanatha Dāsa Bābājī", "heading": "## SĪTĀNĀTHA DĀSA BĀBĀJĪ", "toId": 1869, "title": "Sītānātha dāsa Bābājī" }
+      ]
+    }
+  ]
+}

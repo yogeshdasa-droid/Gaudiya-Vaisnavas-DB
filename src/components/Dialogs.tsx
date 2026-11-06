@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { open } from "@tauri-apps/plugin-dialog";
 import { AlertTriangle, MapPin, ListTree, ListX, FilePen, FileText, FolderInput, GitMerge, History, Link2, Scissors, Search, Trash2, Undo2, Upload, UserPlus, UserRound, X } from "lucide-react";
 import { api, DocInfo, EMPTY_PERSON, EMPTY_PLACE, Person, PersonFields, PersonListItem, SectionText, TREE_KINDS, TreeKind, Version, Place, PlaceFields, PLACE_ROLES, PlaceRole } from "../api";
 import { T } from "../i18n";
@@ -1305,13 +1306,74 @@ export function PersonDialog({
         </label>
         {field("works", t.works, t.listHint)}
         {field("tags", t.tags, t.tagsHint)}
-        <label>
-          <span>{t.notes}</span>
-          <textarea className="notes-editor" value={f.notes} placeholder={t.notesHint} onChange={set("notes")} />
-        </label>
+        <NotesEditor t={t} value={f.notes} onChange={(v) => setF((x) => ({ ...x, notes: v }))} />
       </div>
       {error && <div className="error-box">{error}</div>}
     </Modal>
+  );
+}
+
+/** The notes of a record, with «Link…»: the selected word becomes a link to a file of the PC or a web
+ *  address, written as [word](<target>) (see WebLinks, which shows only the word). */
+function NotesEditor({ t, value, onChange }: { t: T; value: string; onChange: (v: string) => void }) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+  const [link, setLink] = useState<{ a: number; b: number; target: string } | null>(null);
+  const word = link ? value.slice(link.a, link.b).trim() : "";
+  const begin = () => {
+    const el = ref.current;
+    setLink({ a: el?.selectionStart ?? value.length, b: el?.selectionEnd ?? value.length, target: "" });
+  };
+  const pick = async () => {
+    const p = await open({ multiple: false, directory: false });
+    if (typeof p === "string") setLink((l) => (l ? { ...l, target: p } : l));
+  };
+  const apply = () => {
+    if (!link) return;
+    const target = link.target.trim().replace(/^["“«]+|["”»]+$/g, "");
+    if (!target) return;
+    const label = (word || target.split(/[\\/]/).pop() || target).replace(/[[\]]/g, "");
+    // the spaces around the word stay outside the link
+    const lead = value.slice(link.a, link.b).match(/^\s*/)![0];
+    const tail = value.slice(link.a, link.b).match(/\s*$/)![0];
+    onChange(value.slice(0, link.a) + lead + `[${label}](<${target}>)` + (link.b > link.a ? tail : "") + value.slice(link.b));
+    setLink(null);
+  };
+  return (
+    <div className="text-label notes-field">
+      <span className="notes-head">
+        {t.notes}
+        <button type="button" className="btn ghost small" title={t.linkMakeHint} onMouseDown={(e) => e.preventDefault()} onClick={begin}>
+          <Link2 size={14} /> {t.linkMake}
+        </button>
+      </span>
+      {link && (
+        <div className="link-maker">
+          <em className="lunar-hint">{t.linkWord(word)}</em>
+          <div className="row">
+            <input
+              autoFocus
+              value={link.target}
+              placeholder={t.linkTarget}
+              onChange={(e) => setLink({ ...link, target: e.target.value })}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") { e.preventDefault(); apply(); }
+                if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); setLink(null); }
+              }}
+            />
+            <button type="button" className="btn ghost" onClick={pick}>
+              <FolderInput size={14} /> {t.linkPick}
+            </button>
+            <button type="button" className="btn" disabled={!link.target.trim()} onClick={apply}>
+              {t.linkApply}
+            </button>
+            <button type="button" className="btn ghost" onClick={() => setLink(null)}>
+              {t.cancel}
+            </button>
+          </div>
+        </div>
+      )}
+      <textarea ref={ref} className="notes-editor" value={value} placeholder={t.notesHint} aria-label={t.notes} onChange={(e) => onChange(e.target.value)} />
+    </div>
   );
 }
 

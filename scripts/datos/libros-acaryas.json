@@ -1,0 +1,153 @@
+{
+ "docs": [
+  {
+   "doc": 2300,
+   "pieces": [
+    {
+     "find": "Śrī Lokanātha Gosvāmī\n\n\"I wors",
+     "toId": 844,
+     "heading": "## ŚRĪ LOKANĀTHA GOSVĀMĪ («Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "title": "Śrī Lokanātha Gosvāmī (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "end": "Śrī Bhūgarbha Goswam\n\nAs there"
+    },
+    {
+     "find": "Śrī Sanātana Gosvāmī\n\nIn his L",
+     "toId": 1353,
+     "heading": "## ŚRĪ SANĀTANA GOSVĀMĪ («Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "title": "Śrī Sanātana Gosvāmī (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "end": "Śrīla Rūpa Gosvāmī\n\nŚrīla Rūpa"
+    },
+    {
+     "find": "Śrīla Rūpa Gosvāmī\n\nŚrīla Rūpa",
+     "toId": 1325,
+     "heading": "## ŚRĪLA RŪPA GOSVĀMĪ («Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "title": "Śrīla Rūpa Gosvāmī (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "end": "Śrī Gopāl Bhaṭṭa Gosvāmī\n\nThe "
+    },
+    {
+     "find": "Śrī Gopāl Bhaṭṭa Gosvāmī\n\nThe ",
+     "toId": 343,
+     "heading": "## ŚRĪ GOPĀLA BHAṬṬA GOSVĀMĪ («Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "title": "Śrī Gopāla Bhaṭṭa Gosvāmī (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "end": "Śrī Raghunātha Dās Gosvāmī\n\nRa"
+    },
+    {
+     "find": "Śrī Raghunātha Dās Gosvāmī\n\nRa",
+     "toId": 1206,
+     "heading": "## ŚRĪLA RAGHUNĀTHA DĀSA GOSVĀMĪ («Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "title": "Śrīla Raghunātha dāsa Gosvāmī (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "end": "Śrī Raghunātha Bhaṭṭa Gosvāmī\n"
+    },
+    {
+     "find": "Śrī Raghunātha Bhaṭṭa Gosvāmī\n",
+     "toId": 1202,
+     "heading": "## ŚRĪ RAGHUNĀTHA BHAṬṬA GOSVĀMĪ («Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "title": "Śrī Raghunātha Bhaṭṭa Gosvāmī (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "end": "Śrī Madhu Paṇḍit\n\nmadhu sneha-"
+    },
+    {
+     "find": "Śrī Madhu Paṇḍit\n\nmadhu sneha-",
+     "toId": 874,
+     "heading": "## MADHU PAṆḌITA («Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "title": "Madhu Paṇḍita (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "end": "Śrī Kāśīśvara Paṇḍit Gosvāmī\n\n"
+    },
+    {
+     "find": "Śrī Kāśīśvara Paṇḍit Gosvāmī\n\n",
+     "toId": 699,
+     "heading": "## KĀŚĪŚVARA PAṆḌITA GOSVĀMĪ («Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "title": "Kāśīśvara Paṇḍita Gosvāmī (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "end": "Śrī Gopāl Guru Gosvāmī\n\nŚrī Go"
+    },
+    {
+     "find": "Śrī Gopāl Guru Gosvāmī\n\nŚrī Go",
+     "toId": 344,
+     "heading": "## GOPĀLA GURU GOSVĀMĪ («Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "title": "Gopāla Guru Gosvāmī (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "end": "Śrī Kṛṣṇa Dās Kavirāj Gosvāmī\n"
+    },
+    {
+     "find": "Śrī Kṛṣṇa Dās Kavirāj Gosvāmī\n",
+     "toId": 759,
+     "heading": "## ŚRĪLA KṚṢṆADĀSA KAVIRĀJA GOSVĀMĪ («Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "title": "Śrīla Kṛṣṇadāsa Kavirāja Gosvāmī (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "end": "Śrī Rāmacandra Kavirāja\n\nIn hi"
+    },
+    {
+     "find": "Śrī Rāmacandra Kavirāja\n\nIn hi",
+     "toId": 1244,
+     "heading": "## RĀMACANDRA KAVIRĀJA («Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "title": "Rāmacandra Kavirāja (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "end": "Śrī Śyāmānanda Prabhu\n\nThose w"
+    },
+    {
+     "find": "Śrī Śyāmānanda Prabhu\n\nThose w",
+     "toId": 1535,
+     "heading": "## ŚYĀMĀNANDA PRABHU («Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "title": "Śyāmānanda Prabhu (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "end": "ŚRĪ RASKIKANANDA DEVA Gosvāmī\n"
+    },
+    {
+     "find": "ŚRĪ RASKIKANANDA DEVA Gosvāmī\n",
+     "toId": 1908,
+     "heading": "## RASIKĀNANDA DEVA GOSVĀMĪ («Gauḍīya Vaiṣṇava Ācāryas», vol. 1)",
+     "title": "Rasikānanda Deva Gosvāmī (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 1)"
+    }
+   ]
+  },
+  {
+   "doc": 2301,
+   "pieces": [
+    {
+     "find": "Śrī Raghunandana Ṭhākura -----",
+     "toId": 1200,
+     "heading": "## RAGHUNANDANA ṬHĀKURA («Gauḍīya Vaiṣṇava Ācāryas», vol. 3)",
+     "title": "Raghunandana Ṭhākura (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 3)",
+     "end": "Puṇḍarīka Vidyānidhi ---------"
+    },
+    {
+     "find": "Puṇḍarīka Vidyānidhi ---------",
+     "toId": 1119,
+     "heading": "## PUṆḌARĪKA VIDYĀNIDHI («Gauḍīya Vaiṣṇava Ācāryas», vol. 3)",
+     "title": "Puṇḍarīka Vidyānidhi (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 3)",
+     "end": "Raghunātha dāsa Gosvāmī ------"
+    },
+    {
+     "find": "Raghunātha dāsa Gosvāmī ------",
+     "toId": 1206,
+     "heading": "## RAGHUNĀTHA DĀSA GOSVĀMĪ («Gauḍīya Vaiṣṇava Ācāryas», vol. 3)",
+     "title": "Raghunātha dāsa Gosvāmī (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 3)",
+     "end": "Gosvāmī Stories --------------"
+    },
+    {
+     "find": "Narottama dāsa Ṭhākura -------",
+     "toId": 1010,
+     "heading": "## NAROTTAMA DĀSA ṬHĀKURA («Gauḍīya Vaiṣṇava Ācāryas», vol. 3)",
+     "title": "Narottama dāsa Ṭhākura (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 3)",
+     "end": "Locan dāsa Ṭhākura -----------"
+    },
+    {
+     "find": "ABHIRĀMA GOSVĀMĪ\n\nBy Vidhu",
+     "toId": 6,
+     "heading": "## ABHIRĀMA GOSVĀMĪ, BY VIDHUBHŪṢAṆA BHAṬṬĀCĀRYA («Gauḍīya Vaiṣṇava Ācāryas», vol. 3)",
+     "title": "Abhirāma Gosvāmī, by Vidhubhūṣaṇa Bhaṭṭācārya (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 3)",
+     "end": "The Gauḍīyas in Vṛndāvana"
+    },
+    {
+     "find": "Abirama Gopāla Ṭhākura (Kṛṣṇa-",
+     "toId": 6,
+     "heading": "## ABHIRĀMA GOPĀLA ṬHĀKURA (KṚṢṆA-LĪLĀ IN GAURA-LĪLĀ) («Gauḍīya Vaiṣṇava Ācāryas», vol. 3)",
+     "title": "Abhirāma Gopāla Ṭhākura (Kṛṣṇa-līlā in Gaura-līlā) (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 3)",
+     "end": "Acyutananda (eternal relations"
+    },
+    {
+     "find": "Acyutananda (eternal relations",
+     "toId": 14,
+     "heading": "## ACYUTĀNANDA (ETERNAL RELATIONSHIP WITH THE LORD) («Gauḍīya Vaiṣṇava Ācāryas», vol. 3)",
+     "title": "Acyutānanda (eternal relationship with the Lord) (from «Gauḍīya Vaiṣṇava Ācāryas», vol. 3)",
+     "end": "Bhagavān dāsa Bābājī (snake, c"
+    }
+   ]
+  }
+ ]
+}
