@@ -1,0 +1,22 @@
+[
+  { "new": true, "name": "Other Vaiṣṇava lines (guru not in the Paramparā)",
+    "fields": {
+      "notes": "Not a person: a branch of the Guru Paramparā (Whisper, 06-11-2026) for the Vaiṣṇava gurus whose own guru is not in the tree — unknown, or of another line — with their disciples under them, so that everyone in the tree goes up to Lord Kṛṣṇa. When the guru of one of them is found and put in the tree, move him (with his disciples) under that guru."
+    } },
+  { "id": 233, "name": "Durgā Dāsa Rāya",
+    "fields": {
+      "guru": "Caitanya Dāsa (Gaṅgadhara Bhaṭṭācārya), the father of Śrīnivāsa Ācārya: by his grace he became a Vaiṣṇava (Prema-vilāsa 1)",
+      "disciples": ""
+    } },
+  { "id": 536, "name": "Jagadīśa Tarkalankara",
+    "fields": { "guru": "" } },
+  { "id": 1117, "name": "Priyadasaji",
+    "fields": { "guru": "Kavirāja Manohara dāsa (Manohara dāsa of Śrīnivāsa's family)" } },
+  { "id": 753, "name": "Kṛṣṇadāsa Bābājī Mahārāj (Of Govardhana)",
+    "fields": { "guru": "Vaiṣṇava caraṇa dāsa Bābājī of Brahmakuṇḍa, the compiler of the Padakalpataru (lessons in bhajana); of the line of Narottama Ṭhākura" } },
+  { "id": 1106, "name": "Pranakrsna Dāsa Bābājī",
+    "fields": {
+      "guru": "Bhagavān dāsa Bābājī of Kālnā (he lived a long time with him; Bhagavān dāsa's record counts him among his disciples)",
+      "disciples": "Manohara dāsa Bābājī of Madhavapura (veśa)"
+    } }
+]

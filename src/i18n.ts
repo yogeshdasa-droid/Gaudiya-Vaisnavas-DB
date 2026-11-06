@@ -381,6 +381,9 @@ const es = {
   expandAllHint: "Abre todas las ramas del árbol (y, en «Todo», las carpetas de pārṣadas y śikṣā)",
   collapseAll: "Plegar todo",
   collapseAllHint: "Cierra todas las ramas: solo quedan a la vista los primeros nombres",
+  collapseBack: "Plegar hacia atrás",
+  treeSkipped: (n: number) => `⋯ ${n} más arriba ⋯`,
+  treeSkippedHint: (names: string) => `Plegados: ${names}\nClic: volver a ver todo el camino`,
   treeLineHint: {
     all: "Toda la Guru Paramparā, cada uno bajo el guru donde está en el árbol.",
     diksa: "Solo las iniciaciones: cada uno bajo su guru de dīkṣā. Quien no tiene a su guru de dīkṣā en el árbol empieza su propia rama.",
@@ -1262,6 +1265,9 @@ const en: Dict = {
   expandAllHint: "Opens every branch of the tree (and, in «All», the folders of pārṣadas and śikṣā)",
   collapseAll: "Collapse all",
   collapseAllHint: "Closes every branch: only the first names stay in sight",
+  collapseBack: "Collapse back",
+  treeSkipped: (n) => `⋯ ${n} more above ⋯`,
+  treeSkippedHint: (names) => `Collapsed: ${names}\nClick: see the whole line again`,
   treeLineHint: {
     all: "The whole Guru Paramparā, each under the guru where it is in the tree.",
     diksa: "Only the initiations: each under its dīkṣā guru. Whoever has no dīkṣā guru in the tree starts a branch of its own.",

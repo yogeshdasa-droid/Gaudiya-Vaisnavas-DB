@@ -1,0 +1,433 @@
+[
+ {
+  "into": 166,
+  "name": "Chandraśekhara Acaryaratna",
+  "from": [
+   {
+    "id": 1449,
+    "name": "Śrīla Chandraśekhara Acaryaratna"
+   }
+  ],
+  "trash": [
+   1466
+  ],
+  "fields": {
+   "aka": "Candraśekhara Ācārya, Ācāryaratna, Ācāryaśekhara, Candraśekhara Deva, Śrīla Chandraśekhara Acaryaratna"
+  }
+ },
+ {
+  "into": 1553,
+  "name": "Ṭoṭā Ramdasa Baba",
+  "from": [
+   {
+    "id": 1874,
+    "name": "Ṭoṭā Ramdasa bābājī"
+   }
+  ],
+  "trash": [
+   2147
+  ],
+  "fields": {
+   "aka": "Ṭoṭā Ramdasa bābājī",
+   "name": "Ṭoṭā Rāmadāsa Bābājī"
+  }
+ },
+ {
+  "into": 1253,
+  "name": "Rāmadāsa Bābājī (Varṣāṇā)",
+  "from": [
+   {
+    "id": 1857,
+    "name": "Rāma dāsa bābājī (Varṣāṇā)"
+   }
+  ],
+  "trash": [
+   2081
+  ],
+  "fields": {
+   "aka": "Rāma dāsa bābājī (Varṣāṇā)"
+  }
+ },
+ {
+  "into": 1594,
+  "name": "Vaiṣṇava Dāsa Bābājī Mahāśaya Of Kosi",
+  "from": [
+   {
+    "id": 1590,
+    "name": "Vaiṣṇava dāsa bābājī"
+   }
+  ],
+  "trash": [
+   1607
+  ],
+  "fields": {
+   "aka": "Vaiṣṇava dāsa bābājī"
+  }
+ },
+ {
+  "into": 298,
+  "name": "Gaṅgāmātā Goswamini",
+  "from": [
+   {
+    "id": 299,
+    "name": "Gaṅgāmātā Govamini"
+   },
+   {
+    "id": 1816,
+    "name": "Gaṅgā Mātā"
+   }
+  ],
+  "trash": [
+   301
+  ],
+  "fields": {
+   "aka": "Gaṅgāmātā Govamini, Gaṅgā Mātā"
+  }
+ },
+ {
+  "into": 1858,
+  "name": "Rāma dāsa dabaji (Navadvīpa)",
+  "from": [
+   {
+    "id": 1252,
+    "name": "Rāmadāsa Bābājī (Navadvīpa)"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "",
+   "name": "Rāmadāsa Bābājī (Navadvīpa)"
+  }
+ },
+ {
+  "into": 606,
+  "name": "Jayakṛṣṇa dāsa Bābājī",
+  "from": [
+   {
+    "id": 1830,
+    "name": "Jāya Kṛṣṇa dāsa bābājī"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Jāya Kṛṣṇa dāsa bābājī"
+  }
+ },
+ {
+  "into": 1828,
+  "name": "Śrī Jagannātha dās Bābājī",
+  "from": [
+   {
+    "id": 544,
+    "name": "Jaganathadasa Bābājī (Siddha)"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Jagannātha Dāsa Bābājī Mahārāja, Vaiṣṇava-sārvabhauma, Jaganathadasa Bābājī (Siddha)"
+  }
+ },
+ {
+  "into": 837,
+  "name": "Lalitāsakhī Dāsī",
+  "from": [
+   {
+    "id": 1842,
+    "name": "Lalitāsakhī Mātā"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Lalitāsakhī Mātā"
+  }
+ },
+ {
+  "into": 1815,
+  "name": "Gadādhara dāsa Ṭhākura",
+  "from": [
+   {
+    "id": 272,
+    "name": "Gadādhara Dāsa (Dāsa Gadādhara)"
+   },
+   {
+    "id": 276,
+    "name": "Gadhadara Dāsa Paṇḍita"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Gadādhara Dāsa (Dāsa Gadādhara), Gadhadara Dāsa Paṇḍita"
+  }
+ },
+ {
+  "into": 1860,
+  "name": "Ramahari dāsa bābājī",
+  "from": [
+   {
+    "id": 1266,
+    "name": "Ramahari Dāsa Baba"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Ramahari dāsa, Ramahari Dāsa Baba"
+  }
+ },
+ {
+  "into": 1820,
+  "name": "Gauracharana dāsa bābājī",
+  "from": [
+   {
+    "id": 1406,
+    "name": "Siddha Gauracarana Dāsa Bābājī (Dauji, Kunjara)"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Siddha Gauracarana Dāsa Bābājī (Dauji, Kunjara)"
+  }
+ },
+ {
+  "into": 684,
+  "name": "Karametivai",
+  "from": [
+   {
+    "id": 1831,
+    "name": "Karametivai Mātā"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Karametivai Mātā"
+  }
+ },
+ {
+  "into": 1852,
+  "name": "Pisima Mātā",
+  "from": [
+   {
+    "id": 1089,
+    "name": "Pisima Gosvamini"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Pisima Gosvamini"
+  }
+ },
+ {
+  "into": 1861,
+  "name": "Rāmakṛṣṇa dāsa bābājī",
+  "from": [
+   {
+    "id": 1275,
+    "name": "Rāmakṛṣṇa Dāsa"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Rāmakṛṣṇa Dāsa"
+  }
+ },
+ {
+  "into": 1122,
+  "name": "Purandara Dāsa",
+  "from": [
+   {
+    "id": 1855,
+    "name": "Purandara"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Purandara"
+  }
+ },
+ {
+  "into": 1115,
+  "name": "Premananda",
+  "from": [
+   {
+    "id": 1114,
+    "name": "Premananda Gosvamipada"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Premananda Gosvamipada"
+  }
+ },
+ {
+  "into": 801,
+  "name": "Krsnasundara Rāya (Rāya Prabhu)",
+  "from": [
+   {
+    "id": 1835,
+    "name": "Kṛṣṇa Sundara Rāya"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Kṛṣṇa Sundara Rāya",
+   "name": "Kṛṣṇasundara Rāya (Rāya Prabhu)"
+  }
+ },
+ {
+  "into": 1772,
+  "name": "Yadunandana",
+  "from": [
+   {
+    "id": 1771,
+    "name": "Yadunandana DasaThakur"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Yadunandana DasaThakur"
+  }
+ },
+ {
+  "into": 274,
+  "name": "Gadādhara Paṇḍit Gosvāmī",
+  "from": [
+   {
+    "id": 277,
+    "name": "Gadhadara Paṇḍit Gosvāmī"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Paṇḍit Prabhu, Gadai, Gadādhara Ṭhākura, Gadhadara Paṇḍit Gosvāmī"
+  }
+ },
+ {
+  "into": 796,
+  "name": "Kṛṣṇaprasāda Dāsa Bābājī",
+  "from": [
+   {
+    "id": 1834,
+    "name": "Kṛṣṇa Prasāda dāsa bābājī"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Kṛṣṇa Prasāda dāsa bābājī"
+  }
+ },
+ {
+  "into": 1617,
+  "name": "Vaṁśī Dāsa Bābājī",
+  "from": [
+   {
+    "id": 1621,
+    "name": "Vamsidasa Bābājī"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Vamsidasa Bābājī"
+  }
+ },
+ {
+  "into": 63,
+  "name": "Atula Candrā Champati (Calcutta)",
+  "from": [
+   {
+    "id": 1789,
+    "name": "Atulachandra Champati"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Atulachandra Champati"
+  }
+ },
+ {
+  "into": 539,
+  "name": "Jagadvandhu Sundara Prabhu",
+  "from": [
+   {
+    "id": 1825,
+    "name": "Jagadbandhu Sundara"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Jagadbandhu Sundara"
+  }
+ },
+ {
+  "into": 706,
+  "name": "Kavi Karṇapūra",
+  "from": [
+   {
+    "id": 1076,
+    "name": "Paramānanda Sen (Kavi Karṇapūra Gosvāmī)"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Paramānanda Sen, (Purīdāsa), Śrī Paramānanda, Paramānanda Sen (Kavi Karṇapūra Gosvāmī)"
+  }
+ },
+ {
+  "into": 1045,
+  "name": "Nityānanda Dāsa Bābājī",
+  "from": [
+   {
+    "id": 1044,
+    "name": "Nityānanda Dāsa Baba"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Nityānanda Dāsa Baba"
+  }
+ },
+ {
+  "into": 1623,
+  "name": "Vamsivadana Ṭhākura",
+  "from": [
+   {
+    "id": 1645,
+    "name": "Vansivadananda Ṭhākura"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Vansivadananda Ṭhākura"
+  }
+ },
+ {
+  "into": 753,
+  "name": "Kṛṣṇadāsa Bābājī Mahārāj (Of Govardhana)",
+  "from": [
+   {
+    "id": 1837,
+    "name": "Kṛṣṇa dāsa bābājī (Govardhan)"
+   },
+   {
+    "id": 1838,
+    "name": "Kṛṣṇa dāsa bābājī (Ranabadi)"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Kṛṣṇa dāsa bābājī (Govardhan), Kṛṣṇa dāsa bābājī (Ranabadi)"
+  }
+ },
+ {
+  "into": 1791,
+  "name": "Bhāgavata (Raghunātha Bhaṭṭācārya)",
+  "from": [
+   {
+    "id": 105,
+    "name": "Bhāgavata Ācārya"
+   }
+  ],
+  "trash": [],
+  "fields": {
+   "aka": "Bhāgavata Ācārya"
+  }
+ }
+]

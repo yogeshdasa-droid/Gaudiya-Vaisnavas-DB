@@ -1,0 +1,10 @@
+{
+  "docs": [
+    { "doc": 759, "pieces": [
+      { "find": "Kṛṣṇadāsa Babji (Of Navadvīpa) This account", "nth": 2, "end": "Kṛṣṇadāsa Bābājī (Ranabadi) According", "toId": 1871,
+        "title": "Kṛṣṇadāsa Bābājī of Navadvīpa (was in the record of Kṛṣṇadāsa Bābājī of Govardhana)" },
+      { "find": "Kṛṣṇadāsa Bābājī (Ranabadi) According", "toId": 1838,
+        "title": "Kṛṣṇadāsa Bābājī of Rāṇabāḍī (was in the record of Kṛṣṇadāsa Bābājī of Govardhana)" }
+    ] }
+  ]
+}

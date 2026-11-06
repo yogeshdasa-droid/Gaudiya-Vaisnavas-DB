@@ -2557,6 +2557,16 @@ button.logo {
 .parampara .tree-row.tree-folder .count {
   font-style: normal;
 }
+/* «collapse back»: the gurus above folded into one row */
+.parampara .tree-row.tree-skip {
+  position: relative;
+  cursor: pointer;
+  color: var(--muted);
+  font-style: italic;
+}
+.parampara .tree-row.tree-skip:hover {
+  color: var(--accent-text);
+}
 .parampara .tree-row.person:hover .tree-lines,
 .parampara .tree-row.tree-folder:hover .tree-lines,
 .parampara .tree-row.person.active .tree-lines {

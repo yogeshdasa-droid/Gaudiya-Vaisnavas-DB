@@ -187,7 +187,21 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.12.4)
+## 5. Qué hace hoy (v0.12.5)
+
+### Novedades de la 0.12.5 (06-11-2026) — «Plegar hacia atrás» en la Guru Paramparā
+- **Pedido por Whisper**: botón derecho sobre alguien de la Guru Paramparā lateral con dos o más gurus encima →
+  **«Plegar hacia atrás»**: el árbol enseña el primero de la línea (Lord Kṛṣṇa), una fila «⋯ N más arriba ⋯» (al pasar
+  el ratón, los nombres plegados) y debajo esa persona con sus discípulos. Un clic en «⋯» o en la flecha del primero,
+  «Expandir/Plegar todo» o «Mostrar en el árbol» (de alguien que no está debajo) vuelven a todo el camino.
+- Código: `App.tsx` (la opción solo sale si la fila tiene `data-back`; manda el evento `bio:tree-back`), `Sidebar.tsx`
+  (estado `back`, guardado en localStorage `bio.sideTreeBack`; filas `type: "skip"`, clase `.tree-skip`), textos
+  `collapseBack`, `treeSkipped`, `treeSkippedHint` en `i18n.ts`.
+- **Datos (06-11, en la BD de Whisper):** rama nueva bajo Lord Kṛṣṇa «Other Vaiṣṇava lines (guru not in the
+  Paramparā)» (#2027) y unos 40 «huérfanos» colocados bajo su guru (`otras-lineas*.json/.mjs`, `jagannatha-1828.mjs`:
+  Jagannātha dāsa Bābājī — dīkṣā de Jagadānanda #2028, veśa de Madhusūdana #1848); uniones Jñāneśvara (622→1975) y
+  Narahari Cakravartī (328→977); **grupo 1 del Abhidhāna** (Mahāprabhu y Nityānanda: texto principal, `grupo1*`; el
+  libro de 383 KB que estaba dentro del texto de Nityānanda pasó a «Libros», doc 3411).
 
 ### Novedades de la 0.12.4 (06-11-2026) — enlaces a archivos en las notas
 - **Pedido por Whisper** (para abrir el PDF de un libro desde la ficha): en las notas, una línea que sea una ruta del
@@ -1294,6 +1308,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **06-11-2026 — v0.12.5**: «Plegar hacia atrás» en la Guru Paramparā lateral. Datos del día: rama «Other Vaiṣṇava
+  lines», huérfanos colocados bajo su guru, grupo 1 del Abhidhāna (Mahāprabhu y Nityānanda).
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.12.5
 - **06-11-2026 — v0.12.4**: enlaces a archivos del PC en las notas (rutas sueltas y «Enlazar…» en el editor). Datos
   del día: Bhaktivinoda 3–4, libros «Vaiṣṇava Saints» y «Gauḍīya Vaiṣṇava Ācāryas» repartidos en las fichas.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.12.4

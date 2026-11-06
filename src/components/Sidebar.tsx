@@ -251,6 +251,24 @@ function PersonList({
       /* storage unavailable */
     }
   };
+  // «collapse back» (Whisper, 06-11-2026): the gurus between the first of the
+  // line and this one in one row, so that he and his disciples are seen at once
+  const [back, setBackState] = useState<number | null>(() => {
+    try {
+      return Number(localStorage.getItem("bio.sideTreeBack")) || null;
+    } catch {
+      return null;
+    }
+  });
+  const setBack = (id: number | null) => {
+    setBackState(id);
+    try {
+      if (id) localStorage.setItem("bio.sideTreeBack", String(id));
+      else localStorage.removeItem("bio.sideTreeBack");
+    } catch {
+      /* storage unavailable */
+    }
+  };
   useEffect(() => {
     if (otherFolded) return;
     otherFolded = true;
@@ -364,7 +382,8 @@ function PersonList({
     // guides: for each guru above, whether more of his disciples come below (a line goes on down)
     type Row =
       | { type: "person"; p: PersonListItem; depth: number; hasKids: boolean; guides: boolean[]; last: boolean }
-      | { type: "folder"; parent: number; fk: FolderKind; n: number; depth: number; guides: boolean[]; last: boolean; open: boolean };
+      | { type: "folder"; parent: number; fk: FolderKind; n: number; depth: number; guides: boolean[]; last: boolean; open: boolean }
+      | { type: "skip"; n: number; names: string; depth: number };
     const out: Row[] = [];
     const person = (p: PersonListItem, depth: number, guides: boolean[], last: boolean) => {
       const hasKids = (kids.get(p.id)?.length ?? 0) > 0;
@@ -390,12 +409,46 @@ function PersonList({
       });
       main.forEach((p, i) => person(p, depth, guides, folders.length + i === count - 1));
     };
-    walk(null, 0, []);
+    // collapsed back: the first of his line, «⋯ n more above ⋯», and he with his disciples
+    const up: number[] = [];
+    if (back !== null && parentOf.has(back)) for (let x: number | null | undefined = back; x != null; x = parentOf.get(x)) up.push(x);
+    const byId = (id: number) => persons.find((p) => p.id === id);
+    const top = up.length > 2 ? byId(up[up.length - 1]) : undefined;
+    const focus = up.length > 2 ? byId(back!) : undefined;
+    if (top && focus) {
+      out.push({ type: "person", p: top, depth: 0, hasKids: true, guides: [], last: true });
+      const hidden = up.slice(1, -1).reverse();
+      out.push({ type: "skip", n: hidden.length, names: hidden.map((id) => byId(id)?.name ?? "?").join(" → "), depth: 1 });
+      person(focus, 1, [], true);
+    } else walk(null, 0, []);
     return out;
-  }, [kids, kindOf, closed, openFolders, line]);
+  }, [kids, kindOf, closed, openFolders, line, back, parentOf, persons]);
+  const backOn = rows[1]?.type === "skip";
+
+  // the menu's «collapse back» (App.tsx) comes as an event: the row is ours
+  useEffect(() => {
+    const on = (e: Event) => {
+      const id = (e as CustomEvent<number>).detail;
+      toggleNode(id, false);
+      setBack(id);
+      setPan(0);
+      scrollToRow(`[data-ctx="person"][data-id="${id}"]`);
+    };
+    window.addEventListener("bio:tree-back", on);
+    return () => window.removeEventListener("bio:tree-back", on);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // and back to the whole line, with him in sight
+  const unBack = () => {
+    const id = back;
+    setBack(null);
+    if (id === null) return;
+    for (let x = parentOf.get(id); x != null; x = parentOf.get(x)) toggleNode(x, false);
+    scrollToRow(`[data-ctx="person"][data-id="${id}"]`);
+  };
 
   // open or close the whole tree at once (Whisper: «Dīkṣā» and then everything open, to see it well)
   const expandAll = () => {
+    setBack(null);
     setClosed(new Set());
     if (line !== "all") return;
     const keys = new Set<string>();
@@ -408,6 +461,7 @@ function PersonList({
     setOpenFolders(keys);
   };
   const collapseAll = () => {
+    setBack(null);
     setClosed(new Set([...kids.keys()].filter((k): k is number => k !== null)));
     if (line === "all") setOpenFolders(new Set());
   };
@@ -445,6 +499,8 @@ function PersonList({
       return setLine("all");
     }
     if (parentOf.has(reveal.id)) {
+      // collapsed back and he is not under that one: the whole line again
+      if (back !== null && !isWithin(reveal.id, back)) setBack(null);
       toggleGroup("tree", false);
       for (let x = parentOf.get(reveal.id); x != null; x = parentOf.get(x)) toggleNode(x, false);
       // and the folders on the way (pārṣadas / śikṣā)
@@ -560,6 +616,7 @@ function PersonList({
       data-id={p.id}
       data-drop={inTree ? "node" : "out"}
       data-like={repeats.get(p.id)?.map((x) => x.id).join(",")}
+      data-back={inTree && back !== p.id && parentOf.get(parentOf.get(p.id) ?? -1) != null ? "1" : undefined}
       className={`tree-row person${activeId === p.id ? " active" : ""}${drag?.id === p.id ? " dragged" : ""}${inTree ? dropClass(p.id) : ""}${marks[p.id] ? ` mark-${marks[p.id]}` : ""}${repeats.has(p.id) ? " repeated" : ""}`}
       style={inTree ? { paddingLeft: 4 + depth * indent, marginLeft: -shift } : undefined}
       onMouseDown={(e) => startDrag(e, p)}
@@ -689,7 +746,26 @@ function PersonList({
                     </div>
                   );
                 }
+                if (r.type === "skip") {
+                  return (
+                    <div key="skip">
+                      <div
+                        className="tree-row tree-skip"
+                        style={{ paddingLeft: 4 + r.depth * indent, marginLeft: -shift }}
+                        title={t.treeSkippedHint(r.names)}
+                        onClick={unBack}
+                      >
+                        {treeLines([], false, "diksa", indent)}
+                        <span className="caret-space" />
+                        <span className="name">{t.treeSkipped(r.n)}</span>
+                      </div>
+                    </div>
+                  );
+                }
                 const { p, depth, hasKids, guides, last } = r;
+                // collapsed back, the first of the line is open: its caret shows the whole line again
+                const backTop = backOn && depth === 0;
+                const isClosed = !backTop && closed.has(p.id);
                 return (
                 <div key={p.id}>
                   {personRow(
@@ -698,11 +774,12 @@ function PersonList({
                     hasKids ? (
                       <ChevronRight
                         size={13}
-                        className={`caret ${closed.has(p.id) ? "" : "open"}`}
+                        className={`caret ${isClosed ? "" : "open"}`}
                         onMouseDown={(e) => e.stopPropagation()}
                         onClick={(e) => {
                           e.stopPropagation();
-                          follow(depth + (closed.has(p.id) ? 1 : 0));
+                          if (backTop) return unBack();
+                          follow(depth + (isClosed ? 1 : 0));
                           toggleNode(p.id);
                         }}
                       />

@@ -23,6 +23,7 @@ import {
   PanelLeftOpen,
   ListTree,
   LocateFixed,
+  ChevronsUp,
   ListX,
   Pencil,
   Quote,
@@ -829,6 +830,10 @@ export default function App() {
         items: [
           { label: t.openPerson, icon: UserRound, onClick: () => openPerson(id) },
           { label: t.revealInTree, icon: LocateFixed, onClick: () => revealIn("person", id) },
+          // (only in the side tree, for one with two or more gurus above: Sidebar.tsx)
+          ...(ctxEl!.dataset.back
+            ? [{ label: t.collapseBack, icon: ChevronsUp, onClick: () => window.dispatchEvent(new CustomEvent("bio:tree-back", { detail: id })) }]
+            : []),
           { label: t.editPerson, icon: Pencil, onClick: withPerson(id, (person) => setDialog({ kind: "person", person })) },
           { label: t.searchInPerson, icon: TextSearch, onClick: withPerson(id, searchInPerson) },
           { label: t.findMentions, icon: Search, onClick: withPerson(id, findMentions) },
