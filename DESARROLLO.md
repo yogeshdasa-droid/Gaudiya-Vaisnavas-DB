@@ -187,7 +187,17 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.12.6)
+## 5. Qué hace hoy (v0.12.7)
+
+### Novedades de la 0.12.7 (06-11-2026) — elegir el guru en la ficha la coloca en el árbol
+- **Pedido por Whisper**: una ficha fuera del árbol que ya tenía escrito su guru (p. ej. «Śrīnivāsa Ācārya») no se
+  podía poner bajo él desde «Editar ficha»: al elegirlo de la lista no salía «Al guardar, … pasa a discípulo de …» ni
+  el tipo de relación. Ahora el guru **elegido a mano** de la lista cuenta siempre (`guruPick` en `PersonDialog`,
+  `Dialogs.tsx`), salvo que ya esté debajo de él.
+- Datos (scripts en `scripts/datos/`): grupos 3 y 4 del Abhidhāna (Mādhavendra Purī y los sannyāsīs; Haridāsa Ṭhākura,
+  Narahari Sarakāra, Śivānanda Sena, Vāsudeva Ghoṣa, Vakreśvara, Gopāla Guru, Vaṁśīvadana, Kavi Karṇapūra, Rāghava,
+  Prabodhānanda); **125 fichas** fuera del árbol puestas bajo el guru que tenían escrito (`colocar-plan.mjs`,
+  `colocar.mjs`); uniones: Vyāsatīrtha, Jayatīrtha, Govinda Ghoṣa, Devakīnandana, Kāśīśvara Paṇḍita.
 
 ### Novedades de la 0.12.6 (06-11-2026) — carpeta «Discípulos» en la Guru Paramparā
 - **Pedido por Whisper**: en la Guru Paramparā lateral, un guru con **más de 4 discípulos** directos enseña los que
@@ -1319,6 +1329,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **06-11-2026 — v0.12.7**: elegir de la lista el guru que ya ponía la ficha la coloca en el árbol. Datos: grupos 3 y 4
+  del Abhidhāna; 125 fichas colocadas bajo su guru; cinco uniones.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.12.7
 - **06-11-2026 — v0.12.6**: carpeta «Discípulos» en la Guru Paramparā lateral (gurus con más de 4 discípulos). Datos:
   grupo 2 del Abhidhāna (rama de Gadādhara Paṇḍita).
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.12.6

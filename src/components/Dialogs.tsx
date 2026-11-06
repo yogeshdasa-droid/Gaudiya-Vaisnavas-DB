@@ -1111,6 +1111,10 @@ export function PersonDialog({
   const [kind, setKind] = useState<TreeKind>(() => persons.find((x) => x.id === person?.id)?.tree?.kind ?? "diksa");
   const [picked] = useState(() => new Map<string, number>([...tree.kids, ...(tree.guru ? [tree.guru] : [])].map((x) => [x.name, x.id])));
   const [, setPicks] = useState(0);
+  // the guru chosen from the list by hand: it places the record under him even when the
+  // field already named him (Whisper, 06-11-2026: records with «Śrīnivāsa Ācārya» written
+  // as guru but outside the tree could not be put under him)
+  const [guruPick, setGuruPick] = useState<number | null>(null);
   const keys = Object.keys(EMPTY_PERSON) as (keyof PersonFields)[];
   const kindNow = persons.find((x) => x.id === person?.id)?.tree?.kind ?? "diksa";
   // more gurus besides its place in the tree (its śikṣā gurus)
@@ -1133,7 +1137,7 @@ export function PersonDialog({
   const plan = useMemo(() => {
     const oldGuru = namedIds(initial.guru, others, picked)[0];
     const newGuru = namedIds(f.guru, others, picked)[0];
-    const guru = newGuru && newGuru !== oldGuru && newGuru !== me?.tree?.parent ? newGuru : null;
+    const guru = newGuru && (newGuru !== oldGuru || newGuru === guruPick) && newGuru !== me?.tree?.parent ? newGuru : null;
     const oldDisciples = namedIds(initial.disciples, others, picked);
     const disciples = namedIds(f.disciples, others, picked).filter(
       (d) => d !== guru && !oldDisciples.includes(d) && (!person || byId(d)?.tree?.parent !== person.id),
@@ -1143,7 +1147,7 @@ export function PersonDialog({
     const removed = tree.kids.filter((k) => !named.includes(k.id));
     return { guru, disciples, removed };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [f.guru, f.disciples, others, me, picked.size]);
+  }, [f.guru, f.disciples, others, me, picked.size, guruPick]);
 
   const close = async () => {
     if (!dirty || (await ask(t.unsaved))) onClose();
@@ -1268,7 +1272,7 @@ export function PersonDialog({
         {field("place", t.place)}
         <label>
           <span>{t.guru}</span>
-          <NamesInput t={t} value={f.guru} onChange={(v) => setF((x) => ({ ...x, guru: v }))} persons={others} multi={false} onPick={remember} />
+          <NamesInput t={t} value={f.guru} onChange={(v) => setF((x) => ({ ...x, guru: v }))} persons={others} multi={false} onPick={(p) => (remember(p), setGuruPick(p.id))} />
           {plan.guru && <em className="lunar-hint ok">{t.treeWillPlace(f.name.trim() || "…", byId(plan.guru)!.name)}</em>}
         </label>
         {(me?.tree?.parent || plan.guru) && (

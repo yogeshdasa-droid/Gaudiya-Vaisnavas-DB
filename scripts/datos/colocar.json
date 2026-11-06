@@ -1,0 +1,1002 @@
+[
+ {
+  "id": 12,
+  "name": "Acyutananda (Poet)",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 23,
+  "name": "Ahammad Beg",
+  "parent": 1908,
+  "parentName": "Rasikānanda Prabhu",
+  "kind": "disciple",
+  "guru": "Rasikānanda Prabhu"
+ },
+ {
+  "id": 46,
+  "name": "Ananta Paṇḍit",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 76,
+  "name": "Balarāma Cakravartī",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "diksa",
+  "guru": "Narottama Ṭhākura"
+ },
+ {
+  "id": 94,
+  "name": "Bauddhacharya",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 96,
+  "name": "Bhagavān Ācārya",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 103,
+  "name": "Bhagavān",
+  "parent": 1908,
+  "parentName": "Rasikānanda Prabhu",
+  "kind": "diksa",
+  "guru": "Rasikānanda Prabhu"
+ },
+ {
+  "id": 108,
+  "name": "Bhagavati",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "diksa",
+  "guru": "Narottama Ṭhākura"
+ },
+ {
+  "id": 122,
+  "name": "Bhakti Pradīpa Tīrtha Mahārāja",
+  "parent": 128,
+  "parentName": "Śrīla Bhaktivinoda Ṭhākura",
+  "kind": "diksa",
+  "guru": "Śrīla Bhaktivinoda Ṭhākura (dīkṣā), Śrīla Bhakti Siddhānta Sarasvatī (sannyāsa, 1920)"
+ },
+ {
+  "id": 147,
+  "name": "Bholanatha Dās",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "diksa",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 202,
+  "name": "Devakīnandana",
+  "parent": 1139,
+  "parentName": "Puruṣottama Dāsa",
+  "kind": "disciple",
+  "guru": "Puruṣottama dāsa"
+ },
+ {
+  "id": 214,
+  "name": "Dhāḍī Hāmvīra",
+  "parent": 1466,
+  "parentName": "Śrīnivāsa Ācārya",
+  "kind": "disciple",
+  "guru": "Śrīnivāsa Ācārya"
+ },
+ {
+  "id": 240,
+  "name": "Durlabha Viśvāsa",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "diksa",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 288,
+  "name": "Gaṅgā Dāsa Nirloma",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 303,
+  "name": "Garuda Paṇḍit",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 306,
+  "name": "Gaudapurnananda Cakravartī",
+  "parent": 989,
+  "parentName": "Nārāyaṇa Bhaṭṭa",
+  "kind": "diksa",
+  "guru": "Nārāyaṇa Bhaṭṭa"
+ },
+ {
+  "id": 320,
+  "name": "Gaurāṅgapriyā",
+  "parent": 1466,
+  "parentName": "Śrīnivāsa Ācārya",
+  "kind": "diksa",
+  "guru": "Śrīnivāsa Ācārya"
+ },
+ {
+  "id": 329,
+  "name": "Ghanaśyāma Dāsa",
+  "parent": 603,
+  "parentName": "Jayagopala",
+  "kind": "diksa",
+  "guru": "Jayagopala"
+ },
+ {
+  "id": 338,
+  "name": "Gokula Dāsa",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "disciple",
+  "guru": "Narottama Ṭhākura"
+ },
+ {
+  "id": 342,
+  "name": "Gokulananda",
+  "parent": 1908,
+  "parentName": "Rasikānanda Prabhu",
+  "kind": "disciple",
+  "guru": "Rasikānanda Prabhu"
+ },
+ {
+  "id": 348,
+  "name": "Gopāla Cakravartī",
+  "parent": 1466,
+  "parentName": "Śrīnivāsa Ācārya",
+  "kind": "diksa",
+  "guru": "Śrīnivāsa Ācārya"
+ },
+ {
+  "id": 385,
+  "name": "Gopīnātha Pattanayaka",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 410,
+  "name": "Govinda Datta",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 413,
+  "name": "Govinda Ghosh",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Caitanya"
+ },
+ {
+  "id": 424,
+  "name": "Govindarāma Rāja",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "diksa",
+  "guru": "Narottama Ṭhākura"
+ },
+ {
+  "id": 434,
+  "name": "Guru Dāsa Bhaṭṭācārya",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "diksa",
+  "guru": "Narottama Ṭhākura (dīkṣā)"
+ },
+ {
+  "id": 455,
+  "name": "Hari Maulika (Hari Kanjilala)",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "disciple",
+  "guru": "Narottama Ṭhākura"
+ },
+ {
+  "id": 463,
+  "name": "Haricandra Rāya",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "diksa",
+  "guru": "Narottama Ṭhākura"
+ },
+ {
+  "id": 468,
+  "name": "Haridāsa Brahmacārī",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "disciple",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 476,
+  "name": "Haridāsa (disciple of Śyāmānanda)",
+  "parent": 1535,
+  "parentName": "Śyāmānanda Prabhu",
+  "kind": "diksa",
+  "guru": "Śyāmānanda Paṇḍita"
+ },
+ {
+  "id": 488,
+  "name": "Hariscandra Rāya",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "diksa",
+  "guru": "Narottama Ṭhākura"
+ },
+ {
+  "id": 502,
+  "name": "Hiranya Ṭhākura",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 524,
+  "name": "Jagadānanda Paṇḍita (Jagadānanda-Caitanya-Sakhā)",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 533,
+  "name": "Jagadīśa Miśra",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "disciple",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 548,
+  "name": "Jagannātha Ācārya",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "disciple",
+  "guru": "Narottama Ṭhākura"
+ },
+ {
+  "id": 557,
+  "name": "Jagannātha Kāra",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "disciple",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 558,
+  "name": "Jagannātha Mahati",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 568,
+  "name": "Jagannātha Thanesvari",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 588,
+  "name": "Janārdana Dāsa",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "disciple",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 605,
+  "name": "Jayakrsna",
+  "parent": 519,
+  "parentName": "Īśvarī Devī",
+  "kind": "disciple",
+  "guru": "Īśvarī devī"
+ },
+ {
+  "id": 630,
+  "name": "Kalanidhi Narasundara",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 636,
+  "name": "Kālidāsa",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 663,
+  "name": "Kanai Khuntia",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 717,
+  "name": "Keśava Khan (Chatri)",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 723,
+  "name": "Kavivallabha «Ākhariyā» (disciple of Śrīnivāsa)",
+  "parent": 1466,
+  "parentName": "Śrīnivāsa Ācārya",
+  "kind": "diksa",
+  "guru": "Śrīnivāsa Ācārya"
+ },
+ {
+  "id": 735,
+  "name": "Kṛṣṇa Ācārya",
+  "parent": 1244,
+  "parentName": "Rāmacandra Kavirāja",
+  "kind": "diksa",
+  "guru": "Rāmacandra Kavirāja"
+ },
+ {
+  "id": 786,
+  "name": "Kṛṣṇa Miśra (son of Advaita)",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "disciple",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 793,
+  "name": "Kṛṣṇānanda",
+  "parent": 1908,
+  "parentName": "Rasikānanda Prabhu",
+  "kind": "disciple",
+  "guru": "Rasikānanda prabhu; Nityānanda Prabhu"
+ },
+ {
+  "id": 799,
+  "name": "Krsnapriya Devī",
+  "parent": 1466,
+  "parentName": "Śrīnivāsa Ācārya",
+  "kind": "diksa",
+  "guru": "Śrīnivāsa Ācārya"
+ },
+ {
+  "id": 811,
+  "name": "Kumuda Cattaraja",
+  "parent": 1466,
+  "parentName": "Śrīnivāsa Ācārya",
+  "kind": "diksa",
+  "guru": "Ācārya prabhu"
+ },
+ {
+  "id": 843,
+  "name": "Lokanātha Dāsa",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "disciple",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 845,
+  "name": "Lokanātha Paṇḍita",
+  "parent": 1725,
+  "parentName": "Visvarupa",
+  "kind": "disciple",
+  "guru": "Visvarupa"
+ },
+ {
+  "id": 865,
+  "name": "Mādhava Paṇḍit",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "disciple",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 873,
+  "name": "Madhu Bisvas",
+  "parent": 497,
+  "parentName": "Hemalatā Devī",
+  "kind": "diksa",
+  "guru": "Śrī Hemalatā devī"
+ },
+ {
+  "id": 949,
+  "name": "Murāri Dāsa",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "diksa",
+  "guru": "Narottama Ṭhākura"
+ },
+ {
+  "id": 953,
+  "name": "Murāri Paṇḍit",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "disciple",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 967,
+  "name": "Nandai",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 972,
+  "name": "Nandana",
+  "parent": 1908,
+  "parentName": "Rasikānanda Prabhu",
+  "kind": "disciple",
+  "guru": "Rasikānanda prabhu"
+ },
+ {
+  "id": 987,
+  "name": "Narasimha Rāya Rāja",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "diksa",
+  "guru": "Śrī Narottama Ṭhākura"
+ },
+ {
+  "id": 1004,
+  "name": "Nārāyaṇa Vacaspati",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Śrī Caitanya"
+ },
+ {
+  "id": 1011,
+  "name": "Narottama Majumdar",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "diksa",
+  "guru": "Śrī Narottama dāsa Ṭhākura"
+ },
+ {
+  "id": 1033,
+  "name": "Nilambara",
+  "parent": 1908,
+  "parentName": "Rasikānanda Prabhu",
+  "kind": "disciple",
+  "guru": "Rasikānanda prabhu"
+ },
+ {
+  "id": 1055,
+  "name": "Nṛsiṁha Kavirāja",
+  "parent": 1466,
+  "parentName": "Śrīnivāsa Ācārya",
+  "kind": "diksa",
+  "guru": "Śrīnivāsa"
+ },
+ {
+  "id": 1060,
+  "name": "Nṛsiṁhananda BrahmacariBharati",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 1064,
+  "name": "Padmagarbha Ācārya",
+  "parent": 1906,
+  "parentName": "Śrī Lakṣmīpati",
+  "kind": "disciple",
+  "guru": "Śrī Lakṣmīpati"
+ },
+ {
+  "id": 1074,
+  "name": "Paramānanda Paṇḍita",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 1097,
+  "name": "Pradyumna Brahmacārī",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Caitanya"
+ },
+ {
+  "id": 1103,
+  "name": "Prakāśānanda",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "diksa",
+  "guru": "Śrī Advaita Ācārya Prabhu (dīkṣā)"
+ },
+ {
+  "id": 1107,
+  "name": "Pranavallabha (Parāṇa) Dāsa",
+  "parent": 1756,
+  "parentName": "Vyasacarya",
+  "kind": "diksa",
+  "guru": "Vyasacarya"
+ },
+ {
+  "id": 1205,
+  "name": "Raghunātha Cakravartī",
+  "parent": 1466,
+  "parentName": "Śrīnivāsa Ācārya",
+  "kind": "diksa",
+  "guru": "Śrīnivāsa Ācārya"
+ },
+ {
+  "id": 1213,
+  "name": "Raghunātha Vaidya Upādhyāya",
+  "parent": 1851,
+  "parentName": "Śrī Nityānanda Prabhu",
+  "kind": "disciple",
+  "guru": "Lord Caitanya; Lord Nityānanda"
+ },
+ {
+  "id": 1248,
+  "name": "Rāmacandra",
+  "parent": 1908,
+  "parentName": "Rasikānanda Prabhu",
+  "kind": "diksa",
+  "guru": "Rasikānanda prabhu"
+ },
+ {
+  "id": 1255,
+  "name": "Rāmadāsa Bipra",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 1257,
+  "name": "Rāmadāsa Brāhmaṇa",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 1268,
+  "name": "Rāmāi (servant of the Lord in Purī)",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 1276,
+  "name": "Rāmakṛṣṇa",
+  "parent": 1908,
+  "parentName": "Rasikānanda Prabhu",
+  "kind": "diksa",
+  "guru": "Rasikānanda Prabhu"
+ },
+ {
+  "id": 1279,
+  "name": "Rāmānanda Basu",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya; Lord Nityānanda"
+ },
+ {
+  "id": 1317,
+  "name": "Ravi Rāya",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "diksa",
+  "guru": "Śrī Narottama dāsa Ṭhākura"
+ },
+ {
+  "id": 1365,
+  "name": "Śaṅkara Paṇḍit",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 1368,
+  "name": "Sankararanya Ācārya",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 1390,
+  "name": "Satyabhāmā Devī",
+  "parent": 519,
+  "parentName": "Īśvarī Devī",
+  "kind": "diksa",
+  "guru": "Īśvarī Devī"
+ },
+ {
+  "id": 1398,
+  "name": "Satyaraja Khan",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 1441,
+  "name": "Sriharicarana",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "disciple",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 1446,
+  "name": "Srikara",
+  "parent": 1908,
+  "parentName": "Rasikānanda Prabhu",
+  "kind": "disciple",
+  "guru": "Rasikānanda prabhu"
+ },
+ {
+  "id": 1470,
+  "name": "Śrīvatsa Paṇḍit",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "diksa",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 1478,
+  "name": "Suddadvaiti Svāmī",
+  "parent": 125,
+  "parentName": "Śrīla Bhaktivedānta Svāmī Prabhupāda",
+  "kind": "disciple",
+  "guru": "Śrīla A.C. Bhaktivedānta Svāmī Prabhupāda; Śrīla Gour Govinda Svāmī; Śrīla Bhaktivedānta Nārāyaṇa Gosvāmī Mahārāja"
+ },
+ {
+  "id": 1490,
+  "name": "Sulaksana",
+  "parent": 1466,
+  "parentName": "Śrīnivāsa Ācārya",
+  "kind": "diksa",
+  "guru": "Śrīnivāsa Ācārya"
+ },
+ {
+  "id": 1497,
+  "name": "Sundarānanda (disciple of Śyāmānanda)",
+  "parent": 1535,
+  "parentName": "Śyāmānanda Prabhu",
+  "kind": "diksa",
+  "guru": "Śyāmānanda Paṇḍita"
+ },
+ {
+  "id": 1512,
+  "name": "Svarūpa CakravartiSvarupa Gosvāmī",
+  "parent": 1273,
+  "parentName": "Rāmakṛṣṇa Ācārya",
+  "kind": "disciple",
+  "guru": "Rāmakṛṣṇa Ācārya; Narottama Ṭhākura"
+ },
+ {
+  "id": 1566,
+  "name": "Uddanda Rāya",
+  "parent": 1535,
+  "parentName": "Śyāmānanda Prabhu",
+  "kind": "diksa",
+  "guru": "Śyāmānanda Paṇḍita"
+ },
+ {
+  "id": 1587,
+  "name": "Vaidyanatha",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "diksa",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 1601,
+  "name": "Vallabha Dāsa",
+  "parent": 497,
+  "parentName": "Hemalatā Devī",
+  "kind": "diksa",
+  "guru": "Hemalatā devī"
+ },
+ {
+  "id": 1628,
+  "name": "Vanamālī Kavicandra",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "disciple",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 1642,
+  "name": "Vāṇīnātha Paṭṭanāyaka",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitānya"
+ },
+ {
+  "id": 1656,
+  "name": "Vāsudeva Kusthi",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Caitanya"
+ },
+ {
+  "id": 1679,
+  "name": "Vijay Paṇḍit",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "disciple",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 1680,
+  "name": "Vijaya Dāsa Akhariya",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 1681,
+  "name": "Vijaya Dāsa",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "disciple",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 1682,
+  "name": "Vijaya Purī",
+  "parent": 1906,
+  "parentName": "Śrī Lakṣmīpati",
+  "kind": "diksa",
+  "guru": "Lakṣmīpati (dīkṣā)"
+ },
+ {
+  "id": 1759,
+  "name": "Yādava Dāsa",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "disciple",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 1793,
+  "name": "Bhakti Bhavān Viṣṇu",
+  "parent": 125,
+  "parentName": "Śrīla Bhaktivedānta Svāmī Prabhupāda",
+  "kind": "disciple",
+  "guru": "A. C. Bhaktivedānta Svāmī Prabhupāda"
+ },
+ {
+  "id": 1833,
+  "name": "Kholāvecā Śrīdhara",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Śrī Caitanya Mahāprabhu"
+ },
+ {
+  "id": 1845,
+  "name": "Locana dāsa",
+  "parent": 980,
+  "parentName": "Narahari Sarakāra Ṭhākura",
+  "kind": "disciple",
+  "guru": "Narahari Sarakāra Ṭhākura"
+ },
+ {
+  "id": 1872,
+  "name": "Sundarānanda Vidyāvinoda",
+  "parent": 124,
+  "parentName": "Śrīla Bhakti Siddhānta Sarasvatī",
+  "kind": "diksa",
+  "guru": "Śrīla Bhakti Siddhānta Sarasvatī (dīkṣā, c. 1929); later re-initiated by Kanupriya Gosvāmī of Navadvīpa"
+ },
+ {
+  "id": 1876,
+  "name": "Uddhava Dāsa (composer)",
+  "parent": 1159,
+  "parentName": "Rādhāmohana Ṭhākura",
+  "kind": "disciple",
+  "guru": "Śrī Rādhāmohana Ṭhākura"
+ },
+ {
+  "id": 1916,
+  "name": "Rādhākṛṣṇa Ācārya (Ṭhākura)",
+  "parent": 305,
+  "parentName": "Gati Govinda",
+  "kind": "diksa",
+  "guru": "Gati Govinda"
+ },
+ {
+  "id": 1924,
+  "name": "Raghunātha (Advaita’s branch)",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "disciple",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 1927,
+  "name": "Srikanta (disciple of Narottama)",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "diksa",
+  "guru": "Śrī Narottama dāsa Ṭhākura"
+ },
+ {
+  "id": 1929,
+  "name": "Bhāgavata Dāsa (disciple of Narottama)",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "diksa",
+  "guru": "Śrī Narottama dāsa Ṭhākura"
+ },
+ {
+  "id": 1939,
+  "name": "Puruṣottama (disciple of Rasikānanda)",
+  "parent": 1908,
+  "parentName": "Rasikānanda Prabhu",
+  "kind": "diksa",
+  "guru": "Rasikānanda Prabhu"
+ },
+ {
+  "id": 1940,
+  "name": "Puruṣottama (disciple of Śyāmānanda)",
+  "parent": 1535,
+  "parentName": "Śyāmānanda Prabhu",
+  "kind": "diksa",
+  "guru": "Śyāmānanda Paṇḍita"
+ },
+ {
+  "id": 1945,
+  "name": "Puruṣottama (Advaita’s branch)",
+  "parent": 15,
+  "parentName": "Śrī Advaita Ācārya Prabhu",
+  "kind": "disciple",
+  "guru": "Śrī Advaita Ācārya Prabhu"
+ },
+ {
+  "id": 1948,
+  "name": "Rāmadāsa (disciple of Śrīnivāsa, Viṣṇupura)",
+  "parent": 1466,
+  "parentName": "Śrīnivāsa Ācārya",
+  "kind": "diksa",
+  "guru": "Śrīnivāsa Ācārya"
+ },
+ {
+  "id": 1951,
+  "name": "Rāmadāsa (disciple of Rasikānanda, Janhagram)",
+  "parent": 1908,
+  "parentName": "Rasikānanda Prabhu",
+  "kind": "diksa",
+  "guru": "Rasikānanda Prabhu"
+ },
+ {
+  "id": 1967,
+  "name": "Govinda Kavirāja (Nityānanda's branch)",
+  "parent": 1851,
+  "parentName": "Śrī Nityānanda Prabhu",
+  "kind": "disciple",
+  "guru": "Nityānanda Prabhu"
+ },
+ {
+  "id": 1968,
+  "name": "Govinda (disciple of Śrīnivāsa Ācārya)",
+  "parent": 1466,
+  "parentName": "Śrīnivāsa Ācārya",
+  "kind": "diksa",
+  "guru": "Śrīnivāsa Ācārya"
+ },
+ {
+  "id": 1969,
+  "name": "Govinda (disciple of Rasikānanda)",
+  "parent": 1908,
+  "parentName": "Rasikānanda Prabhu",
+  "kind": "diksa",
+  "guru": "Rasikānanda Prabhu"
+ },
+ {
+  "id": 1970,
+  "name": "Govinda Dāsa (Ghāṭaśilā, disciple of Rasikānanda)",
+  "parent": 1908,
+  "parentName": "Rasikānanda Prabhu",
+  "kind": "diksa",
+  "guru": "Rasikānanda Prabhu"
+ },
+ {
+  "id": 1978,
+  "name": "Choṭa Haridāsa",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Lord Caitanya"
+ },
+ {
+  "id": 1980,
+  "name": "Haridāsa (disciple of Narottama)",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "diksa",
+  "guru": "Narottama dāsa Ṭhākura"
+ },
+ {
+  "id": 1987,
+  "name": "Sundarānanda Ṭhākura (son of Gatigovinda)",
+  "parent": 305,
+  "parentName": "Gati Govinda",
+  "kind": "diksa",
+  "guru": "Gati Govinda (dīkṣā)"
+ },
+ {
+  "id": 1996,
+  "name": "Raghunātha Vaidya (Caitanya's branch, Purī)",
+  "parent": 164,
+  "parentName": "Śrī Caitanya Mahāprabhu",
+  "kind": "associate",
+  "guru": "Śrī Caitanya Mahāprabhu"
+ },
+ {
+  "id": 1999,
+  "name": "Śītala Ṭhākura Rāya",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "diksa",
+  "guru": "Śrī Narottama dāsa Ṭhākura"
+ },
+ {
+  "id": 2002,
+  "name": "Nārāyaṇī Devī (wife of Vīrabhadra)",
+  "parent": 574,
+  "parentName": "Śrīmatī Jāhnavā Mātā",
+  "kind": "diksa",
+  "guru": "Śrī Jāhnavā Mātā (dīkṣā)"
+ },
+ {
+  "id": 2003,
+  "name": "Nārāyaṇī Devī (wife of Gaṅgānārāyaṇa)",
+  "parent": 1010,
+  "parentName": "Śrī Narottama dāsa Ṭhākura",
+  "kind": "diksa",
+  "guru": "Narottama Ṭhākura"
+ }
+]

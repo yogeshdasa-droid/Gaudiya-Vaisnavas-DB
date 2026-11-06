@@ -1,0 +1,20 @@
+[
+  { "into": 1905, "name": "Śrī Vyāsa tīrtha", "from": [{ "id": 1757, "name": "Vyāsatīrtha" }],
+    "fields": {
+      "name": "Śrī Vyāsatīrtha",
+      "aka": "Vyāsatīrtha, Vyāsa Tīrtha, Śrī Vyāsa tīrtha",
+      "disappearance": "1539",
+      "works": "Tarka-tāṇḍava; Tātparya-candrikā; Nyāyāmṛta; Bhedojjīvana; Khaṇḍana-traya-mandāra-mañjarī; Tattva-viveka-mandāra-mañjarī",
+      "notes": "Paramparā (Gauḍīya Sampradāya chart, 04-11-2026): dīkṣā line from Madhva — succession according to Baladeva; the link with Madhva is disputed by historians.\n\nThe great Mādhva ācārya of Vijayanagara, at whose court the young Vallabhācārya debated. The record «Vyāsatīrtha» (works, d. 1539) was joined to this one (Whisper, 06-11-2026: the same person)."
+    } },
+  { "into": 1897, "name": "Śrī Jayatīrtha", "from": [{ "id": 595, "name": "Jāya Tīrtha (Dhundhu Raghunātha)" }],
+    "fields": {
+      "aka": "Jayatīrtha, Jaya Tīrtha, Ṭīkācārya, Dhoṇḍo Raghunātha (Dhundhu Raghunātha)",
+      "works": "Prameya-dīpikā (on Madhva's Gītā-bhāṣya); Nyāya-dīpikā (on the Gītā-tātparya-nirṇaya); commentaries on the Viṣṇu-tattva-nirṇaya and the Aṇubhāṣya; Vādāvalī",
+      "notes": "Paramparā (Gauḍīya Sampradāya chart, 04-11-2026): dīkṣā line from Madhva — succession according to Baladeva; the link with Madhva is disputed by historians.\n\nA prince who, meeting Akṣobhya Tīrtha, remembered that in his last life he had been the bull that carried Madhva's books; he took sannyāsa from Akṣobhya and became the great commentator on Madhva (Ṭīkācārya), praised by Jīva Gosvāmī in the Tattva-sandarbha (Viśvakoṣa VI, p. 662). The record «Jāya Tīrtha (Dhundhu Raghunātha)» was joined to this one (06-11-2026)."
+    } },
+  { "into": 413, "name": "Govinda Ghosh", "from": [{ "id": 414, "name": "Govinda Gosh" }],
+    "fields": { "aka": "Govinda Ghoṣa, Govinda Gosh, Ghoṣa Ṭhākura" } },
+  { "into": 202, "name": "Devakīnandana", "from": [{ "id": 170, "name": "Daivakinandana Dāsa" }], "trash": [171],
+    "fields": { "name": "Devakīnandana dāsa", "aka": "Daivakinandana Dāsa, Devakīnandana" } }
+]
