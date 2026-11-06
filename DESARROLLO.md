@@ -187,7 +187,17 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.12.7)
+## 5. Qué hace hoy (v0.12.8)
+
+### Novedades de la 0.12.8 (06-11-2026) — apartado «Poetas» en el lateral de Vaiṣṇavas
+- **Pedido por Whisper**: los poetas vaiṣṇavas (padakartās) sin guru claro llevan la etiqueta fija **«Poetas»**
+  (`POETS` / `isPoet` en `api.ts`, como «Homónimos»). Fuera del árbol salen en su propio grupo **«Poetas»** del lateral,
+  entre «Vaiṣṇava-maṇḍala» y los libros (cerrado al abrir la app), y no en el Vaiṣṇava-maṇḍala. Clic derecho en una
+  ficha: «Llevar a “Poetas”» / «Sacar de “Poetas”». Si se coloca en el árbol, sale sola del grupo. Sin cambio de formato.
+- Datos (scripts en `scripts/datos/`): tanda 1 de las fichas fuera del árbol, **336** colocadas bajo el guru o la rama
+  que nombra su texto (`fuera-plan.mjs` + `colocar.mjs`: Rasikānanda, Narottama, Śrīnivāsa y su familia, Śyāmānanda,
+  ramas de Caitanya, Nityānanda y Advaita); **79 poetas** con la etiqueta (`poetas-plan.mjs`, revisado a mano,
+  `poetas.json`, `poetas.mjs`); grupo 7 (Madhva y Rāmānuja).
 
 ### Novedades de la 0.12.7 (06-11-2026) — elegir el guru en la ficha la coloca en el árbol
 - **Pedido por Whisper**: una ficha fuera del árbol que ya tenía escrito su guru (p. ej. «Śrīnivāsa Ācārya») no se
@@ -1329,6 +1339,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **06-11-2026 — v0.12.8**: apartado «Poetas» en el lateral de Vaiṣṇavas (etiqueta fija). Datos: tanda 1 fuera del
+  árbol (336 colocadas), 79 poetas etiquetados.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.12.8
 - **06-11-2026 — scripts de datos (sin versión nueva)**: grupos 5 y 6 del Abhidhāna (Viśvanātha, Baladeva, Narahari
   Cakravartī, Rādhāmohana; los bābājīs de los siglos XVIII–XX: Gaṅgāmātā, Siddha Kṛṣṇadāsa de Govardhana y su línea,
   Nityānanda dāsa y Madhusūdana dāsa fuera de «Other Vaiṣṇava lines»); Lakṣmīpriyā Mātā pārṣada de Mahāprabhu;

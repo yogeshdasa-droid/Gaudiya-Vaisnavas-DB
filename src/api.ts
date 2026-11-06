@@ -209,6 +209,14 @@ export function isNamesake(p: PersonListItem): boolean {
   return p.tags.split(",").some((x) => x.trim().toLowerCase() === NAMESAKES.toLowerCase());
 }
 
+/** The label of the "Poets" group: Vaiṣṇava poets (padakartās) with no clear guru.
+ *  Outside the tree they are shown in their own group, not in the Vaiṣṇava-maṇḍala. */
+export const POETS = "Poetas";
+
+export function isPoet(p: PersonListItem): boolean {
+  return p.tags.split(",").some((x) => x.trim().toLowerCase() === POETS.toLowerCase());
+}
+
 /** How a record is tied to a holy place (format 7). */
 export const PLACE_ROLES = ["sripata", "samadhi", "birth", "lived", "other"] as const;
 export type PlaceRole = (typeof PLACE_ROLES)[number];

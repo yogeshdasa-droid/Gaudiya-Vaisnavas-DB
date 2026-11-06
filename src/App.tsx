@@ -9,6 +9,7 @@ import {
   Copy,
   Download,
   Eraser,
+  Feather,
   FileDown,
   FolderOpen,
   GitMerge,
@@ -52,8 +53,10 @@ import {
   ImportProgress,
   ImportSummary,
   isNamesake,
+  isPoet,
   Marks,
   NAMESAKES,
+  POETS,
   nextMark,
   Person,
   PersonFields,
@@ -863,6 +866,14 @@ export default function App() {
             icon: Users,
             onClick: async () => {
               await api.setTag([id], NAMESAKES, !(p && isNamesake(p))).catch(fail);
+              setPersons(await api.listPersons());
+            },
+          },
+          {
+            label: p && isPoet(p) ? t.outOfPoets : t.toPoets,
+            icon: Feather,
+            onClick: async () => {
+              await api.setTag([id], POETS, !(p && isPoet(p))).catch(fail);
               setPersons(await api.listPersons());
             },
           },

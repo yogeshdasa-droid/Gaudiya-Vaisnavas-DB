@@ -1,0 +1,318 @@
+[
+ {
+  "id": 1,
+  "name": "Abdur Rahim Khan"
+ },
+ {
+  "id": 20,
+  "name": "Agarwali"
+ },
+ {
+  "id": 24,
+  "name": "Akbar Saḥ"
+ },
+ {
+  "id": 28,
+  "name": "Alaṁ"
+ },
+ {
+  "id": 30,
+  "name": "Ālī Mahammad"
+ },
+ {
+  "id": 31,
+  "name": "Ālī Rāja"
+ },
+ {
+  "id": 32,
+  "name": "Aman"
+ },
+ {
+  "id": 37,
+  "name": "Anandacand"
+ },
+ {
+  "id": 40,
+  "name": "Anandarama Lālā"
+ },
+ {
+  "id": 72,
+  "name": "Baladeva Dās"
+ },
+ {
+  "id": 82,
+  "name": "Balarāma Ghansyama (also known as Ghanaśyāma Balarāma)"
+ },
+ {
+  "id": 88,
+  "name": "Balarāma Vāsu"
+ },
+ {
+  "id": 111,
+  "name": "Bhagiratha Kavirāja"
+ },
+ {
+  "id": 120,
+  "name": "Bhaktacharana Dās"
+ },
+ {
+  "id": 144,
+  "name": "Bhikha Saheb"
+ },
+ {
+  "id": 151,
+  "name": "Bhupati"
+ },
+ {
+  "id": 152,
+  "name": "Bhuvana Dās"
+ },
+ {
+  "id": 181,
+  "name": "Dāmodara Sena"
+ },
+ {
+  "id": 200,
+  "name": "Devadurlabha Dāsa"
+ },
+ {
+  "id": 210,
+  "name": "Dharaṇī"
+ },
+ {
+  "id": 219,
+  "name": "Dīna Caitanya (Dvija Caitanya)"
+ },
+ {
+  "id": 223,
+  "name": "Dinavandhu Dāsa"
+ },
+ {
+  "id": 267,
+  "name": "Ebadolla"
+ },
+ {
+  "id": 307,
+  "name": "Gaura Dāsa (Gauramohana)"
+ },
+ {
+  "id": 323,
+  "name": "Gaurasundara Dāsa"
+ },
+ {
+  "id": 324,
+  "name": "Gaurī Dāsa Kirtaniya"
+ },
+ {
+  "id": 327,
+  "name": "Gaurimohana Dāsa"
+ },
+ {
+  "id": 367,
+  "name": "Gopālakṛṣṇa Pattanayaka"
+ },
+ {
+  "id": 375,
+  "name": "Gopikanta Dāsa"
+ },
+ {
+  "id": 393,
+  "name": "Gopiramana"
+ },
+ {
+  "id": 443,
+  "name": "Halayudha"
+ },
+ {
+  "id": 449,
+  "name": "Hare Kṛṣṇa Dāsa"
+ },
+ {
+  "id": 464,
+  "name": "Haricandra"
+ },
+ {
+  "id": 477,
+  "name": "Haridatta"
+ },
+ {
+  "id": 494,
+  "name": "Haru Ṭhākura"
+ },
+ {
+  "id": 523,
+  "name": "Jagadānanda Ghosh"
+ },
+ {
+  "id": 525,
+  "name": "Jagadānanda Ṭhākura (Śrīkhaṇḍa, Jofalāi)"
+ },
+ {
+  "id": 543,
+  "name": "Jagamohana"
+ },
+ {
+  "id": 597,
+  "name": "Jayadeva Gosvāmī"
+ },
+ {
+  "id": 623,
+  "name": "JÑĀNAVALLABHA Dāsa"
+ },
+ {
+  "id": 681,
+  "name": "Kanurama Dāsa"
+ },
+ {
+  "id": 741,
+  "name": "Kṛṣṇa Śaraṇa"
+ },
+ {
+  "id": 782,
+  "name": "Krsnakanta"
+ },
+ {
+  "id": 792,
+  "name": "Kṛṣṇānanda Vaidya"
+ },
+ {
+  "id": 794,
+  "name": "Krsnapramoda Dāsa"
+ },
+ {
+  "id": 830,
+  "name": "Laksmikanta Dvija"
+ },
+ {
+  "id": 871,
+  "name": "Madho Rāya"
+ },
+ {
+  "id": 952,
+  "name": "Murāri Miśra"
+ },
+ {
+  "id": 955,
+  "name": "Mussalman Vaiṣṇava Poets"
+ },
+ {
+  "id": 958,
+  "name": "Najir"
+ },
+ {
+  "id": 1014,
+  "name": "Nasir Mamud"
+ },
+ {
+  "id": 1061,
+  "name": "Nṛsiṁhananda Ṭhākura"
+ },
+ {
+  "id": 1088,
+  "name": "Pillai Perumal Iyengar"
+ },
+ {
+  "id": 1178,
+  "name": "Rādhāvallabha Sinha"
+ },
+ {
+  "id": 1293,
+  "name": "RamiRamamani"
+ },
+ {
+  "id": 1300,
+  "name": "Rasamaya Dāsī"
+ },
+ {
+  "id": 1340,
+  "name": "Sadananda"
+ },
+ {
+  "id": 1347,
+  "name": "Saiyad Martuja"
+ },
+ {
+  "id": 1348,
+  "name": "Salabeg"
+ },
+ {
+  "id": 1351,
+  "name": "Sanātana Cakravartī"
+ },
+ {
+  "id": 1361,
+  "name": "Śaṅkara Dāsa"
+ },
+ {
+  "id": 1371,
+  "name": "Saṅkarṣaṇa"
+ },
+ {
+  "id": 1384,
+  "name": "Sarvananda"
+ },
+ {
+  "id": 1389,
+  "name": "Sasthivara Sen"
+ },
+ {
+  "id": 1423,
+  "name": "Sivai Dāsa"
+ },
+ {
+  "id": 1559,
+  "name": "Trivikramananda Deva"
+ },
+ {
+  "id": 1602,
+  "name": "Vallabha Dasar"
+ },
+ {
+  "id": 1674,
+  "name": "Vidyāpati"
+ },
+ {
+  "id": 1686,
+  "name": "Vijayananda"
+ },
+ {
+  "id": 1691,
+  "name": "Vindhu Dāsa"
+ },
+ {
+  "id": 1697,
+  "name": "Vipradasa Ghosh"
+ },
+ {
+  "id": 1705,
+  "name": "Viravallabha"
+ },
+ {
+  "id": 1719,
+  "name": "Viśvambhara Dāsa"
+ },
+ {
+  "id": 1720,
+  "name": "Viśvambhara Paine"
+ },
+ {
+  "id": 1737,
+  "name": "Vrajananda Ṭhākura"
+ },
+ {
+  "id": 1764,
+  "name": "Yadavendra"
+ },
+ {
+  "id": 1784,
+  "name": "Yasoraj Khan"
+ },
+ {
+  "id": 1979,
+  "name": "Haridāsa (padakartā)"
+ },
+ {
+  "id": 2023,
+  "name": "Jayadeva dāsa (padakartā)"
+ }
+]

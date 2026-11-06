@@ -1,0 +1,2354 @@
+[
+ {
+  "id": 877,
+  "name": "Madhusūdana Cakravartī",
+  "parent": 301,
+  "kind": "diksa",
+  "why": "Gaṅgānārāyaṇa"
+ },
+ {
+  "id": 1716,
+  "name": "Viṣṇupriyā",
+  "parent": 301,
+  "kind": "diksa",
+  "why": "Gaṅgānārāyaṇa"
+ },
+ {
+  "id": 11,
+  "name": "Acyuta",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 21,
+  "name": "Agata",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 26,
+  "name": "Akiñcana Kṛṣṇadāsa",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 39,
+  "name": "Anandananda",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 71,
+  "name": "Balabhadra",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 91,
+  "name": "Bali",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 101,
+  "name": "Bhagavān Miśra",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 102,
+  "name": "Bhagavān Paṇḍit",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 142,
+  "name": "Bhavani Devī",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 148,
+  "name": "Bholanatha",
+  "parent": 15,
+  "kind": "disciple",
+  "why": "Advaita's branch"
+ },
+ {
+  "id": 168,
+  "name": "Daityari",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 172,
+  "name": "Damayanti Devī",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 188,
+  "name": "Dariya Dāmodara",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 195,
+  "name": "Dayāla",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 196,
+  "name": "Dayārāma Caudhuri",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 197,
+  "name": "Dayārāma Dāsa Ṭhākura",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 201,
+  "name": "Devakī",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 204,
+  "name": "Devānanda (Vaidya, of Nityānanda's line)",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 212,
+  "name": "Dharma Dāsa Caudhuri",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 213,
+  "name": "Dharu Caudhuri",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 221,
+  "name": "Dīna Śyāma Dāsa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 224,
+  "name": "Dinavandhu",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 227,
+  "name": "Dube",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 234,
+  "name": "Durgā Dāsa Vidyaratna",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 236,
+  "name": "Durgā Dāsa Vipra",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 237,
+  "name": "Durgā Dāsa",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 242,
+  "name": "DVĀRAKĀNANDA",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 245,
+  "name": "Dvija Dāsa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 247,
+  "name": "Dvija Gopāla",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 249,
+  "name": "Dvija Gopīnātha",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 250,
+  "name": "Dvija Govinda Bhaṭṭācārya",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 251,
+  "name": "Dvija Govinda Dāsa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 253,
+  "name": "Dvija Jīva Dāsa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 255,
+  "name": "Dvija Kṛṣṇadāsa",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 256,
+  "name": "Dvija Muralidasa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 258,
+  "name": "Dvija Rādhāmohana",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 259,
+  "name": "Dvija Rādhāvallabha",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 261,
+  "name": "Dvija Rāmakṛṣṇa Dāsa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 263,
+  "name": "Dvija Sundara Rāya",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 264,
+  "name": "Dvija Śyāmasundara",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 266,
+  "name": "Dvija Yadunatha",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 279,
+  "name": "Gajendra Mathurā Dāsa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 282,
+  "name": "Gāndharvā Rāya",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 284,
+  "name": "Gaṇeśa Caudhuri",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 286,
+  "name": "Gaṇeśa Rāya",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 287,
+  "name": "Gaṅgā Dāsa Datta",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 289,
+  "name": "Gaṅgā Dāsa Paṇḍit",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 290,
+  "name": "Gaṅgā Dāsa Rāya",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 291,
+  "name": "Gaṅgā Dāsa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 294,
+  "name": "Gaṅgadhara Dāsa",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 296,
+  "name": "Gangahari Dāsa",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 310,
+  "name": "Gaura Gopāla",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 317,
+  "name": "Gaurāṅga Dāsa Vairāgī",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 334,
+  "name": "Gokula Cakravartī",
+  "parent": 497,
+  "kind": "diksa",
+  "why": "Hemalatā"
+ },
+ {
+  "id": 336,
+  "name": "Gokula Dāsa Mahānta",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 337,
+  "name": "Gokula Dāsa Vairāgī",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 339,
+  "name": "Gokulananda (Gokulananda Kavindra)",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 340,
+  "name": "Gokulananda Dāsa Cakravartī",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 347,
+  "name": "Gopāla Bhuinya",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 353,
+  "name": "Gopāla Datta",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 357,
+  "name": "Gopāla Maṇḍala",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 359,
+  "name": "Gopāla Nartaka",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 366,
+  "name": "Gopalabhanja Rāya",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 377,
+  "name": "Gopikanta",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 381,
+  "name": "Gopimohana",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 384,
+  "name": "Gopīnātha Dāsa Pattanayaka",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 391,
+  "name": "Gopiramana Dāsa Vaidya",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 397,
+  "name": "Gosain Dāsa",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 399,
+  "name": "Govardhana Bhandari",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 406,
+  "name": "Govinda Bhanja",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 409,
+  "name": "Govinda Dāsī",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 421,
+  "name": "Govindānanda Cakravartī",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 425,
+  "name": "Govindarāma",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 437,
+  "name": "Hada Ghosh",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 438,
+  "name": "Hada Govinda",
+  "parent": 305,
+  "kind": "diksa",
+  "why": "Gatigovinda"
+ },
+ {
+  "id": 441,
+  "name": "Haladhara",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 453,
+  "name": "Hari Gopa",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 457,
+  "name": "Hari Rāya",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 458,
+  "name": "Hari Ṭhākura",
+  "parent": 305,
+  "kind": "diksa",
+  "why": "Gatigovinda"
+ },
+ {
+  "id": 474,
+  "name": "Haridāsa Śiromaṇi",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 479,
+  "name": "Harinatha Ganguli",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 485,
+  "name": "Harirama (Premī)",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 490,
+  "name": "Harivallabha Sarkar",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 510,
+  "name": "Icchamayi Devī (Icchā)",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 512,
+  "name": "Indumukhi Devī",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 528,
+  "name": "Jagadīśa Ācārya",
+  "parent": 519,
+  "kind": "diksa",
+  "why": "Īśvarī"
+ },
+ {
+  "id": 530,
+  "name": "Jagadīśa Brāhmaṇa",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 532,
+  "name": "Jagadīśa Kavirāja",
+  "parent": 497,
+  "kind": "diksa",
+  "why": "Hemalatā"
+ },
+ {
+  "id": 535,
+  "name": "Jagadīśa Rāya",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 537,
+  "name": "Jagadisvara",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 553,
+  "name": "Jagannātha Dāsa (Śrī Galima)",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 562,
+  "name": "Jagannātha Paṇḍita",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 565,
+  "name": "Jagannātha Rāya",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 569,
+  "name": "Jagannātha Tīrtha",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 572,
+  "name": "Jagatesvara",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 573,
+  "name": "Jagu",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 580,
+  "name": "Jānakī Viśvāsa",
+  "parent": 305,
+  "kind": "diksa",
+  "why": "Gatigovinda"
+ },
+ {
+  "id": 582,
+  "name": "Janakinatha",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 584,
+  "name": "Janakivallabha Caudhuri",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 601,
+  "name": "Jayagopala Datta",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 608,
+  "name": "Jayarama Caudhari",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 611,
+  "name": "Jayarama dāsa",
+  "parent": 305,
+  "kind": "diksa",
+  "why": "Gatigovinda"
+ },
+ {
+  "id": 617,
+  "name": "Jīva Dāsa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 620,
+  "name": "Jīvana",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 625,
+  "name": "Kalandi Dāsa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 626,
+  "name": "Kalandi Dvija",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 627,
+  "name": "Kalandi",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 629,
+  "name": "Kalanidhi Catta",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 632,
+  "name": "Kalanidhi Rāya",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 638,
+  "name": "Kalinatha",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 641,
+  "name": "Kāmadeva Mandal",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 644,
+  "name": "Kamalā Devī",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 645,
+  "name": "Kamalā Sena",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 651,
+  "name": "Kamalākānta Kar",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 659,
+  "name": "Kamalanayana (Kamalā)",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 662,
+  "name": "Kanai Gopa",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 669,
+  "name": "Kancanalatika Devī",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 670,
+  "name": "Kandarpa Rāya",
+  "parent": 305,
+  "kind": "diksa",
+  "why": "Gatigovinda"
+ },
+ {
+  "id": 680,
+  "name": "Kanurama Cakravartī",
+  "parent": 497,
+  "kind": "diksa",
+  "why": "Hemalatā"
+ },
+ {
+  "id": 683,
+  "name": "Kapilesvara",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 686,
+  "name": "Karṇapūra Kavirāja",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 719,
+  "name": "Keśava Śiromaṇi",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 724,
+  "name": "Kesovanai",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 730,
+  "name": "Kisorananda Deva Gosvāmī",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 739,
+  "name": "Kṛṣṇa Purohit",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 740,
+  "name": "Kṛṣṇa Rāya",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 742,
+  "name": "Kṛṣṇa Siṁha",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 743,
+  "name": "Kṛṣṇa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 744,
+  "name": "Krsnabhanjadeva",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 749,
+  "name": "Kṛṣṇacaraṇa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 754,
+  "name": "Kṛṣṇadāsa Bhuian",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 756,
+  "name": "Kṛṣṇadāsa Catta",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 760,
+  "name": "Kṛṣṇadāsa Miśra",
+  "parent": 15,
+  "kind": "disciple",
+  "why": "Advaita's branch"
+ },
+ {
+  "id": 765,
+  "name": "Kṛṣṇadāsa Sarakhela",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 766,
+  "name": "Kṛṣṇadāsa Ṭhākura",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 767,
+  "name": "Kṛṣṇadāsa Vaidya",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 768,
+  "name": "Kṛṣṇadāsa Vairāgī",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 779,
+  "name": "Krsnahari Dāsa",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 784,
+  "name": "Krsnakisora",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 789,
+  "name": "Kṛṣṇānanda Bhian",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 790,
+  "name": "Kṛṣṇānanda Dāsa",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 795,
+  "name": "Kṛṣṇaprasāda Cakravartī",
+  "parent": 305,
+  "kind": "diksa",
+  "why": "Gatigovinda"
+ },
+ {
+  "id": 798,
+  "name": "Kṛṣṇaprasāda Ṭhākura",
+  "parent": 305,
+  "kind": "diksa",
+  "why": "Gatigovinda"
+ },
+ {
+  "id": 805,
+  "name": "Ksiru Candhuri",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 812,
+  "name": "Kumuda Kavirāja",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 815,
+  "name": "Kumudananda Ṭhākura",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 823,
+  "name": "Laichana",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 853,
+  "name": "Madanamohana Cakravartī",
+  "parent": 305,
+  "kind": "diksa",
+  "why": "Gatigovinda"
+ },
+ {
+  "id": 872,
+  "name": "Madho",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 908,
+  "name": "Manohara Ghosh",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 909,
+  "name": "Manohara Visvas",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 921,
+  "name": "Mithi Bhanja",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 926,
+  "name": "Mohanananda",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 927,
+  "name": "Muktarama Dāsa",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 943,
+  "name": "Mukuṭa Maitreya",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 948,
+  "name": "Murāri Caitanya Dāsa",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 959,
+  "name": "Nakadi Dāsa",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 960,
+  "name": "Nakadi",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 962,
+  "name": "Nalini Devī",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 970,
+  "name": "Nandana Ācārya",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 974,
+  "name": "Nandinī Dāsī",
+  "parent": 15,
+  "kind": "disciple",
+  "why": "Advaita's branch"
+ },
+ {
+  "id": 985,
+  "name": "Narasimha Kavirāja",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 990,
+  "name": "Nārāyaṇa Caudhuri",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 993,
+  "name": "Nārāyaṇa Dāsa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 994,
+  "name": "Nārāyaṇa Ghosh",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 997,
+  "name": "Nārāyaṇa Kavi",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1001,
+  "name": "Nārāyaṇa Rāya",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1002,
+  "name": "Nārāyaṇa Sanyal",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1013,
+  "name": "Nartak Gopāla",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1017,
+  "name": "Nava Gaurāṅga Dāsa",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1023,
+  "name": "Navani Hoda",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1029,
+  "name": "Netrananda",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 1031,
+  "name": "Nīlamaṇi Mukhuti",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1034,
+  "name": "Nilasyama Dāsa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1035,
+  "name": "Nimāi Kavirāja",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1038,
+  "name": "Nimu Gopa",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 1039,
+  "name": "Niranjana",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1040,
+  "name": "Nirloma Gaṅgādāsa",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1048,
+  "name": "Nivarana Vidyavagisa",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1050,
+  "name": "Nṛsiṁha Caitanyadāsa",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1068,
+  "name": "Paramānanda Avadhūta",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1070,
+  "name": "Paramānanda Gupta",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1077,
+  "name": "Paramānanda Upadhyaya",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1079,
+  "name": "Paramānanda",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1086,
+  "name": "Phagu Caudhuri",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1087,
+  "name": "Phulla Thakurji (Or Ṭhākurāṇī)",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1090,
+  "name": "Pitamavara",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1094,
+  "name": "Prabhurama Datta",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1108,
+  "name": "Prasāda Dāsa (Prakāśa Dāsa)",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1109,
+  "name": "Prasāda Dāsa Vairāgī",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1121,
+  "name": "Purandara Ācārya",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1128,
+  "name": "Puruṣottama Cakravartī",
+  "parent": 305,
+  "kind": "diksa",
+  "why": "Gatigovinda"
+ },
+ {
+  "id": 1144,
+  "name": "Radhacarana",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1146,
+  "name": "Rādhāgovinda",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1147,
+  "name": "Rādhākānta Baidya",
+  "parent": 497,
+  "kind": "diksa",
+  "why": "Hemalatā"
+ },
+ {
+  "id": 1156,
+  "name": "Rādhāmādhava",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1165,
+  "name": "Rādhānanda",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 1171,
+  "name": "Rādhāvallabha Caudhuri",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1173,
+  "name": "Rādhāvallabha Dāsa Ṭhākura",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1175,
+  "name": "Rādhāvallabha Datta",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1179,
+  "name": "Rādhāvallabha Ṭhākura",
+  "parent": 497,
+  "kind": "diksa",
+  "why": "Hemalatā"
+ },
+ {
+  "id": 1180,
+  "name": "Rādhāvallabha",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1182,
+  "name": "Rādhāvinoda Dāsa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1189,
+  "name": "Raghavendra Rāya",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1192,
+  "name": "Raghu Nilamvar",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1193,
+  "name": "Raghu",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1198,
+  "name": "Raghunandana Dāsa Ghatak",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1203,
+  "name": "Raghunātha Bhuinya",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1208,
+  "name": "Raghunātha Kar",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1210,
+  "name": "Raghunātha PuriTirtha",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1217,
+  "name": "Rāja Mitra",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1221,
+  "name": "Rajavallabha Cakravartī",
+  "parent": 519,
+  "kind": "diksa",
+  "why": "Īśvarī"
+ },
+ {
+  "id": 1224,
+  "name": "Rājendra Gosvāmī",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1229,
+  "name": "Rāma Deva Datta",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1233,
+  "name": "Rāma Sen",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1237,
+  "name": "Rāmabhādra Rāya",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1250,
+  "name": "Ramacarana",
+  "parent": 497,
+  "kind": "diksa",
+  "why": "Hemalatā"
+ },
+ {
+  "id": 1260,
+  "name": "Rāmadāsa Kavivallabha",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1262,
+  "name": "Rāmadāsa Rāya",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1269,
+  "name": "Ramajaya Cakravartī",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1270,
+  "name": "Ramajaya Maitra",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1271,
+  "name": "Ramakanta Datta",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1274,
+  "name": "Rāmakṛṣṇa Cattaraj",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1277,
+  "name": "Ramamdasa Vatua",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1278,
+  "name": "Ramaṇa Dāsa",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1292,
+  "name": "Ramasaran",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1312,
+  "name": "Ratnamala",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1316,
+  "name": "Rautra",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1322,
+  "name": "Rudra Paṇḍit",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1324,
+  "name": "Rūpa Ghatak",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1328,
+  "name": "Rūpa Rāya",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1331,
+  "name": "Rūpamālā",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1332,
+  "name": "Rūpanārāyaṇa",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1339,
+  "name": "Sacirani",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 1342,
+  "name": "Sadāśiva KavirajaVaidya",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1343,
+  "name": "Sadāśiva Paṇḍit",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1344,
+  "name": "Sadāśiva Pattanayaka",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1355,
+  "name": "Sanātana",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1358,
+  "name": "Sañjaya",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1360,
+  "name": "Śaṅkara Bisvas",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1374,
+  "name": "Santa Ṭhākura",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1378,
+  "name": "Sāraṅga Ṭhākura",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1388,
+  "name": "Sasthidhara (Sathivara Kirtaniya)",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1401,
+  "name": "Śekhara Paṇḍit",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1402,
+  "name": "Ser Khan",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 1411,
+  "name": "Sikhidhvaja",
+  "parent": 1535,
+  "kind": "diksa",
+  "why": "Śyāmānanda"
+ },
+ {
+  "id": 1412,
+  "name": "Singa Bhaṭṭa",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1422,
+  "name": "Sivai Ācārya",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1424,
+  "name": "Śivānanda Cakravartī (Dantur)",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1428,
+  "name": "Śivānanda",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1429,
+  "name": "Śivarāma Cakravartī",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1430,
+  "name": "Śivarāma Dāsa",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1432,
+  "name": "Sricandana",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1433,
+  "name": "Sricarana",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1443,
+  "name": "Srikanta Sen",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1450,
+  "name": "Śrīman Paṇḍit",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1451,
+  "name": "Śrīman Sen",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1453,
+  "name": "Srimanta Cakravartī",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1454,
+  "name": "Srimanta Datta",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1455,
+  "name": "Srimanta Ṭhākura",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1456,
+  "name": "Srimanta",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1461,
+  "name": "Srinatha Miśra",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1472,
+  "name": "Subhananda Dvija",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1474,
+  "name": "Subuddhi Miśra",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1480,
+  "name": "Sudhakara Mandal",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1484,
+  "name": "Sudhānidhi Rāya",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1489,
+  "name": "Sukṛti Kṛṣṇadāsa",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1499,
+  "name": "Sundarī Ṭhākura",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1502,
+  "name": "Sūrya",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1503,
+  "name": "Sūryadāsa Sarakhela",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1518,
+  "name": "Śyāma Bhanja",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1519,
+  "name": "Śyāma Bhaṭṭa",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1520,
+  "name": "Śyāma",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1524,
+  "name": "Śyāmadāsa Catta",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1529,
+  "name": "Śyāmagopāla Dāsa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1531,
+  "name": "Syamakisora",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1533,
+  "name": "Syamamohana Dāsa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1534,
+  "name": "Syamamohana",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1537,
+  "name": "Syamapriya",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1538,
+  "name": "Śyāmarasika Dāsa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1541,
+  "name": "Śyāmasundara Tarkalankara Bhaṭṭācārya",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1542,
+  "name": "Śyāmasundara",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1543,
+  "name": "Śyāmavallabha Ācārya",
+  "parent": 519,
+  "kind": "diksa",
+  "why": "Īśvarī"
+ },
+ {
+  "id": 1545,
+  "name": "Tapana Ācārya",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1547,
+  "name": "Telai",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1548,
+  "name": "Ṭhākura Dāsa",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1561,
+  "name": "Tulasī Devī Dāsī",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1564,
+  "name": "Tulasīrāma Dāsa",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1565,
+  "name": "Udasina",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1577,
+  "name": "Baḍa Haridāsa",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1579,
+  "name": "Vadu Caitanya Dāsa",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1582,
+  "name": "Vahuvalindra",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1585,
+  "name": "Vaidyanath Mahārāja",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1586,
+  "name": "Vaidyanatha Bhanja",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1591,
+  "name": "Vaiṣṇava Ācārya",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1597,
+  "name": "Vaiṣṇavananda Ācārya",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1608,
+  "name": "Vallabha Ṭhākura",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1612,
+  "name": "Vallabhikanta Cakravartī",
+  "parent": 305,
+  "kind": "diksa",
+  "why": "Gatigovinda"
+ },
+ {
+  "id": 1615,
+  "name": "Vāmana",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1632,
+  "name": "Vanamālī",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1638,
+  "name": "Vāṇīnātha Vipra (Dvija Vāṇīnātha) of Cāṁpāhāṭi",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1643,
+  "name": "Vaninatha Vāsu",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1646,
+  "name": "Vasanta Datta",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1655,
+  "name": "Vāsudeva Kavirāja",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1661,
+  "name": "Vatnarama Dāsa",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1677,
+  "name": "Viharidasa Vairāgī",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1692,
+  "name": "Vinoda Dāsa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1693,
+  "name": "Vinoda Rāya",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1706,
+  "name": "Viravara Dev",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1707,
+  "name": "Visnai Hajra",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1708,
+  "name": "Viṣṇudāsa (Śrī Bedaya)",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1711,
+  "name": "Viṣṇudāsa Kavirāja",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1730,
+  "name": "Vonca Rāmabhādra",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1732,
+  "name": "Vraja Rāya",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1734,
+  "name": "Vrajamohana Cattaraja",
+  "parent": 305,
+  "kind": "diksa",
+  "why": "Gatigovinda"
+ },
+ {
+  "id": 1735,
+  "name": "Vrajamohana",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1736,
+  "name": "Vrajananda Dāsa",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1744,
+  "name": "Vṛndāvana Cattaraja",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1747,
+  "name": "Vṛndāvana Kavirāja",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Śrīnivāsa"
+ },
+ {
+  "id": 1748,
+  "name": "Vṛndāvana Kiśora",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1751,
+  "name": "Vṛndāvana",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1755,
+  "name": "Vuddhimanta Khan",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1761,
+  "name": "Yādava",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1777,
+  "name": "Yadunatha Kavicandra",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch"
+ },
+ {
+  "id": 1778,
+  "name": "Yadunatha Vidyābhūṣaṇa",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1788,
+  "name": "Yugala",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1827,
+  "name": "Jagāi and Mādhāi",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1911,
+  "name": "Bālaka",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikānanda"
+ },
+ {
+  "id": 1912,
+  "name": "Bālakadāsa Vairāgī",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Narottama"
+ },
+ {
+  "id": 1919,
+  "name": "Nārāyaṇa Paṇḍit",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1941,
+  "name": "Puruṣottama (of Kulīna-grāma)",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1942,
+  "name": "Puruṣottama (Caitanya’s branch, CC 1.10.112)",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1944,
+  "name": "Puruṣottama (student of Lord Gaurāṅga)",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ },
+ {
+  "id": 1989,
+  "name": "Mādhava Ācārya (Caitanya's branch)",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch"
+ }
+]
