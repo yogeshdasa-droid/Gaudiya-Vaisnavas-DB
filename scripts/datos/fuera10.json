@@ -1,0 +1,121 @@
+[
+ {
+  "id": 9,
+  "name": "Acyuta Paṇḍit",
+  "parent": 6,
+  "kind": "diksa",
+  "why": "disciple of Abhirāma Gosvāmī (Pāṭa-paryaṭana)"
+ },
+ {
+  "id": 432,
+  "name": "Guphanarayana",
+  "parent": 6,
+  "kind": "diksa",
+  "why": "disciple of Abhirāma Gosvāmī (Pāṭa-paryaṭana)"
+ },
+ {
+  "id": 499,
+  "name": "Hiramadhava Dāsa",
+  "parent": 6,
+  "kind": "diksa",
+  "why": "disciple of Abhirāma Gosvāmī (Pāṭa-paryaṭana)"
+ },
+ {
+  "id": 924,
+  "name": "Mohana Ṭhākura",
+  "parent": 6,
+  "kind": "diksa",
+  "why": "disciple of Abhirāma Gosvāmī (Pāṭa-paryaṭana)"
+ },
+ {
+  "id": 1067,
+  "name": "Pakhiya Gopāla Dāsa",
+  "parent": 6,
+  "kind": "diksa",
+  "why": "disciple of Abhirāma Gosvāmī (Pāṭa-paryaṭana)"
+ },
+ {
+  "id": 1219,
+  "name": "Rajani Kar Paṇḍit",
+  "parent": 6,
+  "kind": "diksa",
+  "why": "disciple of Abhirāma Gosvāmī (Pāṭa-paryaṭana)"
+ },
+ {
+  "id": 1220,
+  "name": "Rajani Paṇḍit",
+  "parent": 6,
+  "kind": "diksa",
+  "why": "disciple of Abhirāma Gosvāmī (Pāṭa-paryaṭana)"
+ },
+ {
+  "id": 1397,
+  "name": "Satyaraghava",
+  "parent": 6,
+  "kind": "diksa",
+  "why": "disciple of Abhirāma Gosvāmī (Pāṭa-paryaṭana)"
+ },
+ {
+  "id": 1495,
+  "name": "Sundarānanda Paṇḍit (disciple of Abhirāma)",
+  "parent": 6,
+  "kind": "diksa",
+  "why": "disciple of Abhirāma Gosvāmī (Pāṭa-paryaṭana)"
+ },
+ {
+  "id": 1776,
+  "name": "Yadunatha Haldar",
+  "parent": 6,
+  "kind": "diksa",
+  "why": "disciple of Abhirāma Gosvāmī (Pāṭa-paryaṭana)"
+ },
+ {
+  "id": 160,
+  "name": "Brahmananda Gosvāmī Prabhu",
+  "parent": 753,
+  "kind": "diksa",
+  "why": "disciple of Siddha Kṛṣṇadāsa of Govardhana"
+ },
+ {
+  "id": 522,
+  "name": "Jagadānanda Dāsa Bābājī Mahāśaya",
+  "parent": 97,
+  "kind": "diksa",
+  "why": "initiated by Bhagavān dāsa Bābājī"
+ },
+ {
+  "id": 752,
+  "name": "Kṛṣṇadāsa Adhikārī",
+  "parent": 618,
+  "kind": "diksa",
+  "why": "disciple of Jīva Gosvāmī (Bhakti-ratnākara 1.805)"
+ },
+ {
+  "id": 1201,
+  "name": "Raghunandana",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "disciple of Śrīnivāsa Ācārya (Karṇānanda 1)"
+ },
+ {
+  "id": 1306,
+  "name": "Rasikasekhara",
+  "parent": 980,
+  "kind": "diksa",
+  "why": "disciple of Ṭhākura Narahari"
+ },
+ {
+  "id": 1762,
+  "name": "Yadavacarya Gosvāmī Or Yādava Miśra",
+  "parent": 1832,
+  "kind": "diksa",
+  "why": "disciple of Kāśīśvara Gosvāmī of Vṛndāvana"
+ },
+ {
+  "id": 1772,
+  "name": "Yadunandana",
+  "parent": 497,
+  "kind": "diksa",
+  "why": "disciple of Hemalatā, daughter of Śrīnivāsa Ācārya"
+ }
+]
