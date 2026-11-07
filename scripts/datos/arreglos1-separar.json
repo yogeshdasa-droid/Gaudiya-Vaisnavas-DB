@@ -1,0 +1,28 @@
+[
+ {
+  "id": 1201,
+  "name": "Raghunandana",
+  "fields": {
+   "name": "Raghunandana (disciple of Śrīnivāsa)",
+   "guru": "Śrīnivāsa Ācārya",
+   "notes": "A disciple of Śrīnivāsa Ācārya (Karṇānanda 1). The Vṛndāvana Gosvāmīs asked him to bring the Gauḍa devotees the news that the Deity of Rādhikā sent by Jāhnavā Mātā from Khaḍadaha would be installed at the left of Gopīnātha, with a great festival.\n\nThe record also held Raghunandana Ṭhākura of Śrīkhaṇḍa (CC Ādi 10.76; his text went to his record #1200) and the Raghunandana of CC Ādi 10.117, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Raghunandana (Caitanya's branch, CC Ādi 10.117)",
+    "place": [164, "associate"],
+    "fields": { "notes": "Of the branch of Lord Caitanya (Caitanya-caritāmṛta Ādi 10.117). Taken out of the record «Raghunandana» #1201, which mixed several persons (07-11-2026)." }
+   }
+  ],
+  "docs": [
+   {
+    "doc": 1210,
+    "pieces": [
+     { "to": "a", "title": "Raghunandana", "start": "## RAGHUNANDANA\n\nBimanbihari Majumdar", "end": "## RAGHUNANDANA\n\nHe belonged to the sakhā of Lord Caitanya" },
+     { "toId": 1200, "title": "Raghunandana (Vaiṣṇava-vandanā, CC Ādi 10.76)", "start": "## RAGHUNANDANA\n\nHe belonged to the sakhā of Lord Caitanya" }
+    ]
+   }
+  ]
+ }
+]
