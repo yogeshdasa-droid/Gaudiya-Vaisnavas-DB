@@ -1,0 +1,842 @@
+[
+ {
+  "id": 921,
+  "old": "Mithi Bhanja",
+  "name": "Mithi Bhañja"
+ },
+ {
+  "id": 926,
+  "old": "Mohanananda",
+  "name": "Mohanānanda"
+ },
+ {
+  "id": 927,
+  "old": "Muktarama Dāsa",
+  "name": "Muktārāma Dāsa"
+ },
+ {
+  "id": 936,
+  "old": "Mukunda Ojha",
+  "name": "Mukunda Ojhā"
+ },
+ {
+  "id": 957,
+  "old": "Nabhaji (Nabhadasa, Nārāyaṇadāsa)",
+  "name": "Nābhājī (Nābhādāsa, Nārāyaṇadāsa)"
+ },
+ {
+  "id": 962,
+  "old": "Nalini Devī",
+  "name": "Nalinī Devī"
+ },
+ {
+  "id": 963,
+  "old": "Nalini Paṇḍit",
+  "name": "Nalina Paṇḍita"
+ },
+ {
+  "id": 965,
+  "old": "Nanda Village's Siddha Baba",
+  "name": "Siddha Bābā of Nandagrāma"
+ },
+ {
+  "id": 966,
+  "old": "Nandadulala Adhikārī",
+  "name": "Nandadulāla Adhikārī"
+ },
+ {
+  "id": 976,
+  "old": "Narahari Cakravartī (Ghanasyam)",
+  "name": "Narahari Cakravartī (Ghanaśyāma)"
+ },
+ {
+  "id": 982,
+  "old": "Naranaya Bhaṭṭa",
+  "name": "Nārāyaṇa Bhaṭṭa"
+ },
+ {
+  "id": 990,
+  "old": "Nārāyaṇa Caudhuri",
+  "name": "Nārāyaṇa Caudhurī"
+ },
+ {
+  "id": 1016,
+  "old": "Nathamuni",
+  "name": "Nāthamuni"
+ },
+ {
+  "id": 1019,
+  "old": "Navada Srigarbha",
+  "name": "Nāvaḍa Śrīgarbha"
+ },
+ {
+  "id": 1021,
+  "old": "Navakanta",
+  "name": "Navakānta"
+ },
+ {
+  "id": 1029,
+  "old": "Netrananda",
+  "name": "Netrānanda"
+ },
+ {
+  "id": 1030,
+  "old": "Nilakantha Suri",
+  "name": "Nīlakaṇṭha Sūri"
+ },
+ {
+  "id": 1032,
+  "old": "Nilambara Cakravartī",
+  "name": "Nīlāmbara Cakravartī"
+ },
+ {
+  "id": 1033,
+  "old": "Nilambara",
+  "name": "Nīlāmbara"
+ },
+ {
+  "id": 1034,
+  "old": "Nilasyama Dāsa",
+  "name": "Nīlaśyāma Dāsa"
+ },
+ {
+  "id": 1039,
+  "old": "Niranjana",
+  "name": "Nirañjana"
+ },
+ {
+  "id": 1042,
+  "old": "Nityānanda Caudhuri",
+  "name": "Nityānanda Caudhurī"
+ },
+ {
+  "id": 1048,
+  "old": "Nivarana Vidyavagisa",
+  "name": "Nivāraṇa Vidyāvāgīśa"
+ },
+ {
+  "id": 1053,
+  "old": "Nṛsiṁha Dāsa Baba",
+  "name": "Nṛsiṁha Dāsa Bābā"
+ },
+ {
+  "id": 1059,
+  "old": "Nrsimhacarya",
+  "name": "Nṛsiṁhācārya"
+ },
+ {
+  "id": 1067,
+  "old": "Pakhiya Gopāla Dāsa",
+  "name": "Pākhiyā Gopāla Dāsa"
+ },
+ {
+  "id": 1071,
+  "old": "Paramānanda Kirtaniya",
+  "name": "Paramānanda Kīrtanīyā"
+ },
+ {
+  "id": 1077,
+  "old": "Paramānanda Upadhyaya",
+  "name": "Paramānanda Upādhyāya"
+ },
+ {
+  "id": 1084,
+  "old": "Parvatinath Mukhuti",
+  "name": "Pārvatīnātha Mukhuṭī"
+ },
+ {
+  "id": 1086,
+  "old": "Phagu Caudhuri",
+  "name": "Phāgu Caudhurī"
+ },
+ {
+  "id": 1087,
+  "old": "Phulla Thakurji (Or Ṭhākurāṇī)",
+  "name": "Phullā Ṭhākurjī (or Ṭhākurāṇī)"
+ },
+ {
+  "id": 1088,
+  "old": "Pillai Perumal Iyengar",
+  "name": "Piḷḷai Perumāḷ Aiyaṅgār"
+ },
+ {
+  "id": 1090,
+  "old": "Pitamavara",
+  "name": "Pītāmbara"
+ },
+ {
+  "id": 1094,
+  "old": "Prabhurama Datta",
+  "name": "Prabhurāma Datta"
+ },
+ {
+  "id": 1104,
+  "old": "Pranagopal Gosvāmī",
+  "name": "Prāṇagopāla Gosvāmī"
+ },
+ {
+  "id": 1106,
+  "old": "Pranakrsna Dāsa Bābājī",
+  "name": "Prāṇakṛṣṇa Dāsa Bābājī"
+ },
+ {
+  "id": 1112,
+  "old": "Pravodhananda Sarasvatī",
+  "name": "Prabodhānanda Sarasvatī"
+ },
+ {
+  "id": 1120,
+  "old": "Pundarikaksha",
+  "name": "Puṇḍarīkākṣa"
+ },
+ {
+  "id": 1147,
+  "old": "Rādhākānta Baidya",
+  "name": "Rādhākānta Vaidya"
+ },
+ {
+  "id": 1163,
+  "old": "Rādhānanda Caudhuri",
+  "name": "Rādhānanda Caudhurī"
+ },
+ {
+  "id": 1170,
+  "old": "Rādhāvallabha Cattaraja",
+  "name": "Rādhāvallabha Caṭṭarāja"
+ },
+ {
+  "id": 1171,
+  "old": "Rādhāvallabha Caudhuri",
+  "name": "Rādhāvallabha Caudhurī"
+ },
+ {
+  "id": 1178,
+  "old": "Rādhāvallabha Sinha",
+  "name": "Rādhāvallabha Siṁha"
+ },
+ {
+  "id": 1185,
+  "old": "Radhikanatha Gosvāmī",
+  "name": "Rādhikānātha Gosvāmī"
+ },
+ {
+  "id": 1192,
+  "old": "Raghu Nilamvar",
+  "name": "Raghu Nīlāmbara"
+ },
+ {
+  "id": 1194,
+  "old": "Raghudasa Ṭhākura",
+  "name": "Raghudāsa Ṭhākura"
+ },
+ {
+  "id": 1219,
+  "old": "Rajani Kar Paṇḍit",
+  "name": "Rajanī Kar Paṇḍita"
+ },
+ {
+  "id": 1220,
+  "old": "Rajani Paṇḍit",
+  "name": "Rajanī Paṇḍita"
+ },
+ {
+  "id": 1225,
+  "old": "Rajiv Paṇḍit",
+  "name": "Rājīva Paṇḍita"
+ },
+ {
+  "id": 1226,
+  "old": "Rakhalananda Ṭhākura",
+  "name": "Rākhālānanda Ṭhākura"
+ },
+ {
+  "id": 1256,
+  "old": "Rāmadāsa Bisvas",
+  "name": "Rāmadāsa Viśvāsa"
+ },
+ {
+  "id": 1267,
+  "old": "Ramahariji",
+  "name": "Rāmaharijī"
+ },
+ {
+  "id": 1269,
+  "old": "Ramajaya Cakravartī",
+  "name": "Rāmajaya Cakravartī"
+ },
+ {
+  "id": 1270,
+  "old": "Ramajaya Maitra",
+  "name": "Rāmajaya Maitra"
+ },
+ {
+  "id": 1285,
+  "old": "Rāmanārāyaṇa Miśra (Candrabhaga)",
+  "name": "Rāmanārāyaṇa Miśra (Candrabhāgā)"
+ },
+ {
+  "id": 1286,
+  "old": "Ramanaryana Vidyaratna",
+  "name": "Rāmanārāyaṇa Vidyāratna"
+ },
+ {
+  "id": 1291,
+  "old": "Ramasaran Cattaraja",
+  "name": "Rāmaśaraṇa Caṭṭarāja"
+ },
+ {
+  "id": 1294,
+  "old": "Rana Kumbha",
+  "name": "Rāṇā Kumbha"
+ },
+ {
+  "id": 1306,
+  "old": "Rasikasekhara",
+  "name": "Rasikaśekhara"
+ },
+ {
+  "id": 1308,
+  "old": "Ratikanta Ṭhākura",
+  "name": "Ratikānta Ṭhākura"
+ },
+ {
+  "id": 1312,
+  "old": "Ratnamala",
+  "name": "Ratnamālā"
+ },
+ {
+  "id": 1318,
+  "old": "Ravindranarayana",
+  "name": "Ravīndranārāyaṇa"
+ },
+ {
+  "id": 1319,
+  "old": "Rayasekhara",
+  "name": "Rāyaśekhara"
+ },
+ {
+  "id": 1323,
+  "old": "Rudrari Kavirāja",
+  "name": "Rudrāri Kavirāja"
+ },
+ {
+  "id": 1329,
+  "old": "Rupacand Adhikārī",
+  "name": "Rūpacānd Adhikārī"
+ },
+ {
+  "id": 1333,
+  "old": "Rupesvar",
+  "name": "Rūpeśvara"
+ },
+ {
+  "id": 1334,
+  "old": "Saccidānanda Balakrsna Vrajabala",
+  "name": "Saccidānanda Bālakṛṣṇa Vrajabālā"
+ },
+ {
+  "id": 1337,
+  "old": "Sacinandan Gosvāmī",
+  "name": "Śacīnandana Gosvāmī"
+ },
+ {
+  "id": 1338,
+  "old": "Sacinandan Vidyānidhi",
+  "name": "Śacīnandana Vidyānidhi"
+ },
+ {
+  "id": 1339,
+  "old": "Sacirani",
+  "name": "Śacīrāṇī"
+ },
+ {
+  "id": 1340,
+  "old": "Sadananda",
+  "name": "Sadānanda"
+ },
+ {
+  "id": 1341,
+  "old": "Sadanandi",
+  "name": "Sadānandī"
+ },
+ {
+  "id": 1346,
+  "old": "Sadipuriya Gopāla",
+  "name": "Sādipuriyā Gopāla"
+ },
+ {
+  "id": 1349,
+  "old": "Sambhuram",
+  "name": "Śambhurāma"
+ },
+ {
+  "id": 1360,
+  "old": "Śaṅkara Bisvas",
+  "name": "Śaṅkara Viśvāsa"
+ },
+ {
+  "id": 1368,
+  "old": "Sankararanya Ācārya",
+  "name": "Śaṅkarāraṇya Ācārya"
+ },
+ {
+  "id": 1369,
+  "old": "Sankararanya",
+  "name": "Śaṅkarāraṇya"
+ },
+ {
+  "id": 1372,
+  "old": "Sanketa Ācārya",
+  "name": "Saṅketa Ācārya"
+ },
+ {
+  "id": 1383,
+  "old": "Sarvajna",
+  "name": "Sarvajña"
+ },
+ {
+  "id": 1388,
+  "old": "Sasthidhara (Sathivara Kirtaniya)",
+  "name": "Ṣaṣṭhīdhara (Ṣaṣṭhīvara Kīrtanīyā)"
+ },
+ {
+  "id": 1391,
+  "old": "Satyabhanu Upadhyaya",
+  "name": "Satyabhānu Upādhyāya"
+ },
+ {
+  "id": 1397,
+  "old": "Satyaraghava",
+  "name": "Satyarāghava"
+ },
+ {
+  "id": 1398,
+  "old": "Satyaraja Khan",
+  "name": "Satyarāja Khān"
+ },
+ {
+  "id": 1399,
+  "old": "Saudamini Devī",
+  "name": "Saudāminī Devī"
+ },
+ {
+  "id": 1411,
+  "old": "Sikhidhvaja",
+  "name": "Śikhidhvaja"
+ },
+ {
+  "id": 1412,
+  "old": "Singa Bhaṭṭa",
+  "name": "Siṅga Bhaṭṭa"
+ },
+ {
+  "id": 1419,
+  "old": "Sitanatha Rāya",
+  "name": "Sītānātha Rāya"
+ },
+ {
+  "id": 1432,
+  "old": "Sricandana",
+  "name": "Śrīcandana"
+ },
+ {
+  "id": 1433,
+  "old": "Sricarana",
+  "name": "Śrīcaraṇa"
+ },
+ {
+  "id": 1435,
+  "old": "Sridasa",
+  "name": "Śrīdāsa"
+ },
+ {
+  "id": 1438,
+  "old": "Srigarbha",
+  "name": "Śrīgarbha"
+ },
+ {
+  "id": 1439,
+  "old": "Srihari Ācārya",
+  "name": "Śrīhari Ācārya"
+ },
+ {
+  "id": 1440,
+  "old": "Srihari Paṇḍit",
+  "name": "Śrīhari Paṇḍita"
+ },
+ {
+  "id": 1441,
+  "old": "Sriharicarana",
+  "name": "Śrīharicaraṇa"
+ },
+ {
+  "id": 1442,
+  "old": "Sriharsa",
+  "name": "Śrīharṣa"
+ },
+ {
+  "id": 1480,
+  "old": "Sudhakara Mandal",
+  "name": "Sudhākara Maṇḍala"
+ },
+ {
+  "id": 1481,
+  "old": "Sudhakara",
+  "name": "Sudhākara"
+ },
+ {
+  "id": 1490,
+  "old": "Sulaksana",
+  "name": "Sulakṣaṇā"
+ },
+ {
+  "id": 1492,
+  "old": "Sunanda Devī",
+  "name": "Sunandā Devī"
+ },
+ {
+  "id": 1500,
+  "old": "Surdasa Madanamohana",
+  "name": "Sūradāsa Madanamohana"
+ },
+ {
+  "id": 1507,
+  "old": "Suvalacandra Ṭhākura",
+  "name": "Subalacandra Ṭhākura"
+ },
+ {
+  "id": 1511,
+  "old": "Svarūpa Bhupati",
+  "name": "Svarūpa Bhūpati"
+ },
+ {
+  "id": 1518,
+  "old": "Śyāma Bhanja",
+  "name": "Śyāma Bhañja"
+ },
+ {
+  "id": 1522,
+  "old": "Śyāmadāsa Baba",
+  "name": "Śyāmadāsa Bābā"
+ },
+ {
+  "id": 1532,
+  "old": "Syamalala Gosvāmī",
+  "name": "Śyāmalāla Gosvāmī"
+ },
+ {
+  "id": 1533,
+  "old": "Syamamohana Dāsa",
+  "name": "Śyāmamohana Dāsa"
+ },
+ {
+  "id": 1534,
+  "old": "Syamamohana",
+  "name": "Śyāmamohana"
+ },
+ {
+  "id": 1536,
+  "old": "Syamapala",
+  "name": "Śyāmapāla"
+ },
+ {
+  "id": 1554,
+  "old": "Trailokyanatha Miśra",
+  "name": "Trailokyanātha Miśra"
+ },
+ {
+  "id": 1555,
+  "old": "Tribhangadasa Bābājī",
+  "name": "Tribhaṅgadāsa Bābājī"
+ },
+ {
+  "id": 1557,
+  "old": "Trimala Bhaṭṭa",
+  "name": "Trimalla Bhaṭṭa"
+ },
+ {
+  "id": 1558,
+  "old": "Tripurari Svāmī",
+  "name": "Tripurāri Svāmī"
+ },
+ {
+  "id": 1559,
+  "old": "Trivikramananda Deva",
+  "name": "Trivikramānanda Deva"
+ },
+ {
+  "id": 1566,
+  "old": "Uddanda Rāya",
+  "name": "Uddaṇḍa Rāya"
+ },
+ {
+  "id": 1570,
+  "old": "Uddhavananda",
+  "name": "Uddhavānanda"
+ },
+ {
+  "id": 1572,
+  "old": "Udiya (Odiya) Vipradasa",
+  "name": "Oḍiyā Vipradāsa"
+ },
+ {
+  "id": 1574,
+  "old": "Upendra Bhanjakavi",
+  "name": "Upendra Bhañja"
+ },
+ {
+  "id": 1578,
+  "old": "Vadanananda",
+  "name": "Vadanānanda"
+ },
+ {
+  "id": 1579,
+  "old": "Vadu Caitanya Dāsa",
+  "name": "Baḍu Caitanya Dāsa"
+ },
+ {
+  "id": 1580,
+  "old": "Vadu Gaṅgādāsa",
+  "name": "Baḍu Gaṅgādāsa"
+ },
+ {
+  "id": 1581,
+  "old": "Vadu Jagannātha",
+  "name": "Baḍu Jagannātha"
+ },
+ {
+  "id": 1582,
+  "old": "Vahuvalindra",
+  "name": "Bāhubalīndra"
+ },
+ {
+  "id": 1611,
+  "old": "Vallabhidasa Kavirāja",
+  "name": "Vallabhīdāsa Kavirāja"
+ },
+ {
+  "id": 1616,
+  "old": "Vamaranya",
+  "name": "Vāmāraṇya"
+ },
+ {
+  "id": 1633,
+  "old": "Vanesvara Brahmacārī",
+  "name": "Vaneśvara Brahmacārī"
+ },
+ {
+  "id": 1636,
+  "old": "Vangavihari Vidyalamkara",
+  "name": "Baṅgavihārī Vidyālaṅkāra"
+ },
+ {
+  "id": 1637,
+  "old": "Vanikrsnadasa",
+  "name": "Vāṇī Kṛṣṇadāsa"
+ },
+ {
+  "id": 1644,
+  "old": "Vanivilasa",
+  "name": "Vāṇīvilāsa"
+ },
+ {
+  "id": 1651,
+  "old": "Vāsudeva Daivajna",
+  "name": "Vāsudeva Daivajña"
+ },
+ {
+  "id": 1661,
+  "old": "Vatnarama Dāsa",
+  "name": "Ratnarāma Dāsa"
+ },
+ {
+  "id": 1662,
+  "old": "Vecarama Bhādra",
+  "name": "Becārāma Bhadra"
+ },
+ {
+  "id": 1665,
+  "old": "Venkatacarya",
+  "name": "Veṅkaṭācārya"
+ },
+ {
+  "id": 1672,
+  "old": "Vidyananta Ācārya",
+  "name": "Vidyānanta Ācārya"
+ },
+ {
+  "id": 1677,
+  "old": "Viharidasa Vairāgī",
+  "name": "Vihārīdāsa Vairāgī"
+ },
+ {
+  "id": 1678,
+  "old": "Viharilala Gosvāmī",
+  "name": "Vihārīlāla Gosvāmī"
+ },
+ {
+  "id": 1679,
+  "old": "Vijay Paṇḍit",
+  "name": "Vijaya Paṇḍita"
+ },
+ {
+  "id": 1686,
+  "old": "Vijayananda",
+  "name": "Vijayānanda"
+ },
+ {
+  "id": 1688,
+  "old": "Vilvamangala",
+  "name": "Bilvamaṅgala"
+ },
+ {
+  "id": 1691,
+  "old": "Vindhu Dāsa",
+  "name": "Bindu Dāsa"
+ },
+ {
+  "id": 1695,
+  "old": "Vipina Bihārī Cattapadhya",
+  "name": "Vipina Bihārī Caṭṭopādhyāya"
+ },
+ {
+  "id": 1697,
+  "old": "Vipradasa Ghosh",
+  "name": "Vipradāsa Ghosh"
+ },
+ {
+  "id": 1698,
+  "old": "Vipradasa",
+  "name": "Vipradāsa"
+ },
+ {
+  "id": 1699,
+  "old": "Vīra Darpanarayana",
+  "name": "Vīra Darpanārāyaṇa"
+ },
+ {
+  "id": 1705,
+  "old": "Viravallabha",
+  "name": "Vīravallabha"
+ },
+ {
+  "id": 1706,
+  "old": "Viravara Dev",
+  "name": "Vīravara Deva"
+ },
+ {
+  "id": 1710,
+  "old": "Viṣṇudāsa Kapindra",
+  "name": "Viṣṇudāsa Kapīndra"
+ },
+ {
+  "id": 1718,
+  "old": "Visuddhananda",
+  "name": "Viśuddhānanda"
+ },
+ {
+  "id": 1730,
+  "old": "Vonca Rāmabhādra",
+  "name": "Vonca Rāmabhadra"
+ },
+ {
+  "id": 1731,
+  "old": "Vraja Laksminatha",
+  "name": "Vraja Lakṣmīnātha"
+ },
+ {
+  "id": 1733,
+  "old": "Vrajakisore Dāsa Bābājī",
+  "name": "Vrajakiśora Dāsa Bābājī"
+ },
+ {
+  "id": 1734,
+  "old": "Vrajamohana Cattaraja",
+  "name": "Vrajamohana Caṭṭarāja"
+ },
+ {
+  "id": 1739,
+  "old": "Vrhacchisu",
+  "name": "Bṛhacchiśu"
+ },
+ {
+  "id": 1744,
+  "old": "Vṛndāvana Cattaraja",
+  "name": "Vṛndāvana Caṭṭarāja"
+ },
+ {
+  "id": 1752,
+  "old": "Vrndavanavasi Vaiṣṇava",
+  "name": "Vṛndāvanavāsī Vaiṣṇava"
+ },
+ {
+  "id": 1753,
+  "old": "Vrndavati Dāsī",
+  "name": "Vṛndāvatī Dāsī"
+ },
+ {
+  "id": 1754,
+  "old": "Vrndavati",
+  "name": "Vṛndāvatī"
+ },
+ {
+  "id": 1758,
+  "old": "Vyenkatabhatta",
+  "name": "Veṅkaṭa Bhaṭṭa (Vyeṅkaṭa)"
+ },
+ {
+  "id": 1765,
+  "old": "Yadavendu Ṭhākura",
+  "name": "Yādavendu Ṭhākura"
+ },
+ {
+  "id": 1768,
+  "old": "Yadujivana Tarkalankar",
+  "name": "Yadujīvana Tarkālaṅkāra"
+ },
+ {
+  "id": 1776,
+  "old": "Yadunatha Haldar",
+  "name": "Yadunātha Hāldār"
+ },
+ {
+  "id": 1783,
+  "old": "Yasobanta Dāsa",
+  "name": "Yaśobanta Dāsa"
+ },
+ {
+  "id": 1784,
+  "old": "Yasoraj Khan",
+  "name": "Yaśorāja Khān"
+ },
+ {
+  "id": 1824,
+  "old": "Ishana Ṭhākura",
+  "name": "Īśāna Ṭhākura"
+ },
+ {
+  "id": 1838,
+  "old": "Kṛṣṇa dāsa bābājī (Ranabadi)",
+  "name": "Kṛṣṇa dāsa Bābājī (Raṇabāḍī)"
+ },
+ {
+  "id": 1869,
+  "old": "Sitanatha dāsa bābājī",
+  "name": "Sītānātha dāsa Bābājī"
+ },
+ {
+  "id": 1871,
+  "old": "Śrīla Kṛṣṇadāsa Babji (Of Navadvīpa)",
+  "name": "Śrīla Kṛṣṇadāsa Bābājī (of Navadvīpa)"
+ },
+ {
+  "id": 1879,
+  "old": "Vamshivat bābājī",
+  "name": "Vaṁśīvaṭa Bābājī"
+ },
+ {
+  "id": 1955,
+  "old": "Srinath Paṇḍita",
+  "name": "Śrīnātha Paṇḍita"
+ }
+]
