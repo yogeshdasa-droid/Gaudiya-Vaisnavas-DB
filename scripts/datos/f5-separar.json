@@ -1,0 +1,18 @@
+[
+ { "id": 837, "name": "Lalitāsakhī Dāsī",
+   "docs": [{ "doc": 844, "pieces": [
+     { "start": "Lalit Ghosal He was a brāhmaṇa", "end": "Lalit Sakhī He was a disciple", "cut": true, "to": "ghosal", "title": "Lalit Ghoṣāl" },
+     { "start": "Lalit Sakhī He was a disciple", "end": "Lal Puruṣottama He was", "cut": true, "to": "sakhi", "title": "Lalit Sakhī" },
+     { "start": "Lal Puruṣottama He was", "end": "Locana Dāsa (Trilocanadasa)", "cut": true, "to": "lal", "title": "Lāl Puruṣottama" },
+     { "start": "Locana Dāsa (Trilocanadasa)", "end": "Locanananda Gosvamipada (Along", "cut": true, "toId": 1845, "title": "Locana dāsa (Trilocana dāsa)" },
+     { "start": "Locanananda Gosvamipada (Along", "cut": true, "toId": 1846, "title": "Locanānanda Gosvāmīpāda (with Navakiśora Gosvāmī)" }
+   ] }],
+   "new": [
+     { "key": "ghosal", "name": "Lalit Ghoṣāl (disciple of Narottama)", "place": [1010, "diksa"],
+       "fields": { "guru": "Śrī Narottama dāsa Ṭhākura", "notes": "A brāhmaṇa, once a notorious dacoit, who became a Vaiṣṇava by Narottama Ṭhākura's grace (Prema-vilāsa 19). Taken out of the record «Lalitāsakhī Dāsī» #837 (07-11-2026)." } },
+     { "key": "sakhi", "name": "Lalit Sakhī (disciple of Muralīdhara)", "poet": true,
+       "fields": { "guru": "Muralīdhara (related to Nārāyaṇa Bhaṭṭa)", "works": "Kahānī-rahasī (Saṁvat 1835), Kuṁvarī-keli (Saṁvat 1836)", "notes": "A disciple of Muralīdhara, who was related to Nārāyaṇa Bhaṭṭa; wrote the Kahānī-rahasī in Saṁvat 1835 and the Kuṁvarī-keli in Saṁvat 1836. Taken out of the record «Lalitāsakhī Dāsī» #837 (07-11-2026)." } },
+     { "key": "lal", "name": "Lāl Puruṣottama (disciple of Rasikānanda)", "place": [1908, "disciple"],
+       "fields": { "guru": "Rasikānanda Prabhu", "notes": "A disciple of Rasikānanda Prabhu (Rasika-maṅgala, Paścima 14.131). Taken out of the record «Lalitāsakhī Dāsī» #837 (07-11-2026)." } }
+   ] }
+]
