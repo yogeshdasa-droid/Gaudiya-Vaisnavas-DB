@@ -1,0 +1,23 @@
+[
+ { "id": 1740, "name": "Śrīla Vṛndāvana dāsa Ṭhākura", "main": "main-1740.md",
+   "fields": {
+     "aka": "Vṛndāvana dāsa Ṭhākura, Vṛndāvana dāsa, the Vyāsa of Caitanya-līlā",
+     "place": "Born at Māmagāchi (Modadrumadvīpa, Navadvīpa), in the house of Vāsudeva Datta (Jayakṛṣṇa dāsa: at Kumārahaṭṭa); Śrīpāṭa at Denuḍa (his Gaura-Nitāi). The Gauḍīya Vaiṣṇava Abhidhāna (Tīrthas, «Hālisahara»): born at Nati, south of Hālisahara",
+     "disciples": "",
+     "works": "Śrī Caitanya-bhāgavata (first called Caitanya-maṅgala; about 1548); padas in the Padakalpataru"
+   } },
+ { "id": 1845, "name": "Locana dāsa", "main": "main-1845.md",
+   "fields": {
+     "name": "Locana dāsa Ṭhākura",
+     "aka": "Locana dāsa, Trilocana dāsa",
+     "place": "Born at Kogrāma (Kāṭoyā subdivision, Burdwan); lived at his guru's Śrīpāṭa, Śrīkhaṇḍa",
+     "disappearance": "1589 AD / 1511 Śaka (Digdarśanī); the Viśvakoṣa: 1530 Śaka",
+     "works": "Śrī Caitanya-maṅgala (between 1482 and 1488 Śaka); Durlabha-sāra; Bengali verse of the Jagannātha-vallabha-nāṭaka and of the Rāsa-pañcādhyāyī; songs (dhāmālī) on Gaura and Nityānanda"
+   } },
+ { "id": 1841, "name": "Lakṣmīpriyā Mātā", "main": "main-1841.md",
+   "fields": {
+     "aka": "Lakṣmīpriyā Devī, Lakṣmī Devī",
+     "place": "Navadvīpa",
+     "disappearance": "1424 Śaka (1502 AD), while the Lord was in East Bengal (Digdarśanī)"
+   } }
+]
