@@ -1355,6 +1355,13 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **07-11-2026 (noche, después) — más scripts de datos (sin versión nueva)**: `fuera9-10` (campo guru, «received dīkṣā
+  from…»), uniones de repetidas y de fichas que eran otro nombre (`uniones3-6`, `limpieza1`), arreglos de textos
+  pegados (`arreglos1-2`), nombres limpios (`nombres1-2`) y **diacríticos en 453 nombres** (`diacriticos-plan` +
+  `diacriticos1-3`, aplicador `renombrar.mjs`), **63 líneas de familia** (`familia-plan`, `familia`, `familia2`),
+  **fechas** (propuestas del Digdarśanī revisadas: 51 sí, 31 homónimos rechazados — `fechas1`; 39 años de los propios
+  textos — `fechas-plan`, `fechas2`), **16 tīrthas** nuevos (`tirthas1`, 102 en total) y **Textos principales** de 3 en 3
+  (`tp1`: Vṛndāvana dāsa, Locana dāsa, Lakṣmīpriyā; faltan 35, lista en CONTINUAR.md). 1.912 personas, árbol 1.168.
 - **07-11-2026 (noche) — scripts de datos (sin versión nueva)**: `separar.mjs` (separa fichas mezcladas: notas, trozos
   «## NOMBRE», o `cut` dentro de un párrafo; coloca y etiqueta «Poetas»), `mezcladas1-5` (71 fichas → 82 nuevas),
   `fuera2-8` (unas 200 fichas del Vaiṣṇava-maṇḍala bajo su guru o rama: CC Ādi 10-12, Rasikamaṅgala, Karṇānanda,
