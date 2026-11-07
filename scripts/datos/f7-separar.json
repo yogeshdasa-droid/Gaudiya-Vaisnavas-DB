@@ -1,0 +1,21 @@
+[
+ { "id": 1115, "name": "Premananda",
+   "fields": {
+     "name": "Premānanda Gosvāmī (Śṛṅgāra-vaṭa)",
+     "aka": "Premananda, Premananda Gosvamipada, Premānanda Prabhupāda"
+   },
+   "docs": [{ "doc": 3015, "pieces": [
+     { "start": "## PREMANANDA\n\nPREMANANDA\n\nHe was one of the brothers", "end": "# Premananda\n\nPremananda\n\nPremananda was the second", "to": "bharati", "title": "Premānanda Bhāratī (and Premānanda, brother of Nityānanda)" }
+   ] }],
+   "new": [
+     { "key": "bharati", "name": "Premānanda Bhāratī (Surendranātha Mukhopādhyāya)",
+       "fields": {
+         "aka": "Surendranātha Mukhopādhyāya (birth name)",
+         "appearance": "1779 Śaka (1857), at Calcutta (the record's text)",
+         "disappearance": "1914 (the record's text)",
+         "notes": "Born Surendranātha Mukhopādhyāya in Calcutta; after taking sannyāsa he was called Premānanda Bhāratī. He preached Mahāprabhu's teaching in Europe and America, initiated 5,000 men and women in America, founded «The Society of Kṛṣṇa Consciousness» in New York and was the first to install Śrī Rādhā-Govinda in the West; came back to Calcutta in 1909 with four American disciples. His disciple Kṛṣṇa Gopāla Duggul of the Punjab published the 6,000-page Śrī Nimāicānd in Urdu. Died 1914. Taken out of the record «Premananda» #1115 (07-11-2026); the same text names another Premānanda, a brother of Lord Nityānanda (Prema-vilāsa 24), who has his own record."
+       } },
+     { "key": "brother", "name": "Premānanda (brother of Nityānanda)",
+       "fields": { "notes": "One of the brothers of Lord Nityānanda (Prema-vilāsa 24). Named in the record «Premananda» #1115, which mixed three persons (07-11-2026); the line is in the text of Premānanda Bhāratī's record." } }
+   ] }
+]

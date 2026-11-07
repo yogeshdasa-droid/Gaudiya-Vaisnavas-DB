@@ -1363,6 +1363,16 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **07-11-2026 (noche, después) — Textos principales de fichas FUERA del árbol, tandas 1–7 (sin versión nueva)**:
+  23 fichas con texto (Gaura Kiśora Śiromaṇi, Vaṁśī dāsa Bābājī, Haribolānanda, Jayadeva, Guṇarāja Khān, Jagadbandhu,
+  Atula Campati, Haridāsa Sādhu, Gauragovindānanda, Rādhāramaṇa Ghoṣa, Keśava Kāśmīrī, Bilvamaṅgala, Advaita dāsa
+  Bābājī, Lalitāsakhī, Vijayakṛṣṇa Gosvāmī, Vrajabālā, Mahānidhi Svāmī, Haridāsa dāsa —el autor del Abhidhāna—,
+  Rādhikānātha, Mādhava dāsa, Premānanda de Śṛṅgāra-vaṭa…) y casi todas **colocadas en el árbol** (bajo su guru, en
+  la rama «Other Vaiṣṇava lines» #2027, o en la rama nueva **#2151 «Other sampradāyas (outside the Gauḍīya line)»**
+  con Yāmuna, Nimbārka, Viṣṇusvāmī, Śrīdhara Svāmī, Jñāneśvara, Nāmadeva, Tukārāma, Śaṅkara). Uniones: 1782 → 1781,
+  597 → 598, 1688 → 156. Separadas: 837 (#2152–2154), 1115 (#2155–2156). Scripts `f1`–`f7`, `otras-*`,
+  `fuera-largas.mjs` (lista de las que faltan), `primer-nivel.mjs` (⚠️ `set_links`/`set_family` meten a la otra
+  persona en el primer nivel del árbol si no estaba: comprobar que solo quede Lord Kṛṣṇa). Quedan 19 (CONTINUAR.md).
 - **07-11-2026 (tarde-noche) — Textos principales, tandas 2–10 (sin versión nueva)**: 36 fichas con «Texto principal»
   en inglés (In short / vida / Sources, solo lo que dicen sus textos, comprobado con el Abhidhāna): compañeros de
   Mahāprabhu y Nityānanda (Raghunandana, Gadādhara dāsa, Jagadīśa Paṇḍita, los Ghoṣa, Devānanda, Nandana Ācārya,
