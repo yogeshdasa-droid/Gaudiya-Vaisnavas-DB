@@ -23,7 +23,9 @@ use std::path::Path;
 ///    person_tree.note / .disputed and person_links.note / .disputed (a word
 ///    on the line: «Gayā 1508»; the sources do not agree); person_links.kind
 ///    may be 'family' (the note says how: son, wife…). Empty for old files.
-pub const DATA_VERSION: u32 = 9;
+/// 10: + place_images (more pictures of a place) and place_texts (texts
+///    written for a place, besides its «about»); created empty on open.
+pub const DATA_VERSION: u32 = 10;
 /// Bump when the folding rules or the FTS layout change: the search tables
 /// are rebuilt from `sections` / `docs` / `persons` (no data is lost).
 pub const FTS_VERSION: &str = "1";
@@ -213,6 +215,26 @@ CREATE TABLE IF NOT EXISTS place_photos(
     mime TEXT NOT NULL,
     data BLOB NOT NULL
 );
+
+-- more pictures of a place (format 10); the main one stays in place_photos
+CREATE TABLE IF NOT EXISTS place_images(
+    id INTEGER PRIMARY KEY,
+    place_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    mime TEXT NOT NULL,
+    data BLOB NOT NULL
+);
+CREATE INDEX IF NOT EXISTS place_images_place ON place_images(place_id);
+
+-- texts written for a place (format 10), in their order
+CREATE TABLE IF NOT EXISTS place_texts(
+    id INTEGER PRIMARY KEY,
+    place_id INTEGER NOT NULL,
+    pos INTEGER NOT NULL DEFAULT 0,
+    title TEXT NOT NULL DEFAULT '',
+    body TEXT NOT NULL DEFAULT ''
+);
+CREATE INDEX IF NOT EXISTS place_texts_place ON place_texts(place_id);
 "#;
 
 const FTS_SCHEMA: &str = r#"
@@ -371,6 +393,18 @@ mod tests {
     }
 
     #[test]
+    fn format_9_gets_place_images_and_texts() {
+        let conn = Connection::open_in_memory().unwrap();
+        conn.execute_batch("CREATE TABLE meta(key TEXT PRIMARY KEY, value TEXT NOT NULL); INSERT INTO meta VALUES('data', '9');").unwrap();
+        init(&conn).unwrap();
+        for t in ["place_images", "place_texts"] {
+            let n: i64 = conn.query_row(&format!("SELECT COUNT(*) FROM {t}"), [], |r| r.get(0)).unwrap();
+            assert_eq!(n, 0);
+        }
+        assert_eq!(get_meta(&conn, "data").unwrap().as_deref(), Some("10"));
+    }
+
+    #[test]
     fn format_8_tree_gets_group_note_disputed() {
         // a format-8 file: the tree and the links without the new columns
         let conn = Connection::open_in_memory().unwrap();
@@ -389,7 +423,7 @@ mod tests {
         let (k, n, d): (String, String, i64) =
             conn.query_row("SELECT kind, note, disputed FROM person_links", [], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?))).unwrap();
         assert_eq!((k.as_str(), n.as_str(), d), ("siksa", "", 0));
-        assert_eq!(get_meta(&conn, "data").unwrap().as_deref(), Some("9"));
+        assert_eq!(get_meta(&conn, "data").unwrap().as_deref(), Some(DATA_VERSION.to_string().as_str()));
         init(&conn).unwrap(); // a second open changes nothing
     }
 }

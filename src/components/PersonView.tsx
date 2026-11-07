@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ArrowUp, BookOpen, MapPin, ChevronLeft, ChevronRight, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Search, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
+import { ArrowUp, BookOpen, MapPin, ChevronDown, ChevronLeft, ChevronRight, Star, Combine, FileDown, FilePlus2, Printer, FileText, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Search, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
 import { api, fileUrl, isNamesake, LifeSpan, MAIN_TEXT, NAMESAKES, Place, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
@@ -32,6 +32,8 @@ interface Props {
   persons: PersonListItem[];
   onPerson: (id: number) => void;
   onOpenDoc: (docId: number) => void;
+  /** a bookmark at this part of a text (the star of the reader) */
+  onBookmark: (docId: number, ordinal: number) => void;
   onEdit: (p: Person) => void;
   onMerge: (p: Person, suggested: number[]) => void;
   onDelete: (p: Person) => void;
@@ -386,6 +388,9 @@ export function PersonView(p: Props) {
   const single = main ?? (person && person.id === p.id && person.docs.length === 1 ? person.docs[0] : null);
   const otherVersions = main && person ? person.docs.filter((d) => d.id !== main.id) : [];
   const isMain = !!main;
+  // the text of the record starts folded (Whisper, 07-11-2026): opened when it is to be read
+  const [textOpen, setTextOpen] = useState(false);
+  useEffect(() => setTextOpen(false), [p.id]);
   // with several parts (texts joined into one): one part at a time, chosen
   // in a bar like the reader's
   const [inline, setInline] = useState<{ docId: number; sections: SectionText[]; total: number; toc: TocEntry[]; ord: number; all: boolean } | null>(null);
@@ -485,7 +490,7 @@ export function PersonView(p: Props) {
         return true;
       });
     setOutline(heads.length >= 3 && !cards ? heads : []);
-  }, [inline, cards, p.readerStyle, p.names]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [inline, cards, p.readerStyle, p.names, textOpen]); // eslint-disable-line react-hooks/exhaustive-deps
   const [far, setFar] = useState(false);
 
   const onInlineClick = async (e: React.MouseEvent) => {
@@ -844,11 +849,16 @@ export function PersonView(p: Props) {
               <h2>
                 <BookOpen size={14} /> {main ? t.mainText : t.texts} {!main && <span className="pill">1</span>}
               </h2>
-              <div className="inline-doc" ref={textRef}>
+              <div className={`inline-doc${textOpen ? "" : " folded"}`} ref={textRef}>
                 {/* stays at the top while the text is read */}
                 <div className="inline-sticky">
                 <div className="inline-head" data-ctx="doc" data-id={single.id}>
-                  <span className="tc-title">{single.title}</span>
+                  <button className="icon-btn main-fold" title={textOpen ? t.mainTextClose : t.mainTextOpen} onClick={() => setTextOpen((o) => !o)}>
+                    {textOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+                  </button>
+                  <span className="tc-title" role="button" style={{ cursor: "pointer" }} onClick={() => setTextOpen((o) => !o)}>
+                    {single.title}
+                  </span>
                   <CollectionChip name={single.collection} />
                   <span className="kind">{single.kind === "new" ? "" : single.kind.toUpperCase()}</span>
                   <span className="muted small">{formatSize(single.size, lang)}</span>
@@ -856,12 +866,20 @@ export function PersonView(p: Props) {
                     <button className="btn ghost" onClick={() => p.onOpenDoc(single.id)}>
                       <BookOpen size={15} /> {t.openInReader}
                     </button>
+                    {!textOpen && (
+                      <button className="btn ghost" onClick={() => setTextOpen(true)}>
+                        <ChevronDown size={15} /> {t.mainTextOpen}
+                      </button>
+                    )}
+                    <button className="icon-btn" title={t.addBookmark} onClick={() => p.onBookmark(single.id, parts?.ord ?? 0)}>
+                      <Star size={16} />
+                    </button>
                     <button className="icon-btn" title={t.edit} onClick={() => p.onEditDoc(single.id, parts?.ord ?? 0)}>
                       <Pencil size={16} />
                     </button>
                   </span>
                 </div>
-                {parts && (
+                {textOpen && parts && (
                   <div className="toc-row">
                     <button className="icon-btn" disabled={parts.ord <= 0} title={t.previous} onClick={() => goPart(parts.ord - 1)}>
                       <ChevronLeft size={18} />
@@ -883,6 +901,7 @@ export function PersonView(p: Props) {
                 )}
                 </div>
                 {/* the text read like a book, all of it in a row; its index on the left */}
+                {textOpen && (
                 <div className={`book-layout${cards || outline.length ? " with-nav" : ""}`}>
                 {cards ? (
                   <nav className="book-nav">
@@ -972,6 +991,7 @@ export function PersonView(p: Props) {
                 </div>
                 )}
                 </div>
+                )}
               </div>
               {otherVersions.length > 0 ? (
                 // the texts it was written from: kept, found by the search, here closed

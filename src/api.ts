@@ -235,6 +235,14 @@ export interface PlaceFields {
   lat: number | null;
   lon: number | null;
   people: { personId: number; role: PlaceRole }[];
+  /** texts written for the place (format 10); left out = keep them as they are */
+  texts?: PlaceText[] | null;
+}
+
+/** A text written for a place (Markdown). */
+export interface PlaceText {
+  title: string;
+  body: string;
 }
 
 export interface Place extends PlaceFields {
@@ -242,6 +250,8 @@ export interface Place extends PlaceFields {
   modified: string;
   /** a picture chosen for it (served at /placephoto/<id>) */
   hasPhoto: boolean;
+  /** more pictures (served at /placeimage/<image id>) */
+  images: number[];
 }
 
 export const EMPTY_PLACE: PlaceFields = { name: "", aka: "", region: "", location: "", about: "", source: "", lat: null, lon: null, people: [] };
@@ -552,6 +562,9 @@ export const api = {
   deletePlace: (id: number) => invoke<void>("delete_place", { id }),
   setPlacePhoto: (id: number, path: string) => invoke<void>("set_place_photo", { id, path }),
   removePlacePhoto: (id: number) => invoke<void>("remove_place_photo", { id }),
+  addPlaceImages: (id: number, paths: string[]) => invoke<number>("add_place_images", { id, paths }),
+  removePlaceImage: (imageId: number) => invoke<void>("remove_place_image", { imageId }),
+  placeImageAsPhoto: (imageId: number) => invoke<void>("place_image_as_photo", { imageId }),
   unmarkDistinct: (a: number, b: number) => invoke<void>("unmark_distinct", { a, b }),
   /** merges into a record that can be undone (newest first): the names that went away */
   listMerges: (person: number) => invoke<{ id: number; saved: string; names: string[] }[]>("list_merges", { person }),
@@ -720,7 +733,7 @@ export interface PullProgress {
 }
 
 /** URL of a file stored in the database (cover image, original PDF, or a record's picture by person id). */
-export function fileUrl(role: "cover" | "original" | "photo" | "image" | "placephoto", docId: number): string {
+export function fileUrl(role: "cover" | "original" | "photo" | "image" | "placephoto" | "placeimage", docId: number): string {
   return navigator.userAgent.includes("Windows") ? `http://bio.localhost/${role}/${docId}` : `bio://localhost/${role}/${docId}`;
 }
 

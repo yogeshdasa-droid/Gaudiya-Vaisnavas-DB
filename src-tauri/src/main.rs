@@ -998,6 +998,21 @@ async fn remove_place_photo(state: State<'_, AppState>, id: i64) -> CmdResult<()
     places::remove_photo(&state.conn.lock().unwrap(), id)
 }
 
+#[tauri::command]
+async fn add_place_images(state: State<'_, AppState>, id: i64, paths: Vec<String>) -> CmdResult<usize> {
+    places::add_images(&mut state.conn.lock().unwrap(), id, &paths)
+}
+
+#[tauri::command]
+async fn remove_place_image(state: State<'_, AppState>, image_id: i64) -> CmdResult<()> {
+    places::remove_image(&state.conn.lock().unwrap(), image_id)
+}
+
+#[tauri::command]
+async fn place_image_as_photo(state: State<'_, AppState>, image_id: i64) -> CmdResult<()> {
+    places::image_as_photo(&mut state.conn.lock().unwrap(), image_id)
+}
+
 // ---------------------------------------------------------------- earlier versions
 
 #[tauri::command]
@@ -1059,16 +1074,17 @@ fn serve_file(app: &AppHandle, uri: &str) -> tauri::http::Response<Vec<u8>> {
     let (Some(role), Some(id)) = (parts.next(), parts.next().and_then(|s| s.parse::<i64>().ok())) else {
         return not_found();
     };
-    if !["cover", "original", "photo", "image", "placephoto"].contains(&role) {
+    if !["cover", "original", "photo", "image", "placephoto", "placeimage"].contains(&role) {
         return not_found();
     }
     let state = app.state::<AppState>();
     let Ok(conn) = state.conn.lock() else { return not_found() };
-    if role == "photo" || role == "image" || role == "placephoto" {
+    if role == "photo" || role == "image" || role == "placephoto" || role == "placeimage" {
         // can change at any time: never cached
         let found = match role {
             "photo" => search::get_photo(&conn, id),
             "placephoto" => places::get_photo(&conn, id),
+            "placeimage" => places::get_image(&conn, id),
             _ => search::get_image(&conn, id),
         };
         return match found {
@@ -1312,6 +1328,9 @@ fn main() {
             delete_place,
             set_place_photo,
             remove_place_photo,
+            add_place_images,
+            remove_place_image,
+            place_image_as_photo,
             open_external,
             path_kinds,
             replace_preview,

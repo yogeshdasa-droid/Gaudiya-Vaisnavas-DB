@@ -158,7 +158,7 @@ type Drop = { kind: "inside" | "before" | "after"; target: number } | { kind: "f
 /** Under each guru of the tree, the pārṣadas and the śikṣā disciples go in a
  *  folder of their own, closed at first (Whisper, 05-11-2026). Only a way of
  *  showing the list: nothing is stored but which folders are open. */
-type FolderKind = "siksa" | "associate" | "disciples";
+type FolderKind = "siksa" | "associate" | "disciples" | "diksa";
 const FOLDERS: FolderKind[] = ["associate", "siksa"];
 /** A guru with more disciples than this: those without disciples of their own
  *  go in a folder «Disciples»; those with disciples stay under him (Whisper, 06-11-2026). */
@@ -412,6 +412,13 @@ function PersonList({
           main = main.filter((p) => kids.has(p.id));
           folders.push(["disciples", leaves]);
         }
+        // and many dīkṣā disciples who have disciples of their own: in a folder «Dīkṣā»
+        // (Bhaktisiddhānta Sarasvatī: Prabhupāda, Keśava, Bon…; Whisper, 07-11-2026)
+        const lines = main.filter((p) => kids.has(p.id) && (kindOf.get(p.id) ?? "diksa") === "diksa");
+        if (lines.length > MANY_DISCIPLES) {
+          main = main.filter((p) => !lines.includes(p));
+          folders.push(["diksa", lines]);
+        }
       }
       // the folders first, just under their guru (at the end it is not clear whose they are)
       const count = main.length + folders.length;
@@ -469,6 +476,7 @@ function PersonList({
     for (const [parent, list] of kids)
       if (parent !== null) {
         keys.add(folderKey(parent, "disciples"));
+        keys.add(folderKey(parent, "diksa"));
         if (line === "all")
           for (const p of list) {
             const fk = kids.has(p.id) ? null : folderOf(kindOf.get(p.id) ?? undefined);
@@ -600,7 +608,9 @@ function PersonList({
       // into a folder: that relation (a vāṇī disciple stays vāṇī in the śikṣā one)
       // (into «Disciples»: as it was, or dīkṣā if it was a pārṣada / śikṣā)
       const asFolder = (fk: FolderKind): TreeKind | undefined =>
-        fk === "disciples"
+        fk === "diksa"
+          ? p.tree?.kind === "diksa" ? undefined : "diksa"
+          : fk === "disciples"
           ? folderOf(p.tree?.kind) ? "diksa" : undefined
           : folderOf(p.tree?.kind) === fk ? undefined : fk === "associate" ? "associate" : "siksa";
       if (d.kind === "folder") {

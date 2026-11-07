@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { History, ImagePlus, Map as MapIcon, MapPin, MoreHorizontal, Pencil, Trash2, UserRound, X } from "lucide-react";
-import { api, fileUrl, OverviewPerson, Place, PLACE_ROLES, PersonListItem } from "../api";
+import { FilePlus2, FileText, History, ImagePlus, Images, Map as MapIcon, MapPin, MoreHorizontal, Pencil, Trash2, UserRound, X } from "lucide-react";
+import { api, fileUrl, OverviewPerson, Place, PLACE_ROLES, PersonListItem, PlaceText } from "../api";
 import { Lang, T } from "../i18n";
 import { namesPlace, placeKeys, textKeys } from "../places";
 import { WebLinks } from "./PersonView";
+import { ask, Modal } from "./ui";
 
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -31,6 +32,61 @@ function AboutText({ text, people, onPerson, onError }: { text: string; people: 
         );
       })}
     </>
+  );
+}
+
+/** Writing or changing one text of a place: a title and the text (Markdown). */
+function PlaceTextDialog({ t, text, onClose, onSave }: { t: T; text: PlaceText | null; onClose: () => void; onSave: (x: PlaceText) => Promise<void> }) {
+  const [title, setTitle] = useState(text?.title ?? "");
+  const [body, setBody] = useState(text?.body ?? "");
+  const [busy, setBusy] = useState(false);
+  const dirty = title !== (text?.title ?? "") || body !== (text?.body ?? "");
+  const ok = dirty && !busy && !!(title.trim() || body.trim());
+  const close = async () => {
+    if (!dirty || (await ask(t.unsaved))) onClose();
+  };
+  const save = async () => {
+    if (!ok) return;
+    setBusy(true);
+    await onSave({ title, body }).finally(() => setBusy(false));
+  };
+  return (
+    <Modal
+      wide
+      title={text ? t.placeTextEdit : t.placeTextNew}
+      icon={<FileText size={18} />}
+      onClose={close}
+      footer={
+        <>
+          <span className="grow" />
+          <button className="btn ghost" onClick={close}>
+            {t.cancel}
+          </button>
+          <button className="btn" disabled={!ok} onClick={save}>
+            {busy ? <span className="spinner light" /> : null} {t.save} <kbd className="kbd on-accent">Ctrl S</kbd>
+          </button>
+        </>
+      }
+    >
+      <div
+        className="form-grid one place-text-form"
+        onKeyDown={(e) => {
+          if (e.ctrlKey && e.key.toLowerCase() === "s") {
+            e.preventDefault();
+            save();
+          }
+        }}
+      >
+        <label>
+          <span>{t.placeTextTitle}</span>
+          <input value={title} onChange={(e) => setTitle(e.target.value)} autoFocus placeholder={t.placeTextTitleHint} spellCheck={false} />
+        </label>
+        <label>
+          <span>{t.placeTextBody}</span>
+          <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={16} spellCheck={false} />
+        </label>
+      </div>
+    </Modal>
   );
 }
 
@@ -74,6 +130,41 @@ export function PlaceView({
     }
   };
   const removePhoto = () => api.removePlacePhoto(place.id).then(onChanged, (e) => onToast(String(e)));
+  // its texts (format 10): saved with the place, so each change is kept in its versions
+  const texts = place.texts ?? [];
+  const [editing, setEditing] = useState<{ i: number | null } | null>(null);
+  const saveTexts = async (next: PlaceText[]) => {
+    const { id: _id, modified: _m, hasPhoto: _h, images: _i, ...fields } = place;
+    await api.savePlace(place.id, { ...fields, texts: next });
+    onChanged();
+  };
+  const saveText = async (x: PlaceText) => {
+    try {
+      const i = editing?.i ?? null;
+      await saveTexts(i === null ? [...texts, x] : texts.map((y, j) => (j === i ? x : y)));
+      setEditing(null);
+    } catch (e) {
+      onToast(String(e));
+    }
+  };
+  const removeText = async (i: number) => {
+    if (!(await ask(t.placeTextRemoveConfirm))) return;
+    saveTexts(texts.filter((_, j) => j !== i)).catch((e) => onToast(String(e)));
+  };
+  // more pictures (format 10)
+  const [zoom, setZoom] = useState<number | null>(null);
+  const addImages = async () => {
+    try {
+      const picked = await open({ multiple: true, filters: [{ name: t.imageFiles, extensions: ["jpg", "jpeg", "png", "webp", "gif", "bmp", "avif"] }] });
+      const paths = Array.isArray(picked) ? picked : typeof picked === "string" ? [picked] : [];
+      if (!paths.length) return;
+      await api.addPlaceImages(place.id, paths);
+      onChanged();
+    } catch (e) {
+      onToast(String(e));
+    }
+  };
+  const imageAction = (f: () => Promise<unknown>) => () => f().then(onChanged, (e) => onToast(String(e)));
   useEffect(() => {
     if (!menu) return;
     const close = () => setMenu(false);
@@ -199,13 +290,75 @@ export function PlaceView({
               </div>
             )}
           </dl>
-          {!where.length && !place.about.trim() && !groups.length && (
+          <section>
+            <h2>
+              <FileText size={14} /> {t.placeTexts} {texts.length > 0 && <span className="pill">{texts.length}</span>}
+            </h2>
+            {texts.map((x, i) => (
+              <div key={i} className="place-text">
+                <div className="place-text-head">
+                  <span className="grow">{x.title.trim() || t.placeTextUntitled}</span>
+                  <button className="icon-btn" title={t.edit} onClick={() => setEditing({ i })}>
+                    <Pencil size={14} />
+                  </button>
+                  <button className="icon-btn danger" title={t.placeTextRemove} onClick={() => removeText(i)}>
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+                <div className="notes">
+                  <AboutText text={x.body} people={place.people.map((y) => byId.get(y.personId)).filter((p): p is PersonListItem => !!p)} onPerson={onPerson} onError={onToast} />
+                </div>
+              </div>
+            ))}
+            <button className="btn ghost" onClick={() => setEditing({ i: null })}>
+              <FilePlus2 size={15} /> {t.placeTextAdd}
+            </button>
+          </section>
+
+          <section>
+            <h2>
+              <Images size={14} /> {t.gallery} {place.images.length > 0 && <span className="pill">{place.images.length}</span>}
+            </h2>
+            <div className="gallery">
+              {place.images.map((id) => (
+                <figure key={id}>
+                  <a href={fileUrl("placeimage", id)} target="_blank" rel="noreferrer" onClick={(e) => (e.preventDefault(), setZoom(id))}>
+                    <img src={fileUrl("placeimage", id)} alt="" loading="lazy" />
+                  </a>
+                  <figcaption>
+                    <button className="icon-btn" title={t.useAsMainPlace} onClick={imageAction(() => api.placeImageAsPhoto(id))}>
+                      <MapPin size={14} />
+                    </button>
+                    <button
+                      className="icon-btn danger"
+                      title={t.removeImage}
+                      onClick={async () => (await ask(t.placeImageRemoveConfirm)) && imageAction(() => api.removePlaceImage(id))()}
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </figcaption>
+                </figure>
+              ))}
+              <button className="gallery-add" onClick={addImages}>
+                <ImagePlus size={22} />
+                <span>{t.addImages}</span>
+              </button>
+            </div>
+          </section>
+
+          {!where.length && !place.about.trim() && !groups.length && !texts.length && (
             <p className="muted small no-facts" onClick={() => onEdit(place)}>
               {t.noDetails}
             </p>
           )}
         </div>
       </div>
+      {editing && <PlaceTextDialog t={t} text={editing.i === null ? null : texts[editing.i]} onClose={() => setEditing(null)} onSave={saveText} />}
+      {zoom !== null && (
+        <div className="zoom" onClick={() => setZoom(null)}>
+          <img src={fileUrl("placeimage", zoom)} alt="" />
+        </div>
+      )}
     </div>
   );
 }

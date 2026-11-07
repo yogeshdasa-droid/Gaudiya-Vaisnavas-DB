@@ -32,6 +32,17 @@ pub struct PlaceFields {
     pub lat: Option<f64>,
     pub lon: Option<f64>,
     pub people: Vec<PlacePerson>,
+    /// texts written for the place (format 10), in their order. None = leave
+    /// them as they are (older callers and versions that do not know them)
+    pub texts: Option<Vec<PlaceText>>,
+}
+
+/// A text written for a place: «History», «What there is to see»… (Markdown)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[serde(rename_all = "camelCase", default)]
+pub struct PlaceText {
+    pub title: String,
+    pub body: String,
 }
 
 #[derive(Serialize)]
@@ -43,6 +54,20 @@ pub struct Place {
     pub modified: String,
     /** a picture chosen for it (format 8), served at /placephoto/<id> */
     pub has_photo: bool,
+    /** more pictures (format 10), served at /placeimage/<image id> */
+    pub images: Vec<i64>,
+}
+
+fn texts_of(conn: &Connection, id: i64) -> rusqlite::Result<Vec<PlaceText>> {
+    let mut st = conn.prepare("SELECT title, body FROM place_texts WHERE place_id = ?1 ORDER BY pos, id")?;
+    let rows = st.query_map([id], |r| Ok(PlaceText { title: r.get(0)?, body: r.get(1)? }))?;
+    rows.collect()
+}
+
+fn images_of(conn: &Connection, id: i64) -> rusqlite::Result<Vec<i64>> {
+    let mut st = conn.prepare("SELECT id FROM place_images WHERE place_id = ?1 ORDER BY id")?;
+    let rows = st.query_map([id], |r| r.get(0))?;
+    rows.collect()
 }
 
 fn people_of(conn: &Connection, id: i64) -> rusqlite::Result<Vec<PlacePerson>> {
@@ -69,10 +94,12 @@ fn fields_of(conn: &Connection, id: i64) -> rusqlite::Result<PlaceFields> {
                 lat: r.get(6)?,
                 lon: r.get(7)?,
                 people: Vec::new(),
+                texts: None,
             })
         },
     )?;
     f.people = people_of(conn, id)?;
+    f.texts = Some(texts_of(conn, id)?);
     Ok(f)
 }
 
@@ -88,7 +115,7 @@ pub fn list(conn: &Connection) -> Res<Vec<Place>> {
     ids.into_iter()
         .map(|(id, modified)| {
             let has_photo = conn.query_row("SELECT 1 FROM place_photos WHERE place_id = ?1", [id], |_| Ok(())).optional().map_err(e)?.is_some();
-            Ok(Place { id, fields: fields_of(conn, id).map_err(e)?, modified, has_photo })
+            Ok(Place { id, fields: fields_of(conn, id).map_err(e)?, modified, has_photo, images: images_of(conn, id).map_err(e)? })
         })
         .collect()
 }
@@ -120,6 +147,17 @@ fn write(tx: &Connection, id: i64, f: &PlaceFields) -> Res<()> {
             params![id, p.person_id, role],
         )
         .map_err(e)?;
+    }
+    if let Some(texts) = &f.texts {
+        tx.execute("DELETE FROM place_texts WHERE place_id = ?1", [id]).map_err(e)?;
+        let kept = texts.iter().filter(|t| !t.title.trim().is_empty() || !t.body.trim().is_empty());
+        for (pos, t) in kept.enumerate() {
+            tx.execute(
+                "INSERT INTO place_texts(place_id, pos, title, body) VALUES(?1, ?2, ?3, ?4)",
+                params![id, pos as i64, t.title.trim(), t.body.trim()],
+            )
+            .map_err(e)?;
+        }
     }
     Ok(())
 }
@@ -185,6 +223,49 @@ pub fn get_photo(conn: &Connection, id: i64) -> rusqlite::Result<Option<(String,
     conn.query_row("SELECT mime, data FROM place_photos WHERE place_id = ?1", [id], |r| Ok((r.get(0)?, r.get(1)?))).optional()
 }
 
+// ---- more pictures of a place (format 10)
+
+/// Adds pictures to a place's gallery. Returns how many were added.
+pub fn add_images(conn: &mut Connection, id: i64, paths: &[String]) -> Res<usize> {
+    let tx = conn.transaction().map_err(e)?;
+    for p in paths {
+        let (name, mime, data) = crate::store::read_image(std::path::Path::new(p))?;
+        tx.execute("INSERT INTO place_images(place_id, name, mime, data) VALUES(?1, ?2, ?3, ?4)", params![id, name, mime, data])
+            .map_err(e)?;
+    }
+    tx.execute("UPDATE places SET modified = datetime('now', 'localtime') WHERE id = ?1", [id]).map_err(e)?;
+    tx.commit().map_err(e)?;
+    Ok(paths.len())
+}
+
+pub fn remove_image(conn: &Connection, image_id: i64) -> Res<()> {
+    conn.execute("DELETE FROM place_images WHERE id = ?1", [image_id]).map_err(e)?;
+    let _ = conn.execute_batch("PRAGMA incremental_vacuum;");
+    Ok(())
+}
+
+/// Makes a gallery picture the place's main one (the old main one goes to the gallery).
+pub fn image_as_photo(conn: &mut Connection, image_id: i64) -> Res<()> {
+    let tx = conn.transaction().map_err(e)?;
+    let (pid, mime, data): (i64, String, Vec<u8>) = tx
+        .query_row("SELECT place_id, mime, data FROM place_images WHERE id = ?1", [image_id], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)))
+        .map_err(e)?;
+    tx.execute(
+        "INSERT INTO place_images(place_id, name, mime, data) SELECT place_id, 'anterior', mime, data FROM place_photos WHERE place_id = ?1",
+        [pid],
+    )
+    .map_err(e)?;
+    tx.execute("INSERT OR REPLACE INTO place_photos(place_id, mime, data) VALUES(?1, ?2, ?3)", params![pid, mime, data]).map_err(e)?;
+    tx.execute("DELETE FROM place_images WHERE id = ?1", [image_id]).map_err(e)?;
+    tx.execute("UPDATE places SET modified = datetime('now', 'localtime') WHERE id = ?1", [pid]).map_err(e)?;
+    tx.commit().map_err(e)
+}
+
+/// A gallery picture of a place (served at /placeimage/<id>).
+pub fn get_image(conn: &Connection, image_id: i64) -> rusqlite::Result<Option<(String, Vec<u8>)>> {
+    conn.query_row("SELECT mime, data FROM place_images WHERE id = ?1", [image_id], |r| Ok((r.get(0)?, r.get(1)?))).optional()
+}
+
 // ---- what happens to the links when records are merged or deleted
 
 /// The links of a record: (place, role).
@@ -241,6 +322,51 @@ mod tests {
             people: vec![PlacePerson { person_id: 1, role: "sripata".into() }, PlacePerson { person_id: 99, role: "birth".into() }],
             ..Default::default()
         }
+    }
+
+    #[test]
+    fn texts_and_gallery() {
+        let mut c = conn();
+        let mut f = jaji();
+        f.texts = Some(vec![
+            PlaceText { title: "History".into(), body: "Śrīnivāsa lived here.".into() },
+            PlaceText { title: " ".into(), body: "".into() },
+            PlaceText { title: "".into(), body: "Second text.".into() },
+        ]);
+        let id = save(&mut c, None, &f).unwrap();
+        let texts = |c: &Connection| list(c).unwrap()[0].fields.texts.clone().unwrap();
+        // the empty one is left out, the order is kept
+        assert_eq!(texts(&c).iter().map(|t| t.body.as_str()).collect::<Vec<_>>(), ["Śrīnivāsa lived here.", "Second text."]);
+        // a caller that does not know the texts (None) leaves them
+        save(&mut c, Some(id), &jaji()).unwrap();
+        assert_eq!(texts(&c).len(), 2);
+        // a version brings them back
+        let mut g = jaji();
+        g.texts = Some(vec![]);
+        save(&mut c, Some(id), &g).unwrap();
+        assert!(texts(&c).is_empty());
+        let data: String = c.query_row("SELECT data FROM history WHERE kind = 'place' ORDER BY id DESC LIMIT 1", [], |r| r.get(0)).unwrap();
+        let tx = c.transaction().unwrap();
+        restore(&tx, id, &data).unwrap();
+        tx.commit().unwrap();
+        assert_eq!(texts(&c).len(), 2);
+
+        // gallery: add, make main, remove
+        let dir = std::env::temp_dir().join(format!("place-img-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let img = dir.join("a.png");
+        std::fs::write(&img, b"\x89PNG\r\n\x1a\nfake").unwrap();
+        let p = img.to_string_lossy().to_string();
+        assert_eq!(add_images(&mut c, id, &[p.clone(), p]).unwrap(), 2);
+        let imgs = list(&c).unwrap()[0].images.clone();
+        assert_eq!(imgs.len(), 2);
+        image_as_photo(&mut c, imgs[0]).unwrap();
+        let now = &list(&c).unwrap()[0];
+        assert!(now.has_photo);
+        assert_eq!(now.images.len(), 1); // no main photo before: nothing went to the gallery
+        remove_image(&c, now.images[0]).unwrap();
+        assert!(list(&c).unwrap()[0].images.is_empty());
+        let _ = std::fs::remove_dir_all(dir);
     }
 
     #[test]

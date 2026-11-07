@@ -1,0 +1,20 @@
+[
+  { "into": 1597, "name": "Vaiṣṇavananda Ācārya",
+    "from": [{ "id": 1591, "name": "Vaiṣṇava Ācārya" }, { "id": 1210, "name": "Raghunātha PuriTirtha" }],
+    "fields": {
+      "name": "Vaiṣṇavānanda Ācārya",
+      "aka": "Vaiṣṇava Ācārya, Raghunātha Purī, Raghunātha Tīrtha, Vaiṣṇavananda Ācārya",
+      "notes": "He belonged to the spiritual lineage (śākhā) of Lord Nityānanda. His former name was Raghunātha Purī (Caitanya-caritāmṛta Ādi 11.42; Gaura-gaṇoddeśa-dīpikā 96-97; Nāmāmṛta-samudra 121). Jīva Gosvāmī's Vaiṣṇava-vandanā (270) names him; in Devakīnandana's and Vṛndāvana dāsa's he is given as Raghunātha Purī (Caitanya-maṅgala of Jayānanda 145; Caitanya-caritāmṛta Ādi 11.39).\n\nThe records «Vaiṣṇava Ācārya» #1591 and «Raghunātha Purī/Tīrtha» #1210 were the same person and were joined to this one (07-11-2026, Whisper)."
+    } },
+  { "into": 1723, "name": "Śrīla Viśvanātha Cakravartī Ṭhākura",
+    "from": [{ "id": 491, "name": "Harivallabha" }],
+    "fields": {
+      "notes": "Father: Rāmanārāyaṇa Cakravartī, a Rāḍhī brāhmaṇa; elder brothers Rāmabhadra and Raghunātha. Guru-praṇālī (Saṅkalpa-kalpadruma): Narottama → Gaṅgānārāyaṇa Cakravartī → Kṛṣṇacaraṇa Cakravartī (adopted son, his parama-guru) → Rādhāramaṇa Cakravartī (his dīkṣā-guru). Married young, left after one night spent telling his wife the Bhāgavatam; in Vṛndāvana leader of the Vaiṣṇavas; took veśa as Harivallabha (others: no veśa); installed Gokulānanda. Sent Baladeva with Kṛṣṇadeva Sārvabhauma to Galtā. Descendants at Bāluchar (Gauḍīya Vaiṣṇava Abhidhāna).\n\nThe record had «Śrī Narottama dāsa Ṭhākura» as his guru: Narottama is the head of his line; his dīkṣā-guru was Rādhāramaṇa Cakravartī.\n\nAs a poet he signed his padas with the bhaṇitā «Harivallabha» or only «Vallabha». The record «Harivallabha» #491 (his name after veśa) was joined to this one (07-11-2026, Whisper)."
+    } },
+  { "into": 56, "name": "Anupama",
+    "from": [{ "id": 55, "name": "Anupama (Vallabha)" }],
+    "trash": [55],
+    "fields": {
+      "notes": "Mullik (also Mallik or Malik, from the Arabic malik) means «king», «lord», «master» — the title the three brothers received for working in the Muslim government.\n\nThe record «Anupama (Vallabha)» #55 repeated the beginning of this text and was joined to this one (07-11-2026, Whisper)."
+    } }
+]

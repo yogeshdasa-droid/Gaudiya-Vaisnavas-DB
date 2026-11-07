@@ -5774,3 +5774,50 @@ svg.satellite .map-dot {
 .other-versions .text-cards {
   margin-top: 8px;
 }
+
+/* texts of a place (0.13.0) */
+.place-text {
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.place-text-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--text);
+}
+.place-text-head .icon-btn {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.place-text:hover .place-text-head .icon-btn,
+.place-text-head .icon-btn:focus-visible {
+  opacity: 1;
+}
+.place-text .notes {
+  white-space: pre-wrap;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+.place-text-form textarea {
+  width: 100%;
+  min-height: 300px;
+  resize: vertical;
+  font: inherit;
+  line-height: 1.55;
+}
+/* the main text of a record, folded until it is opened (0.13.0) */
+.inline-doc.folded .inline-sticky {
+  position: static;
+}
+.main-fold {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

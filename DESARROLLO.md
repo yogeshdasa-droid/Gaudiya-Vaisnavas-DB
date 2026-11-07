@@ -187,7 +187,23 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.12.8)
+## 5. Qué hace hoy (v0.13.0)
+
+### Novedades de la 0.13.0 (07-11-2026) — formato de BD 10: textos y galería de los tīrthas
+- **Pedido por Whisper** (4 ideas + 1):
+  1. El **texto de la ficha** (Texto principal o el único texto) sale **plegado**: solo su cabecera, con «Leer el texto»
+     (o clic en el título / la flecha) para abrirlo. Se vuelve a plegar al cambiar de ficha (`textOpen` en `PersonView`).
+  2. **Estrella** en la cabecera de ese texto: marcador sin abrir el lector (`onBookmark`, el mismo de `App.tsx`).
+  3. **Textos de un tīrtha**: sección «Textos» en la página del lugar, cada uno con título y texto (Markdown, los
+     nombres de sus personas enlazados), «Añadir texto…», lápiz y papelera. Tabla **`place_texts`**; van dentro de
+     `PlaceFields.texts` (`Option`: `None` = no tocarlos, para scripts y versiones antiguas), así que se guardan con
+     el lugar y entran en sus **versiones**.
+  4. **Galería de un tīrtha** (más fotos, como la de las fichas): tabla **`place_images`**, `/placeimage/<id>`,
+     «Usar como foto principal del lugar» (la anterior pasa a la galería).
+  5. Lateral de la Guru Paramparā: un guru con **más de 4 discípulos de dīkṣā que tienen discípulos propios** los
+     lleva a una carpeta **«Dīkṣā»** (además de «Discípulos» para los que no tienen). Bhaktisiddhānta: Discípulos 16,
+     Dīkṣā 6. Arrastrar a la carpeta = discípulo de dīkṣā.
+- **DATA_VERSION 10** (tablas nuevas vacías al abrir; un programa 0.12.x ya no abre la BD).
 
 ### Novedades de la 0.12.8 (06-11-2026) — apartado «Poetas» en el lateral de Vaiṣṇavas
 - **Pedido por Whisper**: los poetas vaiṣṇavas (padakartās) sin guru claro llevan la etiqueta fija **«Poetas»**
@@ -1339,6 +1355,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **07-11-2026 — v0.13.0** (formato 10): texto de la ficha plegado, estrella de marcador en la ficha, textos y galería
+  de los tīrthas, carpeta «Dīkṣā» en la Paramparā lateral. Datos: uniones (1591/1210 → 1597, 491 → 1723, 55 → 56) y
+  la sakhā de Raghunandana Ṭhākura (`uniones1-unir.json`, `raghunandana.mjs`).
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.13.0
 - **06-11-2026 — v0.12.8**: apartado «Poetas» en el lateral de Vaiṣṇavas (etiqueta fija). Datos: tanda 1 fuera del
   árbol (336 colocadas), 79 poetas etiquetados.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.12.8

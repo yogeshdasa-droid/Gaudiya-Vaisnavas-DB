@@ -1197,6 +1197,7 @@ export default function App() {
             persons={persons}
             onPerson={openPerson}
             onOpenDoc={openDoc}
+            onBookmark={onBookmark}
             onEdit={(person) => setDialog({ kind: "person", person })}
             onMerge={(person, suggested) => setDialog({ kind: "merge", person, suggested })}
             onDelete={deletePerson}
