@@ -1355,6 +1355,11 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **07-11-2026 (noche) — scripts de datos (sin versión nueva)**: `separar.mjs` (separa fichas mezcladas: notas, trozos
+  «## NOMBRE», o `cut` dentro de un párrafo; coloca y etiqueta «Poetas»), `mezcladas1-5` (71 fichas → 82 nuevas),
+  `fuera2-8` (unas 200 fichas del Vaiṣṇava-maṇḍala bajo su guru o rama: CC Ādi 10-12, Rasikamaṅgala, Karṇānanda,
+  Prema-vilāsa, «disciple of X», devotos y contemporáneos de Mahāprabhu; 18 poetas más), uniones (10 repetidas, entre
+  ellas Ācāryaratna = Candraśekhara y Gokulānanda Sena = Vaiṣṇava dāsa). Árbol: 859 → 1.143.
 - **07-11-2026 — v0.13.0** (formato 10): texto de la ficha plegado, estrella de marcador en la ficha, textos y galería
   de los tīrthas, carpeta «Dīkṣā» en la Paramparā lateral. Datos: uniones (1591/1210 → 1597, 491 → 1723, 55 → 56) y
   la sakhā de Raghunandana Ṭhākura (`uniones1-unir.json`, `raghunandana.mjs`).

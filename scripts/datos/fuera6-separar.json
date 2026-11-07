@@ -1,0 +1,322 @@
+[
+ {
+  "id": 331,
+  "name": "Giridhara Dāsa",
+  "place": [
+   980,
+   "diksa"
+  ],
+  "fields": {
+   "name": "Giridhara Dāsa (disciple of Narahari Sarakāra)",
+   "works": "Parakīya-rasa-sthāpana-siddhānta-saṅgraha",
+   "notes": "A disciple of Narahari Sarakāra Ṭhākura; he wrote the Parakīya-rasa-sthāpana-siddhānta-saṅgraha, kept in the library of Rākhālānanda Ṭhākura at Śrīkhaṇḍa.\n\nThe record also held three Giridhara Dāsas translators (of the Smaraṇa-maṅgala, of the Manaḥ-śikṣā and of the Gīta-govinda), now in records of their own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Giridhara Dāsa (translator of the Smaraṇa-maṅgala)",
+    "poet": true,
+    "fields": {
+     "notes": "Taken out of the record «Giridhara Dāsa» #331, which mixed several persons (07-11-2026)."
+    }
+   },
+   {
+    "key": "b",
+    "name": "Giridhara Dāsa (translator of the Manaḥ-śikṣā)",
+    "poet": true,
+    "fields": {
+     "notes": "Taken out of the record «Giridhara Dāsa» #331, which mixed several persons (07-11-2026)."
+    }
+   },
+   {
+    "key": "c",
+    "name": "Giridhara Dāsa (translator of the Gīta-govinda, 1733)",
+    "poet": true,
+    "fields": {
+     "notes": "Taken out of the record «Giridhara Dāsa» #331, which mixed several persons (07-11-2026)."
+    }
+   }
+  ],
+  "docs": [
+   {
+    "doc": 334,
+    "pieces": [
+     {
+      "to": "a",
+      "title": "Giridhara Dāsa",
+      "start": "## GIRIDHARA DĀSA\n\nThis Giridhara Dāsa was among",
+      "end": "## GIRIDHARA DĀSA\n\nHe was one of the two translators"
+     },
+     {
+      "to": "b",
+      "title": "Giridhara Dāsa",
+      "start": "## GIRIDHARA DĀSA\n\nHe was one of the two translators",
+      "end": "## GIRIDHARA DĀSA\n\nHe translated Gītāgovinda"
+     },
+     {
+      "to": "c",
+      "title": "Giridhara Dāsa",
+      "start": "## GIRIDHARA DĀSA\n\nHe translated Gītāgovinda",
+      "end": "## GIRIDHARA DĀSA\n\nA disciple of Narahari"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": 570,
+  "name": "Jagannātha",
+  "place": [
+   1851,
+   "disciple"
+  ],
+  "fields": {
+   "name": "Jagannātha (uncle of Jāhnavā Mātā)",
+   "notes": "A brāhmaṇa of Nityānanda's branch, the second son of Kaṁsāri Miśra and an uncle of Jāhnavā Mātā, the wife of Nityānanda Prabhu (Caitanya-caritāmṛta Ādi 11.48).\n\nThe record also held four other Jagannāthas: the son of Kānhāi Khuṇṭiyā, Tārakā, the disciple of Rasikānanda and the disciple of Śyāmānanda, now in records of their own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Jagannātha (son of Kānhāi Khuṇṭiyā)",
+    "fields": {
+     "place": "Purī",
+     "notes": "Taken out of the record «Jagannātha» #570, which mixed several persons (07-11-2026)."
+    }
+   },
+   {
+    "key": "b",
+    "name": "Jagannātha (Tārakā, Gaura-gaṇoddeśa-dīpikā 158)",
+    "fields": {
+     "notes": "Taken out of the record «Jagannātha» #570, which mixed several persons (07-11-2026)."
+    }
+   },
+   {
+    "key": "c",
+    "name": "Jagannātha (disciple of Rasikānanda)",
+    "place": [
+     1908,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Rasikānanda Prabhu",
+     "notes": "Taken out of the record «Jagannātha» #570, which mixed several persons (07-11-2026)."
+    }
+   },
+   {
+    "key": "d",
+    "name": "Jagannātha (disciple of Śyāmānanda)",
+    "place": [
+     1535,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Śyāmānanda Prabhu",
+     "place": "Gopīballabhpur (Śrīpāṭa)",
+     "notes": "Taken out of the record «Jagannātha» #570, which mixed several persons (07-11-2026)."
+    }
+   }
+  ],
+  "docs": [
+   {
+    "doc": 575,
+    "pieces": [
+     {
+      "to": "a",
+      "title": "Jagannātha",
+      "start": "## JAGANNĀTHA\n\nA resident of Orissa",
+      "end": "## JAGANNĀTHA\n\nHe was Tārakā"
+     },
+     {
+      "to": "b",
+      "title": "Jagannātha",
+      "start": "## JAGANNĀTHA\n\nHe was Tārakā",
+      "end": "## JAGANNĀTHA\n\nThis Jagannātha was a disciple"
+     },
+     {
+      "to": "c",
+      "title": "Jagannātha",
+      "start": "## JAGANNĀTHA\n\nThis Jagannātha was a disciple",
+      "end": "## JAGANNĀTHA\n\nHe was a disciple of Śyāmānanda"
+     },
+     {
+      "to": "d",
+      "title": "Jagannātha",
+      "start": "## JAGANNĀTHA\n\nHe was a disciple of Śyāmānanda",
+      "end": "## JAGANNĀTHA\n\nA brāhmaṇa belonging"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": 600,
+  "name": "Jayagopala Dāsa",
+  "fields": {
+   "name": "Jayagopāla Dāsa (father of Balarāma dāsa)",
+   "place": "Kāṇḍaḍā (Burdwan)",
+   "works": "Kṛṣṇa-vilāsa, Jñāna-pradīpa",
+   "notes": "The father of Balarāma dāsa of the famous Maṅgala Ṭhākura family of Kāṇḍaḍā in Burdwan; he wrote the Kṛṣṇa-vilāsa and the Jñāna-pradīpa, and was a disciple of Sundarānanda.\n\nThe record also held the Jayagopāla Dāsa guru of Ghanaśyāma dāsa, author of the Bhakti-bhāva-pradīpa, now in records of their own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Jayagopāla Dāsa (author of the Bhakti-bhāva-pradīpa)",
+    "fields": {
+     "works": "Bhakti-bhāva-pradīpa; Bhakti-ratnākara (Sanskrit, 1629)",
+     "notes": "Taken out of the record «Jayagopala Dāsa» #600, which mixed several persons (07-11-2026)."
+    }
+   }
+  ],
+  "docs": [
+   {
+    "doc": 605,
+    "pieces": [
+     {
+      "to": "a",
+      "title": "Jayagopāla Dāsa",
+      "start": "## JAYAGOPALA DĀSA\n\nHe was the guru of Ghanasyamadasa",
+      "end": "## JAYAGOPALA DĀSA\n\nHe was the father"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": 867,
+  "name": "Mādhava",
+  "fields": {
+   "name": "Mādhava (of Vṛndāvana, CC Madhya 13.51)",
+   "notes": "There were two devotees named Mādhava in Vṛndāvana, both from Bengal; nothing more is known of them (Caitanya-caritāmṛta Madhya 13.51).\n\nThe record also held five other Mādhavas: Puṇḍarīka Vidyānidhi's friend, the one of Nityānanda's branch, the disciple of Rasikānanda, the poet, and the Oḍiyā disciple of Gadādhara, now in records of their own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Mādhava (friend of Puṇḍarīka Vidyānidhi)",
+    "fields": {
+     "place": "Cakraśālā (Chittagong)",
+     "notes": "Taken out of the record «Mādhava» #867, which mixed several persons (07-11-2026)."
+    }
+   },
+   {
+    "key": "b",
+    "name": "Mādhava (Nityānanda's branch, CC Ādi 11.48)",
+    "place": [
+     1851,
+     "disciple"
+    ],
+    "fields": {
+     "notes": "Taken out of the record «Mādhava» #867, which mixed several persons (07-11-2026)."
+    }
+   },
+   {
+    "key": "c",
+    "name": "Mādhava (disciple of Rasikānanda)",
+    "place": [
+     1908,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Rasikānanda Prabhu",
+     "notes": "Taken out of the record «Mādhava» #867, which mixed several persons (07-11-2026)."
+    }
+   },
+   {
+    "key": "d",
+    "name": "Mādhava (poet, 55 padas)",
+    "poet": true,
+    "fields": {
+     "works": "55 padas in the Padakalpataru",
+     "notes": "Taken out of the record «Mādhava» #867, which mixed several persons (07-11-2026)."
+    }
+   },
+   {
+    "key": "e",
+    "name": "Mādhava (Oḍiyā disciple of Gadādhara, Caitanya-vilāsa)",
+    "place": [
+     274,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Gadādhara Paṇḍita",
+     "works": "Śrī Caitanya-vilāsa (Oḍiyā)",
+     "notes": "Taken out of the record «Mādhava» #867, which mixed several persons (07-11-2026)."
+    }
+   }
+  ],
+  "docs": [
+   {
+    "doc": 874,
+    "pieces": [
+     {
+      "to": "a",
+      "title": "Mādhava",
+      "start": "## MĀDHAVA\n\nHe was the childhood friend",
+      "end": "## MĀDHAVA\n\nHe belonged to the sakhā"
+     },
+     {
+      "to": "b",
+      "title": "Mādhava",
+      "start": "## MĀDHAVA\n\nHe belonged to the sakhā",
+      "end": "## MĀDHAVA\n\nHe was a disciple of Rasikānanda"
+     },
+     {
+      "to": "c",
+      "title": "Mādhava",
+      "start": "## MĀDHAVA\n\nHe was a disciple of Rasikānanda",
+      "end": "## MĀDHAVA\n\nHe was a composer of padas"
+     },
+     {
+      "to": "d",
+      "title": "Mādhava",
+      "start": "## MĀDHAVA\n\nHe was a composer of padas",
+      "end": "## MĀDHAVA\n\nHe was an Odisi disciple"
+     },
+     {
+      "to": "e",
+      "title": "Mādhava",
+      "start": "## MĀDHAVA\n\nHe was an Odisi disciple"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": 1366,
+  "name": "Śaṅkara",
+  "place": [
+   1851,
+   "disciple"
+  ],
+  "fields": {
+   "name": "Śaṅkara (Nityānanda's branch)",
+   "guru": "",
+   "notes": "He belonged to the branch of Lord Nityānanda (Caitanya-caritāmṛta Ādi 11.52).\n\nThe record also held the Śaṅkara of Kulīna-grāma (Caitanya's branch) and the Śaṅkara disciple of Rasikānanda, now in records of their own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Śaṅkara (of Kulīna-grāma)",
+    "place": [
+     164,
+     "associate"
+    ],
+    "fields": {
+     "place": "Kulīna-grāma",
+     "notes": "A resident of Kulīna-grāma of the branch of Lord Caitanya (Caitanya-caritāmṛta Ādi 10.80). Taken out of the record «Śaṅkara» #1366, which mixed several persons (07-11-2026)."
+    }
+   },
+   {
+    "key": "b",
+    "name": "Śaṅkara (disciple of Rasikānanda)",
+    "place": [
+     1908,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Rasikānanda Prabhu",
+     "notes": "He was a disciple of Rasikānanda Prabhu (Rasikamaṅgala Paścima 14.159). Taken out of the record «Śaṅkara» #1366, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ }
+]

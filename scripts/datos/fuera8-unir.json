@@ -1,0 +1,30 @@
+[
+ {
+  "into": 1487,
+  "name": "Sukhī",
+  "from": [
+   {
+    "id": 229,
+    "name": "Duḥkhī  (Domestic attendant in the house of Śrīvāsa)"
+   }
+  ],
+  "fields": {
+   "name": "Sukhī (Duḥkhī, servant in Śrīvāsa's house)",
+   "aka": "Duḥkhī, Sakhī",
+   "notes": "The domestic helper in the house of Śrīvāsa who served Lord Gaurāṅga with great care. Her name was Duḥkhī; pleased with her service Lord Caitanya named her Sukhī (Caitanya-bhāgavata Madhya 25.11-22).\n\nThe record «Duḥkhī» #229 was the same person and was joined to this one (07-11-2026)."
+  }
+ },
+ {
+  "into": 589,
+  "name": "Janārdana Miśra (Janārdana)",
+  "from": [
+   {
+    "id": 592,
+    "name": "Janārdana"
+   }
+  ],
+  "fields": {
+   "notes": "A resident of Orissa, Janārdana was a great devotee and a permanent sevaka of Lord Jagannātha in Purī. Sārvabhauma Bhaṭṭācārya introduced him to Lord Caitanya when the Lord returned from His pilgrimage of South India (Caitanya-caritāmṛta Madhya 10.41).\n\nThe record «Janārdana» #592 (the same text) was joined to this one (07-11-2026)."
+  }
+ }
+]

@@ -1,0 +1,42 @@
+[
+ {
+  "id": 1742,
+  "name": "Vṛndāvana Cakravartī",
+  "place": [
+   1390,
+   "diksa"
+  ],
+  "fields": {
+   "name": "Vṛndāvana Cakravartī (disciple of Satyabhāmā)",
+   "notes": "He was the disciple of Satyabhāmā Devī, the daughter-in-law of Śrīnivāsa Ācārya.\n\nThe record also held the Vṛndāvana Cakravartī disciple of Kṛṣṇadeva Sārvabhauma, commentator of the Govinda-līlāmṛta, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Vṛndāvana Cakravartī (commentator of the Govinda-līlāmṛta)",
+    "place": [
+     776,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Kṛṣṇadeva Sārvabhauma",
+     "works": "Sadānanda-vidhāyinī (ṭīkā on the Govinda-līlāmṛta, 1701 Śaka)",
+     "notes": "Taken out of the record «Vṛndāvana Cakravartī» #1742, which mixed several persons (07-11-2026)."
+    }
+   }
+  ],
+  "docs": [
+   {
+    "doc": 1760,
+    "pieces": [
+     {
+      "to": "a",
+      "cut": true,
+      "title": "Vṛndāvana Cakravartī",
+      "start": "Vṛndāvana Cakravartī He was the disciple of Krsnadeva"
+     }
+    ]
+   }
+  ]
+ }
+]

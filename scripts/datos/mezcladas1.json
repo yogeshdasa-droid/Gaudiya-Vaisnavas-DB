@@ -1,0 +1,341 @@
+[
+ {
+  "id": 25,
+  "name": "Akiñcana Dāsa",
+  "fields": {
+   "notes": "He was a devotee of Lord Gaurāṅga (Nāmāmṛta-samudra 159, ed. Haridāsa Dāsa).\n\nThe record also held Akiñcana Dāsa the translator of the Jagannātha-vallabha-nāṭaka, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Akiñcana Dāsa (translator of the Jagannātha-vallabha-nāṭaka)",
+    "poet": true,
+    "fields": {
+     "works": "Śrī Jagannātha-vallabha-nāṭaka in Bengali verse",
+     "notes": "He translated in verse the Śrī Jagannātha-vallabha-nāṭaka (Calcutta University manuscript no. 1512). Taken out of the record «Akiñcana Dāsa» #25, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 34,
+  "name": "Ānanda Dāsa",
+  "fields": {
+   "name": "Ānanda Dāsa (author of the Jagadīśa-caritra)",
+   "guru": "",
+   "works": "Śrī Jagadīśa-caritra (1718-1728)",
+   "notes": "Fifth generation of the line of Jagadīśa Paṇḍita. In a dream Bhāgavatānanda, a disciple of one of Jagadīśa Paṇḍita's disciples, told him to write the Śrī Jagadīśa-caritra, compiled in 1640-50 Śaka (1718-1728 A.D.).\n\nThe record also held Ānanda Dāsa the disciple of Śyāmānandī Dāmodara, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Ānanda Dāsa (disciple of Śyāmānandī Dāmodara)",
+    "fields": {
+     "guru": "Śyāmānandī Dāmodara",
+     "notes": "He was a disciple of Śyāmānandī Dāmodara (Rasikamaṅgala Paścima 15.18). Taken out of the record «Ānanda Dāsa» #34, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 45,
+  "name": "Ananta Dāsa",
+  "place": [
+   15,
+   "disciple"
+  ],
+  "fields": {
+   "notes": "He was a descendant in the disciple line of Advaita Prabhu (Caitanya-caritāmṛta Ādi 12.61).\n\nThe record also held Ananta Dāsa the poet, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Ananta Dāsa (poet)",
+    "poet": true,
+    "fields": {
+     "works": "32 padas in the Padakalpataru",
+     "notes": "A Vaiṣṇava poet: the Padakalpataru has 32 padas with the bhaṇitā of Ananta dāsa (Baṅgīya Sāhitya Sevaka). Taken out of the record «Ananta Dāsa» #45, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 50,
+  "name": "Ananta",
+  "place": [
+   15,
+   "diksa"
+  ],
+  "fields": {
+   "place": "Navadvīpa",
+   "notes": "A brāhmaṇa of Navadvīpa and a disciple of Advaita Prabhu; in Kṛṣṇa-līlā Sudevī. The Padakalpataru has one pada of «Ananta» (Vaiṣṇava-vandanā of Jīva Gosvāmī, Devakīnandana and Vṛndāvana dāsa; Bhakti Movement in Orissa p. 173). Which Ananta composed the padas is not known: Ananta Ācārya, Ananta dāsa or Ananta Paṇḍita.\n\nThe text on Ananta Ācārya (Caitanya-caritāmṛta Ādi 12.58) went to his record #44 (07-11-2026)."
+  },
+  "docs": [
+   {
+    "doc": 3377,
+    "pieces": [
+     {
+      "toId": 44,
+      "title": "Ananta Ācārya",
+      "start": "## Ananta Ācārya"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": 77,
+  "name": "Balarāma Dās (Mahānta)",
+  "place": [
+   1851,
+   "associate"
+  ],
+  "fields": {
+   "notes": "A devotee from Orissa and close companion of Nityānanda Prabhu (Vaiṣṇava-vandanā).\n\nThe record also held the Balarāma Dāsa of Caitanya-bhāgavata 3.5.734 and Caitanya-caritāmṛta Ādi 11.34, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Balarāma Dāsa (Nityānanda's branch, CC Ādi 11.34)",
+    "place": [
+     1851,
+     "disciple"
+    ],
+    "fields": {
+     "notes": "A devotee of Nityānanda's branch mentioned in Caitanya-bhāgavata 3.5.734 and Caitanya-caritāmṛta Ādi 11.34. Taken out of the record «Balarāma Dās (Mahānta)» #77, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 83,
+  "name": "Balarāma Kavipati",
+  "place": [
+   1535,
+   "diksa"
+  ],
+  "fields": {
+   "place": "Budhuri (Śrīpāṭa)",
+   "guru": "Śyāmānanda Prabhu",
+   "notes": "He was a disciple of Śyāmānanda Prabhu; his Śrīpāṭa is at Budhuri (Prema-vilāsa 20).\n\nThe record also held the Balarāma Kavipati disciple of Rāmacandra Kavirāja, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Balarāma Kavipati (disciple of Rāmacandra Kavirāja)",
+    "place": [
+     1244,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Rāmacandra Kavirāja",
+     "notes": "He was a disciple of Rāmacandra Kavirāja (Karṇānanda 2). Taken out of the record «Balarāma Kavipati» #83, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 95,
+  "name": "Bhadravati",
+  "fields": {
+   "name": "Bhadravatī (mother of Jāhnavā)",
+   "notes": "She was the wife of Sūryadāsa Paṇḍita and the mother of Jāhnavā.\n\nThe record also held Bhadravatī the mother of Uddhāraṇa Datta, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Bhadravatī (mother of Uddhāraṇa Datta)",
+    "fields": {
+     "notes": "She was the mother of Uddhāraṇa Datta Ṭhākura and the wife of Śrīkara Datta (see «Uddhāraṇa Datta»). Taken out of the record «Bhadravati» #95, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 103,
+  "name": "Bhagavān",
+  "fields": {
+   "notes": "He was a disciple of Rasikānanda Prabhu (Rasikamaṅgala 14.107).\n\nThe record also held three other Bhagavāns of the Rasikamaṅgala (14.119-129, 14.142, 14.148), now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Bhagavān (nephew of Rasikānanda)",
+    "place": [
+     1908,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Rasikānanda Prabhu",
+     "notes": "He was the nephew and disciple of Rasikānanda Prabhu (Rasikamaṅgala 14.119-129). Taken out of the record «Bhagavān» #103, which mixed several persons (07-11-2026)."
+    }
+   },
+   {
+    "key": "b",
+    "name": "Bhagavān (of Rasikānanda's line, Rasikamaṅgala 14.142)",
+    "place": [
+     1908,
+     "disciple"
+    ],
+    "fields": {
+     "notes": "He was a disciple in Rasikānanda Prabhu's line (Rasikamaṅgala 14.142). Taken out of the record «Bhagavān» #103, which mixed several persons (07-11-2026)."
+    }
+   },
+   {
+    "key": "c",
+    "name": "Bhagavān (of Rasikānanda's line, Rasikamaṅgala 14.148)",
+    "place": [
+     1908,
+     "disciple"
+    ],
+    "fields": {
+     "notes": "He was a disciple in Rasikānanda Prabhu's line (Rasikamaṅgala 14.148). Taken out of the record «Bhagavān» #103, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 116,
+  "name": "Bhakta Dās",
+  "place": [
+   1010,
+   "diksa"
+  ],
+  "fields": {
+   "guru": "Narottama Ṭhākura",
+   "notes": "He was a disciple of Narottama Ṭhākura (Narottama-vilāsa 12).\n\nThe record also held the Bhakta Dāsa disciple of Rasikānanda, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Bhakta Dāsa (disciple of Rasikānanda)",
+    "place": [
+     1908,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Rasikānanda Prabhu",
+     "notes": "He was a disciple of Rasikānanda Prabhu (Rasikamaṅgala Paścima 14.150). Taken out of the record «Bhakta Dās» #116, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 149,
+  "name": "Bhudhara",
+  "place": [
+   1908,
+   "diksa"
+  ],
+  "fields": {
+   "guru": "Rasikānanda Prabhu",
+   "notes": "He was a disciple of Rasikānanda Prabhu (Rasikamaṅgala Paścima 14.114).\n\nThe record also held another Bhūdhara, disciple of Rasikānanda (14.152), now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Bhūdhara (disciple of Rasikānanda, Rasikamaṅgala 14.152)",
+    "place": [
+     1908,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Rasikānanda Prabhu",
+     "notes": "Another disciple of Rasikānanda Prabhu named Bhūdhara (Rasikamaṅgala Paścima 14.152). Taken out of the record «Bhudhara» #149, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 163,
+  "name": "Brahmananda",
+  "fields": {
+   "name": "Brahmānanda (brother of Nityānanda)",
+   "notes": "He was the younger brother of Nityānanda Prabhu (Prema-vilāsa 24).\n\nThe record also held the Brahmānanda of Lord Gaurāṅga's kīrtana at Navadvīpa, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Brahmānanda (of the kīrtana at Navadvīpa)",
+    "place": [
+     164,
+     "associate"
+    ],
+    "fields": {
+     "place": "Navadvīpa",
+     "notes": "He took part in Lord Gaurāṅga's kīrtana at Navadvīpa (Caitanya-bhāgavata 2.8.116, 2.18.9, 102-107, 2.28.12, 104, 3.2.35). Taken out of the record «Brahmananda» #163, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 190,
+  "name": "Darpanarayana",
+  "fields": {
+   "name": "Darpanārāyaṇa",
+   "works": "Śrī Kṛṣṇa-cautiśā",
+   "notes": "He wrote the Śrī Kṛṣṇa-cautiśā (Baṅgīya Sāhitya Sevaka).\n\nThe record also held the Darpanārāyaṇa disciple of Hemalatā Devī, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Darpanārāyaṇa (disciple of Hemalatā Devī)",
+    "place": [
+     497,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Hemalatā Devī (daughter of Śrīnivāsa Ācārya)",
+     "notes": "He was a disciple of Hemalatā Devī, the daughter of Śrīnivāsa Ācārya Prabhu (Karṇānanda 2). Taken out of the record «Darpanarayana» #190, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 220,
+  "name": "Dīna Kṛṣṇa Dāsa",
+  "poet": true,
+  "fields": {
+   "place": "Śāligrāma",
+   "notes": "A brāhmaṇa of Śāligrāma, the fifth son of Kaṁsāri Miśra; Gaurīdāsa Paṇḍita and Sūryadāsa Paṇḍita were his brothers. He composed many padas in praise of his elder brother Gaurīdāsa Paṇḍita, with the bhaṇitā «Dīna Kṛṣṇa Dāsa».\n\nThe record also held the Oḍiyā poet Dīna Kṛṣṇa Dāsa, author of the Rasakallola, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Dīna Kṛṣṇa Dāsa (Oḍiyā poet, Rasakallola)",
+    "poet": true,
+    "fields": {
+     "works": "Rasakallola",
+     "notes": "An Oḍiyā poet, author of the Rasakallola: thirty-four prosodic styles, on the musical rāgas and rāgiṇīs. Taken out of the record «Dīna Kṛṣṇa Dāsa» #220, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 248,
+  "name": "Dvija Gopimohana",
+  "place": [
+   1908,
+   "diksa"
+  ],
+  "fields": {
+   "name": "Dvija Gopīmohana",
+   "guru": "Rasikānanda Prabhu",
+   "notes": "He was a disciple of Rasikānanda Prabhu (Rasikamaṅgala Paścima 14.156).\n\nThe record also held another Gopīmohana, disciple of Rasikānanda (14.127), now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Gopīmohana (disciple of Rasikānanda, Rasikamaṅgala 14.127)",
+    "place": [
+     1908,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Rasikānanda Prabhu",
+     "notes": "Another disciple of Rasikānanda Prabhu named Gopīmohana (Rasikamaṅgala Paścima 14.127). Taken out of the record «Dvija Gopimohana» #248, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ }
+]

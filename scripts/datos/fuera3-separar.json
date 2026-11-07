@@ -1,0 +1,30 @@
+[
+ {
+  "id": 1569,
+  "name": "Uddhava",
+  "place": [
+   1535,
+   "diksa"
+  ],
+  "fields": {
+   "name": "Uddhava (disciple of Śyāmānanda, Kasiāḍi)",
+   "guru": "Śyāmānanda Prabhu",
+   "place": "Kasiāḍi (Śrīpāṭa)",
+   "notes": "He was a disciple of Śyāmānanda Prabhu, of the Śrīpāṭa of Kasiāḍi (Prema-vilāsa 20).\n\nThe record also held the Uddhava disciple of Rasikānanda, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Uddhava (disciple of Rasikānanda)",
+    "place": [
+     1908,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Rasikānanda Prabhu",
+     "notes": "He was a disciple of Rasikānanda Prabhu (Rasikamaṅgala Paścima 14.137). Taken out of the record «Uddhava» #1569, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ }
+]

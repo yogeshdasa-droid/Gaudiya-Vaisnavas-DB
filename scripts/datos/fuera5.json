@@ -1,0 +1,142 @@
+[
+ {
+  "id": 115,
+  "name": "Bhakta Dās Pūjārī",
+  "parent": 343,
+  "kind": "diksa",
+  "why": "disciple of Gopāla Bhaṭṭa"
+ },
+ {
+  "id": 1624,
+  "name": "Vanacandra",
+  "parent": 343,
+  "kind": "diksa",
+  "why": "disciple of Gopāla Bhaṭṭa"
+ },
+ {
+  "id": 167,
+  "name": "Daityari Ghos",
+  "parent": 980,
+  "kind": "diksa",
+  "why": "disciple of Narahari Sarakāra"
+ },
+ {
+  "id": 252,
+  "name": "Dvija Hari Dāsa",
+  "parent": 980,
+  "kind": "diksa",
+  "why": "disciple of Narahari Sarakāra"
+ },
+ {
+  "id": 839,
+  "name": "Lokananda Ācārya",
+  "parent": 980,
+  "kind": "diksa",
+  "why": "disciple of Narahari Sarakāra"
+ },
+ {
+  "id": 316,
+  "name": "Gaurāṅga Dāsa Ghosala",
+  "parent": 980,
+  "kind": "disciple",
+  "why": "of Narahari Sarakāra's branch"
+ },
+ {
+  "id": 783,
+  "name": "Krsnakinkar Dāsa",
+  "parent": 980,
+  "kind": "disciple",
+  "why": "of Narahari Sarakāra's branch"
+ },
+ {
+  "id": 830,
+  "name": "Laksmikanta Dvija",
+  "parent": 980,
+  "kind": "disciple",
+  "why": "of Narahari Sarakāra's branch"
+ },
+ {
+  "id": 879,
+  "name": "Madhusūdana Dāsa",
+  "parent": 980,
+  "kind": "disciple",
+  "why": "of Narahari Sarakāra's branch"
+ },
+ {
+  "id": 1042,
+  "name": "Nityānanda Caudhuri",
+  "parent": 980,
+  "kind": "disciple",
+  "why": "of Narahari Sarakāra's branch"
+ },
+ {
+  "id": 1259,
+  "name": "Rāmadāsa Ghosal",
+  "parent": 980,
+  "kind": "disciple",
+  "why": "of Narahari Sarakāra's branch"
+ },
+ {
+  "id": 309,
+  "name": "Gaura Gaṇ Dāsa",
+  "parent": 1353,
+  "kind": "diksa",
+  "why": "disciple of Sanātana Gosvāmī"
+ },
+ {
+  "id": 211,
+  "name": "Dharma Dāsa Bābājī (Kamyavana)",
+  "parent": 606,
+  "kind": "disciple",
+  "why": "grand-disciple of the Siddha Bābā of Kāmyavana"
+ },
+ {
+  "id": 531,
+  "name": "Jagadīśa Dāsa Bābājī Mahāśaya",
+  "parent": 97,
+  "kind": "diksa",
+  "why": "dīkṣā from Siddha Bhagavān dāsa Bābājī"
+ },
+ {
+  "id": 1053,
+  "name": "Nṛsiṁha Dāsa Baba",
+  "parent": 1045,
+  "kind": "diksa",
+  "why": "disciple of Siddha Nityānanda dāsa Bābājī"
+ },
+ {
+  "id": 1733,
+  "name": "Vrajakisore Dāsa Bābājī",
+  "parent": 1045,
+  "kind": "diksa",
+  "why": "disciple of Siddha Nityānanda dāsa Bābājī"
+ },
+ {
+  "id": 652,
+  "name": "Kamalākānta Paṇḍit",
+  "parent": 1851,
+  "kind": "associate",
+  "why": "associate of Nityānanda Prabhu"
+ },
+ {
+  "id": 1551,
+  "name": "TILAKARĀMA Dāsa",
+  "parent": 6,
+  "kind": "diksa",
+  "why": "disciple of Abhirāma Gosvāmī"
+ },
+ {
+  "id": 1801,
+  "name": "Bhakti Prasun Purī",
+  "parent": 1811,
+  "kind": "diksa",
+  "why": "first disciple of Bhakti Vilāsa Tīrtha"
+ },
+ {
+  "id": 155,
+  "name": "Bibudha bodhayan",
+  "parent": 1799,
+  "kind": "diksa",
+  "why": "succeeded his guru Bhakti Pramoda Purī"
+ }
+]

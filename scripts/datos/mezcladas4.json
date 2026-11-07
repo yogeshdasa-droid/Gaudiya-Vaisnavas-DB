@@ -1,0 +1,219 @@
+[
+ {
+  "id": 1036,
+  "name": "Nimananda Dāsa",
+  "poet": true,
+  "fields": {
+   "name": "Nimānanda Dāsa (compiler of the Padarasasāra)",
+   "works": "Padarasasāra (2,700 padas, 246 his own)",
+   "notes": "A composer and compiler of padas: he gathered 2,700 padas in the Padarasasāra, 246 of them his own.\n\nThe record also held the Nimānanda Dāsa who put the Gaurāṅga-stava-kalpataru into Bengali verse, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Nimānanda Dāsa (translator of the Gaurāṅga-stava-kalpataru)",
+    "poet": true,
+    "fields": {
+     "works": "Śrī Gaurāṅga-stava-kalpataru in Bengali verse",
+     "notes": "He translated the Śrī Gaurāṅga-stava-kalpataru of Śrī Dāsa Gosvāmī into Bengali verse (Barānagar Pāṭhbāḍī ms. no. Anu 12 kha). Taken out of the record «Nimananda Dāsa» #1036, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 1110,
+  "name": "Prasāda Dāsa",
+  "fields": {
+   "notes": "Disciple of Bhakti Prapanna Dāmodara Gosvāmī Mahārāja (his place in the Guru Paramparā).\n\nThe record also held the Prasāda Dāsa disciple of Śyāmānanda (now a record of its own) and a «see Guruprasāda Sengupta» (the compiler of the Pada-cintāmaṇi-mālā, #436, also called Prasāda Dāsa) (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Prasāda Dāsa (disciple of Śyāmānanda)",
+    "place": [
+     1535,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Śyāmānanda Prabhu",
+     "notes": "He was a disciple of Śyāmānanda Prabhu; his name is in the Rasikamaṅgala. Taken out of the record «Prasāda Dāsa» #1110, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 1127,
+  "name": "Puruṣottama Brahmacārī",
+  "fields": {
+   "notes": "He belonged to the line of Advaita Ācārya (Caitanya-caritāmṛta Ādi 12.62; Nāmāmṛta-samudra 244).\n\nThe record also held the Puruṣottama Brahmacārī of Kāñcīsālī, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Puruṣottama Brahmacārī (of Kāñcīsālī)",
+    "fields": {
+     "place": "Kāñcīsālī",
+     "notes": "A resident of Kāñcīsālī (Vaiṣṇava-vandanā of Śrī Jīva Gosvāmī 240, of Devakīnandana 116, of Vṛndāvana dāsa 109); perhaps the same as the Puruṣottama Brahmacārī of Advaita's line. Taken out of the record «Puruṣottama Brahmacārī» #1127, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 1181,
+  "name": "Rādhāvinoda Cakravartī",
+  "place": [
+   1390,
+   "diksa"
+  ],
+  "fields": {
+   "notes": "He was a disciple of Satyabhāmā Devī, the daughter-in-law of Śrīnivāsa Ācārya (Karṇānanda 2).\n\nThe record also held the Rādhāvinoda Cakravartī disciple of Īśvarī Devī, son of Govinda Cakravartī, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Rādhāvinoda Cakravartī (son of Govinda Cakravartī)",
+    "place": [
+     519,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Īśvarī Devī (wife of Śrīnivāsa Ācārya)",
+     "place": "Borākulī (Śrīpāṭa)",
+     "notes": "He was a disciple of Īśvarī Devī, the wife of Śrīnivāsa Ācārya; the second son of Govinda Cakravartī, of the Śrīpāṭa at Borākulī. His brothers were Rājavallabha and Kiśorī (Karṇānanda 1). Taken out of the record «Rādhāvinoda Cakravartī» #1181, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 1205,
+  "name": "Raghunātha Cakravartī",
+  "fields": {
+   "notes": "The disciple and father-in-law of Śrīnivāsa Ācārya, also known as «Rāghava»; the father of Gaurāṅgapriyā Devī, of the Śrīpāṭa of Gopālpur; Mādhavī Devī was his wife (Prema-vilāsa 17, Karṇānanda 1, Bhakti-ratnākara 3.204-205).\n\nThe record also held the Raghunātha Cakravartī elder brother of Viśvanātha Cakravartī, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Raghunātha Cakravartī (brother of Viśvanātha Cakravartī)",
+    "fields": {
+     "notes": "The elder brother of Viśvanātha Cakravartī, a great scholar (Narottama-vilāsa ms.; see «Viśvanātha Cakravartī»). Taken out of the record «Raghunātha Cakravartī» #1205, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 1230,
+  "name": "Rāma Devī",
+  "fields": {
+   "name": "Rāma Devī (wife of Yogeśvara Paṇḍita)",
+   "notes": "The daughter of Nidhipati, the younger brother of Kamalākara Pippalāi. The authorities at Śrīpāṭa Māheś say she was married to Yogeśvara Paṇḍita, a well-known Vaiṣṇava of Khaḍadaha; both were devotees of Lord Gaurāṅga.\n\nThe record also held the Rāma Devī who was the paternal grandmother of Rūpa and Sanātana, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Rāma Devī (grandmother of Rūpa and Sanātana)",
+    "fields": {
+     "notes": "The paternal grandmother of Rūpa and Sanātana Gosvāmī, the daughter of Yadujīvana Tarkālaṅkāra, the court scholar of King Mahendrasiṁha of Burdwan. Taken out of the record «Rāma Devī» #1230, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 1248,
+  "name": "Rāmacandra",
+  "fields": {
+   "name": "Rāmacandra (disciple of Rasikānanda)",
+   "notes": "He was a disciple of Rasikānanda Prabhu (Rasikamaṅgala Paścima 14.136).\n\nThe record also held three other Rāmacandras: the youngest son of Vīracandra, the one of Raghunandana's branch, and a poet, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Rāmacandra (son of Vīracandra)",
+    "fields": {
+     "notes": "The youngest son of Vīracandra Prabhu (Prema-vilāsa 24). Taken out of the record «Rāmacandra» #1248, which mixed several persons (07-11-2026)."
+    }
+   },
+   {
+    "key": "b",
+    "name": "Rāmacandra (of Raghunandana's branch)",
+    "place": [
+     1200,
+     "disciple"
+    ],
+    "fields": {
+     "place": "Śrīkhaṇḍa",
+     "notes": "A resident of Śrīkhaṇḍa of the branch of Raghunandana Ṭhākura. Taken out of the record «Rāmacandra» #1248, which mixed several persons (07-11-2026)."
+    }
+   },
+   {
+    "key": "c",
+    "name": "Rāmacandra (poet)",
+    "poet": true,
+    "fields": {
+     "notes": "A Vaiṣṇava poet. Taken out of the record «Rāmacandra» #1248, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 1272,
+  "name": "Ramakanta",
+  "fields": {
+   "name": "Ramākānta (brother of Rudra Paṇḍita)",
+   "notes": "The brother of Rudra Paṇḍita of Śrīpāṭa Ballabhapur and the nephew (sister's son) of Kāśīśvara Paṇḍita of Śrīpāṭa Cātarā (see «Kāśīnātha Paṇḍita» and «Kāśīśvara Paṇḍita»).\n\nThe record also held the poet Ramākānta, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Ramākānta (poet)",
+    "poet": true,
+    "fields": {
+     "works": "pada 1572 of the Padakalpataru",
+     "notes": "A Vaiṣṇava poet whose life is not known (pada no. 1572 of the Padakalpataru). Taken out of the record «Ramakanta» #1272, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 1288,
+  "name": "Ramanatha",
+  "fields": {
+   "name": "Rāmanātha (disciple of Narottama)",
+   "notes": "A disciple of Narottama Ṭhākura. His father was Vipradāsa and his mother Bhagavatī; his brother was Yadunātha. From Vipradāsa's granary came the Deity of Lord Gaurāṅga that Narottama Ṭhākura installed (Prema-vilāsa 20; see «Vipradāsa»).\n\nThe record also held the Rāmanātha that B. B. Majumdar counts among the Catuḥsana, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Rāmanātha (of the Catuḥsana)",
+    "fields": {
+     "notes": "According to B. B. Majumdar (Caitanya-cariter Upādān p. 681) he was one of the Catuḥsana. Taken out of the record «Ramanatha» #1288, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 1760,
+  "name": "Yādava Kavirāja",
+  "place": [
+   980,
+   "disciple"
+  ],
+  "fields": {
+   "place": "Kuliā, near Śrīkhaṇḍa",
+   "notes": "A resident of Kuliā near Śrīkhaṇḍa, of the disciple line of Narahari Sarakāra.\n\nThe record also held the Yādava Kavirāja disciple of Narottama Ṭhākura, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Yādava Kavirāja (disciple of Narottama)",
+    "place": [
+     1010,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Narottama Ṭhākura",
+     "notes": "He was a disciple of Narottama Ṭhākura (Prema-vilāsa 20). Taken out of the record «Yādava Kavirāja» #1760, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ }
+]

@@ -1,0 +1,226 @@
+[
+ {
+  "id": 140,
+  "name": "Bhavananda Rāya Pattanayaka",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 166,
+  "name": "Chandraśekhara Acaryaratna",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 280,
+  "name": "Galima",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 640,
+  "name": "Kamabhatta",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 692,
+  "name": "Kāśīnātha Dvija",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 869,
+  "name": "Śrī Mādhavī Devī",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 1072,
+  "name": "Paramānanda Mahapatra",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 1099,
+  "name": "Pradyumna Miśra",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 1138,
+  "name": "Puruṣottama Sañjaya",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 1413,
+  "name": "Sinhesvara Odra",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 1464,
+  "name": "Śrīnidhi",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 1488,
+  "name": "Śuklāmbara Brahmacārī",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 1607,
+  "name": "Vallabha Sena",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 1652,
+  "name": "Vāsudeva Datta",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 1671,
+  "name": "Vidyananda",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 1866,
+  "name": "Sharanga Murāri Ṭhākura",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 1928,
+  "name": "Kamalānanda",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 1961,
+  "name": "Śrīrāma Paṇḍita",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 1962,
+  "name": "Śrīpati Paṇḍita",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 1983,
+  "name": "Haridāsa Ācārya (Dvija Haridāsa)",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 969,
+  "name": "Nandana (Nandana Ācārya)",
+  "parent": 164,
+  "kind": "associate",
+  "why": "Caitanya's branch (CC Ādi 10)"
+ },
+ {
+  "id": 534,
+  "name": "Jagadīśa Paṇḍita",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch (CC Ādi 11)"
+ },
+ {
+  "id": 1648,
+  "name": "Vasanta",
+  "parent": 1851,
+  "kind": "disciple",
+  "why": "Nityānanda's branch (CC Ādi 11)"
+ },
+ {
+  "id": 85,
+  "name": "Balarāma Miśra",
+  "parent": 15,
+  "kind": "disciple",
+  "why": "Advaita's branch (CC Ādi 12)"
+ },
+ {
+  "id": 901,
+  "name": "Mamu Ṭhākura (Jagannātha Cakravartī)",
+  "parent": 274,
+  "kind": "disciple",
+  "why": "Gadādhara's branch (CC Ādi 12)"
+ },
+ {
+  "id": 551,
+  "name": "Jagannātha Dāsa (Kasthakata)",
+  "parent": 274,
+  "kind": "disciple",
+  "why": "Gadādhara's branch (CC Ādi 12)"
+ },
+ {
+  "id": 615,
+  "name": "Jita Mitra",
+  "parent": 274,
+  "kind": "disciple",
+  "why": "Gadādhara's branch (CC Ādi 12)"
+ },
+ {
+  "id": 1191,
+  "name": "Raghu Miśra",
+  "parent": 274,
+  "kind": "disciple",
+  "why": "Gadādhara's branch (CC Ādi 12)"
+ },
+ {
+  "id": 1346,
+  "name": "Sadipuriya Gopāla",
+  "parent": 274,
+  "kind": "disciple",
+  "why": "Gadādhara's branch (CC Ādi 12)"
+ },
+ {
+  "id": 1439,
+  "name": "Srihari Ācārya",
+  "parent": 274,
+  "kind": "disciple",
+  "why": "Gadādhara's branch (CC Ādi 12)"
+ },
+ {
+  "id": 1442,
+  "name": "Sriharsa",
+  "parent": 274,
+  "kind": "disciple",
+  "why": "Gadādhara's branch (CC Ādi 12)"
+ },
+ {
+  "id": 1635,
+  "name": "Vangavati Caitanyadāsa",
+  "parent": 274,
+  "kind": "disciple",
+  "why": "Gadādhara's branch (CC Ādi 12)"
+ }
+]

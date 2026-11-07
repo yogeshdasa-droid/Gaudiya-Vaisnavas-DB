@@ -1,0 +1,299 @@
+[
+ {
+  "id": 275,
+  "name": "Gadādhara",
+  "place": [
+   1535,
+   "diksa"
+  ],
+  "fields": {
+   "name": "Gadādhara (disciple of Śyāmānanda)",
+   "guru": "Śyāmānanda Prabhu",
+   "place": "Gopīballabhpur (Śrīpāṭa)",
+   "notes": "He was a disciple of Śyāmānanda Prabhu, of the Śrīpāṭa of Gopīballabhpur (Prema-vilāsa 20).\n\nThe record also held the Gadādhara of Barahanpura who installed Lālavihārī, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Gadādhara (of Barahanpura)",
+    "fields": {
+     "place": "Barahanpura",
+     "notes": "A devotee from Barahanpura who installed the Deity of Lālavihārī (Bhaktamālā 25.3). Taken out of the record «Gadādhara» #275, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 345,
+  "name": "Gopāla Ācārya",
+  "place": [
+   1908,
+   "diksa"
+  ],
+  "fields": {
+   "guru": "Rasikānanda Prabhu",
+   "notes": "He was a disciple of Rasikānanda Prabhu (Rasikamaṅgala Paścima 14.133).\n\nThe record also held the Gopāla Ācārya of the Narottama-vilāsa and the Gopāla Ācārya of Lord Caitanya's branch, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Gopāla Ācārya (Narottama-vilāsa)",
+    "fields": {
+     "notes": "His name is recorded in the Narottama-vilāsa. Taken out of the record «Gopāla Ācārya» #345, which mixed several persons (07-11-2026)."
+    }
+   },
+   {
+    "key": "b",
+    "name": "Gopāla Ācārya (Caitanya's branch)",
+    "place": [
+     164,
+     "associate"
+    ],
+    "fields": {
+     "notes": "He belonged to the branch of Lord Caitanya (Caitanya-caritāmṛta Ādi 10.114; Nāmāmṛta-samudra 135). Taken out of the record «Gopāla Ācārya» #345, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 362,
+  "name": "Gopāla Siṁha",
+  "poet": true,
+  "fields": {
+   "place": "Viṣṇupura",
+   "works": "a kāvya on Rādhā-Kṛṣṇa-līlā",
+   "notes": "The sixth descendant in the family of Rāja Vīra Hāmvīra of Viṣṇupura; he ruled the state from 1712 to 1748 A.D. and composed a kāvya on Rādhā-Kṛṣṇa-līlā.\n\nThe record also held Gopīnātha Siṁha of Lord Caitanya's branch («Akrūra»), now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Gopīnātha Siṁha",
+    "place": [
+     164,
+     "associate"
+    ],
+    "fields": {
+     "notes": "He belonged to the branch of Lord Caitanya, who called him «Akrūra» (Caitanya-caritāmṛta Ādi 10.76). Taken out of the record «Gopāla Siṁha» #362, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 372,
+  "name": "Gopijanavallabha",
+  "place": [
+   1466,
+   "diksa"
+  ],
+  "fields": {
+   "name": "Gopījanavallabha (son-in-law of Śrīnivāsa)",
+   "guru": "Śrīnivāsa Ācārya",
+   "place": "Budhuipāḍā (Murshidabad)",
+   "notes": "The son-in-law and disciple of Śrīnivāsa Ācārya. His father was Rāmakṛṣṇa Caṭṭarāja and his Śrīpāṭa was at Budhuipāḍā in Murshidabad; he married Hemalatā Devī, Śrīnivāsa Ācārya's eldest daughter (Karṇānanda 1).\n\nThe record also held Gopījanavallabha the eldest son of Vīracandra, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Gopījanavallabha (son of Vīracandra)",
+    "fields": {
+     "notes": "The eldest son of Vīracandra Prabhu (Prema-vilāsa 24). Taken out of the record «Gopijanavallabha» #372, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 378,
+  "name": "GOPĪKṚṢṆA Dāsa",
+  "fields": {
+   "name": "Gopīkṛṣṇa Dāsa (disciple of Śyāmānandī Dāmodara)",
+   "guru": "Śyāmānandī Dāmodara",
+   "notes": "He was a disciple of Śyāmānandī Dāmodara.\n\nThe record also held Gopīkṛṣṇa Dāsa the author of the Harināma-kavaca, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Gopīkṛṣṇa Dāsa (author of the Harināma-kavaca)",
+    "fields": {
+     "works": "Harināma-kavaca",
+     "notes": "He was the author of the book Harināma-kavaca. Taken out of the record «GOPĪKṚṢṆA Dāsa» #378, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 389,
+  "name": "Gopīnātha",
+  "place": [
+   1740,
+   "associate"
+  ],
+  "fields": {
+   "name": "Gopīnātha Brahmacārī (associate of Vṛndāvana dāsa)",
+   "guru": "",
+   "place": "Denuḍa (Burdwan)",
+   "notes": "An intimate associate of Vṛndāvana dāsa, the author of the Caitanya-bhāgavata. He was the son of Gopāla, the youngest son of Balabhadra, and the first of the brahmacārī clan of Denuḍa village in Burdwan.\n\nThe record also held the Gopīnātha disciple of Rasikānanda and the Gopīnātha disciple of Śyāmānanda, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Gopīnātha (disciple of Rasikānanda)",
+    "place": [
+     1908,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Rasikānanda Prabhu",
+     "notes": "He was a disciple of Rasikānanda Prabhu (Rasikamaṅgala Dakṣiṇa 4.19). Taken out of the record «Gopīnātha» #389, which mixed several persons (07-11-2026)."
+    }
+   },
+   {
+    "key": "b",
+    "name": "Gopīnātha (disciple of Śyāmānanda)",
+    "place": [
+     1535,
+     "diksa"
+    ],
+    "fields": {
+     "guru": "Śyāmānanda Prabhu",
+     "notes": "He was a disciple of Śyāmānanda Prabhu (Rasikamaṅgala Pūrva 1.32). Taken out of the record «Gopīnātha» #389, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 419,
+  "name": "Govinda Rāya",
+  "place": [
+   1010,
+   "diksa"
+  ],
+  "fields": {
+   "guru": "Narottama Ṭhākura",
+   "notes": "He was a disciple of Narottama Ṭhākura (Prema-vilāsa 20, Narottama-vilāsa 12).\n\nThe record also held the Govinda Rāya of Śrīnivāsa Ācārya's family, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Govinda Rāya (of Śrīnivāsa's family)",
+    "fields": {
+     "notes": "He descended from the family of Śrīnivāsa Ācārya (Anurāga-vallī 7). Taken out of the record «Govinda Rāya» #419, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 436,
+  "name": "Guruprasada Sengupta (Prasāda Dāsa)",
+  "poet": true,
+  "fields": {
+   "works": "Pada-cintāmaṇi-mālā (1876)",
+   "notes": "The father of the well-known Bengali poet Rajanikanta Sen. Guruprasāda compiled a padāvalī collection, the Pada-cintāmaṇi-mālā, most of its padas in Vrajabuli; first published in 1283 (1876 A.D.), with his introduction on the sounds and grammar of Vrajabuli."
+  }
+ },
+ {
+  "id": 460,
+  "name": "Hari",
+  "place": [
+   1908,
+   "diksa"
+  ],
+  "fields": {
+   "name": "Hari (disciple of Rasikānanda)",
+   "guru": "Rasikānanda Prabhu",
+   "notes": "He was a disciple of Rasikānanda Prabhu (Rasikamaṅgala Paścima 14.111).\n\nThe record also held the Sanskrit poet Hari of the Padyāvalī, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Hari (Sanskrit poet of the Padyāvalī)",
+    "poet": true,
+    "fields": {
+     "notes": "A Sanskrit poet whose name is in the Padyāvalī (Viśvakoṣa vol. 22, p. 479). Taken out of the record «Hari» #460, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 560,
+  "name": "Jagannātha Miśra (teacher of Rasikānanda)",
+  "fields": {
+   "notes": "He was the teacher of Rasikānanda Prabhu (Rasikamaṅgala Pūrva 9.49).\n\nThe record also said «the son of Mādhava Miśra, also named Vāṇīnātha» (Prema-vilāsa 20): that is Vāṇīnātha Paṇḍita, Gadādhara's brother (#1641), not this Jagannātha; nor Lord Caitanya's father, «Jagannātha Miśra (Purandara)»."
+  }
+ },
+ {
+  "id": 607,
+  "name": "Jayarama Cakravartī",
+  "fields": {
+   "name": "Jayarāma Cakravartī",
+   "notes": "A disciple of Śrīnivāsa Ācārya; his Śrīpāṭa was at Kausona in Gauḍa (Anurāga-vallī 7). Śyāma Bhaṭṭa, Kṛṣṇa Purohita and Jayarāma lived in the same village (Karṇānanda 1).\n\nThe record also held the Jayarāma of Navadvīpa, maternal grandfather of Svarūpa Dāmodara, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Jayarāma (grandfather of Svarūpa Dāmodara)",
+    "fields": {
+     "place": "Navadvīpa",
+     "notes": "A resident of Navadvīpa, the maternal grandfather of Svarūpa Dāmodara; Padmagarbhācārya married his daughter (Prema-vilāsa 24). Taken out of the record «Jayarama Cakravartī» #607, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 612,
+  "name": "Jayarama",
+  "fields": {
+   "name": "Jayarāma (commentator of the Padyāmṛta-taraṅgiṇī)",
+   "works": "Sapanaracana (ṭīkā of the Padyāmṛta-taraṅgiṇī)",
+   "notes": "He wrote a ṭīkā of the Padyāmṛta-taraṅgiṇī entitled Sapanaracana (Viśvakoṣa vol. VI, p. 682).\n\nThe record also held the Vedāntist Jayarāmācārya, author of the Pāṣaṇḍa-capeṭikā, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Jayarāmācārya (Vijayarāmācārya)",
+    "fields": {
+     "aka": "Jayarāma, Vijayarāmācārya",
+     "works": "Pāṣaṇḍa-capeṭikā",
+     "notes": "A Vedāntist, also known as Jayarāmācārya and Vijayarāmācārya. He wrote in Sanskrit the Pāṣaṇḍa-capeṭikā, with arguments against the philosophy of the Madhva-sampradāya (Viśvakoṣa vol. VI, p. 682). Taken out of the record «Jayarama» #612, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 648,
+  "name": "Kamalākānta Dāsa",
+  "fields": {
+   "name": "Kamalākānta Dāsa (disciple of Jagadīśa Paṇḍita)",
+   "guru": "Jagadīśa Paṇḍita",
+   "place": "Durgāpur",
+   "notes": "A resident of Durgāpur and a disciple of Jagadīśa Paṇḍita (Caitanya-maṅgala of Jayānanda 12.4).\n\nThe record also held Kamalākānta Dāsa the Vrajabuli poet of the Padaratnākara, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Kamalākānta Dāsa (Vrajabuli poet)",
+    "poet": true,
+    "fields": {
+     "works": "Padaratnākara (1806)",
+     "notes": "Famous for his verses in Vrajabuli; twelve or thirteen of his padas are in the Padaratnākara, which he published in 1806. Taken out of the record «Kamalākānta Dāsa» #648, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ },
+ {
+  "id": 656,
+  "name": "Kamalakara Dāsa",
+  "fields": {
+   "name": "Kamalākara Dāsa Ṭhākura",
+   "notes": "His title was Ṭhākura, and he was probably a brāhmaṇa. In the Vaiṣṇava-vandanā his name comes next to Kamalākara Pippalāi. According to the Pāṭa-paryaṭana he was a disciple of Abhirāma Gosvāmī.\n\nThe record also held Kamalākara Dāsa the father of Locana dāsa, now in a record of its own (07-11-2026)."
+  },
+  "new": [
+   {
+    "key": "a",
+    "name": "Kamalākara Dāsa (father of Locana dāsa)",
+    "fields": {
+     "notes": "A vaidya, the father of Locana dāsa, the author of the Caitanya-maṅgala (see «Locana dāsa»). Taken out of the record «Kamalakara Dāsa» #656, which mixed several persons (07-11-2026)."
+    }
+   }
+  ]
+ }
+]

@@ -1,0 +1,65 @@
+[
+ {
+  "id": 1589,
+  "name": "Vaikuṇṭha Dāsa",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikamaṅgala"
+ },
+ {
+  "id": 146,
+  "name": "Bhima",
+  "parent": 1908,
+  "kind": "diksa",
+  "why": "Rasikamaṅgala"
+ },
+ {
+  "id": 731,
+  "name": "Kisori Cakravartī",
+  "parent": 1390,
+  "kind": "diksa",
+  "why": "Karṇānanda 2"
+ },
+ {
+  "id": 1172,
+  "name": "Rādhāvallabha Cakravartī",
+  "parent": 1390,
+  "kind": "diksa",
+  "why": "Karṇānanda 2"
+ },
+ {
+  "id": 1249,
+  "name": "Ramacarana Cakravartī",
+  "parent": 1466,
+  "kind": "diksa",
+  "why": "Karṇānanda 1"
+ },
+ {
+  "id": 1749,
+  "name": "Vṛndāvana Thakurni",
+  "parent": 1466,
+  "kind": "disciple",
+  "why": "Karṇānanda 2 (his line)"
+ },
+ {
+  "id": 1507,
+  "name": "Suvalacandra Ṭhākura",
+  "parent": 497,
+  "kind": "diksa",
+  "why": "Karṇānanda 2"
+ },
+ {
+  "id": 667,
+  "name": "Kanakalatika Devī",
+  "parent": 1273,
+  "kind": "diksa",
+  "why": "Narottama-vilāsa 12 (wife and disciple)"
+ },
+ {
+  "id": 1195,
+  "name": "Raghudeva Bhaṭṭācārya",
+  "parent": 301,
+  "kind": "diksa",
+  "why": "Narottama-vilāsa 11"
+ }
+]

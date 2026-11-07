@@ -1,0 +1,114 @@
+[
+ {
+  "id": 226,
+  "name": "Divyasimha Rāja",
+  "parent": 15,
+  "kind": "diksa",
+  "why": "Prema-vilāsa (disciple of Advaita)"
+ },
+ {
+  "id": 506,
+  "name": "Hridayananda Sena",
+  "parent": 15,
+  "kind": "disciple",
+  "why": "Prema-vilāsa 19 (Advaita's gaṇa)"
+ },
+ {
+  "id": 634,
+  "name": "Kālidāsa Catta",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Prema-vilāsa 19-20"
+ },
+ {
+  "id": 1421,
+  "name": "Sivacarana Vidyavagisa",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Prema-vilāsa 19-20"
+ },
+ {
+  "id": 1626,
+  "name": "Vanamālī Catta",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Prema-vilāsa 19-20"
+ },
+ {
+  "id": 1662,
+  "name": "Vecarama Bhādra",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Prema-vilāsa 19-20"
+ },
+ {
+  "id": 1668,
+  "name": "Vidhu Cakravartī",
+  "parent": 1010,
+  "kind": "diksa",
+  "why": "Prema-vilāsa 19-20"
+ },
+ {
+  "id": 763,
+  "name": "Kṛṣṇadāsa Purohit",
+  "parent": 1466,
+  "kind": "disciple",
+  "why": "Prema-vilāsa 20 (Śrīnivāsa's branch)"
+ },
+ {
+  "id": 1207,
+  "name": "Raghunātha dāsa (of Śrīnivāsa Ācārya's line)",
+  "parent": 1466,
+  "kind": "disciple",
+  "why": "Prema-vilāsa 20 (Śrīnivāsa's branch)"
+ },
+ {
+  "id": 1349,
+  "name": "Sambhuram",
+  "parent": 343,
+  "kind": "diksa",
+  "why": "Prema-vilāsa 18"
+ },
+ {
+  "id": 1504,
+  "name": "Suryadasa (son of Harivaṁśa)",
+  "parent": 343,
+  "kind": "diksa",
+  "why": "Prema-vilāsa 18"
+ },
+ {
+  "id": 1743,
+  "name": "Vṛndāvana Candrā",
+  "parent": 343,
+  "kind": "diksa",
+  "why": "Prema-vilāsa 18"
+ },
+ {
+  "id": 1258,
+  "name": "Rāmadāsa Dvija",
+  "parent": 475,
+  "kind": "diksa",
+  "why": "Prema-vilāsa 24"
+ },
+ {
+  "id": 1775,
+  "name": "Yadunatha Digvijayi",
+  "parent": 475,
+  "kind": "disciple",
+  "why": "Prema-vilāsa 24 (took refuge at his feet)"
+ },
+ {
+  "id": 118,
+  "name": "Bhakta Kāśī",
+  "parent": 1832,
+  "kind": "diksa",
+  "why": "Prema-vilāsa 18"
+ },
+ {
+  "id": 1604,
+  "name": "Vallabha Majumdar",
+  "parent": 1244,
+  "kind": "diksa",
+  "why": "Prema-vilāsa 20, Karṇānanda 2"
+ }
+]
