@@ -1,0 +1,78 @@
+[
+ { "id": 332, "name": "Giridhārī Dāsa Bābājī",
+   "fields": {
+     "name": "Giridhārī dāsa Bābājī (Annadāprasāda Rāya, Rādhākuṇḍa)",
+     "aka": "Giridhārī Dāsa Bābājī, Annadāprasāda Rāya, Advaita dāsa",
+     "appearance": "",
+     "disappearance": "Pauṣa kṛṣṇa trayodaśī, 1308 BS (December 1901 – January 1902), at Rādhākuṇḍa (the record's text)",
+     "place": "Vṛndāvana; Rādhākuṇḍa (his bhajana-kuṭīra)",
+     "guru": "Gaurakiśora Śiromaṇi (who named him Advaita dāsa); veśa (bheka) from Kṛṣṇadāsa Bābājī of Govardhana, 1890",
+     "notes": "Born Annadāprasāda Rāya, elder brother of Rājarṣi Vanamālī Rāya Bahādur of the Tāḍāś estate (Pabna); brought up in Vṛndāvana. Saved from turning Christian by Gaurakiśora Śiromaṇi, who named him Advaita dāsa; took bheka from Kṛṣṇadāsa Bābājī of Govardhana in 1890 as Giridhārī dāsa and lived on mādhukarī. Called «mahātmā» in Vraja; his friend Kṛṣṇadāsa of Rādhākuṇḍa stayed in Vraja by his three days' fast. Found passed away in his kuṭīra on Pauṣa kṛṣṇa trayodaśī 1308 BS.\n\nThe record also held another Giridhārī dāsa Bābājī (Girindra, 1894–1944, of the Haribol Kuṭīra, Navadvīpa), now in a record of his own (07-11-2026); the dates and place it had were his."
+   },
+   "docs": [{ "doc": 2959, "pieces": [
+     { "start": "Giridhārī Dāsa Bābājī (Navadvīpa, Haribol Kutir.", "end": "# Giridhārī dāsa bābājī", "to": "girindra", "title": "Giridhārī dāsa Bābājī (Haribol Kuṭīra, Navadvīpa)" }
+   ] }],
+   "new": [
+     { "key": "girindra", "name": "Giridhārī dāsa Bābājī (Haribol Kuṭīra, Navadvīpa)", "place": [1971, "vesa"],
+       "fields": {
+         "aka": "Girindra, Giridhārī dāsa",
+         "appearance": "Māgha, ninth lunar day, 1301 BS (January–February 1894) (the record's text)",
+         "disappearance": "20 Āśvina 1351 BS (September–October 1944), at the samādhi of Haridāsa Ṭhākura, Purī (the record's text)",
+         "place": "Born at Mahiskhola (Naḍāil, Jessore, Bangladesh); Navadvīpa (the «Śrī Śrī Haribol» kuṭīra); Purī",
+         "guru": "Vipina Candra (Bihārī) Caṭṭopādhyāya (dīkṣā, the eighteen-syllable mantra); Govinda dāsa Bābājī of the Haridāsa Ṭhākura Maṭha, Purī (veśa)",
+         "notes": "Born Girindra, of the family of Makaranda Ghoṣa, son of Baradākānta; his uncle was Rādhāramaṇa-caraṇa dāsa. Followed the munsiff Vipina Candra Caṭṭopādhyāya for his kīrtana and was initiated by him; after Vipina's death (1923) he wandered, took veśa from Govinda dāsa Bābājī at Purī and settled in Navadvīpa (Haribol Kuṭīra). Died at the samādhi of Haridāsa Ṭhākura in Purī in 1944. Taken out of the record «Giridhārī Dāsa Bābājī» #332 (07-11-2026)."
+       } }
+   ] },
+ { "id": 1860, "name": "Ramahari dāsa bābājī",
+   "fields": {
+     "disappearance": "Bhādra śukla caturthī, at noon (the text says 1807 AD, surely a misprint: he was born in 1847)",
+     "place": "Born at Śrīpāṭa Śāntipura; Navadvīpa (Bhajana-kuṭīra); Rādhākuṇḍa (Kosi ghāṭ, twelve years); Vṛndāvana (Lālā Bābu's kuñja at Vaṁśīvaṭa)",
+     "guru": "Śrī Rādhikāvilāsa Ṭhākura of Śrīkhaṇḍa (dīkṣā); Siddha Jagannātha dāsa Bābājī (veśa)",
+     "notes": "Born in 1847 at Śāntipura; left home after his marriage and took shelter of Siddha Jagannātha dāsa Bābājī at the Bhajana-kuṭīra of Navadvīpa, who had him initiated by Rādhikāvilāsa Ṭhākura of Śrīkhaṇḍa and himself gave him veśa as Ramahari dāsa. A scion of Narahari's family; loved the Caitanya-maṅgala kīrtana and Locana dāsa's dhāmālī. Left this world in meditation on a Bhādra śukla caturthī, seeing Gaurāṅga's kīrtana in Śrīvāsa's courtyard.\n\nThe record also held Ramahari dāsa Sarakāra of Denuḍa, the disciple of Vṛndāvana dāsa Ṭhākura, now in a record of his own (07-11-2026)."
+   },
+   "docs": [{ "doc": 1277, "pieces": [
+     { "start": "Ramahari Dāsa Sarkara He was a Kayastha", "cut": true, "to": "denuda", "title": "Ramahari dāsa Sarakāra (of Denuḍa)" }
+   ] }],
+   "new": [
+     { "key": "denuda", "name": "Ramahari dāsa Sarakāra (of Denuḍa)", "place": [1740, "diksa"],
+       "fields": {
+         "guru": "Vṛndāvana dāsa Ṭhākura",
+         "place": "Denuḍa",
+         "notes": "A Kāyastha of Denuḍa. When Nityānanda, on His way to Nīlācala, left Vṛndāvana dāsa behind at Denuḍa for having saved a harītakī, Ramahari took him home, served him and took initiation from him; there Vṛndāvana dāsa wrote the Caitanya-bhāgavata and installed Gaura-Nitāi, whom Ramahari's descendants still serve. He was buried where the bathing water of Gaura-Nitāi drains. Taken out of the record «Ramahari dāsa bābājī» #1860 (07-11-2026)."
+       } }
+   ] },
+ { "id": 291, "name": "Gaṅgā Dāsa",
+   "fields": {
+     "name": "Gaṅgādāsa (disciple of Rasikānanda)",
+     "aka": "Gaṅgā Dāsa",
+     "place": "",
+     "notes": "A disciple of Rasikānanda Prabhu (Rasika-maṅgala, Paścima 15.118, 149).\n\nThe record also held Gaṅgādāsa Paṇḍita, the teacher of Mahāprabhu (his text went to his record #289), Gaṅgādāsa the brother of Viṣṇudāsa and Nandana, and Gaṅgādāsa the brāhmaṇa of Anādi, now in their own records (07-11-2026)."
+   },
+   "docs": [{ "doc": 2954, "pieces": [
+     { "start": "## GAṄGĀ DĀSA\n\nGaṅgā Dāsa was a brāhmaṇa by caste and a resident of Anādi.", "end": "## GAṄGĀ DĀSA\n\nHe was a disciple of Rasikānanda", "to": "anadi", "title": "Gaṅgādāsa (brāhmaṇa of Anādi)" },
+     { "start": "## GAṄGĀ DĀSA\n\nHe was a companion of Nityānanda", "end": "# Gaṅgā dāsa - v.1 - Eng", "to": "brother", "title": "Gaṅgādāsa (brother of Viṣṇudāsa and Nandana)" },
+     { "start": "# Gaṅgā dāsa - v.1 - Eng", "toId": 289, "title": "Gaṅgādāsa Paṇḍita" }
+   ] }],
+   "new": [
+     { "key": "anadi", "name": "Gaṅgādāsa (brāhmaṇa of Anādi)",
+       "fields": { "place": "Anādi", "notes": "A brāhmaṇa of Anādi, named in the Vaiṣṇava-vandanās of Jīva Gosvāmī, Devakīnandana and Vṛndāvana dāsa. Taken out of the record «Gaṅgā Dāsa» #291 (07-11-2026)." } },
+     { "key": "brother", "name": "Gaṅgādāsa (brother of Viṣṇudāsa and Nandana)", "place": [1851, "disciple"],
+       "fields": { "place": "Navadvīpa", "notes": "A companion of Nityānanda Prabhu, the youngest of the three sons of Caturbhuja Paṇḍita of Rāḍhā-deśa, brothers of Viṣṇudāsa and Nandana: «Viṣṇudāsa, Nandana, Gaṅgādāsa — three brothers, in whose house Nityānanda had stayed before» (Caitanya-caritāmṛta Ādi 11.43). In Kṛṣṇa-līlā: Durvāsā. Taken out of the record «Gaṅgā Dāsa» #291 (07-11-2026)." } }
+   ] },
+ { "id": 554, "name": "Jagannātha Dāsa Bābājī (Varṣāṇā)",
+   "fields": {
+     "place": "Born in Burdwan; Varṣāṇā (a kuṭīra on the bank of Bhānu-kuṇḍa)",
+     "disciples": "Prāṇakṛṣṇa dāsa (his bheka disciple)",
+     "notes": "Born in Burdwan; as a youth he went to Vraja, became a renunciant and lived on mādhukarī in a kuṭīra by Bhānu-kuṇḍa at Varṣāṇā, nursing sick Vaiṣṇavas. In a famine, about to leave, he was told by a Vraja girl that his chapatis were kept in her house: they were found in the ceiling of the «Vanakhaṇḍī» trader family, who fed him ever after, and after him his bheka disciple Prāṇakṛṣṇa dāsa.\n\nThe record also held Jagannātha Ghoṣa, brother of Vāsudeva Ghoṣa, and the Gajapati Jagannātha Nārāyaṇa Deva of Parlākimedi, now in their own records (07-11-2026)."
+   },
+   "docs": [{ "doc": 2981, "pieces": [
+     { "start": "Jagannātha Ghos.\n\nA devotee of Lord Caitanya", "end": "Jagannātha Gajapati Nārāyaṇa Dev.", "to": "ghosa", "title": "Jagannātha Ghoṣa" },
+     { "start": "Jagannātha Gajapati Nārāyaṇa Dev.", "end": "# Jagannātha dāsa bābājī (Varṣāṇā)", "to": "gajapati", "title": "Jagannātha Gajapati Nārāyaṇa Deva (the Kimedi estates)" }
+   ] }],
+   "new": [
+     { "key": "ghosa", "name": "Jagannātha Ghoṣa (brother of Vāsudeva Ghoṣa)",
+       "fields": { "notes": "A devotee of Lord Caitanya, the third brother of the famous Vāsudeva Ghoṣa; he left no descendants. Taken out of the record «Jagannātha Dāsa Bābājī (Varṣāṇā)» #554 (07-11-2026)." } },
+     { "key": "gajapati", "name": "Jagannātha Gajapati Nārāyaṇa Deva (Parlākimedi)",
+       "fields": { "place": "Parlākimedi (Kimedi estates, Ganjam)", "notes": "Name of rulers of the Kimedi estates (Parlākimedi, Peddakimedi, Cinnakimedi) in the Ganjam district, of the Keśarī dynasty: Jagannātha-nārāyaṇa Deva 1766–1806 and Jagannātha Gajapati-nārāyaṇa Deva 1843–1850, in the genealogy of the zamindars of Parlākimedi (Viśvakoṣa vol. VI, p. 598). Taken out of the record «Jagannātha Dāsa Bābājī (Varṣāṇā)» #554 (07-11-2026)." } }
+   ] }
+]

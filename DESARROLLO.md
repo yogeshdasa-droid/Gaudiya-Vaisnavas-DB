@@ -757,7 +757,15 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 7. Pendientes e ideas
 
-### ▶▶ Para la próxima sesión (después del 05-11-2026) — LEER CONTINUAR.md
+### ▶▶▶ Para la próxima sesión (después del 07-11-2026) — LEER CONTINUAR.md
+**Terminados los Textos principales de las 38 fichas del árbol** que no lo tenían (tandas 1–10, scripts `tp*.json`,
+`tp*/`, `tp*-arbol.mjs`, `tp-unir.json`, `tp-separar.json`, `tp9-separar.json`). Quedan para preguntar a Whisper: las
+fichas vacías desde la importación (119, 412, 1301, 1556, 1558, 1616, 1957 — la 1956 Rādhikāvilāsa ya **no** se
+borra: es el guru de Ramahari #1860), la propuesta 1776 (Kānāi Ṭhākura #665 ¿= Kānu #677?) y las líneas del árbol
+marcadas «discutidas» el 07-11 (332, 522, 308, 160, 1956). Siguiente trabajo posible: Textos principales de las
+fichas más largas **fuera** del árbol, o las ~600 del Vaiṣṇava-maṇḍala por fuentes. Detalle en `CONTINUAR.md` (local).
+
+### ▶▶ (antiguo) Para la próxima sesión (después del 05-11-2026) — LEER CONTINUAR.md
 Publicada la **0.12.3** (ir a una ficha por «#número»). Biografías por grupos: hechos Purī 1–3 y el círculo de
 Nityānanda (doce gopālas, familia); siguiente, **los asociados de Advaita**. Fichas repetidas pendientes de que
 Whisper las una: #5/#6, #207/#208/#1814, #1139/#1129, #576/#574, #1703/#1880/#1701, #664/#677, #1437/#1833.
@@ -1355,6 +1363,18 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **07-11-2026 (tarde-noche) — Textos principales, tandas 2–10 (sin versión nueva)**: 36 fichas con «Texto principal»
+  en inglés (In short / vida / Sources, solo lo que dicen sus textos, comprobado con el Abhidhāna): compañeros de
+  Mahāprabhu y Nityānanda (Raghunandana, Gadādhara dāsa, Jagadīśa Paṇḍita, los Ghoṣa, Devānanda, Nandana Ācārya,
+  Jagāi-Mādhāi, Tapana Miśra, Veṅkaṭa Bhaṭṭa, Sāraṅga, Nṛsiṁhānanda, Kāśīśvara, Bijalī Khān), ācāryas y poetas
+  (Vīrabhadra, Jñānadāsa, Yadunandana, los Pañcasakhās Acyutānanda y Balarāma, Rūpacandra), bābājīs (Jagadīśa,
+  Giridhārī ×2, Govinda dāsa, Dharma dāsa, Manohara, Jagadānanda, Rāmadāsa, Gaura dāsa, Ramahari, Brahmānanda) y
+  Gauḍīya Maṭha (Bodhāyana, Sundarānanda, Bhaktiratna Sādhu, Bhakti Bhāvana Viṣṇu). De paso: **3 uniones** (1866→1378,
+  1097→1060, 157→1880), **9 fichas mezcladas separadas** (534, 972, 692, 81, 332, 1860, 291, 554 → fichas nuevas
+  #2138–#2150), Rāmadāsa Bābājī #1858 bajo su guru real (Rādhāramaṇa-caraṇa dāsa #1168), 5 líneas del árbol
+  marcadas «discutidas» con nota, ~20 líneas de familia, `sindup` en 19 textos. Herramienta nueva de comprobación:
+  `pieces.mjs <copia.db> <plan.json>` mira en una copia que cada trozo de `separar.mjs` se encuentra una sola vez.
+  1.922 personas · árbol 1.173.
 - **07-11-2026 (noche, después) — más scripts de datos (sin versión nueva)**: `fuera9-10` (campo guru, «received dīkṣā
   from…»), uniones de repetidas y de fichas que eran otro nombre (`uniones3-6`, `limpieza1`), arreglos de textos
   pegados (`arreglos1-2`), nombres limpios (`nombres1-2`) y **diacríticos en 453 nombres** (`diacriticos-plan` +

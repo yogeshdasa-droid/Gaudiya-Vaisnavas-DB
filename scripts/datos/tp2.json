@@ -1,0 +1,41 @@
+[
+ { "id": 1200, "name": "Raghunandana Ṭhākura", "main": "main-1200.md",
+   "fields": {
+     "aka": "Śrī Raghunandana Ṭhākura, Raghunandana dāsa",
+     "appearance": "Mādhava Gaura Pañcamī (Gauḍīya calendar): Vasanta-pañcamī, Māgha śukla pañcamī (Gauḍīya Vaiṣṇava Abhidhāna); 1432 Śaka (1510 AD) (the record's texts)",
+     "disappearance": "Śrīdhara Gaura Caturthī (Gauḍīya calendar): Śrāvaṇa śukla caturthī (Bhakti-ratnākara 13.184)",
+     "place": "Śrīkhaṇḍa (Burdwan), four miles west of Katwa: his home, Śrī Gopīnātha, the Madhu-puṣkariṇī; Nūpura-kuṇḍa at Ākāihāṭ",
+     "guru": "Mukunda Sarakāra (Mukunda dāsa)",
+     "disciples": "Kaviśekhara (Rājaśekhara), Nayanānanda Kavirāja, Mahānanda Caudhurī, Kṛṣṇadāsa of Ākāihāṭ; of his branch: Janānanda Caudhurī, Pītāmbara dāsa, Kavirañjana, Śrīman Sen, Mālinī, Rāmacandra",
+     "works": "Gaura-bhāvāmṛta (a hymn to Mahāprabhu, at eight years); Navadvīpa-candra-stavarāja (Gauḍīya Vaiṣṇava Abhidhāna)",
+     "notes": "A Vaidya of Śrīkhaṇḍa, son of Mukunda dāsa, brought up by Narahari Sarakāra; with his father a branch of Lord Caitanya (Caitanya-caritāmṛta Ādi 10.78). Son: Kānāi Ṭhākura; grandsons Madana Rāya and Vaṁśīvadana.\n\nIn Kṛṣṇa-līlā: Pradyumna (Kandarpa, Kṛṣṇa's son in Dvārakā) and the priya-narma-sakhā Ujjvala (Gaura-gaṇoddeśa-dīpikā 70; Abhidhāna); some say Kandarpa-mañjarī."
+   } },
+ { "id": 1815, "name": "Gadādhara dāsa Ṭhākura", "main": "main-1815.md",
+   "fields": {
+     "disappearance": "Kārttika kṛṣṇa aṣṭamī (Bhakti-ratnākara 9.362; Gauḍīya Vaiṣṇava Abhidhāna); two of the record's texts: Kārttika śukla aṣṭamī (the Gauḍīya calendar keeps both days)",
+     "place": "Eṛiyādaha (Ariadaha), on the Bhāgīrathī north of Calcutta: his Śrīpāṭa, Bāla-Gopāla, the Dāna-līlā place and samādhi-vedī; earlier Navadvīpa and Purī; at the end Katwa (his Gaurāṅga at Mahāprabhu's sannyāsa place; samādhi near Keśava Bhāratī's)",
+     "disciples": "Yadunandana Cakravartī, Vidyānanda Paṇḍita",
+     "notes": "An associate of both Caitanya Mahāprabhu and Nityānanda Prabhu, in the mood of mādhurya-rasa; sent with Rāmadāsa to preach with Nityānanda in Bengal (Caitanya-caritāmṛta Ādi 11.13-14); delivered the Kāzi of Eṛiyādaha with the holy name. Śrīnivāsa Ācārya presided over his disappearance festival.\n\nIn Kṛṣṇa-līlā: Candrakānti, Rādhā's expansion; Pūrṇānandā, Balarāma's dearest friend, also entered him (Gaura-gaṇoddeśa-dīpikā 154-155)."
+   } },
+ { "id": 534, "name": "Jagadīśa Paṇḍita", "main": "main-534.md",
+   "fields": {
+     "aka": "Jagadīśa Bhaṭṭa, Jagadīśa Paṇḍita of Yaśoḍā",
+     "place": "Born in the region of Gauhāṭī (Prāgjyotiṣa, Assam); lived on the Ganges near Jagannātha Miśra; Śrīpāṭa at Yaśoḍā (Jashora), near Cākdaha (Nadia), with his Jagannātha and Gaura-Gopāla",
+     "disciples": "Kamalākānta dāsa (of Durgāpur)",
+     "notes": "The fifteenth branch of Lord Nityānanda, «the deliverer of the fallen» (Caitanya-caritāmṛta Ādi 11.30); a Rāḍhīya brāhmaṇa (Gauḍīya Vaiṣṇava Abhidhāna). Father Kamalākṣa Bhaṭṭa (son of Bhaṭṭa Nārāyaṇa); wife Duḥkhinī Devī; younger brother Maheśa Paṇḍita; son Rāmabhadra Gosvāmī; daughter Rasamañjarī. Brought the Deity of Jagannātha from Nīlācala to Yaśoḍā. Dates/place from B. V. Tīrtha, «Sri Chaitanya: His Associates» (one text: Pauṣa kṛṣṇa trayodaśī, Maheśa's day).\n\nIn Kṛṣṇa-līlā: the dancer Candrahāsa (Gaura-gaṇoddeśa-dīpikā 153).\n\nThe Abhidhāna gives another Jagadīśa Paṇḍita, of Navadvīpa (Mahāprabhu's branch, brother of Hiraṇya, the Ekādaśī offering, a yajña-patnī, GGD 192): now the record «Jagadīśa Paṇḍita (of Navadvīpa)» (07-11-2026). This record's texts take them as one. The record «Jagadīśa» #1826 was joined to this one (07-11-2026)."
+   } },
+ { "new": true, "name": "Jagadīśa Paṇḍita (of Navadvīpa)",
+   "move": { "doc": 539, "from": "## JAGADĪŚA PAṆḌITA", "find": "(Caitanya-sakhā)", "title": "Jagadīśa Paṇḍita (of Navadvīpa)" },
+   "fields": {
+     "aka": "Jagadīśa (brother of Hiraṇya Paṇḍita)",
+     "place": "Navadvīpa",
+     "guru": "Śrī Caitanya Mahāprabhu",
+     "notes": "Of Navadvīpa, a branch of Lord Caitanya: «Jagadīśa Paṇḍita and Hiraṇya Mahāśaya, to whom the merciful Lord showed mercy in His childhood: in the house of the two brothers, on an Ekādaśī, the Lord begged for Viṣṇu's offering and ate it Himself» (Caitanya-caritāmṛta Ādi 10.70-71). When the child Gaura cried for the offering prepared for their house-Deity, the brothers brought it and fed Him, seeing Him as Bāla-Gopāla. Later they stayed near Him during His saṅkīrtana, and went to see Him at Purī (Gauḍīya Vaiṣṇava Abhidhāna).\n\nIn Kṛṣṇa-līlā: a yajña-patnī (Gaura-gaṇoddeśa-dīpikā 192).\n\nThe Abhidhāna and the Caitanya-caritāmṛta give him apart from Jagadīśa Paṇḍita of Yaśoḍā (#534, Nityānanda's branch, Ādi 11.30); the texts of #534 take them as one. Separated from #534 (07-11-2026)."
+   } },
+ { "id": 502, "name": "Hiraṇya Ṭhākura",
+   "fields": {
+     "notes": "A devout brāhmaṇa and renunciant of Navadvīpa: Nityānanda Prabhu and others lived in his temple, and the dacoits who came to rob Nityānanda's ornaments were delivered there (Caitanya-bhāgavata Antya 5.535-703); in his house the child Gaura ate the Ekādaśī offering (Caitanya-bhāgavata Ādi). The record «Hiraṇya Ṭhākura (of Navadvīpa)» #500 was joined to this one (07-11-2026).\n\nHis brother was Jagadīśa Paṇḍita of Navadvīpa (Caitanya-caritāmṛta Ādi 10.70-71; Gauḍīya Vaiṣṇava Abhidhāna), not Jagadīśa of Yaśoḍā, whose brother was Maheśa (as one text here says)."
+   } },
+ { "id": 939, "name": "Mukunda Sarakāra (Mukunda dāsa)",
+   "fields": { "works": "" } }
+]

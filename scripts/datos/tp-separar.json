@@ -1,0 +1,54 @@
+[
+ { "id": 972, "name": "Nandana",
+   "fields": {
+     "name": "Nandana (disciple of Rasikānanda)",
+     "aka": "Nandana",
+     "notes": "A disciple of Rasikānanda Prabhu (Rasika-maṅgala, Paścima 14.151; the Gauḍīya Vaiṣṇava Abhidhāna: 14.159).\n\nThe record also held the poet Nandana and the life of Nandana Ācārya of Navadvīpa (in whose house Nityānanda first stayed): now in their own records (07-11-2026)."
+   },
+   "docs": [{ "doc": 3003, "pieces": [
+     { "start": "## NANDANA\n\nHe was a Vaiṣṇava poet.", "end": "## NANDANA\n\nHe was a disciple of Rasikānanda", "to": "poet", "title": "Nandana (poet)" },
+     { "start": "# Nandana\n\nNandana\n\nAn Advent of Lord Nityānanda", "toId": 970, "title": "Nandana Ācārya: the advent of Lord Nityānanda in Nadia (Caitanya-bhāgavata)" }
+   ] }],
+   "new": [
+     { "key": "poet", "name": "Nandana (poet)", "poet": true,
+       "fields": { "aka": "Nandana", "notes": "A Vaiṣṇava padakartā (poet); nothing more is known of him (Gauḍīya Vaiṣṇava Abhidhāna). Taken out of the record «Nandana» #972 (07-11-2026)." } }
+   ] },
+ { "id": 692, "name": "Kāśīnātha Dvija",
+   "fields": {
+     "name": "Kāśīnātha Paṇḍita (of Navadvīpa)",
+     "aka": "Kāśīnātha Dvija, Kāśīnātha Paṇḍit",
+     "appearance": "",
+     "disappearance": "",
+     "place": "Navadvīpa",
+     "disciples": "",
+     "notes": "The brāhmaṇa of Navadvīpa who arranged the marriage of Lord Gaurāṅga with Viṣṇupriyā Devī (Caitanya-bhāgavata Ādi 15.51-66; Bhakti-ratnākara 12.1381; Gauḍīya Vaiṣṇava Abhidhāna).\n\nIn Kṛṣṇa-līlā: Kulaka, the brāhmaṇa sent by Satrājit to arrange Satyabhāmā's marriage (Gaura-gaṇoddeśa-dīpikā 50).\n\nNot Kāśīnātha (Kāśīśvara) Paṇḍita of Cātarā (1420-1486 Śaka), whose life this record also held: it is now in his record «Kāśīśvara Paṇḍita (Gaura-Govinda)» #1832 (07-11-2026)."
+   },
+   "docs": [{ "doc": 701, "pieces": [
+     { "start": "## KĀŚĪNĀTHA PAṆḌIT\n\nKĀŚĪNĀTHA PAṆḌIT\n\nIn some places he is referred to as Kāśīśvara.", "toId": 1832, "title": "Kāśīnātha (Kāśīśvara) Paṇḍita of Cātarā" }
+   ] }] },
+ { "id": 81, "name": "Balarāma Dās",
+   "fields": {
+     "name": "Balarāma dāsa (Matta Balarāma, Pañcasakhā)",
+     "aka": "Balarāma Dās, Matta Balarāma, Balarāma"
+   },
+   "docs": [{ "doc": 3107, "pieces": [
+     { "start": "## BALARĀMA DĀS\n\nHe was a devotee of Lord Caitanya and accomplished player", "end": "## BALARĀMA DĀS\n\nAn Orissa brahman", "to": "horn", "title": "Balarāma dāsa (player of the rāmasiṅgā)" },
+     { "start": "## BALARĀMA DĀS\n\nAn Orissa brahman", "end": "## BALARĀMA DĀS\n\nBalarāma was a great devotee", "to": "srinivasa", "title": "Balarāma dāsa (disciple of Śrīnivāsa, Karṇānanda 2)" },
+     { "start": "# Balarāma\n\n## BALARĀMA\n\nHe was the fourth son of Advaita", "end": "## BALARĀMA\n\nA resident of Orissa", "toId": 85, "title": "Balarāma Miśra" },
+     { "start": "## BALARĀMA\n\nA resident of Orissa", "end": "## BALARĀMA\n\nHe was the younger brother of Śyāmānanda", "to": "khuntiya", "title": "Balarāma (son of Kānāi Khuṇṭiyā)" },
+     { "start": "## BALARĀMA\n\nHe was the younger brother of Śyāmānanda", "end": "## BALARĀMA\n\nHe was the eldest son of Gaurīdās", "to": "syamananda", "title": "Balarāma (brother of Śyāmānanda)" },
+     { "start": "## BALARĀMA\n\nHe was the eldest son of Gaurīdās", "to": "gauridasa", "title": "Balarāma (son of Gaurīdāsa Paṇḍita)" }
+   ] }],
+   "new": [
+     { "key": "horn", "name": "Balarāma dāsa (player of the rāmasiṅgā)", "place": [164, "associate"],
+       "fields": { "notes": "A devotee of Lord Caitanya who played the rāmasiṅgā (a horn of buffalo horn); when the Lord came back to Purī from South India he welcomed Him playing it. Taken out of the record «Balarāma Dās» #81 (07-11-2026)." } },
+     { "key": "srinivasa", "name": "Balarāma dāsa (disciple of Śrīnivāsa, Karṇānanda 2)", "place": [1466, "diksa"],
+       "fields": { "guru": "Śrīnivāsa Ācārya", "notes": "An Oriyā brāhmaṇa, disciple of Śrīnivāsa Ācārya (Karṇānanda 2). Taken out of the record «Balarāma Dās» #81 (07-11-2026)." } },
+     { "key": "khuntiya", "name": "Balarāma (son of Kānāi Khuṇṭiyā)",
+       "fields": { "notes": "Of Orissa, a devotee of Lord Caitanya, the second son of Kānāi Khuṇṭiyā (Vaiṣṇava-vandanā); some say Kānāi Khuṇṭiyā worshipped Baladeva and Jagannātha as his sons (Bhakti Movement in Orissa p. 79). Taken out of the record «Balarāma Dās» #81 (07-11-2026)." } },
+     { "key": "syamananda", "name": "Balarāma (brother of Śyāmānanda)",
+       "fields": { "notes": "The younger brother of Śyāmānanda Prabhu (Rasika-maṅgala, Pūrva 2.36). Taken out of the record «Balarāma Dās» #81 (07-11-2026)." } },
+     { "key": "gauridasa", "name": "Balarāma (son of Gaurīdāsa Paṇḍita)",
+       "fields": { "notes": "The eldest son of Gaurīdāsa Paṇḍita. Taken out of the record «Balarāma Dās» #81 (07-11-2026)." } }
+   ] }
+]

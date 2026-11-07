@@ -1,0 +1,8 @@
+[
+ { "into": 1378, "name": "Sāraṅga Ṭhākura", "from": [{ "id": 1866, "name": "Sharanga Murāri Ṭhākura" }],
+   "fields": { "aka": "Sāraṅgadāsa Ṭhākura, Sāraṅgadeva, Saranga Ṭhākura, Śārṅga Ṭhākura, Śārṅgapāṇi, Sharanga Murāri Ṭhākura" } },
+ { "into": 1060, "name": "Nṛsiṁhānanda Brahmacārī (Bhāratī)", "from": [{ "id": 1097, "name": "Pradyumna Brahmacārī" }],
+   "fields": { "aka": "Nṛsiṁhānanda Bhāratī, Nṛsiṁhānanda Brahmacārī, Pradyumna Brahmacārī" } },
+ { "into": 1880, "name": "Vīrabhadra Gosvāmī", "from": [{ "id": 157, "name": "Birchandra Prabhu" }],
+   "fields": { "aka": "Vīracandra, Jagat-durlabha, Vīrabhadra Gosāñi, Birchandra Prabhu, Vīracandra Prabhu" } }
+]
