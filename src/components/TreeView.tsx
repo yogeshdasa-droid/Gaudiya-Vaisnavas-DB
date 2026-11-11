@@ -200,7 +200,6 @@ export function TreeView({
   const setDir = (d: TreeDir) => {
     setDirState(d);
     store("bio.treeDir", d);
-    requestAnimationFrame(() => canvas.current?.scrollTo(0, 0));
   };
   const [zoom, setZoomState] = useState(storedZoom);
   const canvas = useRef<HTMLDivElement>(null);
@@ -361,6 +360,27 @@ export function TreeView({
     const timer = setTimeout(() => setLit(null), 6000);
     return () => clearTimeout(timer);
   }, [focus, at, line]);
+
+  // opened without a record to show (or the way of drawing changed): start at the first
+  // level. With a single first level (Lord Kṛṣṇa) drawn left to right it sits halfway
+  // down a very tall tree, and the top-left corner the view used to open at is empty.
+  const startDone = useRef("");
+  useEffect(() => {
+    const key = `${dir}|${line}`;
+    if (focus || startDone.current === key) return;
+    const root = nodes.find((n) => n.p && n.kind === null);
+    if (!root) return;
+    startDone.current = key;
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        const el = canvas.current;
+        if (!el) return;
+        const z = zoomRef.current;
+        el.scrollLeft = dir === "lr" ? 0 : Math.max(0, (root.x + 10 + root.w / 2) * z - el.clientWidth / 2);
+        el.scrollTop = dir === "lr" ? Math.max(0, (root.y + 10 + root.h / 2) * z - el.clientHeight / 2) : 0;
+      }),
+    );
+  }, [dir, line, nodes, focus]);
 
   const short = (s: string, n: number) => (s.length > n ? s.slice(0, n - 1) + "…" : s);
   // the śikṣā side: śikṣā / associate lines, and the records they join

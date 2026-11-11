@@ -1972,16 +1972,48 @@ pub(crate) fn list_entries(field: &str) -> Vec<&str> {
     field.split([';', ',', '\n']).map(str::trim).filter(|s| !s.is_empty()).collect()
 }
 
-/// An entry names this record: the same name (notes in brackets apart), or
-/// the name the calendar would take for it.
+/// An entry of a list without the relation written after it: "Rūpa
+/// Gosvāmī (śikṣā)" → "Rūpa Gosvāmī"; "Govinda (disciple of Śyāmānanda)"
+/// stays as it is (those brackets are part of the record's name).
+pub(crate) fn without_kind(entry: &str) -> &str {
+    let e = entry.trim();
+    if let Some((head, last)) = e.strip_suffix(')').and_then(|s| s.rsplit_once('(')) {
+        let l = fold_text(last);
+        let kinds = ["siksa", "diksa", "vani", "sannyasa", "vesa", "associate", "disciple", "mantra", "instruction"];
+        if l.split(' ').count() <= 4 && kinds.iter().any(|k| l.split(' ').any(|w| w == *k)) && !l.contains(" of ") {
+            return head.trim();
+        }
+    }
+    e
+}
+
+/// An entry names this record: the whole name (brackets and all) when only
+/// that record has it, the same name (notes in brackets apart), or the name
+/// the calendar would take for it.
 fn names_record(entry: &str, id: i64, name: &str, index: &crate::calendar::PersonIndex) -> bool {
+    let whole = without_kind(entry);
+    if fold_text(whole) == fold_text(name) || fold_text(whole) == fold_text(&in_list(name)) || index.find_whole(whole) == Some(id) {
+        return true;
+    }
+    // another record has exactly this whole name: then it is not this one
+    if index.find_whole(whole).is_some() {
+        return false;
+    }
     let plain: String = entry.split('(').next().unwrap_or(entry).trim().to_string();
     fold_text(&plain) == fold_text(name) || fold_text(&plain) == fold_text(&in_list(name)) || index.find(&plain) == Some(id)
 }
 
 /// A name as written in a list field, where a comma would cut it in two:
-/// "Nityānanda Prabhu, Śrīla" → "Śrīla Nityānanda Prabhu".
+/// "Nityānanda Prabhu, Śrīla" → "Śrīla Nityānanda Prabhu". A comma inside
+/// brackets becomes «·»: "Nābhājī (Nābhādāsa, Nārāyaṇadāsa)" → "Nābhājī
+/// (Nābhādāsa · Nārāyaṇadāsa)" (it used to come out turned round).
 fn in_list(name: &str) -> String {
+    if let Some(open) = name.find('(') {
+        if name[open..].contains(',') {
+            let (a, b) = name.split_at(open);
+            return format!("{a}{}", b.replace(',', " ·").replace(';', " ·")).split_whitespace().collect::<Vec<_>>().join(" ");
+        }
+    }
     match name.rsplit_once(',') {
         Some((a, b)) => format!("{} {}", b.trim(), a.trim()).replace([',', ';'], " ").split_whitespace().collect::<Vec<_>>().join(" "),
         None => name.to_string(),

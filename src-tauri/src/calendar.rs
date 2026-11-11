@@ -538,6 +538,21 @@ impl PersonIndex {
         Ok(PersonIndex { names, whole, weight })
     }
 
+    /// Only the whole name, the words in brackets included, when exactly one
+    /// record has it: «Govinda (disciple of Śyāmānanda)» is that record, not
+    /// any Govinda (11-11-2026: the check stripped the brackets and took
+    /// another namesake).
+    pub fn find_whole(&self, name: &str) -> Option<i64> {
+        let key = crate::store::person_key(name);
+        if key.is_empty() {
+            return None;
+        }
+        let mut ids: Vec<i64> = self.whole.iter().filter(|(_, k)| *k == key).map(|(id, _)| *id).collect();
+        ids.sort();
+        ids.dedup();
+        (ids.len() == 1).then(|| ids[0])
+    }
+
     /// The same name, or else one name ending the other ("Saccidānanda
     /// Bhaktivinoda" ~ "Bhaktivinoda Ṭhākura") when only one record fits.
     pub fn find(&self, name: &str) -> Option<i64> {

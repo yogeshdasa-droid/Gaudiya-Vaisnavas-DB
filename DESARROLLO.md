@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **11-11-2026** (versión **0.14.1**).
+Última actualización: **11-11-2026** (versión **0.14.2**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,18 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.14.1)
+## 5. Qué hace hoy (v0.14.2)
+
+### Novedades de la 0.14.2 (11-11-2026) — el Paramparā Tree ya no se abre en blanco (formato 10 sin cambios)
+- **Avisado por Whisper** («se queda en blank»): con un solo primer nivel (Lord Kṛṣṇa) el árbol dibujado de izquierda
+  a derecha mide ~44.000 px de alto y Lord Kṛṣṇa queda a la mitad; la vista se abría en la esquina de arriba, vacía.
+  Ahora (`TreeView.tsx`, efecto `startDone`) al abrir sin ficha que enseñar, o al cambiar Todo/Dīkṣā/Śikṣā o la
+  dirección, la vista se coloca en el primer nivel (izquierda-derecha: a su altura; arriba-abajo: centrado en ancho).
+- «Comprobar los datos» y «completar al revés» entienden los homónimos con paréntesis: `PersonIndex::find_whole`
+  (calendar.rs: el nombre entero, «Govinda (disciple of Śyāmānanda)», si solo una ficha lo tiene) se mira antes del
+  nombre corto en `check.rs`; `store.rs`: `without_kind()` quita «(śikṣā)» etc. del final, `names_record` mira primero
+  el nombre entero, e `in_list` no parte por las comas que van dentro de un paréntesis. Test
+  `check::tests::namesakes_in_brackets`.
 
 ### Novedades de la 0.14.1 (11-11-2026) — «Ver en linaje» con el clic derecho (formato 10 sin cambios)
 - **Pedido por Whisper**: en el **Paramparā Tree dibujado** (y en el lateral y en Linaje) clic derecho en un nombre →
@@ -1394,6 +1405,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **11-11-2026 — v0.14.2**: el Paramparā Tree dibujado se abre en Lord Kṛṣṇa (antes salía en blanco) y «Comprobar
+  los datos» reconoce los homónimos con paréntesis.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.14.2
 
 - **11-11-2026 — v0.14.1**: «Ver en linaje» en el clic derecho (también en el Paramparā Tree dibujado) y en el botón
   de la ficha. Datos: Textos principales de todas las fichas fuera del árbol (tandas 31–47).

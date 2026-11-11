@@ -104,8 +104,10 @@ pub fn check(conn: &Connection) -> rusqlite::Result<Vec<Issue>> {
         })?;
         for row in rows {
             let (id, name, appearance, disappearance, guru, disciples, parent, kind, in_tree) = row?;
+            // the whole name first («Govinda (disciple of Śyāmānanda)» is that record), then without brackets
             let find = |field: &str| -> Vec<i64> {
-                let mut ids: Vec<i64> = list_entries(field).into_iter().filter_map(|x| index.find(plain(x))).collect();
+                let mut ids: Vec<i64> =
+                    list_entries(field).into_iter().filter_map(|x| index.find_whole(crate::store::without_kind(x)).or_else(|| index.find(plain(x)))).collect();
                 ids.dedup();
                 ids
             };
@@ -179,7 +181,12 @@ pub fn check(conn: &Connection) -> rusqlite::Result<Vec<Issue>> {
             for x in list_entries(&p.guru) {
                 let n = plain(x);
                 let looks_like_name = n.chars().next().is_some_and(char::is_uppercase) && (n.contains(' ') || n.chars().count() >= 8);
-                if looks_like_name && n.chars().count() <= 60 && !n.chars().any(|c| c.is_ascii_digit()) && index.find(n).is_none() {
+                if looks_like_name
+                    && n.chars().count() <= 60
+                    && !n.chars().any(|c| c.is_ascii_digit())
+                    && index.find(n).is_none()
+                    && index.find_whole(crate::store::without_kind(x)).is_none()
+                {
                     push("unknownGuru", true, n.to_string(), String::new(), None);
                 }
             }
@@ -288,5 +295,38 @@ mod tests {
         // as śikṣā por vāṇī their lives need not meet
         crate::store::set_tree_kind(&conn, visva, "vani").unwrap();
         assert!(!check(&conn).unwrap().iter().any(|i| i.kind == "noOverlap" && i.id == visva));
+    }
+
+    /// Namesakes told apart by the words in brackets (11-11-2026): «Govinda (disciple of Śyāmānanda)» in a list is
+    /// that record, not the other Govinda; completing it back does not write it twice.
+    #[test]
+    fn namesakes_in_brackets() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        crate::db::init(&conn).unwrap();
+        let p = |c: &mut Connection, name: &str, guru: &str, disciples: &str| {
+            new_person(c, &PersonFields { name: name.into(), guru: guru.into(), disciples: disciples.into(), ..Default::default() }).unwrap()
+        };
+        let sya = p(&mut conn, "Śyāmānanda Prabhu", "", "Govinda (disciple of Śyāmānanda)");
+        let other = p(&mut conn, "Govinda", "", "");
+        let gov = p(&mut conn, "Govinda (disciple of Śyāmānanda)", "", "");
+        let root = Some(TreePlace { parent: None, before: None });
+        move_person(&mut conn, sya, root).unwrap();
+        move_person(&mut conn, other, root).unwrap();
+        move_person(&mut conn, gov, Some(TreePlace { parent: Some(sya), before: None })).unwrap();
+        let issues = check(&conn).unwrap();
+        assert!(!issues.iter().any(|i| i.kind == "missingDisciple" && i.id == sya), "the list names the right Govinda");
+        assert!(issues.iter().any(|i| i.kind == "notBackDisciple" && i.id == sya && i.other == Some(gov)));
+        crate::store::complete_back(&mut conn, sya, gov).unwrap();
+        crate::store::complete_back(&mut conn, sya, gov).unwrap();
+        let g = crate::store::get_fields(&conn, gov).unwrap();
+        assert_eq!(g.guru, "Śyāmānanda Prabhu", "written once");
+        assert!(!check(&conn).unwrap().iter().any(|i| (i.kind == "notBackDisciple" || i.kind == "notBackGuru") && i.id == sya));
+        // a comma inside the brackets is not turned round
+        let nab = p(&mut conn, "Nābhājī (Nābhādāsa, Nārāyaṇadāsa)", "Agradāsa", "");
+        let agr = p(&mut conn, "Agradāsa", "", "");
+        move_person(&mut conn, agr, root).unwrap();
+        move_person(&mut conn, nab, Some(TreePlace { parent: Some(agr), before: None })).unwrap();
+        crate::store::complete_back(&mut conn, nab, agr).unwrap();
+        assert_eq!(crate::store::get_fields(&conn, agr).unwrap().disciples, "Nābhājī (Nābhādāsa · Nārāyaṇadāsa)");
     }
 }

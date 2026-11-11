@@ -1,0 +1,4474 @@
+{
+ "safe": [
+  {
+   "kind": "notBackGuru",
+   "id": 6,
+   "other": 1851,
+   "name": "Abhirāma Ṭhākura",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 14,
+   "other": 274,
+   "name": "Acyutānanda (son of Advaita)",
+   "otherName": "Śrī Gadādhara Paṇḍita Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 13,
+   "other": 1535,
+   "name": "Acyutānanda Rāja",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 12,
+   "other": 164,
+   "name": "Acyutānanda dāsa (Pañcasakhā)",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 23,
+   "other": 1908,
+   "name": "Ahammad Beg",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1839,
+   "other": 124,
+   "name": "Akiñcana Kṛṣṇadāsa Bābājī Mahārāja",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 27,
+   "other": 1535,
+   "name": "Akrūra",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 50,
+   "other": 15,
+   "name": "Ananta",
+   "otherName": "Śrī Advaita Ācārya Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 674,
+   "other": 274,
+   "name": "Ananta Caṭṭarāja (Śrī Kaṇṭhābharaṇa)",
+   "otherName": "Śrī Gadādhara Paṇḍita Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 46,
+   "other": 164,
+   "name": "Ananta Paṇḍit",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 56,
+   "other": 164,
+   "name": "Anupama",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2009,
+   "other": 868,
+   "name": "Asāra Purī",
+   "otherName": "Śrī Mādhavendra Purī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 76,
+   "other": 1010,
+   "name": "Balarāma Cakravartī",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 83,
+   "other": 1535,
+   "name": "Balarāma Kavipati",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2040,
+   "other": 1244,
+   "name": "Balarāma Kavipati (disciple of Rāmacandra Kavirāja)",
+   "otherName": "Rāmacandra Kavirāja"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 80,
+   "other": 1851,
+   "name": "Balarāma dāsa «Mādhavī»",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 94,
+   "other": 164,
+   "name": "Bauddhacharya",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1580,
+   "other": 325,
+   "name": "Baḍu Gaṅgādāsa",
+   "otherName": "Śrī Gaurīdāsa Paṇḍita"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 108,
+   "other": 1010,
+   "name": "Bhagavatī",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 103,
+   "other": 1908,
+   "name": "Bhagavān",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2042,
+   "other": 1908,
+   "name": "Bhagavān (nephew of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 100,
+   "other": 1466,
+   "name": "Bhagavān Kavirāja",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 96,
+   "other": 164,
+   "name": "Bhagavān Ācārya",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 116,
+   "other": 1010,
+   "name": "Bhakta Dās",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2045,
+   "other": 1908,
+   "name": "Bhakta Dāsa (disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1792,
+   "other": 124,
+   "name": "Bhakti Avadhūta",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1793,
+   "other": 125,
+   "name": "Bhakti Bhāvana Viṣṇu Mahārāja",
+   "otherName": "Śrīla Bhaktivedānta Svāmī Prabhupāda"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 155,
+   "other": 1799,
+   "name": "Bhakti Bibudha Bodhāyana Mahārāja",
+   "otherName": "Bhakti Pramoda Purī Gosvāmī Mahārāja"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1796,
+   "other": 124,
+   "name": "Bhakti K Tapasvi",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 127,
+   "other": 124,
+   "name": "Bhakti Kevala Auḍulomi Mahārāja",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 810,
+   "other": 124,
+   "name": "Bhakti Kumuda Santa Gosvāmī Mahārāja",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 810,
+   "other": 1795,
+   "name": "Bhakti Kumuda Santa Gosvāmī Mahārāja",
+   "otherName": "Śrīla Bhakti Hṛdaya Bon Mahārāja"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 122,
+   "other": 128,
+   "name": "Bhakti Pradīpa Tīrtha Mahārāja",
+   "otherName": "Śrīla Bhaktivinoda Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 122,
+   "other": 124,
+   "name": "Bhakti Pradīpa Tīrtha Mahārāja",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1799,
+   "other": 124,
+   "name": "Bhakti Pramoda Purī Gosvāmī Mahārāja",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1800,
+   "other": 124,
+   "name": "Bhakti Prapanna Dāmodara Gosvāmī Mahārāja",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1800,
+   "other": 1377,
+   "name": "Bhakti Prapanna Dāmodara Gosvāmī Mahārāja",
+   "otherName": "Bhakti Sāraṅga Gosvāmī Mahārāja"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1801,
+   "other": 1811,
+   "name": "Bhakti Prasun Purī",
+   "otherName": "Bhakti Vilāsa Tīrtha Gosvāmī Mahārāja"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 123,
+   "other": 124,
+   "name": "Bhakti Prasāda Purī Gosvāmī",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1377,
+   "other": 124,
+   "name": "Bhakti Sāraṅga Gosvāmī Mahārāja",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1377,
+   "other": 1802,
+   "name": "Bhakti Sāraṅga Gosvāmī Mahārāja",
+   "otherName": "Śrīla Bhakti Rakṣaka Śrīdhara Deva Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1805,
+   "other": 124,
+   "name": "Bhakti Vaibhava Giri",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1583,
+   "other": 124,
+   "name": "Bhakti Vaibhava Purī Gosvāmī Mahārāja",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1807,
+   "other": 124,
+   "name": "Bhakti Vaibhava Sagar",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1808,
+   "other": 1799,
+   "name": "Bhakti Vallabha Tīrtha Gosvāmī Mahārāja",
+   "otherName": "Bhakti Pramoda Purī Gosvāmī Mahārāja"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1667,
+   "other": 124,
+   "name": "Bhakti Vicāra Yāyāvara Gosvāmī Mahārāja",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1811,
+   "other": 124,
+   "name": "Bhakti Vilāsa Tīrtha Gosvāmī Mahārāja",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1812,
+   "other": 1667,
+   "name": "Bhakti Vistāra Viṣṇu",
+   "otherName": "Bhakti Vicāra Yāyāvara Gosvāmī Mahārāja"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1804,
+   "other": 124,
+   "name": "Bhakti Śata Govinda",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1803,
+   "other": 810,
+   "name": "Bhaktiratna Sādhu Mahārāja",
+   "otherName": "Bhakti Kumuda Santa Gosvāmī Mahārāja"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 129,
+   "other": 1535,
+   "name": "Bhañjana Adhikārī",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1929,
+   "other": 1010,
+   "name": "Bhāgavata Dāsa (disciple of Narottama)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1791,
+   "other": 274,
+   "name": "Bhāgavatācārya (Raghunātha Paṇḍita)",
+   "otherName": "Śrī Gadādhara Paṇḍita Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 146,
+   "other": 1908,
+   "name": "Bhīma",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 149,
+   "other": 1908,
+   "name": "Bhūdhara",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1085,
+   "other": 164,
+   "name": "Bijalī Khān",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 158,
+   "other": 2005,
+   "name": "Brahmagopalaji",
+   "otherName": "Rāmarāya Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 165,
+   "other": 150,
+   "name": "Caitanya dāsa",
+   "otherName": "Bhūgarbha Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1978,
+   "other": 164,
+   "name": "Choṭa Haridāsa",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 189,
+   "other": 164,
+   "name": "Darji",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2048,
+   "other": 497,
+   "name": "Darpanārāyaṇa (disciple of Hemalatā Devī)",
+   "otherName": "Hemalatā Devī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 203,
+   "other": 164,
+   "name": "Devānanda Paṇḍita",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1814,
+   "other": 164,
+   "name": "Dhanañjaya Paṇḍita",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 217,
+   "other": 1535,
+   "name": "Dhruvānanda",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 216,
+   "other": 274,
+   "name": "Dhruvānanda Brahmacārī",
+   "otherName": "Śrī Gadādhara Paṇḍita Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 214,
+   "other": 1466,
+   "name": "Dhāḍī Hāmvīra",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 234,
+   "other": 1010,
+   "name": "Durgā Dāsa Vidyāratna",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 236,
+   "other": 1010,
+   "name": "Durgā Dāsa Vipra",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 244,
+   "other": 1851,
+   "name": "Dvija Balarāma Dāsa Ṭhākura",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 248,
+   "other": 1908,
+   "name": "Dvija Gopīmohana",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 176,
+   "other": 1535,
+   "name": "Dāmodara Gosvāmī",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 177,
+   "other": 164,
+   "name": "Dāmodara Paṇḍit",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 183,
+   "other": 1535,
+   "name": "Dāmodara Yogī",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 191,
+   "other": 1206,
+   "name": "Dāsa Vrajavāsī",
+   "otherName": "Śrīla Raghunātha Dāsa Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 275,
+   "other": 1535,
+   "name": "Gadādhara (disciple of Śyāmānanda)",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 303,
+   "other": 164,
+   "name": "Garuḍa Paṇḍita",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 318,
+   "other": 1466,
+   "name": "Gaurāṅga Dāsa",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 326,
+   "other": 1535,
+   "name": "Gaurī Dāsa (disciple of Śyāmānanda)",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 306,
+   "other": 989,
+   "name": "Gauḍapūrṇānanda Cakravartī",
+   "otherName": "Nārāyaṇa Bhaṭṭa"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 288,
+   "other": 164,
+   "name": "Gaṅgā Dāsa Nirloma",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 291,
+   "other": 1908,
+   "name": "Gaṅgādāsa (disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 297,
+   "other": 274,
+   "name": "Gaṅgāmantrī",
+   "otherName": "Śrī Gadādhara Paṇḍita Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 329,
+   "other": 305,
+   "name": "Ghanaśyāma Dāsa",
+   "otherName": "Gati Govinda"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 331,
+   "other": 980,
+   "name": "Giridhara Dāsa (disciple of Narahari Sarakāra)",
+   "otherName": "Śrī Narahari Sarakāra Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 338,
+   "other": 1010,
+   "name": "Gokula Dāsa",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 335,
+   "other": 1466,
+   "name": "Gokula Dāsa (Gokulānanda)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 342,
+   "other": 1908,
+   "name": "Gokulānanda",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 368,
+   "other": 164,
+   "name": "Gopendra Āśrama",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 374,
+   "other": 2004,
+   "name": "Gopikanta Ācārya",
+   "otherName": "Harirāma Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 348,
+   "other": 1466,
+   "name": "Gopāla Cakravartī",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 349,
+   "other": 274,
+   "name": "Gopāla Dāsa Adhikārī",
+   "otherName": "Śrī Gadādhara Paṇḍita Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 350,
+   "other": 1466,
+   "name": "Gopāla Dāsa Bahadura",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1907,
+   "other": 1353,
+   "name": "Gopāla Miśra (disciple of Sanātana)",
+   "otherName": "Śrīla Sanātana Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 361,
+   "other": 274,
+   "name": "Gopāla Sādipuriyā",
+   "otherName": "Śrī Gadādhara Paṇḍita Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2012,
+   "other": 618,
+   "name": "Gopāla dāsa (disciple of Jīva Gosvāmī)",
+   "otherName": "Śrīla Jīva Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 345,
+   "other": 1908,
+   "name": "Gopāla Ācārya",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 372,
+   "other": 1466,
+   "name": "Gopījanavallabha (son-in-law of Śrīnivāsa)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1909,
+   "other": 1908,
+   "name": "Gopījanavallabha Dāsa (author of the Rasikamaṅgala)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2057,
+   "other": 1908,
+   "name": "Gopīnātha (disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2058,
+   "other": 1535,
+   "name": "Gopīnātha (disciple of Śyāmānanda)",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 385,
+   "other": 164,
+   "name": "Gopīnātha Paṭṭanāyaka",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 383,
+   "other": 164,
+   "name": "Gopīnātha Ācārya",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1969,
+   "other": 1908,
+   "name": "Govinda (disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1968,
+   "other": 1466,
+   "name": "Govinda (disciple of Śrīnivāsa Ācārya)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 420,
+   "other": 1535,
+   "name": "Govinda (disciple of Śyāmānanda)",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1965,
+   "other": 516,
+   "name": "Govinda (servant of Lord Caitanya)",
+   "otherName": "Śrī Īśvara Purī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 404,
+   "other": 1010,
+   "name": "Govinda Bhāḍuḍī (Barudi)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 410,
+   "other": 164,
+   "name": "Govinda Datta",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 413,
+   "other": 164,
+   "name": "Govinda Ghoṣa",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1967,
+   "other": 1851,
+   "name": "Govinda Kavirāja (Nityānanda's branch)",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 419,
+   "other": 1010,
+   "name": "Govinda Rāya",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1960,
+   "other": 1466,
+   "name": "Govinda dāsa Kavirāja",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 424,
+   "other": 1010,
+   "name": "Govindarāma Rāja",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 434,
+   "other": 1010,
+   "name": "Guru Dāsa Bhaṭṭācārya",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 442,
+   "other": 1851,
+   "name": "Halāyudha Ṭhākura",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 445,
+   "other": 1535,
+   "name": "Harabola",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 460,
+   "other": 1908,
+   "name": "Hari (disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 455,
+   "other": 1010,
+   "name": "Hari Maulika (Hari Kanjilala)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2096,
+   "other": 1908,
+   "name": "Haricandana Maṅgarāja (disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 463,
+   "other": 1010,
+   "name": "Haricandra Rāya",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1980,
+   "other": 1010,
+   "name": "Haridāsa (disciple of Narottama)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 476,
+   "other": 1535,
+   "name": "Haridāsa (disciple of Śyāmānanda)",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 468,
+   "other": 15,
+   "name": "Haridāsa Brahmacārī",
+   "otherName": "Śrī Advaita Ācārya Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1922,
+   "other": 274,
+   "name": "Haridāsa Brahmacārī (Gadādhara’s branch)",
+   "otherName": "Śrī Gadādhara Paṇḍita Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 478,
+   "other": 1466,
+   "name": "Harinārāyaṇa (rājā of Pañcakoṭa)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 488,
+   "other": 1010,
+   "name": "Hariścandra Rāya",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 497,
+   "other": 1466,
+   "name": "Hemalatā Devī",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 502,
+   "other": 164,
+   "name": "Hiraṇya Ṭhākura",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 504,
+   "other": 325,
+   "name": "Hṛdaya Caitanya",
+   "otherName": "Śrī Gaurīdāsa Paṇḍita"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 524,
+   "other": 164,
+   "name": "Jagadānanda Paṇḍita (Jagadānanda-Caitanya-Sakhā)",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 533,
+   "other": 15,
+   "name": "Jagadīśa Miśra",
+   "otherName": "Śrī Advaita Ācārya Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2138,
+   "other": 164,
+   "name": "Jagadīśa Paṇḍita (of Navadvīpa)",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2125,
+   "other": 1908,
+   "name": "Jagannātha (disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2126,
+   "other": 1535,
+   "name": "Jagannātha (disciple of Śyāmānanda)",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 558,
+   "other": 164,
+   "name": "Jagannātha Mahati",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 568,
+   "other": 164,
+   "name": "Jagannātha Thāneśvarī",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 548,
+   "other": 1010,
+   "name": "Jagannātha Ācārya",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 541,
+   "other": 1851,
+   "name": "Jagāi",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 583,
+   "other": 1466,
+   "name": "Janakirama Dāsa",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 603,
+   "other": 1880,
+   "name": "Jayagopāla",
+   "otherName": "Vīrabhadra Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 605,
+   "other": 519,
+   "name": "Jayakṛṣṇa",
+   "otherName": "Īśvarī Devī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 607,
+   "other": 1466,
+   "name": "Jayarāma Cakravartī",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 621,
+   "other": 574,
+   "name": "Jñānadāsa",
+   "otherName": "Śrīmatī Jāhnavā Mātā"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 630,
+   "other": 164,
+   "name": "Kalānidhi Narasundara",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 656,
+   "other": 6,
+   "name": "Kamalākara Dāsa Ṭhākura",
+   "otherName": "Abhirāma Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 657,
+   "other": 1851,
+   "name": "Kamalākara Pippalāi",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 654,
+   "other": 164,
+   "name": "Kamalākānta",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 648,
+   "other": 534,
+   "name": "Kamalākānta Dāsa (disciple of Jagadīśa Paṇḍita)",
+   "otherName": "Jagadīśa Paṇḍita"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2065,
+   "other": 1010,
+   "name": "Kanakapriyā Devī (wife of King Candrāya)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 673,
+   "other": 1851,
+   "name": "Kansari Sena",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 723,
+   "other": 1466,
+   "name": "Kavivallabha «Ākhariyā» (disciple of Śrīnivāsa)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 711,
+   "other": 1200,
+   "name": "Kaviśekhara (Rājaśekhara)",
+   "otherName": "Raghunandana Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2066,
+   "other": 1908,
+   "name": "Keśava (disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 717,
+   "other": 164,
+   "name": "Keśava Khān (Chatrī)",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 721,
+   "other": 1795,
+   "name": "Keśavananda",
+   "otherName": "Śrīla Bhakti Hṛdaya Bon Mahārāja"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 725,
+   "other": 1740,
+   "name": "Khadanga Dinabandhu Dāsa",
+   "otherName": "Śrīla Vṛndāvana dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1833,
+   "other": 164,
+   "name": "Kholāvecā Śrīdhara",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2067,
+   "other": 1908,
+   "name": "Kiśora (disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 729,
+   "other": 1535,
+   "name": "Kiśora (disciple of Śyāmānanda)",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 732,
+   "other": 1535,
+   "name": "Kiśorī Dāsa",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 811,
+   "other": 1466,
+   "name": "Kumuda Caṭṭarāja",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 636,
+   "other": 164,
+   "name": "Kālidāsa",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 678,
+   "other": 1535,
+   "name": "Kānu",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 676,
+   "other": 15,
+   "name": "Kānu Paṇḍita",
+   "otherName": "Śrī Advaita Ācārya Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 677,
+   "other": 1851,
+   "name": "Kānu Ṭhākura",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 681,
+   "other": 574,
+   "name": "Kānurāma Dāsa",
+   "otherName": "Śrīmatī Jāhnavā Mātā"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 663,
+   "other": 164,
+   "name": "Kānāi Khuṇṭiyā",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 665,
+   "other": 164,
+   "name": "Kānāi Ṭhākura",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 786,
+   "other": 15,
+   "name": "Kṛṣṇa Miśra (son of Advaita)",
+   "otherName": "Śrī Advaita Ācārya Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 735,
+   "other": 1244,
+   "name": "Kṛṣṇa Ācārya",
+   "otherName": "Rāmacandra Kavirāja"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2068,
+   "other": 1010,
+   "name": "Kṛṣṇa Ācārya (disciple of Narottama)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2113,
+   "other": 492,
+   "name": "Kṛṣṇadāsa (son of Hita Harivaṁśa)",
+   "otherName": "Hita Harivaṁśa"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 755,
+   "other": 1466,
+   "name": "Kṛṣṇadāsa Brahmacārī",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 757,
+   "other": 1723,
+   "name": "Kṛṣṇadāsa Dāsa",
+   "otherName": "Śrīla Viśvanātha Cakravartī Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 758,
+   "other": 164,
+   "name": "Kṛṣṇadāsa Guñjamālī",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 761,
+   "other": 1851,
+   "name": "Kṛṣṇadāsa Paṇḍit",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 765,
+   "other": 1851,
+   "name": "Kṛṣṇadāsa Sarakhela",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 769,
+   "other": 1325,
+   "name": "Kṛṣṇadāsa Vāṇī (Vāṇī Kṛṣṇadāsa)",
+   "otherName": "Śrīla Rūpa Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 777,
+   "other": 1908,
+   "name": "Kṛṣṇagati (son of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 796,
+   "other": 1045,
+   "name": "Kṛṣṇaprasāda dāsa Bābājī («Guḍhiḍi Bābā»)",
+   "otherName": "Siddha Nityānanda dāsa Bābājī (Madana-mohana Ṭhaurā)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 798,
+   "other": 305,
+   "name": "Kṛṣṇaprasāda Ṭhākura",
+   "otherName": "Gati Govinda"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 803,
+   "other": 1466,
+   "name": "Kṛṣṇavallabha Ṭhākura",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 802,
+   "other": 1466,
+   "name": "Kṛṣṇavallabha Ṭhākura (Cakravartī)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 793,
+   "other": 1908,
+   "name": "Kṛṣṇānanda",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 821,
+   "other": 1325,
+   "name": "Laghu Haridāsa",
+   "otherName": "Śrīla Rūpa Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 825,
+   "other": 1832,
+   "name": "Lakṣmaṇa Paṇḍita",
+   "otherName": "Kāśīśvara Paṇḍita (Gaura-Govinda)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2152,
+   "other": 1010,
+   "name": "Lalit Ghoṣāl (disciple of Narottama)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 845,
+   "other": 1725,
+   "name": "Lokanātha Paṇḍita",
+   "otherName": "Viśvarūpa"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 839,
+   "other": 980,
+   "name": "Lokānanda Ācārya",
+   "otherName": "Śrī Narahari Sarakāra Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2154,
+   "other": 1908,
+   "name": "Lāl Puruṣottama (disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 855,
+   "other": 1535,
+   "name": "Madanamohana Ṭhākura (grandson of Raghunandana)",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 873,
+   "other": 497,
+   "name": "Madhu Bisvas",
+   "otherName": "Hemalatā Devī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 883,
+   "other": 1535,
+   "name": "Madhusūdana (disciple of Śyāmānanda)",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 888,
+   "other": 1466,
+   "name": "Mahāmāyā (wife of Govinda Kavirāja)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 890,
+   "other": 164,
+   "name": "Mahānanda Vidyābhūṣaṇa",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 891,
+   "other": 125,
+   "name": "Mahānidhi Svāmī",
+   "otherName": "Śrīla Bhaktivedānta Svāmī Prabhupāda"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 892,
+   "other": 164,
+   "name": "Mahānta",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2165,
+   "other": 1856,
+   "name": "Makaradhvaja Kara",
+   "otherName": "Śrī Rāghava Paṇḍita"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2167,
+   "other": 343,
+   "name": "Makaranda (Gujarat)",
+   "otherName": "Śrī Gopāla Bhaṭṭa Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 910,
+   "other": 1851,
+   "name": "Manohara",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2076,
+   "other": 1010,
+   "name": "Mathurā Dāsa (disciple of Narottama)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 914,
+   "other": 1466,
+   "name": "Mathurā Dāsa (disciple of Śrīnivāsa)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 925,
+   "other": 1466,
+   "name": "Mohana Dāsa (disciple of Śrīnivāsa)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1954,
+   "other": 1908,
+   "name": "Mukunda (Disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 928,
+   "other": 150,
+   "name": "Mukunda Cakravartī (Mukundananda Cakravartī)",
+   "otherName": "Bhūgarbha Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 937,
+   "other": 164,
+   "name": "Mukunda Rāya",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 939,
+   "other": 164,
+   "name": "Mukunda Sarakāra (Mukunda dāsa)",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 949,
+   "other": 1010,
+   "name": "Murāri Dāsa",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 953,
+   "other": 15,
+   "name": "Murāri Paṇḍit",
+   "otherName": "Śrī Advaita Ācārya Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 946,
+   "other": 1535,
+   "name": "Murāri Ācārya",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2130,
+   "other": 1908,
+   "name": "Mādhava (disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 861,
+   "other": 164,
+   "name": "Mādhava Ghoṣa",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 864,
+   "other": 868,
+   "name": "Mādhava Miśra (father of Gadādhara)",
+   "otherName": "Śrī Mādhavendra Purī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 866,
+   "other": 274,
+   "name": "Mādhava Paṭṭanāyaka",
+   "otherName": "Śrī Gadādhara Paṇḍita Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 857,
+   "other": 1851,
+   "name": "Mādhava Ācārya",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 876,
+   "other": 1325,
+   "name": "Mādhurījī",
+   "otherName": "Śrīla Rūpa Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 896,
+   "other": 1535,
+   "name": "Mālatī Devī",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 918,
+   "other": 759,
+   "name": "Mīnaketana Ramdasa",
+   "otherName": "Śrīla Kṛṣṇadāsa Kavirāja Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 968,
+   "other": 6,
+   "name": "Nandakiśora Dāsa (disciple of Abhirāma)",
+   "otherName": "Abhirāma Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 972,
+   "other": 1908,
+   "name": "Nandana (disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 970,
+   "other": 164,
+   "name": "Nandana Ācārya",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 967,
+   "other": 164,
+   "name": "Nandāi",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 987,
+   "other": 1010,
+   "name": "Narasiṁha Rāya Rāja",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1024,
+   "other": 1535,
+   "name": "Nayana Bhāskara (disciple of Śyāmānanda)",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1028,
+   "other": 274,
+   "name": "Nayanānanda Miśra (Gadādhara's nephew)",
+   "otherName": "Śrī Gadādhara Paṇḍita Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1046,
+   "other": 574,
+   "name": "Nityānanda Dāsa",
+   "otherName": "Śrīmatī Jāhnavā Mātā"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1988,
+   "other": 1851,
+   "name": "Nāgara Puruṣottama",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 989,
+   "other": 755,
+   "name": "Nārāyaṇa Bhaṭṭa",
+   "otherName": "Kṛṣṇadāsa Brahmacārī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 993,
+   "other": 1908,
+   "name": "Nārāyaṇa Dāsa",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1004,
+   "other": 164,
+   "name": "Nārāyaṇa Vācaspati",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 988,
+   "other": 1892,
+   "name": "Nārāyaṇa Ācārya (Nārāyaṇa Paṇḍitācārya)",
+   "otherName": "Śrī Madhvācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1007,
+   "other": 1457,
+   "name": "Nārāyaṇī Devī",
+   "otherName": "Śrīmatī Devī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2003,
+   "other": 1010,
+   "name": "Nārāyaṇī Devī (wife of Gaṅgānārāyaṇa)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2002,
+   "other": 574,
+   "name": "Nārāyaṇī Devī (wife of Vīrabhadra)",
+   "otherName": "Śrīmatī Jāhnavā Mātā"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1006,
+   "other": 164,
+   "name": "Nārāyaṇī Dāsī",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1033,
+   "other": 1908,
+   "name": "Nīlāmbara",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1055,
+   "other": 1466,
+   "name": "Nṛsiṁha Kavirāja",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1062,
+   "other": 902,
+   "name": "Nṛsiṁhavallabha Mitra Ṭhākura",
+   "otherName": "Maṅgala Vaiṣṇava"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1060,
+   "other": 164,
+   "name": "Nṛsiṁhānanda Brahmacārī (Bhāratī)",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1064,
+   "other": 1906,
+   "name": "Padmagarbha Ācārya",
+   "otherName": "Śrī Lakṣmīpati"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1065,
+   "other": 15,
+   "name": "Padmanābha (father of Lokanātha)",
+   "otherName": "Śrī Advaita Ācārya Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1080,
+   "other": 1851,
+   "name": "Parameśvara Dāsa Ṭhākura",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1079,
+   "other": 1908,
+   "name": "Paramānanda",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1074,
+   "other": 164,
+   "name": "Paramānanda Paṇḍita",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1092,
+   "other": 1851,
+   "name": "Pitamvara Dvija (Paṇḍita)",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1093,
+   "other": 1851,
+   "name": "Prabhucandra Gopāla",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1100,
+   "other": 164,
+   "name": "Prahararaja Mahapatra",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1107,
+   "other": 1756,
+   "name": "Pranavallabha (Parāṇa) Dāsa",
+   "otherName": "Vyasacarya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2085,
+   "other": 1535,
+   "name": "Prasāda Dāsa (disciple of Śyāmānanda)",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1113,
+   "other": 618,
+   "name": "Premadāsa",
+   "otherName": "Śrīla Jīva Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1886,
+   "other": 1466,
+   "name": "Premadāsa Siddhantavag",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1104,
+   "other": 1851,
+   "name": "Prāṇagopāla Gosvāmī",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1122,
+   "other": 1905,
+   "name": "Purandara Dāsa",
+   "otherName": "Śrī Vyāsatīrtha"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1124,
+   "other": 1010,
+   "name": "Purandara Miśra",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1945,
+   "other": 15,
+   "name": "Puruṣottama (Advaita’s branch)",
+   "otherName": "Śrī Advaita Ācārya Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1938,
+   "other": 1010,
+   "name": "Puruṣottama (disciple of Narottama)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1939,
+   "other": 1908,
+   "name": "Puruṣottama (disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1940,
+   "other": 1535,
+   "name": "Puruṣottama (disciple of Śyāmānanda)",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1139,
+   "other": 1851,
+   "name": "Puruṣottama Dāsa",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1136,
+   "other": 1851,
+   "name": "Puruṣottama Paṇḍita",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1140,
+   "other": 164,
+   "name": "Puruṣottama Tīrtha",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1201,
+   "other": 1466,
+   "name": "Raghunandana (disciple of Śrīnivāsa)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1924,
+   "other": 15,
+   "name": "Raghunātha (Advaita’s branch)",
+   "otherName": "Śrī Advaita Ācārya Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1925,
+   "other": 274,
+   "name": "Raghunātha (Gadādhara’s branch)",
+   "otherName": "Śrī Gadādhara Paṇḍita Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1214,
+   "other": 1010,
+   "name": "Raghunātha Vaidya (disciple of Narottama)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1213,
+   "other": 1851,
+   "name": "Raghunātha Vaidya Upādhyāya",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2146,
+   "other": 1740,
+   "name": "Ramahari dāsa Sarakāra (of Denuḍa)",
+   "otherName": "Śrīla Vṛndāvana dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1860,
+   "other": 1828,
+   "name": "Ramahari dāsa bābājī",
+   "otherName": "Śrī Jagannātha dās Bābājī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1302,
+   "other": 1466,
+   "name": "Rasika Dāsa",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1317,
+   "other": 1010,
+   "name": "Ravi Rāya",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1152,
+   "other": 1947,
+   "name": "Rādhākṛṣṇa Dāsa Gosvāmī",
+   "otherName": "Haridāsa Paṇḍita (of Govindadeva)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2024,
+   "other": 1466,
+   "name": "Rādhākṛṣṇa Ācārya (son of Śrīnivāsa Ācārya)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1916,
+   "other": 305,
+   "name": "Rādhākṛṣṇa Ācārya (Ṭhākura)",
+   "otherName": "Gati Govinda"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1164,
+   "other": 1908,
+   "name": "Rādhānanda Deva",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1167,
+   "other": 343,
+   "name": "Rādhāramaṇa Gosvāmī",
+   "otherName": "Śrī Gopāla Bhaṭṭa Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1177,
+   "other": 1466,
+   "name": "Rādhāvallabha Mandal",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1181,
+   "other": 1390,
+   "name": "Rādhāvinoda Cakravartī",
+   "otherName": "Satyabhāmā Devī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2087,
+   "other": 519,
+   "name": "Rādhāvinoda Cakravartī (son of Govinda Cakravartī)",
+   "otherName": "Īśvarī Devī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1186,
+   "other": 1466,
+   "name": "Rāghava Gosvāmī",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1223,
+   "other": 1466,
+   "name": "Rājendra Bandyopadhyay",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1238,
+   "other": 1535,
+   "name": "Rāmabhādra",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1236,
+   "other": 164,
+   "name": "Rāmabhādra Ācārya",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1248,
+   "other": 1908,
+   "name": "Rāmacandra (disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1264,
+   "other": 150,
+   "name": "Rāmadāsa",
+   "otherName": "Bhūgarbha Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1251,
+   "other": 164,
+   "name": "Rāmadāsa (Śrī Rāmacandra)",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1255,
+   "other": 164,
+   "name": "Rāmadāsa Bipra",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1257,
+   "other": 164,
+   "name": "Rāmadāsa Brāhmaṇa",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1858,
+   "other": 539,
+   "name": "Rāmadāsa Bābājī (Navadvīpa)",
+   "otherName": "Jagadbandhu Sundara Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1253,
+   "other": 1828,
+   "name": "Rāmadāsa Bābājī (Varṣāṇā)",
+   "otherName": "Śrī Jagannātha dās Bābājī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1267,
+   "other": 343,
+   "name": "Rāmaharijī",
+   "otherName": "Śrī Gopāla Bhaṭṭa Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1276,
+   "other": 1908,
+   "name": "Rāmakṛṣṇa",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1273,
+   "other": 1010,
+   "name": "Rāmakṛṣṇa Ācārya",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1288,
+   "other": 1010,
+   "name": "Rāmanātha (disciple of Narottama)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1268,
+   "other": 164,
+   "name": "Rāmāi (servant of the Lord in Purī)",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1279,
+   "other": 164,
+   "name": "Rāmānanda Basu",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1327,
+   "other": 1466,
+   "name": "Rūpa Kavirāja",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1330,
+   "other": 1010,
+   "name": "Rūpacandra Sarasvatī",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1352,
+   "other": 1740,
+   "name": "Sanātana Dāsa",
+   "otherName": "Śrīla Vṛndāvana dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1390,
+   "other": 519,
+   "name": "Satyabhāmā Devī",
+   "otherName": "Īśvarī Devī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1393,
+   "other": 164,
+   "name": "Satyananda Bhāratī",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1398,
+   "other": 164,
+   "name": "Satyarāja Khān",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2174,
+   "other": 614,
+   "name": "Siddha Caitanya dāsa Bābājī (Navadvīpa)",
+   "otherName": "Jiyaḍa Nṛsiṁha Barāṭ"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1478,
+   "other": 125,
+   "name": "Suddadvaiti Svāmī",
+   "otherName": "Śrīla Bhaktivedānta Svāmī Prabhupāda"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1486,
+   "other": 1466,
+   "name": "Sukhānanda",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1497,
+   "other": 1535,
+   "name": "Sundarānanda (disciple of Śyāmānanda)",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1872,
+   "other": 124,
+   "name": "Sundarānanda Vidyāvinoda",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1496,
+   "other": 1851,
+   "name": "Sundarānanda Ṭhākura",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1987,
+   "other": 305,
+   "name": "Sundarānanda Ṭhākura (son of Gatigovinda)",
+   "otherName": "Gati Govinda"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1512,
+   "other": 1273,
+   "name": "Svarūpa Cakravartī (Svarūpa Gosvāmī)",
+   "otherName": "Rāmakṛṣṇa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1381,
+   "other": 164,
+   "name": "Sārvabhauma Bhaṭṭācārya",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1419,
+   "other": 803,
+   "name": "Sītānātha Rāya",
+   "otherName": "Kṛṣṇavallabha Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1500,
+   "other": 1353,
+   "name": "Sūradāsa Madanamohana",
+   "otherName": "Śrīla Sanātana Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1503,
+   "other": 1851,
+   "name": "Sūryadāsa Sarakhela",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1546,
+   "other": 164,
+   "name": "Tapana Miśra",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1566,
+   "other": 1535,
+   "name": "Uddaṇḍa Rāya",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2118,
+   "other": 1908,
+   "name": "Uddhava (disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1876,
+   "other": 1159,
+   "name": "Uddhava Dāsa (composer)",
+   "otherName": "Śrī Rādhāmohana Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2030,
+   "other": 980,
+   "name": "Uddhava dāsa (disciple of Narahari Sarakāra)",
+   "otherName": "Śrī Narahari Sarakāra Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1567,
+   "other": 1851,
+   "name": "Uddhāraṇa Datta Ṭhākura",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1595,
+   "other": 274,
+   "name": "Vaiṣṇava Dāsa",
+   "otherName": "Śrī Gadādhara Paṇḍita Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1601,
+   "other": 497,
+   "name": "Vallabha Dāsa",
+   "otherName": "Hemalatā Devī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1613,
+   "other": 1466,
+   "name": "Vallabhīkānta Kavirāja",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1622,
+   "other": 1466,
+   "name": "Vamsidasa Ṭhākura Cakravartī",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1634,
+   "other": 1010,
+   "name": "Vangadesiya Vipra",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2109,
+   "other": 1010,
+   "name": "Vasanta Rāya (disciple of Narottama)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1660,
+   "other": 1851,
+   "name": "Vasudhā",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1680,
+   "other": 164,
+   "name": "Vijaya Dāsa Ākhariyā",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1682,
+   "other": 1906,
+   "name": "Vijaya Purī",
+   "otherName": "Śrī Lakṣmīpati"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1698,
+   "other": 1010,
+   "name": "Vipradāsa",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1717,
+   "other": 868,
+   "name": "Viṣṇu Purī",
+   "otherName": "Śrī Mādhavendra Purī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2001,
+   "other": 1851,
+   "name": "Viṣṇudāsa Ācārya (Nityānanda's branch)",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1756,
+   "other": 1466,
+   "name": "Vyasacarya",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1656,
+   "other": 164,
+   "name": "Vāsudeva Kusthi",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1642,
+   "other": 164,
+   "name": "Vāṇīnātha Paṭṭanāyaka",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1702,
+   "other": 1535,
+   "name": "Vīrabhadra (disciple of Śyāmānanda)",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2119,
+   "other": 776,
+   "name": "Vṛndāvana Cakravartī (commentator of the Govinda-līlāmṛta)",
+   "otherName": "Kṛṣṇadeva Sārvabhauma"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1742,
+   "other": 1390,
+   "name": "Vṛndāvana Cakravartī (disciple of Satyabhāmā)",
+   "otherName": "Satyabhāmā Devī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1746,
+   "other": 1466,
+   "name": "Vṛndāvana Dāsa",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1741,
+   "other": 1466,
+   "name": "Vṛndāvana Ācārya",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1766,
+   "other": 274,
+   "name": "Yadu Ganguli",
+   "otherName": "Śrī Gadādhara Paṇḍita Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1767,
+   "other": 1309,
+   "name": "Yadu Kavicandra",
+   "otherName": "Ratnagarbha Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1773,
+   "other": 1880,
+   "name": "Yadunandana (Yadunandanācārya)",
+   "otherName": "Vīrabhadra Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1779,
+   "other": 1010,
+   "name": "Yadunatha",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1783,
+   "other": 164,
+   "name": "Yaśovanta dāsa (Pañcasakhā)",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2095,
+   "other": 1010,
+   "name": "Yādava Kavirāja (disciple of Narottama)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1765,
+   "other": 1466,
+   "name": "Yādavendu Ṭhākura",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 62,
+   "other": 1466,
+   "name": "Ātmārāma Dāsa",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 65,
+   "other": 574,
+   "name": "Āula Manohara Dāsa",
+   "otherName": "Śrīmatī Jāhnavā Mātā"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 515,
+   "other": 1353,
+   "name": "Īśāna",
+   "otherName": "Śrīla Sanātana Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 514,
+   "other": 15,
+   "name": "Īśāna Nāgara",
+   "otherName": "Śrī Advaita Ācārya Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2134,
+   "other": 1908,
+   "name": "Śaṅkara (disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1359,
+   "other": 1010,
+   "name": "Śaṅkara Bhaṭṭācārya",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1365,
+   "other": 164,
+   "name": "Śaṅkara Paṇḍit",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1367,
+   "other": 164,
+   "name": "Śaṅkarananda Sarasvatī",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1368,
+   "other": 164,
+   "name": "Śaṅkarāraṇya Ācārya",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 43,
+   "other": 1851,
+   "name": "Śiśu Ananta (Pañcasakhā)",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 325,
+   "other": 1851,
+   "name": "Śrī Gaurīdāsa Paṇḍita",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 298,
+   "other": 1947,
+   "name": "Śrī Gaṅgāmātā Gosvāminī",
+   "otherName": "Haridāsa Paṇḍita (of Govindadeva)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 343,
+   "other": 164,
+   "name": "Śrī Gopāla Bhaṭṭa Gosvāmī",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 475,
+   "other": 15,
+   "name": "Śrī Haridāsa Ṭhākura",
+   "otherName": "Śrī Advaita Ācārya Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 844,
+   "other": 164,
+   "name": "Śrī Lokanātha Gosvāmī",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 977,
+   "other": 1051,
+   "name": "Śrī Narahari Cakravartī (Ghanaśyāma dāsa)",
+   "otherName": "Nṛsiṁha Cakravartī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1856,
+   "other": 164,
+   "name": "Śrī Rāghava Paṇḍita",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2157,
+   "other": 73,
+   "name": "Śrī Uddhava dāsa",
+   "otherName": "Śrī Baladeva Vidyābhūṣaṇa"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1598,
+   "other": 164,
+   "name": "Śrī Vakreśvara Paṇḍita",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1623,
+   "other": 164,
+   "name": "Śrī Vaṁśīvadana Ṭhākura",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1900,
+   "other": 1899,
+   "name": "Śrī Vidyānidhi",
+   "otherName": "Śrī Dayānidhi"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1696,
+   "other": 1623,
+   "name": "Śrī Vipinavihārī Gosvāmī",
+   "otherName": "Śrī Vaṁśīvadana Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1654,
+   "other": 164,
+   "name": "Śrī Vāsudeva Ghoṣa",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1336,
+   "other": 164,
+   "name": "Śrī Śacī Devī",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1427,
+   "other": 164,
+   "name": "Śrī Śivānanda Sena",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1446,
+   "other": 1908,
+   "name": "Śrīkara",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1927,
+   "other": 1010,
+   "name": "Śrīkānta (disciple of Narottama)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1794,
+   "other": 124,
+   "name": "Śrīla Bhakti Dayita Mādhava Gosvāmī",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1795,
+   "other": 124,
+   "name": "Śrīla Bhakti Hṛdaya Bon Mahārāja",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1798,
+   "other": 124,
+   "name": "Śrīla Bhakti Prajñāna Keśava Gosvāmī Mahārāja",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1802,
+   "other": 124,
+   "name": "Śrīla Bhakti Rakṣaka Śrīdhara Deva Gosvāmī",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1494,
+   "other": 1802,
+   "name": "Śrīla Bhakti Sundara Govinda Dev-Gosvāmī Mahārāja",
+   "otherName": "Śrīla Bhakti Rakṣaka Śrīdhara Deva Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 125,
+   "other": 124,
+   "name": "Śrīla Bhaktivedānta Svāmī Prabhupāda",
+   "otherName": "Śrīla Bhakti Siddhānta Sarasvatī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1819,
+   "other": 1920,
+   "name": "Śrīla Gaura Kiśora Dāsa Bābājī",
+   "otherName": "Śrī Bhāgavata dāsa Bābājī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1206,
+   "other": 1513,
+   "name": "Śrīla Raghunātha Dāsa Gosvāmī",
+   "otherName": "Śrī Svarūpa Dāmodara Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1206,
+   "other": 1325,
+   "name": "Śrīla Raghunātha Dāsa Gosvāmī",
+   "otherName": "Śrīla Rūpa Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1723,
+   "other": 1887,
+   "name": "Śrīla Viśvanātha Cakravartī Ṭhākura",
+   "otherName": "Rādhāramaṇa Cakravartī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1740,
+   "other": 1851,
+   "name": "Śrīla Vṛndāvana dāsa Ṭhākura",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1715,
+   "other": 164,
+   "name": "Śrīmatī Viṣṇupriyā Devī",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1458,
+   "other": 274,
+   "name": "Śrīnātha Cakravartī",
+   "otherName": "Śrī Gadādhara Paṇḍita Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1095,
+   "other": 164,
+   "name": "Śrīpad Prabodhānanda Sarasvatī",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1523,
+   "other": 1466,
+   "name": "Śyāmadāsa Cakravartī",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1542,
+   "other": 1908,
+   "name": "Śyāmasundara Ācārya",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1999,
+   "other": 1010,
+   "name": "Śītala Ṭhākura Rāya",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 2031,
+   "other": 1852,
+   "name": "Balarāma dāsa (Mahānta of Pisimā's Gaura-Nitāi)",
+   "otherName": "Pisimā Gosvāminī (Candraśaśī Devī)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 176,
+   "other": 401,
+   "name": "Dāmodara Gosvāmī",
+   "otherName": "Govardhana Dāsa"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1815,
+   "other": 1670,
+   "name": "Gadādhara dāsa Ṭhākura",
+   "otherName": "Vidyananda Paṇḍit"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 504,
+   "other": 1535,
+   "name": "Hṛdaya Caitanya",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 522,
+   "other": 17,
+   "name": "Jagadānanda dāsa Bābājī (Rādhākuṇḍa)",
+   "otherName": "Advaita dāsa Bābājī (Vṛndāvana, kīrtanīyā)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 750,
+   "other": 356,
+   "name": "Kṛṣṇadāsa (Rāmadāsa) Punjabi",
+   "otherName": "Gopāla Kṣatriya"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 750,
+   "other": 2025,
+   "name": "Kṛṣṇadāsa (Rāmadāsa) Punjabi",
+   "otherName": "Rādhākṛṣṇa Ācārya (disciple of Kṛṣṇadāsa of Multān)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 750,
+   "other": 403,
+   "name": "Kṛṣṇadāsa (Rāmadāsa) Punjabi",
+   "otherName": "Govinda Adhikārī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 907,
+   "other": 1117,
+   "name": "Manohara dāsa (of Śrīnivāsa's family)",
+   "otherName": "Priyadasaji"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1115,
+   "other": 859,
+   "name": "Premānanda Gosvāmī (Śṛṅgāra-vaṭa)",
+   "otherName": "Mādhava dāsa Bābājī (Śṛṅgāra-vaṭa)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1200,
+   "other": 586,
+   "name": "Raghunandana Ṭhākura",
+   "otherName": "Janānanda Caudhurī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1200,
+   "other": 710,
+   "name": "Raghunandana Ṭhākura",
+   "otherName": "Kavirañjana"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1145,
+   "other": 73,
+   "name": "Rādhādāmodara",
+   "otherName": "Śrī Baladeva Vidyābhūṣaṇa"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 2174,
+   "other": 1871,
+   "name": "Siddha Caitanya dāsa Bābājī (Navadvīpa)",
+   "otherName": "Kṛṣṇadāsa Bābājī (Navadvīpa)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 2174,
+   "other": 1818,
+   "name": "Siddha Caitanya dāsa Bābājī (Navadvīpa)",
+   "otherName": "Gaura Kiśora Śiromaṇi"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 753,
+   "other": 78,
+   "name": "Siddha Kṛṣṇadāsa Bābājī (Govardhana)",
+   "otherName": "Siddha Balarāma dāsa Bābājī (Jhāḍu-maṇḍala)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 753,
+   "other": 1045,
+   "name": "Siddha Kṛṣṇadāsa Bābājī (Govardhana)",
+   "otherName": "Siddha Nityānanda dāsa Bābājī (Madana-mohana Ṭhaurā)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 15,
+   "other": 1459,
+   "name": "Śrī Advaita Ācārya Prabhu",
+   "otherName": "Śrīnātha Cakravartī (Ācārya)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 164,
+   "other": 1283,
+   "name": "Śrī Caitanya Mahāprabhu",
+   "otherName": "Rāmānanda Rāya"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 164,
+   "other": 1202,
+   "name": "Śrī Caitanya Mahāprabhu",
+   "otherName": "Śrī Raghunātha Bhaṭṭa Gosvāmī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 164,
+   "other": 278,
+   "name": "Śrī Caitanya Mahāprabhu",
+   "otherName": "Gajapati Pratāparudra Deva"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 344,
+   "other": 218,
+   "name": "Śrī Gopāla Guru Gosvāmī",
+   "otherName": "Dhyānacandra Gosvāmī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 713,
+   "other": 164,
+   "name": "Śrī Keśava Bhāratī",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1010,
+   "other": 1723,
+   "name": "Śrī Narottama dāsa Ṭhākura",
+   "otherName": "Śrīla Viśvanātha Cakravartī Ṭhākura"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1462,
+   "other": 706,
+   "name": "Śrī Nātha Paṇḍita",
+   "otherName": "Śrī Kavi Karṇapūra"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1956,
+   "other": 1860,
+   "name": "Śrī Rādhikāvilāsa Ṭhākura",
+   "otherName": "Ramahari dāsa bābājī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 2157,
+   "other": 2071,
+   "name": "Śrī Uddhava dāsa",
+   "otherName": "Śrī Madhusūdana dāsa Bābājī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1900,
+   "other": 1901,
+   "name": "Śrī Vidyānidhi",
+   "otherName": "Śrī Rājendra Tīrtha"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1696,
+   "other": 128,
+   "name": "Śrī Vipinavihārī Gosvāmī",
+   "otherName": "Śrīla Bhaktivinoda Ṭhākura"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 618,
+   "other": 1466,
+   "name": "Śrīla Jīva Gosvāmī",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1723,
+   "other": 73,
+   "name": "Śrīla Viśvanātha Cakravartī Ṭhākura",
+   "otherName": "Śrī Baladeva Vidyābhūṣaṇa"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1095,
+   "other": 343,
+   "name": "Śrīpad Prabodhānanda Sarasvatī",
+   "otherName": "Śrī Gopāla Bhaṭṭa Gosvāmī"
+  }
+ ],
+ "comma": [
+  {
+   "kind": "notBackGuru",
+   "id": 17,
+   "other": 773,
+   "name": "Advaita dāsa Bābājī (Vṛndāvana, kīrtanīyā)",
+   "otherName": "Kṛṣṇadayāla Candra (Pāñcthupi)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2141,
+   "other": 1466,
+   "name": "Balarāma dāsa (disciple of Śrīnivāsa, Karṇānanda 2)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2046,
+   "other": 1908,
+   "name": "Bhūdhara (disciple of Rasikānanda, Rasikamaṅgala 14.152)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2013,
+   "other": 1466,
+   "name": "Gopāla dāsa (Budhuipāḍā, disciple of Śrīnivāsa)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2010,
+   "other": 164,
+   "name": "Gopāla dāsa (Caitanya’s branch, CC Ādi 10.113)",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2015,
+   "other": 1466,
+   "name": "Gopāla dāsa (Kāñcanagaḍiyā, disciple of Śrīnivāsa)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2014,
+   "other": 1466,
+   "name": "Gopāla dāsa (Rādhā-kuṇḍa, disciple of Śrīnivāsa)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2017,
+   "other": 1466,
+   "name": "Gopāla dāsa (brother of Vallabha Kavipati, disciple of Śrīnivāsa)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2016,
+   "other": 1466,
+   "name": "Gopāla dāsa (father of Vanamālī dāsa, disciple of Śrīnivāsa)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2050,
+   "other": 1908,
+   "name": "Gopīmohana (disciple of Rasikānanda, Rasikamaṅgala 14.127)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1970,
+   "other": 1908,
+   "name": "Govinda Dāsa (Ghāṭaśilā, disciple of Rasikānanda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2097,
+   "other": 1908,
+   "name": "Haricandana (disciple of Rasikānanda, Rasikamaṅgala 14.132)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2098,
+   "other": 1908,
+   "name": "Haricandana (disciple of Rasikānanda, Rasikamaṅgala 14.145)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 469,
+   "other": 1849,
+   "name": "Haridāsa dāsa (Haribol Kuṭīra, Navadvīpa; author of the Gauḍīya Vaiṣṇava Abhidhāna)",
+   "otherName": "Manohara dāsa Bābājī (Madhavapura, 1847–1947)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2176,
+   "other": 1908,
+   "name": "Harinārāyaṇa (disciple of Rasikānanda, Rasikamaṅgala 14.156)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 498,
+   "other": 475,
+   "name": "Hīrā (Lakṣahīrā, Kṛṣṇadāsī)",
+   "otherName": "Śrī Haridāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1888,
+   "other": 1908,
+   "name": "Kṛṣṇadāsa (disciple of Rasikānanda, Rasikamaṅgala 14.159)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2111,
+   "other": 1908,
+   "name": "Kṛṣṇadāsa (disciple of Rasikānanda, Rasikamaṅgala 14.160)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1849,
+   "other": 1106,
+   "name": "Manohara dāsa Bābājī (Madhavapura, 1847–1947)",
+   "otherName": "Prāṇakṛṣṇa Dāsa Bābājī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2077,
+   "other": 1908,
+   "name": "Mohana (disciple of Rasikānanda, Rasikamaṅgala 14.104)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2078,
+   "other": 1908,
+   "name": "Mohana (disciple of Rasikānanda, Rasikamaṅgala 14.148)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2079,
+   "other": 1908,
+   "name": "Mohana (disciple of Rasikānanda, Rasikamaṅgala 14.153)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2132,
+   "other": 274,
+   "name": "Mādhava (Oḍiyā disciple of Gadādhara, Caitanya-vilāsa)",
+   "otherName": "Śrī Gadādhara Paṇḍita Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 957,
+   "other": 22,
+   "name": "Nābhājī (Nābhādāsa, Nārāyaṇadāsa)",
+   "otherName": "Agradāsa"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1996,
+   "other": 164,
+   "name": "Raghunātha Vaidya (Caitanya's branch, Purī)",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2108,
+   "other": 1535,
+   "name": "Rasamaya Dāsa (Viṣṇudāsa, disciple of Śyāmānanda)",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1951,
+   "other": 1908,
+   "name": "Rāmadāsa (disciple of Rasikānanda, Janhagram)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1948,
+   "other": 1466,
+   "name": "Rāmadāsa (disciple of Śrīnivāsa, Viṣṇupura)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1569,
+   "other": 1535,
+   "name": "Uddhava (disciple of Śyāmānanda, Kasiāḍi)",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1772,
+   "other": 497,
+   "name": "Yadunandana Dāsa (disciple of Hemalatā, author of the Karṇānanda)",
+   "otherName": "Hemalatā Devī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 2019,
+   "other": 2110,
+   "name": "Gopāla dāsa (guru of Kṛṣṇa dāsa, Śrī Kṛṣṇa-vilāsa)",
+   "otherName": "Kṛṣṇadāsa (author of the Śrī Kṛṣṇa-vilāsa)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 2028,
+   "other": 1828,
+   "name": "Jagadānanda Gosvāmī (Śṛṅgāra-vaṭa, Vṛndāvana)",
+   "otherName": "Śrī Jagannātha dās Bābājī"
+  }
+ ],
+ "unconfirmed": [
+  {
+   "kind": "notBackGuru",
+   "id": 81,
+   "other": 504,
+   "name": "Balarāma dāsa (Matta Balarāma, Pañcasakhā)",
+   "otherName": "Hṛdaya Caitanya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1793,
+   "other": 1802,
+   "name": "Bhakti Bhāvana Viṣṇu Mahārāja",
+   "otherName": "Śrīla Bhakti Rakṣaka Śrīdhara Deva Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1583,
+   "other": 123,
+   "name": "Bhakti Vaibhava Purī Gosvāmī Mahārāja",
+   "otherName": "Bhakti Prasāda Purī Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2007,
+   "other": 1798,
+   "name": "Bhakti Śrīrūpa Siddhāntī Gosvāmī Mahārāja",
+   "otherName": "Śrīla Bhakti Prajñāna Keśava Gosvāmī Mahārāja"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1803,
+   "other": 125,
+   "name": "Bhaktiratna Sādhu Mahārāja",
+   "otherName": "Śrīla Bhaktivedānta Svāmī Prabhupāda"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 139,
+   "other": 249,
+   "name": "Bhavānanda Gosvāmī",
+   "otherName": "Dvija Gopīnātha"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 233,
+   "other": 1700,
+   "name": "Durgā Dāsa Rāya",
+   "otherName": "Vīra Hāmvīra"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 192,
+   "other": 1381,
+   "name": "Dāsa",
+   "otherName": "Sārvabhauma Bhaṭṭācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2145,
+   "other": 1075,
+   "name": "Giridhārī dāsa Bābājī (Haribol Kuṭīra, Navadvīpa)",
+   "otherName": "Paramānanda Purī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 356,
+   "other": 1535,
+   "name": "Gopāla Kṣatriya",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 390,
+   "other": 504,
+   "name": "Gopīramaṇa Cakravartī",
+   "otherName": "Hṛdaya Caitanya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 390,
+   "other": 1010,
+   "name": "Gopīramaṇa Cakravartī",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 401,
+   "other": 177,
+   "name": "Govardhana Dāsa",
+   "otherName": "Dāmodara Paṇḍit"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 405,
+   "other": 1832,
+   "name": "Govinda Bhakata",
+   "otherName": "Kāśīśvara Paṇḍita (Gaura-Govinda)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 467,
+   "other": 1751,
+   "name": "Haridāsa Bābājī Mahāśaya (Govardhana, Govindakuṇḍa)",
+   "otherName": "Vṛndāvana"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 469,
+   "other": 1818,
+   "name": "Haridāsa dāsa (Haribol Kuṭīra, Navadvīpa; author of the Gauḍīya Vaiṣṇava Abhidhāna)",
+   "otherName": "Gaura Kiśora Śiromaṇi"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 486,
+   "other": 865,
+   "name": "Harirāma Vyāsa",
+   "otherName": "Mādhava Paṇḍit"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 492,
+   "other": 343,
+   "name": "Hita Harivaṁśa",
+   "otherName": "Śrī Gopāla Bhaṭṭa Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 521,
+   "other": 1751,
+   "name": "Jagacchandra Ghoṣ (Jayakṛṣṇa dāsa)",
+   "otherName": "Vṛndāvana"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 578,
+   "other": 1381,
+   "name": "Jalesvara",
+   "otherName": "Sārvabhauma Bhaṭṭācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 600,
+   "other": 1496,
+   "name": "Jayagopāla Dāsa (father of Balarāma dāsa)",
+   "otherName": "Sundarānanda Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 668,
+   "other": 1987,
+   "name": "Kanakapriyā Devī (daughter of Vyāsācārya)",
+   "otherName": "Sundarānanda Ṭhākura (son of Gatigovinda)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 722,
+   "other": 1568,
+   "name": "Kavivallabha dāsa (author of the Rasakadamba)",
+   "otherName": "Uddhava dāsa (of Gadādhara's branch)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 818,
+   "other": 574,
+   "name": "Kutubuddīn (dacoit)",
+   "otherName": "Śrīmatī Jāhnavā Mātā"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1832,
+   "other": 516,
+   "name": "Kāśīśvara Paṇḍita (Gaura-Govinda)",
+   "otherName": "Śrī Īśvara Purī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2110,
+   "other": 365,
+   "name": "Kṛṣṇadāsa (author of the Śrī Kṛṣṇa-vilāsa)",
+   "otherName": "Gopāla"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 793,
+   "other": 1851,
+   "name": "Kṛṣṇānanda",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 891,
+   "other": 1839,
+   "name": "Mahānidhi Svāmī",
+   "otherName": "Akiñcana Kṛṣṇadāsa Bābājī Mahārāja"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 892,
+   "other": 1851,
+   "name": "Mahānta",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 892,
+   "other": 15,
+   "name": "Mahānta",
+   "otherName": "Śrī Advaita Ācārya Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 896,
+   "other": 1468,
+   "name": "Mālatī Devī",
+   "otherName": "Śrīla Śrīvāsa Paṇḍita"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1022,
+   "other": 784,
+   "name": "Navakiśora Gosvāmīpāda",
+   "otherName": "Kṛṣṇakiśora"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1091,
+   "other": 164,
+   "name": "Pitamvara Dāsa",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1099,
+   "other": 1283,
+   "name": "Pradyumna Miśra",
+   "otherName": "Rāmānanda Rāya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1190,
+   "other": 1505,
+   "name": "Raghu Dāsa",
+   "otherName": "Sūryānanda (Galtā)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1213,
+   "other": 164,
+   "name": "Raghunātha Vaidya Upādhyāya",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1318,
+   "other": 1466,
+   "name": "Ravīndranārāyaṇa",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1151,
+   "other": 1273,
+   "name": "Rādhākṛṣṇa Bhaṭṭācārya",
+   "otherName": "Rāmakṛṣṇa Ācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2025,
+   "other": 1535,
+   "name": "Rādhākṛṣṇa Ācārya (disciple of Kṛṣṇadāsa of Multān)",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1162,
+   "other": 2087,
+   "name": "Rādhāmukunda Dāsa",
+   "otherName": "Rādhāvinoda Cakravartī (son of Govinda Cakravartī)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1166,
+   "other": 1751,
+   "name": "Rādhāramaṇa Ghoṣa Bhāgavatabhūṣaṇa",
+   "otherName": "Vṛndāvana"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1253,
+   "other": 6,
+   "name": "Rāmadāsa Bābājī (Varṣāṇā)",
+   "otherName": "Abhirāma Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1285,
+   "other": 174,
+   "name": "Rāmanārāyaṇa Miśra (Candrabhāgā)",
+   "otherName": "Dāmodara Dāsa"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1279,
+   "other": 1851,
+   "name": "Rāmānanda Basu",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1319,
+   "other": 1200,
+   "name": "Rāyaśekhara",
+   "otherName": "Raghunandana Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1386,
+   "other": 1200,
+   "name": "Sasisekhara",
+   "otherName": "Raghunandana Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 97,
+   "other": 1839,
+   "name": "Siddha Bhagavān dāsa Bābājī (Kālnā)",
+   "otherName": "Akiñcana Kṛṣṇadāsa Bābājī Mahārāja"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 606,
+   "other": 164,
+   "name": "Siddha Jayakṛṣṇa dāsa Bābājī (Kāmyavana)",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 753,
+   "other": 1010,
+   "name": "Siddha Kṛṣṇadāsa Bābājī (Govardhana)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1861,
+   "other": 1839,
+   "name": "Siddha Rāmakṛṣṇa dāsa Paṇḍita Bābājī",
+   "otherName": "Akiñcana Kṛṣṇadāsa Bābājī Mahārāja"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1478,
+   "other": 398,
+   "name": "Suddadvaiti Svāmī",
+   "otherName": "Śrīla Gour Govinda Svāmī Mahārāja"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1478,
+   "other": 1809,
+   "name": "Suddadvaiti Svāmī",
+   "otherName": "Śrīla Bhaktivedānta Nārāyaṇa Gosvāmī Mahārāja"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1491,
+   "other": 1200,
+   "name": "Sulocana",
+   "otherName": "Raghunandana Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1509,
+   "other": 1381,
+   "name": "Svapneśvara",
+   "otherName": "Sārvabhauma Bhaṭṭācārya"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1512,
+   "other": 1010,
+   "name": "Svarūpa Cakravartī (Svarūpa Gosvāmī)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1530,
+   "other": 589,
+   "name": "Syamaji Gosain",
+   "otherName": "Janārdana Miśra (Janārdana)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1537,
+   "other": 1468,
+   "name": "Syamapriya",
+   "otherName": "Śrīla Śrīvāsa Paṇḍita"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1555,
+   "other": 574,
+   "name": "Tribhaṅgadāsa Bābājī",
+   "otherName": "Śrīmatī Jāhnavā Mātā"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1974,
+   "other": 164,
+   "name": "Tukārāma",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1599,
+   "other": 1882,
+   "name": "Vallabha Bhaṭṭa (Vallabhācārya)",
+   "otherName": "Viṣṇusvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1627,
+   "other": 1200,
+   "name": "Vanamālī dāsa (Kavirāja)",
+   "otherName": "Raghunandana Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1634,
+   "other": 1468,
+   "name": "Vangadesiya Vipra",
+   "otherName": "Śrīla Śrīvāsa Paṇḍita"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1617,
+   "other": 1010,
+   "name": "Vaṁśī dāsa Bābājī",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1670,
+   "other": 273,
+   "name": "Vidyananda Paṇḍit",
+   "otherName": "Gadādhara dāsa (Puruṣottama-māhātmya)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1675,
+   "other": 2108,
+   "name": "Vidyāvācaspati",
+   "otherName": "Rasamaya Dāsa (Viṣṇudāsa, disciple of Śyāmānanda)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1725,
+   "other": 745,
+   "name": "Viśvarūpa",
+   "otherName": "Kṛṣṇa Bhāratī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1714,
+   "other": 2110,
+   "name": "Viṣṇudāsa",
+   "otherName": "Kṛṣṇadāsa (author of the Śrī Kṛṣṇa-vilāsa)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1781,
+   "other": 1016,
+   "name": "Yāmunācārya",
+   "otherName": "Nāthamuni"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1364,
+   "other": 15,
+   "name": "Śaṅkara Pāgala",
+   "otherName": "Śrī Advaita Ācārya Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 73,
+   "other": 1908,
+   "name": "Śrī Baladeva Vidyābhūṣaṇa",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1828,
+   "other": 1751,
+   "name": "Śrī Jagannātha dās Bābājī",
+   "otherName": "Vṛndāvana"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 706,
+   "other": 1459,
+   "name": "Śrī Kavi Karṇapūra",
+   "otherName": "Śrīnātha Cakravartī (Ācārya)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 706,
+   "other": 15,
+   "name": "Śrī Kavi Karṇapūra",
+   "otherName": "Śrī Advaita Ācārya Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 844,
+   "other": 15,
+   "name": "Śrī Lokanātha Gosvāmī",
+   "otherName": "Śrī Advaita Ācārya Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 844,
+   "other": 1353,
+   "name": "Śrī Lokanātha Gosvāmī",
+   "otherName": "Śrīla Sanātana Gosvāmī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 2071,
+   "other": 1568,
+   "name": "Śrī Madhusūdana dāsa Bābājī",
+   "otherName": "Uddhava dāsa (of Gadādhara's branch)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1851,
+   "other": 868,
+   "name": "Śrī Nityānanda Prabhu",
+   "otherName": "Śrī Mādhavendra Purī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1851,
+   "other": 516,
+   "name": "Śrī Nityānanda Prabhu",
+   "otherName": "Śrī Īśvara Purī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1856,
+   "other": 1851,
+   "name": "Śrī Rāghava Paṇḍita",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1901,
+   "other": 1119,
+   "name": "Śrī Rājendra Tīrtha",
+   "otherName": "Śrī Puṇḍarīka Vidyānidhi"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1995,
+   "other": 1065,
+   "name": "Śrīdhara Svāmī",
+   "otherName": "Padmanābha (father of Lokanātha)"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1794,
+   "other": 1075,
+   "name": "Śrīla Bhakti Dayita Mādhava Gosvāmī",
+   "otherName": "Paramānanda Purī"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1810,
+   "other": 1667,
+   "name": "Śrīla Bhaktivedānta Vāmana Gosvāmī Mahārāja",
+   "otherName": "Bhakti Vicāra Yāyāvara Gosvāmī Mahārāja"
+  },
+  {
+   "kind": "notBackGuru",
+   "id": 1723,
+   "other": 747,
+   "name": "Śrīla Viśvanātha Cakravartī Ṭhākura",
+   "otherName": "Kṛṣṇacaraṇa Cakravartī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 67,
+   "other": 68,
+   "name": "Balabhadra Bhaṭṭācārya Bhṛtya",
+   "otherName": "Balabhadra Bhaṭṭācārya"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 81,
+   "other": 550,
+   "name": "Balarāma dāsa (Matta Balarāma, Pañcasakhā)",
+   "otherName": "Jagannātha Dāsa (Atibaḍī Jagannātha Dāsa)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 150,
+   "other": 1700,
+   "name": "Bhūgarbha Gosvāmī",
+   "otherName": "Vīra Hāmvīra"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 185,
+   "other": 252,
+   "name": "Danka",
+   "otherName": "Dvija Hari Dāsa"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 209,
+   "other": 1466,
+   "name": "Dhanañjaya Vidyānidhi",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 173,
+   "other": 1353,
+   "name": "Dāmodara Caube",
+   "otherName": "Śrīla Sanātana Gosvāmī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 183,
+   "other": 401,
+   "name": "Dāmodara Yogī",
+   "otherName": "Govardhana Dāsa"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 305,
+   "other": 977,
+   "name": "Gati Govinda",
+   "otherName": "Śrī Narahari Cakravartī (Ghanaśyāma dāsa)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1818,
+   "other": 466,
+   "name": "Gaura Kiśora Śiromaṇi",
+   "otherName": "Haricarana Dāsa"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 289,
+   "other": 164,
+   "name": "Gaṅgā Dāsa Paṇḍit",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 291,
+   "other": 164,
+   "name": "Gaṅgādāsa (disciple of Rasikānanda)",
+   "otherName": "Śrī Caitanya Mahāprabhu"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 372,
+   "other": 1466,
+   "name": "Gopījanavallabha (son-in-law of Śrīnivāsa)",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1971,
+   "other": 469,
+   "name": "Govinda dāsa Bābājī (Haridāsa Ṭhākura Maṭha, Purī)",
+   "otherName": "Haridāsa dāsa (Haribol Kuṭīra, Navadvīpa; author of the Gauḍīya Vaiṣṇava Abhidhāna)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 461,
+   "other": 273,
+   "name": "Haribolānanda Ṭhākura",
+   "otherName": "Gadādhara dāsa (Puruṣottama-māhātmya)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1947,
+   "other": 2025,
+   "name": "Haridāsa Paṇḍita (of Govindadeva)",
+   "otherName": "Rādhākṛṣṇa Ācārya (disciple of Kṛṣṇadāsa of Multān)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 512,
+   "other": 1466,
+   "name": "Indumukhi Devī",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 570,
+   "other": 1908,
+   "name": "Jagannātha (uncle of Jāhnavā Mātā)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 2127,
+   "other": 977,
+   "name": "Jayagopāla Dāsa (author of the Bhakti-bhāva-pradīpa)",
+   "otherName": "Śrī Narahari Cakravartī (Ghanaśyāma dāsa)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 602,
+   "other": 855,
+   "name": "Jayagopāla Tarkālaṅkāra",
+   "otherName": "Madanamohana Ṭhākura (grandson of Raghunandana)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 619,
+   "other": 1353,
+   "name": "Jīvana Cakravartī",
+   "otherName": "Śrīla Sanātana Gosvāmī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 656,
+   "other": 1845,
+   "name": "Kamalākara Dāsa Ṭhākura",
+   "otherName": "Locana dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 667,
+   "other": 1273,
+   "name": "Kanakalatikā Devī",
+   "otherName": "Rāmakṛṣṇa Ācārya"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 669,
+   "other": 1466,
+   "name": "Kāñcanalatikā Devī",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1832,
+   "other": 1908,
+   "name": "Kāśīśvara Paṇḍita (Gaura-Govinda)",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 773,
+   "other": 1751,
+   "name": "Kṛṣṇadayāla Candra (Pāñcthupi)",
+   "otherName": "Vṛndāvana"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 750,
+   "other": 2108,
+   "name": "Kṛṣṇadāsa (Rāmadāsa) Punjabi",
+   "otherName": "Rasamaya Dāsa (Viṣṇudāsa, disciple of Śyāmānanda)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 750,
+   "other": 929,
+   "name": "Kṛṣṇadāsa (Rāmadāsa) Punjabi",
+   "otherName": "Mukunda Dāsa Gosvāmī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 757,
+   "other": 2108,
+   "name": "Kṛṣṇadāsa Dāsa",
+   "otherName": "Rasamaya Dāsa (Viṣṇudāsa, disciple of Śyāmānanda)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 770,
+   "other": 1010,
+   "name": "Kṛṣṇadāsa Vipra",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 769,
+   "other": 1947,
+   "name": "Kṛṣṇadāsa Vāṇī (Vāṇī Kṛṣṇadāsa)",
+   "otherName": "Haridāsa Paṇḍita (of Govindadeva)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 800,
+   "other": 1327,
+   "name": "Kṛṣṇapriyā",
+   "otherName": "Rūpa Kavirāja"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 901,
+   "other": 1010,
+   "name": "Mamu Ṭhākura (Jagannātha Cakravartī)",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 936,
+   "other": 1851,
+   "name": "Mukunda Ojhā",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 859,
+   "other": 1553,
+   "name": "Mādhava dāsa Bābājī (Śṛṅgāra-vaṭa)",
+   "otherName": "Ṭoṭā Rāmadāsa Bābājī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1046,
+   "other": 1010,
+   "name": "Nityānanda Dāsa",
+   "otherName": "Śrī Narottama dāsa Ṭhākura"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1069,
+   "other": 1325,
+   "name": "Paramānanda Bhaṭṭācārya",
+   "otherName": "Śrīla Rūpa Gosvāmī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1069,
+   "other": 1355,
+   "name": "Paramānanda Bhaṭṭācārya",
+   "otherName": "Sanātana"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1139,
+   "other": 863,
+   "name": "Puruṣottama Dāsa",
+   "otherName": "Mādhava Miśra (son of Kālidāsa)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1200,
+   "other": 1451,
+   "name": "Raghunandana Ṭhākura",
+   "otherName": "Śrīman Sen"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1200,
+   "other": 1242,
+   "name": "Raghunandana Ṭhākura",
+   "otherName": "Rāmāi Gosāi"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1220,
+   "other": 942,
+   "name": "Rajanī Paṇḍita",
+   "otherName": "Mukunda"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1860,
+   "other": 859,
+   "name": "Ramahari dāsa bābājī",
+   "otherName": "Mādhava dāsa Bābājī (Śṛṅgāra-vaṭa)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1908,
+   "other": 1601,
+   "name": "Rasikānanda Prabhu",
+   "otherName": "Vallabha Dāsa"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1908,
+   "other": 942,
+   "name": "Rasikānanda Prabhu",
+   "otherName": "Mukunda"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1908,
+   "other": 977,
+   "name": "Rasikānanda Prabhu",
+   "otherName": "Śrī Narahari Cakravartī (Ghanaśyāma dāsa)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1309,
+   "other": 1777,
+   "name": "Ratnagarbha Ācārya",
+   "otherName": "Yadunatha Kavicandra"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1309,
+   "other": 618,
+   "name": "Ratnagarbha Ācārya",
+   "otherName": "Śrīla Jīva Gosvāmī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1309,
+   "other": 793,
+   "name": "Ratnagarbha Ācārya",
+   "otherName": "Kṛṣṇānanda"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1236,
+   "other": 96,
+   "name": "Rāmabhādra Ācārya",
+   "otherName": "Bhagavān Ācārya"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1231,
+   "other": 1046,
+   "name": "Rāmatanu Mukhopādhyāya «Bhāgavata-bhūṣaṇa»",
+   "otherName": "Nityānanda Dāsa"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1291,
+   "other": 65,
+   "name": "Rāmaśaraṇa Caṭṭarāja",
+   "otherName": "Āula Manohara Dāsa"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1342,
+   "other": 1139,
+   "name": "Sadāśiva Kavirāja",
+   "otherName": "Puruṣottama Dāsa"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1820,
+   "other": 1828,
+   "name": "Siddha Gauracaraṇa dāsa Bābājī (Dāujī)",
+   "otherName": "Śrī Jagannātha dās Bābājī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1560,
+   "other": 1908,
+   "name": "Tulasī Dāsa",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1617,
+   "other": 65,
+   "name": "Vaṁśī dāsa Bābājī",
+   "otherName": "Āula Manohara Dāsa"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1617,
+   "other": 1960,
+   "name": "Vaṁśī dāsa Bābājī",
+   "otherName": "Govinda dāsa Kavirāja"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1664,
+   "other": 343,
+   "name": "Veṅkaṭa Bhaṭṭa",
+   "otherName": "Śrī Gopāla Bhaṭṭa Gosvāmī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1685,
+   "other": 1833,
+   "name": "Vijayakṛṣṇa Gosvāmī",
+   "otherName": "Kholāvecā Śrīdhara"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1733,
+   "other": 1115,
+   "name": "Vrajakiśora Dāsa Bābājī",
+   "otherName": "Premānanda Gosvāmī (Śṛṅgāra-vaṭa)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1756,
+   "other": 1523,
+   "name": "Vyasacarya",
+   "otherName": "Śyāmadāsa Cakravartī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1880,
+   "other": 1769,
+   "name": "Vīrabhadra Gosvāmī",
+   "otherName": "Yadunandana Ācārya"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1880,
+   "other": 1276,
+   "name": "Vīrabhadra Gosvāmī",
+   "otherName": "Rāmakṛṣṇa"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1880,
+   "other": 1242,
+   "name": "Vīrabhadra Gosvāmī",
+   "otherName": "Rāmāi Gosāi"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1770,
+   "other": 1908,
+   "name": "Yadunandana Cakravartī",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1367,
+   "other": 1206,
+   "name": "Śaṅkarananda Sarasvatī",
+   "otherName": "Śrīla Raghunātha Dāsa Gosvāmī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 15,
+   "other": 677,
+   "name": "Śrī Advaita Ācārya Prabhu",
+   "otherName": "Kānu Ṭhākura"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 73,
+   "other": 1568,
+   "name": "Śrī Baladeva Vidyābhūṣaṇa",
+   "otherName": "Uddhava dāsa (of Gadādhara's branch)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 164,
+   "other": 1851,
+   "name": "Śrī Caitanya Mahāprabhu",
+   "otherName": "Śrī Nityānanda Prabhu"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 164,
+   "other": 15,
+   "name": "Śrī Caitanya Mahāprabhu",
+   "otherName": "Śrī Advaita Ācārya Prabhu"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 164,
+   "other": 274,
+   "name": "Śrī Caitanya Mahāprabhu",
+   "otherName": "Śrī Gadādhara Paṇḍita Gosvāmī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 164,
+   "other": 677,
+   "name": "Śrī Caitanya Mahāprabhu",
+   "otherName": "Kānu Ṭhākura"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 164,
+   "other": 1466,
+   "name": "Śrī Caitanya Mahāprabhu",
+   "otherName": "Śrīnivāsa Ācārya"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1899,
+   "other": 1119,
+   "name": "Śrī Dayānidhi",
+   "otherName": "Śrī Puṇḍarīka Vidyānidhi"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 274,
+   "other": 217,
+   "name": "Śrī Gadādhara Paṇḍita Gosvāmī",
+   "otherName": "Dhruvānanda"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 274,
+   "other": 468,
+   "name": "Śrī Gadādhara Paṇḍita Gosvāmī",
+   "otherName": "Haridāsa Brahmacārī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 274,
+   "other": 1459,
+   "name": "Śrī Gadādhara Paṇḍita Gosvāmī",
+   "otherName": "Śrīnātha Cakravartī (Ācārya)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 325,
+   "other": 289,
+   "name": "Śrī Gaurīdāsa Paṇḍita",
+   "otherName": "Gaṅgā Dāsa Paṇḍit"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 980,
+   "other": 1568,
+   "name": "Śrī Narahari Sarakāra Ṭhākura",
+   "otherName": "Uddhava dāsa (of Gadādhara's branch)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1851,
+   "other": 1880,
+   "name": "Śrī Nityānanda Prabhu",
+   "otherName": "Vīrabhadra Gosvāmī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1851,
+   "other": 1827,
+   "name": "Śrī Nityānanda Prabhu",
+   "otherName": "Jagāi and Mādhāi"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1159,
+   "other": 1568,
+   "name": "Śrī Rādhāmohana Ṭhākura",
+   "otherName": "Uddhava dāsa (of Gadādhara's branch)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1159,
+   "other": 625,
+   "name": "Śrī Rādhāmohana Ṭhākura",
+   "otherName": "Kālindī Dāsa"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1289,
+   "other": 1494,
+   "name": "Śrī Rāmānujācārya",
+   "otherName": "Śrīla Bhakti Sundara Govinda Dev-Gosvāmī Mahārāja"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 516,
+   "other": 1494,
+   "name": "Śrī Īśvara Purī",
+   "otherName": "Śrīla Bhakti Sundara Govinda Dev-Gosvāmī Mahārāja"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1535,
+   "other": 177,
+   "name": "Śrī Śyāmānanda Prabhu",
+   "otherName": "Dāmodara Paṇḍit"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1535,
+   "other": 1880,
+   "name": "Śrī Śyāmānanda Prabhu",
+   "otherName": "Vīrabhadra Gosvāmī"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1535,
+   "other": 1496,
+   "name": "Śrī Śyāmānanda Prabhu",
+   "otherName": "Sundarānanda Ṭhākura"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1795,
+   "other": 793,
+   "name": "Śrīla Bhakti Hṛdaya Bon Mahārāja",
+   "otherName": "Kṛṣṇānanda"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1795,
+   "other": 1908,
+   "name": "Śrīla Bhakti Hṛdaya Bon Mahārāja",
+   "otherName": "Rasikānanda Prabhu"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1795,
+   "other": 926,
+   "name": "Śrīla Bhakti Hṛdaya Bon Mahārāja",
+   "otherName": "Mohanānanda"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1795,
+   "other": 1535,
+   "name": "Śrīla Bhakti Hṛdaya Bon Mahārāja",
+   "otherName": "Śrī Śyāmānanda Prabhu"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 124,
+   "other": 1552,
+   "name": "Śrīla Bhakti Siddhānta Sarasvatī",
+   "otherName": "Śrīla Bhaktivedānta Trivikrama Gosvāmī Mahārāja"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1810,
+   "other": 865,
+   "name": "Śrīla Bhaktivedānta Vāmana Gosvāmī Mahārāja",
+   "otherName": "Mādhava Paṇḍit"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 759,
+   "other": 2108,
+   "name": "Śrīla Kṛṣṇadāsa Kavirāja Gosvāmī",
+   "otherName": "Rasamaya Dāsa (Viṣṇudāsa, disciple of Śyāmānanda)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1353,
+   "other": 358,
+   "name": "Śrīla Sanātana Gosvāmī",
+   "otherName": "Gopāla Miśra"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1723,
+   "other": 901,
+   "name": "Śrīla Viśvanātha Cakravartī Ṭhākura",
+   "otherName": "Mamu Ṭhākura (Jagannātha Cakravartī)"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1466,
+   "other": 1113,
+   "name": "Śrīnivāsa Ācārya",
+   "otherName": "Premadāsa"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1466,
+   "other": 365,
+   "name": "Śrīnivāsa Ācārya",
+   "otherName": "Gopāla"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1466,
+   "other": 338,
+   "name": "Śrīnivāsa Ācārya",
+   "otherName": "Gokula Dāsa"
+  },
+  {
+   "kind": "notBackDisciple",
+   "id": 1459,
+   "other": 707,
+   "name": "Śrīnātha Cakravartī (Ācārya)",
+   "otherName": "Kavicandra (son of Kavikarṇapūra)"
+  }
+ ]
+}
