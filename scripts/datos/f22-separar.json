@@ -1,0 +1,13 @@
+[
+ { "id": 1020, "name": "Navadvīpa Candrā Dāsa",
+   "docs": [{ "doc": 1029, "pieces": [
+     { "cut": true, "start": "## NAVADVĪPA CANDRĀ DĀSA\n\nHe was a composer of padas.", "end": "## NAVADVĪPA CANDRĀ DĀSA\n\nHe was born", "to": "poet", "title": "Navadvīpa Candrā Dāsa, padakartā (was in the record of Navadvīpacandra dāsa, disciple of Rādhāramaṇa-caraṇa dāsa)" },
+     { "cut": true, "start": "Navadvīpa Candrā Gosvāmī Vidyaratna He was", "to": "vidyaratna", "title": "Navadvīpacandra Gosvāmī Vidyāratna (was in the record of Navadvīpacandra dāsa, disciple of Rādhāramaṇa-caraṇa dāsa)" }
+   ] }],
+   "new": [
+     { "key": "poet", "name": "Navadvīpacandra dāsa (padakartā)", "poet": true,
+       "fields": { "aka": "Navadvīpa Candrā Dāsa", "works": "Padakalpataru 2961 (on nāma-saṅkīrtana)", "notes": "A composer of padas; Padakalpataru no. 2961, on nāma-saṅkīrtana, is his. Taken out of the record #1020 (the disciple of Rādhāramaṇa-caraṇa dāsa, d. 1902), which mixed three Navadvīpacandras (11-11-2026)." } },
+     { "key": "vidyaratna", "name": "Navadvīpacandra Gosvāmī Vidyāratna",
+       "fields": { "place": "Navadvīpa (his descendants serve Sonār Gaurāṅga in Śrīvāsa's house)", "works": "Vaiṣṇavācāra-darpaṇa; Vaiṣṇava-vrata-dina-nirṇaya; Aruṇodaya-vedhe Janmāṣṭamī-parityāgera vidhi; edited 33 chapters of the Śaṅkarācārya-vijaya (Asiatic Society, 1867)", "notes": "A paṇḍita of Śrī Nityānanda Prabhu's family; author of the Vaiṣṇavācāra-darpaṇa and of works on the Vaiṣṇava vows; explained vaidhī and rāgānugā bhakti in simple Bengali. In 1867 the Asiatic Society of Bengal asked him to edit the Śaṅkarācārya-vijaya; he corrected 33 chapters and handed it to Jayanārāyaṇa Tarkapañcānana. His descendants serve Sonār Gaurāṅga and other Deities in Śrīvāsa's house at Navadvīpa. Taken out of the record #1020 (11-11-2026)." } }
+   ] }
+]

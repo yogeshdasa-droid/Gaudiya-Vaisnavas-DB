@@ -1,0 +1,10 @@
+[
+ { "id": 1514, "name": "Svarūpa Dāsa",
+   "docs": [{ "doc": 1531, "pieces": [
+     { "cut": true, "start": "## SVARŪPA DĀSA\n\nHe was a Vaiṣṇava poet, nothing further is known about him.", "end": "Svarūpa Dāsa Bābājī Mahārāja In Jagannātha", "to": "poet", "title": "Svarūpa Dāsa, Vaiṣṇava poet (was in the record of Svarūpa dāsa Bābājī of Purī)" }
+   ] }],
+   "new": [
+     { "key": "poet", "name": "Svarūpa dāsa (padakartā)", "poet": true,
+       "fields": { "aka": "Svarūpa Dāsa", "notes": "A Vaiṣṇava poet; nothing more is known about him. Taken out of the record #1514, which is Svarūpa dāsa Bābājī of the Sātāsana maṭha at Purī (11-11-2026)." } }
+   ] }
+]

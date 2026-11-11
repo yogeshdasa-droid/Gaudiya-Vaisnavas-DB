@@ -217,6 +217,15 @@ export function isPoet(p: PersonListItem): boolean {
   return p.tags.split(",").some((x) => x.trim().toLowerCase() === POETS.toLowerCase());
 }
 
+/** The label of the "Deities" panel (Whisper, 11-11-2026): records that are a Deity (Śrī Rasikarāya…), not a
+ *  person. They have their own panel in the sidebar, between Tīrthas and Library, and are not in the
+ *  Vaiṣṇava-maṇḍala. */
+export const DEITIES = "Deidades";
+
+export function isDeity(p: PersonListItem): boolean {
+  return p.tags.split(",").some((x) => x.trim().toLowerCase() === DEITIES.toLowerCase());
+}
+
 /** How a record is tied to a holy place (format 7). */
 export const PLACE_ROLES = ["sripata", "samadhi", "birth", "lived", "other"] as const;
 export type PlaceRole = (typeof PLACE_ROLES)[number];

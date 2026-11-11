@@ -1,12 +1,12 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { BookMarked, ChevronRight, ChevronsDownUp, ChevronsUpDown,MapPin, Plus, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
-import { api, Bookmark, DocListItem, hueOf, isPoet, Marks, PersonListItem, Place, sortDisciples, TreeKind, TreePlace } from "../api";
+import { BookMarked, ChevronRight, ChevronsDownUp, ChevronsUpDown, Flower2, MapPin, Plus, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
+import { api, Bookmark, DocListItem, hueOf, isDeity, isPoet, Marks, PersonListItem, Place, sortDisciples, TreeKind, TreePlace } from "../api";
 import { foldWord } from "../fold";
 import { arrange, TreeLine } from "./TreeView";
 import { possibleRepeats } from "./Review";
 import { Lang, T } from "../i18n";
 
-export type SideTab = "persons" | "places" | "library" | "bookmarks" | "history";
+export type SideTab = "persons" | "places" | "deities" | "library" | "bookmarks" | "history";
 
 /** A text or record to show in its tree (`n` tells two requests apart). */
 export type Reveal = { kind: "doc" | "person"; id: number; n: number };
@@ -363,7 +363,8 @@ function PersonList({
       kids.set(parent, [...(kids.get(parent) ?? []), p]);
     }
     sortDisciples(kids);
-    const out = persons.filter((p) => !p.tree);
+    // the Deities have a panel of their own (DeityList), not the Vaiṣṇava-maṇḍala
+    const out = persons.filter((p) => !p.tree && !isDeity(p));
     // the poets with no clear guru have a group of their own, out of the Vaiṣṇava-maṇḍala
     const poets = out.filter(isPoet).sort((a, b) => foldName(a.name).localeCompare(foldName(b.name)));
     return { kids, parentOf, kindOf, others: out.filter((p) => !isPoet(p)), poets };
@@ -900,6 +901,56 @@ function PersonList({
   );
 }
 
+// ---------------------------------------------------------------- deities
+
+/** The records that are a Deity, not a person (label «Deidades»), by name, with a filter. */
+function DeityList({ t, persons, activeId, onPerson }: { t: T; persons: PersonListItem[]; activeId: number | null; onPerson: (id: number) => void }) {
+  const [filter, setFilter] = useState("");
+  const sorted = useMemo(() => persons.filter(isDeity).sort((a, b) => foldName(a.name).localeCompare(foldName(b.name))), [persons]);
+  const shown = useMemo(() => {
+    const words = foldName(filter).split(" ").filter(Boolean);
+    if (!words.length) return sorted;
+    return sorted.filter((p) => {
+      const f = ` ${foldName(`${p.name} ${p.aka}`)}`;
+      return words.every((w) => f.includes(` ${w}`));
+    });
+  }, [filter, sorted]);
+  return (
+    <div className="fade-in">
+      <div className="person-filter">
+        <Search size={14} />
+        <input value={filter} placeholder={t.filterDeities} title={t.deitiesHint} spellCheck={false} onChange={(e) => setFilter(e.target.value)} />
+        {filter && (
+          <button className="icon-btn" onClick={() => setFilter("")}>
+            <X size={13} />
+          </button>
+        )}
+      </div>
+      {sorted.length === 0 && (
+        <div className="side-empty">
+          <Flower2 size={28} />
+          <p>{t.noDeities}</p>
+        </div>
+      )}
+      {sorted.length > 0 && shown.length === 0 && <div className="side-empty small">{t.noDeityMatches}</div>}
+      {shown.map((p) => (
+        <div
+          key={p.id}
+          data-ctx="person"
+          data-id={p.id}
+          className={`tree-row person${activeId === p.id ? " active" : ""}`}
+          onClick={() => onPerson(p.id)}
+          title={p.aka ? `${p.name} · ${p.aka}` : p.name}
+        >
+          <Flower2 size={14} />
+          <span className="name">{p.name}</span>
+          {p.docs > 1 && <span className="count">{p.docs}</span>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------- tīrthas
 
 /** The holy places, by name as in a dictionary (Āṭapura with the A's), with a filter
@@ -1053,7 +1104,15 @@ export function Sidebar(p: Props) {
     scrollToRow(`[data-ctx="doc"][data-id="${d.id}"]`);
   }, [p.reveal]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (p.reveal?.kind === "person" && p.reveal.n !== revealed && p.tab !== "persons") p.onTab("persons");
+    if (p.reveal?.kind !== "person" || p.reveal.n === revealed) return;
+    // a Deity is shown in its own panel, everyone else in the Vaiṣṇavas
+    const q = p.persons.find((x) => x.id === p.reveal!.id);
+    const tab: SideTab = q && isDeity(q) && !q.tree ? "deities" : "persons";
+    if (p.tab !== tab) p.onTab(tab);
+    if (tab === "deities") {
+      revealed = p.reveal.n;
+      scrollToRow(`[data-ctx="person"][data-id="${q!.id}"]`);
+    }
   }, [p.reveal]); // eslint-disable-line react-hooks/exhaustive-deps
   const [editing, setEditing] = useState<number | null>(null);
   const toggle = (k: string) =>
@@ -1067,6 +1126,7 @@ export function Sidebar(p: Props) {
   const tabs: [SideTab, typeof LibIcon, string][] = [
     ["persons", Users, t.vaisnavas],
     ["places", MapPin, t.tirthas],
+    ["deities", Flower2, t.deities],
     ["library", LibIcon, t.library],
     ["bookmarks", Star, t.bookmarks],
     ["history", History, t.history],
@@ -1103,6 +1163,8 @@ export function Sidebar(p: Props) {
         )}
 
         {p.tab === "places" && <PlaceList t={t} lang={p.lang} places={p.places} activeId={p.activePlaceId} onPlace={p.onPlace} />}
+
+        {p.tab === "deities" && <DeityList t={t} persons={p.persons} activeId={p.activePersonId} onPerson={p.onPerson} />}
 
         {p.tab === "library" && (
           <div className="fade-in">

@@ -11,6 +11,7 @@ import {
   Eraser,
   Feather,
   FileDown,
+  Flower2,
   FolderOpen,
   GitMerge,
   Highlighter,
@@ -52,6 +53,8 @@ import {
   Hit,
   ImportProgress,
   ImportSummary,
+  DEITIES,
+  isDeity,
   isNamesake,
   isPoet,
   Marks,
@@ -89,6 +92,7 @@ import { Panorama } from "./components/Panorama";
 import { TreeView } from "./components/TreeView";
 import { Settings, SettingsTab, Theme } from "./components/Settings";
 import { Reveal, SideTab, Sidebar } from "./components/Sidebar";
+import { Lineage } from "./components/Lineage";
 import { Rail } from "./components/Rail";
 import { Calendar } from "./components/Calendar";
 import { ask, Kbd, Splitter } from "./components/ui";
@@ -116,7 +120,7 @@ function usePersisted<T>(key: string, fallback: T) {
 }
 
 /** panorama.place: open on the map at that place (`n` tells two requests apart) */
-type Main = { kind: "home" } | { kind: "timeline" } | { kind: "panorama"; place?: { id: number; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "tree"; focus?: { id: number; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number };
+type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "tree"; focus?: { id: number; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number };
 
 type Dialog =
   | { kind: "settings"; tab: SettingsTab }
@@ -877,6 +881,14 @@ export default function App() {
               setPersons(await api.listPersons());
             },
           },
+          {
+            label: p && isDeity(p) ? t.outOfDeities : t.toDeities,
+            icon: Flower2,
+            onClick: async () => {
+              await api.setTag([id], DEITIES, !(p && isDeity(p))).catch(fail);
+              setPersons(await api.listPersons());
+            },
+          },
           "sep",
           { label: t.deletePerson, icon: Trash2, danger: true, onClick: withPerson(id, deletePerson) },
         ],
@@ -1217,6 +1229,7 @@ export default function App() {
             onGuru={(person) => setDialog({ kind: "guru", person })}
             onReveal={(person) => revealIn("person", person.id)}
             onShowInTree={(person) => setMain({ kind: "tree", focus: { id: person.id, n: Date.now() } })}
+            onShowLineage={(person) => setMain({ kind: "lineage", focus: { id: person.id, n: Date.now() } })}
             onPhotoChanged={() => {
               reloadPerson();
               refreshAll();
@@ -1274,6 +1287,7 @@ export default function App() {
           />
         )}
         {main.kind === "timeline" && <Timeline t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} onOpenDoc={openDoc} />}
+        {main.kind === "lineage" && <Lineage t={t} lang={lang} persons={persons} onPerson={openPerson} focus={main.focus} />}
         {main.kind === "panorama" && (
           <Panorama t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} places={places} onPlace={openPlace} focus={main.place} status={status} />
         )}

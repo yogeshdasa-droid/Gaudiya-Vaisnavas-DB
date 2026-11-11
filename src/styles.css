@@ -5821,3 +5821,196 @@ svg.satellite .map-dot {
   align-items: center;
   gap: 6px;
 }
+
+/* ---------------------------------------------------------------- Linaje (11-11-2026) */
+.lineage .lin-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 460px;
+  margin: 10px 0;
+  padding: 4px 10px;
+  border-radius: 9px;
+  background: var(--panel-solid);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.lineage .lin-search input {
+  flex: 1;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  height: 30px;
+  padding: 0;
+}
+.lin-matches {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  max-height: 360px;
+  overflow: auto;
+  padding: 4px;
+  border-radius: 9px;
+  background: var(--panel-solid);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+.lin-matches button {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.lin-matches button:hover {
+  background: var(--accent-soft);
+}
+.lin-none {
+  padding: 6px 8px;
+}
+.lin-bar {
+  margin-top: 4px;
+}
+.lin-steps {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-2, var(--muted));
+}
+.lin-steps select {
+  height: 30px;
+  width: 58px;
+}
+.lin-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+.lin-warn {
+  color: var(--saffron);
+}
+.lin-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 10px;
+  min-height: 0;
+}
+.lin-body .tree-canvas {
+  min-height: 420px;
+  cursor: grab;
+}
+.lin-body .tree-canvas.panning {
+  cursor: grabbing;
+  user-select: none;
+}
+@media (max-width: 900px) {
+  .lin-body {
+    grid-template-columns: 1fr;
+  }
+}
+.lin-gen {
+  fill: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.lin-gen.self {
+  fill: var(--accent-text);
+}
+.lin-node text.lin-sub {
+  fill: var(--muted);
+  font-size: 11px;
+}
+.lin-node.lit-self rect {
+  fill: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  stroke-width: 2.4;
+}
+/* a person whose place under the guru drawn above is disputed */
+.lin-node.doubtful rect {
+  stroke-dasharray: 7 4;
+}
+.lin-note {
+  cursor: help;
+}
+.lin-note circle {
+  fill: var(--surface);
+  stroke: var(--accent);
+  stroke-width: 1.2;
+}
+.lin-note circle.disputed {
+  stroke: var(--saffron);
+  stroke-dasharray: 3 2;
+}
+.lin-note > text:not(.tree-word) {
+  font-size: 10px;
+  font-weight: 700;
+  fill: var(--accent-text);
+}
+.lin-note.hot circle {
+  fill: var(--accent-soft);
+  stroke-width: 2.2;
+}
+.lin-margin {
+  overflow: auto;
+  max-height: 72vh;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.lin-margin-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-2, var(--muted));
+  margin-bottom: 8px;
+}
+.lin-margin-item {
+  display: flex;
+  gap: 8px;
+  padding: 6px 4px;
+  border-radius: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.lin-margin-item.hot {
+  background: var(--accent-soft);
+}
+.lin-margin-item .link-btn {
+  padding: 0;
+  font-size: inherit;
+  text-align: left;
+}
+.lin-num {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.2px solid var(--accent);
+  color: var(--accent-text);
+  font-size: 10.5px;
+  font-weight: 700;
+}
+.lin-num.disputed {
+  border-color: var(--saffron);
+  border-style: dashed;
+  color: var(--saffron);
+}
+.lin-doubt {
+  color: var(--saffron);
+  font-weight: 600;
+}
+.lin-count {
+  margin-top: 10px;
+}

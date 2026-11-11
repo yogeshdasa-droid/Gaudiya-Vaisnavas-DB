@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **31-10-2026** (versión **0.5.0**).
+Última actualización: **11-11-2026** (versión **0.14.0**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,27 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.13.0)
+## 5. Qué hace hoy (v0.14.0)
+
+### Novedades de la 0.14.0 (11-11-2026) — «Linaje» y «Deidades» (sin cambio de formato: sigue el 10)
+- **Pedido por Whisper** (2 ideas):
+  1. **Vista «Linaje»** (`components/Lineage.tsx`), en el rail entre «Línea de tiempo» y «Panorama» (`RailView`
+     «lineage», `Main {kind:"lineage", focus}`), y botón **«Ver linaje»** en la ficha (`PersonView.onShowLineage`).
+     Buscador por nombre y aka (primero los del árbol con más relaciones); **hasta 5 generaciones arriba** (gurus) y
+     **hasta 10 abajo** (discípulos); Todas / Dīkṣā / Śikṣā (`lineOfKind`). Relaciones = el sitio en el árbol
+     (`tree.parent`) + los otros gurus (`links`), sin familia. Dibujo con **dagre** de arriba abajo (`minlen` = salto
+     de generaciones), etiquetas ↑n / Centro / ↓n a la izquierda. **Dudas**: línea `disputed` con rayas largas y la
+     caja del discípulo con borde discontinuo y «?»; cada línea con nota o discutida lleva un **número** en un círculo
+     y su texto en el margen **«Notas y dudas»** (pasar el ratón ilumina los dos); casilla «Notas en las líneas».
+     Clic = el linaje de esa persona; doble clic = su ficha; arrastrar y Ctrl+rueda como el Paramparā Tree. Tope 450
+     personas (aviso). Preferencias en localStorage `bio.lineage*`. Estilos al final de `styles.css` («Linaje»).
+  2. **Panel «Deidades»** entre Tīrthas y Biblioteca (Rail y pestañas del lateral, `DeityList` en `Sidebar.tsx`,
+     icono Flower2): las fichas con la etiqueta fija **«Deidades»** (`DEITIES` / `isDeity` en `api.ts`) — una Deidad,
+     no una persona (Śrī Rasikarāya #1305) —, fuera del Vaiṣṇava-maṇḍala; menú contextual «Llevar a / Sacar de
+     «Deidades»»; abrir una Deidad lleva a su panel.
+- Datos de la sesión (sin cambio de programa): Textos principales de 15 × 5 tandas de fichas fuera del árbol (tandas
+  8–30, scripts `fN.json`, `fN/`, `fN-arbol.json`, `tanda-arbol.mjs`), separadas 1020, 1514, 893, 965, 1879; borradas
+  las 7 fichas vacías de la importación y #545 (una secta).
 
 ### Novedades de la 0.13.0 (07-11-2026) — formato de BD 10: textos y galería de los tīrthas
 - **Pedido por Whisper** (4 ideas + 1):
@@ -1362,6 +1382,11 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **11-11-2026 — v0.14.0**: vista **«Linaje»** (hasta 5 generaciones arriba y 10 abajo, dudas y notas al margen) y
+  panel **«Deidades»**. Datos: Textos principales de las fichas largas fuera del árbol, tandas 8–30 (todas las de más
+  de 1.200 letras), 7 fichas vacías y #545 borradas, nuevas #2158–#2172, 429 → 430 Guṇarāja Khān.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.14.0
 
 - **07-11-2026 (noche, después) — Textos principales de fichas FUERA del árbol, tandas 1–7 (sin versión nueva)**:
   23 fichas con texto (Gaura Kiśora Śiromaṇi, Vaṁśī dāsa Bābājī, Haribolānanda, Jayadeva, Guṇarāja Khān, Jagadbandhu,

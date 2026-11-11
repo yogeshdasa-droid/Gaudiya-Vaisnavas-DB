@@ -1,0 +1,52 @@
+[
+ { "id": 893, "name": "Mahārāṣṭrian Brāhmaṇa",
+   "place": [164, "associate"],
+   "docs": [{ "doc": 900, "pieces": [
+     { "cut": true, "start": "Mahattama Vaiṣṇava He was", "end": "Mahattara Vaiṣṇava When", "to": "mahattama", "title": "From «Vaiṣṇava Biographies A-Z» (was in the record of the Mahārāṣṭrian brāhmaṇa)" },
+     { "cut": true, "start": "Mahattara Vaiṣṇava When", "end": "Maheśa Caudhuri He was", "to": "mahattara", "title": "From «Vaiṣṇava Biographies A-Z» (was in the record of the Mahārāṣṭrian brāhmaṇa)" },
+     { "cut": true, "start": "Maheśa Caudhuri He was", "end": "Maheśa Paṇḍit Śrī Vṛndāvana", "to": "caudhuri", "title": "From «Vaiṣṇava Biographies A-Z» (was in the record of the Mahārāṣṭrian brāhmaṇa)" },
+     { "cut": true, "start": "Maheśa Paṇḍit Śrī Vṛndāvana", "end": "Maheśvara Visarada He was", "toId": 894, "title": "From «Vaiṣṇava Biographies A-Z» (was in the record of the Mahārāṣṭrian brāhmaṇa)" },
+     { "cut": true, "start": "Maheśvara Visarada He was", "end": "Mahendra Giri His name", "toId": 981, "title": "From «Vaiṣṇava Biographies A-Z» (was in the record of the Mahārāṣṭrian brāhmaṇa)" },
+     { "cut": true, "start": "Mahendra Giri His name", "end": "Mahidhara He belonged", "to": "giri", "title": "From «Vaiṣṇava Biographies A-Z» (was in the record of the Mahārāṣṭrian brāhmaṇa)" },
+     { "cut": true, "start": "Mahidhara He belonged", "end": "Makaradhvaja He was Sukesi", "to": "mahidhara", "title": "From «Vaiṣṇava Biographies A-Z» (was in the record of the Mahārāṣṭrian brāhmaṇa)" },
+     { "cut": true, "start": "Makaradhvaja He was Sukesi", "end": "Makradhvaja Datta He was", "to": "sukesi", "title": "From «Vaiṣṇava Biographies A-Z» (was in the record of the Mahārāṣṭrian brāhmaṇa)" },
+     { "cut": true, "start": "Makradhvaja Datta He was", "end": "Makaradvaja Kāra He was", "to": "datta", "title": "From «Vaiṣṇava Biographies A-Z» (was in the record of the Mahārāṣṭrian brāhmaṇa)" },
+     { "cut": true, "start": "Makaradvaja Kāra He was", "end": "Makaradvaja Paṇḍit This was", "to": "kara", "title": "From «Vaiṣṇava Biographies A-Z» (was in the record of the Mahārāṣṭrian brāhmaṇa)" },
+     { "cut": true, "start": "Makaradvaja Paṇḍit This was", "end": "Makaradvaja Sen He was", "toId": 344, "title": "From «Vaiṣṇava Biographies A-Z» (was in the record of the Mahārāṣṭrian brāhmaṇa)" },
+     { "cut": true, "start": "Makaradvaja Sen He was", "end": "Makaranda He lived", "to": "sena", "title": "From «Vaiṣṇava Biographies A-Z» (was in the record of the Mahārāṣṭrian brāhmaṇa)" },
+     { "cut": true, "start": "Makaranda He lived", "end": "Maladhar Basu Gunaraja Khan", "to": "makaranda", "title": "From «Vaiṣṇava Biographies A-Z» (was in the record of the Mahārāṣṭrian brāhmaṇa)" },
+     { "cut": true, "start": "Maladhar Basu Gunaraja Khan", "toId": 430, "title": "From «Vaiṣṇava Biographies A-Z» (was in the record of the Mahārāṣṭrian brāhmaṇa)" }
+   ] }],
+   "new": [
+     { "key": "mahattama", "name": "Mahattama Vaiṣṇava", "place": [164, "associate"],
+       "fields": { "place": "Navadvīpa", "notes": "A vilāsa-pārṣada of Śrī Viśvambhara (Mahāprabhu) in Navadvīpa (Gaura-gaṇoddeśa-dīpikā 15, as quoted in «Vaiṣṇava Biographies A-Z»). Taken out of the record of the Mahārāṣṭrian brāhmaṇa #893 (11-11-2026)." } },
+     { "key": "mahattara", "name": "Mahattara Vaiṣṇava", "place": [164, "associate"],
+       "fields": { "place": "Nīlācala (Purī)", "notes": "A well-known associate of Lord Caitanya while He lived in Nīlācala («Vaiṣṇava Biographies A-Z»). Taken out of the record of the Mahārāṣṭrian brāhmaṇa #893 (11-11-2026)." } },
+     { "key": "caudhuri", "name": "Maheśa Caudhurī", "place": [1010, "disciple"],
+       "fields": { "notes": "Of the branch of Narottama Ṭhākura (Prema-vilāsa 20, as quoted in «Vaiṣṇava Biographies A-Z»). Taken out of the record of the Mahārāṣṭrian brāhmaṇa #893 (11-11-2026)." } },
+     { "key": "giri", "name": "Mahendra Giri",
+       "fields": { "notes": "His name is mentioned in Jayānanda's Caitanya-maṅgala (p. 88) («Vaiṣṇava Biographies A-Z»). Taken out of the record of the Mahārāṣṭrian brāhmaṇa #893 (11-11-2026)." } },
+     { "key": "mahidhara", "name": "Mahīdhara", "place": [1851, "disciple"],
+       "fields": { "notes": "Of Nityānanda's branch (Caitanya-caritāmṛta Ādi 11.45, as quoted in «Vaiṣṇava Biographies A-Z»). Not the Mahīdhara of the texts of Gaṅgāmātā and Narottama. Taken out of the record of the Mahārāṣṭrian brāhmaṇa #893 (11-11-2026)." } },
+     { "key": "sukesi", "name": "Makaradhvaja (Sukeśī in Vraja)",
+       "fields": { "notes": "He was Sukeśī in Vraja (Gaura-gaṇoddeśa-dīpikā 168, as quoted in «Vaiṣṇava Biographies A-Z»). Perhaps one of the other Makaradhvajas (Kara, or Makaradhvaja Paṇḍita = Gopāla Guru #344): the book gives them apart. Taken out of the record of the Mahārāṣṭrian brāhmaṇa #893 (11-11-2026)." } },
+     { "key": "datta", "name": "Makaradhvaja Datta",
+       "fields": { "notes": "He was Kuraṅgākṣī in Kṛṣṇa-līlā (Vaiṣṇavācāra-darpaṇa, as quoted in «Vaiṣṇava Biographies A-Z»). Taken out of the record of the Mahārāṣṭrian brāhmaṇa #893 (11-11-2026)." } },
+     { "key": "kara", "name": "Makaradhvaja Kara", "place": [1856, "disciple"],
+       "fields": { "place": "Pāṇihāṭi (24 Parganas)", "guru": "Rāghava Paṇḍita", "notes": "A kāyastha of Śrī Caitanya's branch; in Vraja the actor Candramukha (Gaura-gaṇoddeśa-dīpikā 141). Disciple of Rāghava Paṇḍita; his śrīpāṭa was at Pāṇihāṭi, where Rāghava Paṇḍita's temple and samādhi were, but no trace of his own tomb remains («Vaiṣṇava Biographies A-Z»). Taken out of the record of the Mahārāṣṭrian brāhmaṇa #893 (11-11-2026)." } },
+     { "key": "sena", "name": "Makaradhvaja Sena",
+       "fields": { "notes": "He was Mañjumedhā sakhī in Kṛṣṇa-līlā (Vaiṣṇavācāra-darpaṇa, as quoted in «Vaiṣṇava Biographies A-Z»). Taken out of the record of the Mahārāṣṭrian brāhmaṇa #893 (11-11-2026)." } },
+     { "key": "makaranda", "name": "Makaranda (Gujarat)", "place": [343, "disciple"],
+       "fields": { "place": "Gujarat", "guru": "Gopāla Bhaṭṭa Gosvāmī", "notes": "He lived in Gujarat and was a disciple of Śrīla Gopāla Bhaṭṭa Gosvāmī (Prema-vilāsa 18, as quoted in «Vaiṣṇava Biographies A-Z»). Taken out of the record of the Mahārāṣṭrian brāhmaṇa #893 (11-11-2026)." } }
+   ] },
+ { "id": 981, "name": "Narahari Viśārada",
+   "fields": { "aka": "Maheśvara Viśārada" } },
+ { "id": 1879, "name": "Vaṁśīvaṭa Bābājī",
+   "docs": [{ "doc": 2165, "pieces": [
+     { "start": "Koṭi Baba\n\nIn South India", "to": "koti", "title": "Koṭi Bābā, and other bābās met by Ātmātattva dāsa (was in the record of Vaṁśīvaṭa Bābājī)" }
+   ] }],
+   "new": [
+     { "key": "koti", "name": "Koṭi Bābā (South India)",
+       "fields": { "place": "South India (the palace of a former zamindar's family)", "notes": "A very old yogī of South India. Three generations earlier he had stopped a zamindar from killing an elephant and healed it; since then the family brought him rice and took his instruction every new-moon day, and at last kept him in a small room on the roof of their palace. He came out only on the new-moon day, ate one handful of rice, and gave audience. To Ātmātattva dāsa he said that many had gone to America and done nothing — «Vivekananda went to America and did nothing; you stay with these people, they are doing something» — and was pleased to hear the holy name was being chanted all over the world. Story told by Ātmātattva dāsa; the same text tells of other bābās he met (one whose body kept growing, and the Nāga bābās above Nīlakaṇṭha Mahādeva). Taken out of the record of Vaṁśīvaṭa Bābājī #1879 (11-11-2026)." } }
+   ] }
+]
