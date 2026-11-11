@@ -469,6 +469,8 @@ export function Lineage({
                     return (
                       <g
                         key={n.id}
+                        data-ctx="person"
+                        data-id={n.id}
                         className={`tree-node lin-node${n.gen === 0 ? " lit-self" : ""}${rel?.disputed ? " doubtful" : ""}`}
                         transform={`translate(${n.x},${n.y})`}
                         onClick={(e) => e.detail === 1 && n.id !== center && setCenter(n.id)}

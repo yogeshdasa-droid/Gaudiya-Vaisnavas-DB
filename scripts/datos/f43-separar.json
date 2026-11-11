@@ -1,0 +1,10 @@
+[
+ { "id": 478, "name": "Harinārāyaṇa",
+   "docs": [{ "doc": 483, "pieces": [
+     { "cut": true, "start": "He was a disicple of Rasikānanda Prabhu.", "to": "rasika", "title": "Harinārāyaṇa, disciple of Rasikānanda (was in the record of Harinārāyaṇa of Pañcakoṭa)" }
+   ] }],
+   "new": [
+     { "key": "rasika", "name": "Harinārāyaṇa (disciple of Rasikānanda, Rasikamaṅgala 14.156)", "place": [1908, "diksa"],
+       "fields": { "guru": "Rasikānanda Prabhu", "notes": "A disciple of Rasikānanda Prabhu (Rasikamaṅgala Paścima 14.156). Taken out of the record of Harinārāyaṇa, rājā of Pañcakoṭa, #478 (11-11-2026)." } }
+   ] }
+]

@@ -1,0 +1,19 @@
+[
+ { "into": 1725, "name": "Viśvarūpa", "from": [{ "id": 1369, "name": "Śaṅkarāraṇya" }],
+   "fields": {
+     "aka": "Śaṅkarāraṇya (his sannyāsa name)",
+     "disappearance": "At the temple of Śrī Viṭhṭhalanātha, Paṇḍharpur (the record of Śaṅkarāraṇya)",
+     "place": "Navadvīpa; Kāśī (sannyāsa); Paṇḍharpur (samādhi)",
+     "guru": "Śrī Kṛṣṇa Bhāratī (sannyāsa, at Kāśī)",
+     "notes": "Elder brother of Śrī Caitanya Mahāprabhu; Baladeva / Saṅkarṣaṇa in Kṛṣṇa-līlā (GGD 58-60; VV. of Jīva 25-26, Devakīnandana 7, Murāri 1.2.8, CC Ādi 15.9, CBh Ādi 1.9, Jayānanda p. 11). Long before the Lord's sannyāsa he took sannyāsa at Kāśī from Śrī Kṛṣṇa Bhāratī as Śaṅkarāraṇya and left the world at the Viṭhṭhalanātha temple of Paṇḍharpur, where his samādhi is said to be; Raṅga Purī told the Lord about him there. (The record «Śaṅkarāraṇya» #1369 was merged into this one on 11-11-2026; Śaṅkarāraṇya Ācārya of Cātrā #1368 is another person. The guru field said «Śrī Caitanya Mahāprabhu».)"
+   } },
+ { "into": 281, "name": "Gāndharvā Kumudānanda", "from": [{ "id": 814, "name": "Kumudānanda Paṇḍit" }],
+   "fields": {
+     "name": "Kumudānanda Paṇḍita (Gāndharva)",
+     "aka": "Gāndharvā Kumudānanda, Kumudānanda Paṇḍit",
+     "place": "Chittagong; Dāiṅhāṭ (Burdwan): his śrīpāṭa and Deity Rasikarāja",
+     "notes": "Called «Daśama Gopāla» in some books and «Upagopāla» in others; Gāndharva gopa in Kṛṣṇa-līlā (Gaura-gaṇoddeśa-dīpikā 136). From Chittagong; installed the Deity Rasikarāja at his śrīpāṭa of Dāiṅhāṭ (Burdwan), now served by the Gosvāmīs of Rāmacaraṇa Cakravartī's family. (The record «Kumudānanda Paṇḍit» #814 was merged into this one on 11-11-2026; Kumudānanda Ṭhākura #815, Śrīnivāsa's disciple, is another person.)"
+   } },
+ { "into": 2150, "name": "Jagannātha Gajapati Nārāyaṇa Deva (Parlākimedi)", "from": [{ "id": 2022, "name": "Jagannātha Gajapati Nārāyaṇa Deva (Parlakimedi)" }],
+   "trash": [3399] }
+]

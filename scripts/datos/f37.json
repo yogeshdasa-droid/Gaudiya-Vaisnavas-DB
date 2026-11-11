@@ -1,0 +1,21 @@
+[
+ { "id": 4, "name": "Abhirāma Dāsa", "main": "main-4.md",
+   "fields": {
+     "works": "Govinda-vijaya; Kṛṣṇa-maṅgala; Pāṭa-paryaṭana (a summary of the Pāṭa-nirṇaya); Abhirāma Ṭhākurera Śākhā-nirṇaya",
+     "notes": "Named as author of the Govinda-vijaya and Kṛṣṇa-maṅgala (Baṅgīya Sāhitya Sevaka) and of the Pāṭa-paryaṭana and Abhirāma Ṭhākurera Śākhā-nirṇaya («remembering the lotus feet of Śrī Ratneśvara»); perhaps two persons. Not Abhirāma Ṭhākura (Abhirāma Gosvāmī)."
+   } },
+ { "id": 666, "name": "Kānāiyā Vipra", "main": "main-666.md",
+   "fields": {
+     "place": "Vṛndāvana (near Sanātana Gosvāmī)",
+     "notes": "A Vrajavāsī brāhmaṇa loved by the Vaiṣṇavas, living near Sanātana Gosvāmī; his mother served Rūpa and Sanātana (once the Lord, as Kānāi, gave Sanātana bhikṣā at her door). Embraced Śrīnivāsa in tears when he left with the books (Bhakti-ratnākara 3.373, 386-387); after Rūpa and Sanātana's passing resolved to give up his life."
+   } },
+ { "id": 550, "name": "Jagannātha Dāsa (Atibaḍī Jagannātha Dāsa)", "main": "main-550.md",
+   "fields": {
+     "aka": "Atibaḍī Jagannātha dāsa, Ativadi Jagannātha Dāsa",
+     "appearance": "Bhādra śukla aṣṭamī, at Kapileśvara (Purī district) (the record's text)",
+     "disappearance": "At the age of sixty (the record's text)",
+     "place": "Kapileśvara (Purī district)",
+     "works": "Oṛiyā Śrīmad-Bhāgavatam (navākṣara metre); Brahmāṇḍa-bhūgola, Prema-sādhana and Dūtibodha (ascribed)",
+     "notes": "A brāhmaṇa of Kapileśvara, son of Bhagavān Paṇḍā and Pārvatī-devī; translated the Bhāgavatam into Oṛiyā. Lord Caitanya, displeased by remarks against bhakti-tattva in it, rebuked him, and he was called «Atibaḍī» (his followers: the Atibaḍī sampradāya). Died at sixty. Not #552."
+   } }
+]

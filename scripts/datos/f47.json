@@ -1,0 +1,13 @@
+[
+ { "id": 2161, "name": "Mahendra Giri", "main": "main-2161.md", "fields": {} },
+ { "id": 2164, "name": "Makaradhvaja Datta", "main": "main-2164.md", "fields": {} },
+ { "id": 2023, "name": "Jayadeva dāsa (padakartā)", "main": "main-2023.md", "fields": {} },
+ { "id": 2139, "name": "Nandana (poet)", "main": "main-2139.md", "fields": {} },
+ { "id": 2173, "name": "Gadādhara dāsa (of Vṛndāvana, Vaiṣṇava-vandanā 70)", "main": "main-2173.md", "fields": {} },
+ { "id": 2122, "name": "Giridhara Dāsa (translator of the Gīta-govinda, 1733)", "main": "main-2122.md", "fields": { "works": "Bengali Gīta-govinda (1733)" } },
+ { "id": 2163, "name": "Makaradhvaja (Sukeśī in Vraja)", "main": "main-2163.md", "fields": {} },
+ { "id": 834, "name": "Lakṣmīpriyā (wife of Panna Gopāla)", "main": "main-834.md",
+   "fields": { "name": "Lakṣmīpriyā (wife of Pānuā Gopāla)", "aka": "Lakṣmīpriyā (wife of Panna Gopāla)", "place": "Maṅgaladihi (Birbhum)",
+     "notes": "Wife of Pānuā Gopāla of Maṅgaladihi, with whom (and his sister Mādhavīlatā) she served Śrī Śyāmacāṅd, left in their care by Dhruva Gosvāmī (#215)." } },
+ { "id": 2144, "name": "Balarāma (son of Gaurīdāsa Paṇḍita)", "main": "main-2144.md", "fields": {} }
+]

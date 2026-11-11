@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **11-11-2026** (versión **0.14.0**).
+Última actualización: **11-11-2026** (versión **0.14.1**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,19 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.14.0)
+## 5. Qué hace hoy (v0.14.1)
+
+### Novedades de la 0.14.1 (11-11-2026) — «Ver en linaje» con el clic derecho (formato 10 sin cambios)
+- **Pedido por Whisper**: en el **Paramparā Tree dibujado** (y en el lateral y en Linaje) clic derecho en un nombre →
+  **«Ver en linaje»**, que abre Linaje con esa persona en el centro (menú `person` de `App.tsx`; las cajas del árbol
+  dibujado — también las filas de las cajas-lista — y las de Linaje llevan ahora `data-ctx="person"`, así que el
+  árbol dibujado tiene por fin el menú de la persona). El botón de la ficha se llama **«Ver en linaje»** (antes «Ver
+  linaje»), al lado de «Ver en el árbol».
+- Datos de la sesión (sin cambio de programa): **todas las fichas fuera del árbol tienen ya Texto principal** (tandas
+  31–47; las cortas de 15 en 15 con `gen-main.mjs`), salvo Koṭi Bābā #2168 y la Deidad #1305. Uniones 1369 → 1725
+  Viśvarūpa, 814 → 281, 2022 → 2150, 703 → 893; fichas nuevas #2173–#2176 (entre ellas #2174 Siddha Caitanya dāsa
+  Bābājī); 591 Janārdana Vipra movido bajo 758 Kṛṣṇadāsa Guñjamālī; borradas #955 y #487 (no eran personas).
+  `tanda-arbol.mjs` hace también «move», «links» y líneas discutidas; `borrar-ficha.mjs <id> <nombre>`.
 
 ### Novedades de la 0.14.0 (11-11-2026) — «Linaje» y «Deidades» (sin cambio de formato: sigue el 10)
 - **Pedido por Whisper** (2 ideas):
@@ -1382,6 +1394,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **11-11-2026 — v0.14.1**: «Ver en linaje» en el clic derecho (también en el Paramparā Tree dibujado) y en el botón
+  de la ficha. Datos: Textos principales de todas las fichas fuera del árbol (tandas 31–47).
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.14.1
 
 - **11-11-2026 — v0.14.0**: vista **«Linaje»** (hasta 5 generaciones arriba y 10 abajo, dudas y notas al margen) y
   panel **«Deidades»**. Datos: Textos principales de las fichas largas fuera del árbol, tandas 8–30 (todas las de más

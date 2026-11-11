@@ -1,0 +1,30 @@
+[
+ { "id": 1245, "name": "Rāmacandra Khan (Benāpol)", "main": "main-1245.md",
+   "fields": {
+     "name": "Rāmacandra Khān (Benāpola)",
+     "aka": "Rāmacandra Khan (Benāpol), Śāntidhara (birth name)",
+     "place": "Kāgaja-pukhuriyā near Benāpola (Jessore)",
+     "notes": "Born Śāntidhara, a Śrotriya Rāḍhīya brāhmaṇa; zamindār near Benāpola and childhood friend of Hussain Shah. Sent a prostitute to Haridāsa Ṭhākura; had Caṇḍī's pavilion scraped and washed after Nityānanda sat there; then the king's wazir looted and imprisoned him (CC Antya 3.101-102, 156-160). Not Rāmacandra Khān of Chatrabhoga (#1246)."
+   } },
+ { "id": 1265, "name": "Rāmagopāl Dāsa", "main": "main-1265.md",
+   "fields": {
+     "name": "Rāmagopāla dāsa (Rasa-kalpavallī)",
+     "aka": "Rāmagopāl Dāsa, Rāmagopāla Rāyacaudhurī",
+     "place": "Śrīkhaṇḍa (family of Cakrapāṇi Caudhurī)",
+     "works": "Rasa-kalpavallī (12 sections, 1595 Śaka / 1673); Śrī Narahari-śākhā-nirṇaya; Śrī Raghunandana-śākhā-nirṇaya; padas",
+     "notes": "Disciple of Ratikānta Ṭhākura (#1308) of Raghunandana's family; younger son of Śyāmarāya, of the line of Cakrapāṇi Caudhurī of Śrīkhaṇḍa (Cakrapāṇi → Nityānanda → Gaṅgārāma → Śyāmarāya); his brother Madana put the Govinda-līlāmṛta into Bengali verse. A renowned Vaiṣṇava poet."
+   } },
+ { "id": 758, "name": "Kṛṣṇadāsa Gunjamali", "main": "main-758.md",
+   "fields": {
+     "name": "Kṛṣṇadāsa Guñjamālī",
+     "aka": "Kṛṣṇadāsa Gunjamali",
+     "place": "Born at Lahore; Govardhana; Multān, Gujarat, Olambā (Punjab): his Deities; Sindh; Vṛndāvana (end of his life)",
+     "guru": "Śrī Caitanya Mahāprabhu",
+     "disciples": "Banwāricandra (his nephew, mahānta at Multān); Janārdana Vipra (#591, mahānta at Olambā)",
+     "notes": "Born at Lahore; at seventeen came to Gopāla of Govardhana; surrendered to Lord Caitanya in Vṛndāvana, who gave him His guñjā-mālā; by His order installed Deities at Multān, in Gujarat and at Olambā (Baḍa Gauḍīya Gaddī); preached the holy name in the Punjab and Sindh; ended his life in Vṛndāvana. Not Kṛṣṇadāsa (Rāmadāsa) Kapūra #750."
+   } },
+ { "id": 591, "name": "Janārdana Vipra",
+   "fields": { "guru": "Kṛṣṇadāsa Guñjamālī (#758)" } },
+ { "id": 757, "name": "Kṛṣṇadāsa Dāsa",
+   "fields": { "disciples": "Viṣṇudāsa" } }
+]

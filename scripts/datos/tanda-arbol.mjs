@@ -1,5 +1,6 @@
 // node tanda-arbol.mjs <plan.json> [puerto]   (11-11-2026, batches 9-13 of the main texts outside the tree)
-// Plan: { "place": [[id, parent, kind, note]],   ← under that guru, only if still outside the tree and the guru is in it
+// Plan: { "place": [[id, parent, kind, note, disputed?]],   ← under that guru, only if still outside the tree and the guru is in it
+//         "move": [[id, from, parent, kind, note]],          ← already in the tree under «from»: moved under «parent»
 //         "links": [[id, guru, kind]],            ← extra line (both already in the tree, so no one goes to the top)
 //         "trash": [[personId, docId]],           ← texts to the bin (only if that record still has it)
 //         "poets": [ids] }                        ← label «Poetas» (only outside the tree)
@@ -14,7 +15,7 @@ const expr = `(async () => { try {
   const inv = window.__TAURI_INTERNALS__.invoke;
   const plan = ${JSON.stringify(plan)};
   const log = [];
-  for (const [id, parent, kind, note] of plan.place || []) {
+  for (const [id, parent, kind, note, disputed] of plan.place || []) {
     const rows = await inv("list_persons");
     const r = rows.find((p) => p.id === id), g = rows.find((p) => p.id === parent);
     if (!r) { log.push(id + " missing"); continue; }
@@ -22,8 +23,19 @@ const expr = `(async () => { try {
     if (!g?.tree) { log.push(parent + " not in the tree: " + id + " left out"); continue; }
     await inv("move_person", { id, place: { parent, before: null } });
     await inv("set_tree_kind", { id, kind });
-    if (note) await inv("set_line_info", { id, guru: null, note, disputed: false });
-    log.push(id + " under " + parent + " (" + kind + ")");
+    if (note || disputed) await inv("set_line_info", { id, guru: null, note: note || "", disputed: !!disputed });
+    log.push(id + " under " + parent + " (" + kind + (disputed ? ", disputed" : "") + ")");
+  }
+  // records already in the tree under the wrong guru: moved (only if still under «from»)
+  for (const [id, from, parent, kind, note] of plan.move || []) {
+    const rows = await inv("list_persons");
+    const r = rows.find((p) => p.id === id), g = rows.find((p) => p.id === parent);
+    if (!r?.tree || r.tree.parent !== from) continue;
+    if (!g?.tree) { log.push(parent + " not in the tree: " + id + " not moved"); continue; }
+    await inv("move_person", { id, place: { parent, before: null } });
+    await inv("set_tree_kind", { id, kind });
+    await inv("set_line_info", { id, guru: null, note: note || "", disputed: false });
+    log.push(id + " moved from " + from + " to " + parent + " (" + kind + ")");
   }
   for (const [id, guru, kind] of plan.links || []) {
     const rows = await inv("list_persons");

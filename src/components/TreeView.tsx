@@ -533,6 +533,8 @@ export function TreeView({
                   n.p ? (
                     <g
                       key={n.key}
+                      data-ctx="person"
+                      data-id={n.p.id}
                       className={nodeClass(n.p.id)}
                       transform={`translate(${n.x},${n.y})`}
                       opacity={nodeOpacity(n.p.id)}
@@ -557,6 +559,8 @@ export function TreeView({
                       {n.items!.map((it, i) => (
                         <g
                           key={it.p.id}
+                          data-ctx="person"
+                          data-id={it.p.id}
                           className={nodeClass(it.p.id)}
                           opacity={nodeOpacity(it.p.id)}
                           onClick={(e) => e.detail === 1 && onPerson(it.p.id)}

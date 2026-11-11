@@ -1,0 +1,10 @@
+[
+ { "id": 1303, "name": "Rasikamohana Vidyābhūṣaṇa",
+   "docs": [{ "doc": 1315, "pieces": [
+     { "cut": true, "start": "Rasikānanda He was a Vaiṣṇava poet.", "to": "poet", "title": "Rasikānanda, Vaiṣṇava poet (was in the record of Rasikamohana Vidyābhūṣaṇa)" }
+   ] }],
+   "new": [
+     { "key": "poet", "name": "Rasikānanda (padakartā, Padakalpataru 2227)", "poet": true,
+       "fields": { "works": "Padakalpataru 2227 (on Lord Gaurāṅga's sannyāsa)", "notes": "A Vaiṣṇava poet; pada 2227 of the Padakalpataru, on Lord Gaurāṅga's acceptance of sannyāsa, is his. Perhaps Rasikānanda Prabhu (#1908); the record does not say. Taken out of the record of Rasikamohana Vidyābhūṣaṇa #1303 (11-11-2026)." } }
+   ] }
+]

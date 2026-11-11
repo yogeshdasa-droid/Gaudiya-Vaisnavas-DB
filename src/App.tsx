@@ -12,6 +12,7 @@ import {
   Feather,
   FileDown,
   Flower2,
+  GitFork,
   FolderOpen,
   GitMerge,
   Highlighter,
@@ -836,6 +837,7 @@ export default function App() {
         title: p?.name,
         items: [
           { label: t.openPerson, icon: UserRound, onClick: () => openPerson(id) },
+          { label: t.showLineage, icon: GitFork, onClick: () => setMain({ kind: "lineage", focus: { id, n: Date.now() } }) },
           { label: t.revealInTree, icon: LocateFixed, onClick: () => revealIn("person", id) },
           // (only in the side tree, for one with two or more gurus above: Sidebar.tsx)
           ...(ctxEl!.dataset.back

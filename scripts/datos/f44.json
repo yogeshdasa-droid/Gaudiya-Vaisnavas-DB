@@ -1,0 +1,17 @@
+[
+ { "id": 556, "name": "Jagannātha Dāsa (author of the Bhakta-caritāmṛta)", "main": "main-556.md", "fields": {} },
+ { "id": 1964, "name": "Pradyumna Miśra (cousin of Lord Caitanya)", "main": "main-1964.md", "fields": {} },
+ { "id": 600, "name": "Jayagopāla Dāsa (father of Balarāma dāsa)", "main": "main-600.md", "fields": { "disciples": "" } },
+ { "id": 2121, "name": "Giridhara Dāsa (translator of the Manaḥ-śikṣā)", "main": "main-2121.md", "fields": { "works": "Bengali Manaḥ-śikṣā (with Yadunandana dāsa)" } },
+ { "id": 1984, "name": "Jagadānanda (descendant of Śrīnivāsa Ācārya)", "main": "main-1984.md", "fields": {} },
+ { "id": 1993, "name": "Jāhnavī Devī (mother of Kāśīnātha of Cātarā)", "main": "main-1993.md", "fields": {} },
+ { "id": 867, "name": "Mādhava (of Vṛndāvana, CC Madhya 13.51)", "main": "main-867.md", "fields": { "place": "Vṛndāvana (came from Bengal)" } },
+ { "id": 981, "name": "Narahari Viśārada", "main": "main-981.md", "fields": {} },
+ { "id": 2018, "name": "Gopāla dāsa (author of a Bhaktiratnākara, 1590)", "main": "main-2018.md", "fields": { "works": "A Bhakti-ratnākara (1590), not Narahari's" } },
+ { "id": 1994, "name": "Jāhnavā (wife of Puruṣottama dāsa)", "main": "main-1994.md", "fields": {} },
+ { "id": 2106, "name": "Rasamaya Dāsa (translator of the Gīta-govinda)", "main": "main-2106.md", "fields": { "works": "Bengali verse Gīta-govinda" } },
+ { "id": 2149, "name": "Jagannātha Ghoṣa (brother of Vāsudeva Ghoṣa)", "main": "main-2149.md", "fields": {} },
+ { "id": 2153, "name": "Lalit Sakhī (disciple of Muralīdhara)", "main": "main-2153.md", "fields": { "name": "Lalita Sakhī (disciple of Muralīdhara)", "aka": "Lalit Sakhī" } },
+ { "id": 2120, "name": "Giridhara Dāsa (translator of the Smaraṇa-maṅgala)", "main": "main-2120.md", "fields": { "works": "A Bengali Smaraṇa-maṅgala (manuscript of 1681)" } },
+ { "id": 1934, "name": "Hemalatā Devī (daughter of Śyāmadāsa Cakravartī)", "main": "main-1934.md", "fields": {} }
+]

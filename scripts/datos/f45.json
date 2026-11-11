@@ -1,0 +1,17 @@
+[
+ { "id": 2147, "name": "Gaṅgādāsa (brāhmaṇa of Anādi)", "main": "main-2147.md", "fields": {} },
+ { "id": 2170, "name": "Navadvīpacandra dāsa (padakartā)", "main": "main-2170.md", "fields": {} },
+ { "id": 707, "name": "Kavicandra (son of Kavikarṇapūra)", "main": "main-707.md", "fields": {} },
+ { "id": 1991, "name": "Gaṅgā Devī (mother of Puṇḍarīka Vidyānidhi)", "main": "main-1991.md", "fields": {} },
+ { "id": 2115, "name": "Kṛṣṇadāsa (author of the Govinda-maṅgala)", "main": "main-2115.md", "fields": {} },
+ { "id": 2175, "name": "Rasikānanda (padakartā, Padakalpataru 2227)", "main": "main-2175.md", "fields": {} },
+ { "id": 1949, "name": "Rāmadāsa (son of Śivānanda Sen)", "main": "main-1949.md", "fields": { "aka": "Vicakṣaṇa Śuka (GGD 145)" } },
+ { "id": 1979, "name": "Haridāsa (padakartā)", "main": "main-1979.md", "fields": {} },
+ { "id": 2107, "name": "Rasamaya Dāsa (author of the Kṛṣṇa-bhakti-vallī)", "main": "main-2107.md", "fields": {} },
+ { "id": 2020, "name": "Gopāla dāsa (translator of the Jagannātha-vallabha-nāṭaka)", "main": "main-2020.md", "fields": { "works": "A Bengali Jagannātha-vallabha-nāṭaka (with others; C.U. ms. 2582, 1235 BS)" } },
+ { "id": 2131, "name": "Mādhava (poet, 55 padas)", "main": "main-2131.md", "fields": {} },
+ { "id": 1078, "name": "Paramānanda Vaidya", "main": "main-1078.md", "fields": { "notes": "Paternal grandfather of Śrī Jagadānanda (the record's text)." } },
+ { "id": 1812, "name": "Bhakti Vishtar Viṣṇu", "main": "main-1812.md", "fields": { "name": "Bhakti Vistāra Viṣṇu", "aka": "Bhakti Vishtar Viṣṇu", "guru": "Bhakti Vicāra Yāyāvara Mahārāja (his mission)", "notes": "Ācārya of the mission of Śrīla Bhakti Vicāra Yāyāvara Mahārāja (#1667); founding member of the World Vaiṣṇava Association." } },
+ { "id": 1981, "name": "Haridāsa (Orissa, author of the Mayūra-candrikā)", "main": "main-1981.md", "fields": {} },
+ { "id": 2104, "name": "Kavicandra (teacher of Rasikānanda)", "main": "main-2104.md", "fields": {} }
+]

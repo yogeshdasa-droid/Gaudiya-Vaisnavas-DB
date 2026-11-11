@@ -1,0 +1,10 @@
+[
+ { "id": 273, "name": "Gadādhara Dāsa",
+   "docs": [{ "doc": 275, "pieces": [
+     { "cut": true, "start": "## GADĀDHARA DĀSA\n\nHe was a resident of Vṛndāvana", "to": "vrndavana", "title": "Gadādhara Dāsa of Vṛndāvana (was in the record of Gadādhara dāsa, author of the Puruṣottama-māhātmya)" }
+   ] }],
+   "new": [
+     { "key": "vrndavana", "name": "Gadādhara dāsa (of Vṛndāvana, Vaiṣṇava-vandanā 70)",
+       "fields": { "place": "Vṛndāvana", "notes": "A resident of Vṛndāvana (Vaiṣṇava-vandanā 70). Taken out of the record #273, which is Gadādhara dāsa, brother of Kāśīrāma dāsa and author of the Puruṣottama-māhātmya (11-11-2026)." } }
+   ] }
+]
