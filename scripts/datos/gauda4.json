@@ -1,0 +1,21 @@
+{
+  "create": [
+    { "name": "Yaśaḍā", "aka": "Yasada, Yaśoḍā, Jasra", "region": "Nadīyā, West Bengal", "location": "Near Cākadaha, on the Gaṅgā (coordinates approximate)", "about": "The śrīpāṭa of Śrī Jagadīśa Paṇḍita, who carried a deity of Śrī Jagannātha on his shoulders from Purī to this place and rested under a banyan tree that is still alive.", "source": "Śrī Navadvīpa-dhāma, p. 300", "lat": 23.06, "lon": 88.53, "people": [{ "personId": 534, "role": "sripata" }] }
+  ],
+  "update": [
+    { "id": 19, "name": "Kāṭwā", "addAka": "Kaṭavā, Kaṇṭaka-nagarī", "people": [{ "personId": 164, "role": "other" }, { "personId": 713, "role": "lived" }, { "personId": 713, "role": "samadhi" }, { "personId": 1815, "role": "lived" }, { "personId": 1815, "role": "samadhi" }] },
+    { "id": 93, "name": "Tālakhaḍi", "addAka": "Tālakharī", "lat": 23.33, "lon": 89.31, "people": [{ "personId": 844, "role": "birth" }, { "personId": 1065, "role": "lived" }] },
+    { "id": 98, "name": "Kasiāḍi", "addAka": "Keśīyāḍī", "people": [{ "personId": 1535, "role": "other" }, { "personId": 1908, "role": "other" }] },
+    { "id": 95, "name": "Bāklā-Candradvīpa", "addAka": "Vākalācandradvīpa, Vākalā", "people": [{ "personId": 808, "role": "lived" }, { "personId": 1353, "role": "birth" }, { "personId": 1325, "role": "birth" }, { "personId": 56, "role": "birth" }, { "personId": 166, "role": "lived" }] },
+    { "id": 91, "name": "Dhāreṇḍā", "addAka": "Dhārendā Bahādura", "lat": 22.35, "lon": 87.2, "people": [{ "personId": 1535, "role": "birth" }, { "personId": 1535, "role": "sripata" }] },
+    { "id": 2, "name": "Kāñcanagaḍiyā", "people": [{ "personId": 1983, "role": "lived" }, { "personId": 1983, "role": "samadhi" }, { "personId": 1744, "role": "lived" }, { "personId": 1055, "role": "lived" }, { "personId": 1208, "role": "lived" }, { "personId": 1435, "role": "lived" }] },
+    { "id": 74, "name": "Kāñcrāpāḍā", "addAka": "Kāñcanapallī, Kāñcaḍāpāḍā", "people": [{ "personId": 1652, "role": "lived" }, { "personId": 1427, "role": "other" }, { "personId": 706, "role": "other" }] },
+    { "id": 14, "name": "Kheturī", "people": [{ "personId": 1010, "role": "birth" }] },
+    { "id": 12, "name": "Khaḍadaha", "people": [{ "personId": 1851, "role": "lived" }, { "personId": 574, "role": "lived" }, { "personId": 1660, "role": "lived" }, { "personId": 1880, "role": "birth" }, { "personId": 292, "role": "birth" }] },
+    { "id": 17, "name": "Kulīnagrāma", "people": [{ "personId": 1398, "role": "lived" }, { "personId": 1279, "role": "lived" }, { "personId": 1643, "role": "lived" }, { "personId": 430, "role": "lived" }, { "personId": 475, "role": "other" }, { "personId": 1427, "role": "birth" }] },
+    { "id": 16, "name": "Kumārahaṭṭa", "people": [{ "personId": 516, "role": "birth" }, { "personId": 1468, "role": "lived" }, { "personId": 96, "role": "lived" }, { "personId": 164, "role": "other" }] },
+    { "id": 15, "name": "Pānihāṭi", "people": [{ "personId": 1856, "role": "lived" }, { "personId": 1856, "role": "samadhi" }, { "personId": 172, "role": "lived" }, { "personId": 1206, "role": "other" }, { "personId": 1851, "role": "other" }] },
+    { "id": 73, "name": "Phuliyā", "people": [{ "personId": 475, "role": "lived" }, { "personId": 164, "role": "other" }] },
+    { "id": 4, "name": "Budhurī", "people": [{ "personId": 1244, "role": "sripata" }, { "personId": 1960, "role": "sripata" }] }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "create": [
+    { "name": "Dāṅīhāṭa", "aka": "Dāīhāṭa, Dainhat, Dāiṅhāṭ", "region": "Vardhamāna, West Bengal", "location": "Two miles from Dāīhāṭa station (Baiṇḍila–Baḍaharavā line)", "about": "The śrīpāṭa of Śrī Mukunda Ghoṣa, Vāsudeva Ghoṣa's brother, whose deity Śrī Rasika-rāya is still here; also the śrīpāṭa of Śrī Vaṁśī-vadanānanda (Kṛṣṇa's flute in Vraja), who looked after Śacī-mātā and Viṣṇupriyā in Navadvīpa after Mahāprabhu's sannyāsa.", "source": "Śrī Navadvīpa-dhāma, p. 217", "lat": 23.6, "lon": 88.18, "people": [{ "personId": 1623, "role": "sripata" }] }
+  ],
+  "update": [
+    { "id": 22, "name": "Rāmakeli", "people": [{ "personId": 1353, "role": "lived" }, { "personId": 1325, "role": "lived" }, { "personId": 618, "role": "birth" }, { "personId": 164, "role": "other" }] },
+    { "id": 21, "name": "Śāntipura", "people": [{ "personId": 15, "role": "sripata" }, { "personId": 1442, "role": "sripata" }, { "personId": 14, "role": "lived" }, { "personId": 1417, "role": "lived" }] },
+    { "id": 5, "name": "Saptagrāma", "people": [{ "personId": 1206, "role": "lived" }, { "personId": 1567, "role": "lived" }, { "personId": 501, "role": "lived" }] },
+    { "id": 112, "name": "Cāndapura", "people": [{ "personId": 75, "role": "lived" }] },
+    { "id": 18, "name": "Śrīkhaṇḍa", "people": [{ "personId": 980, "role": "sripata" }, { "personId": 939, "role": "lived" }, { "personId": 1200, "role": "lived" }] },
+    { "id": 13, "name": "Ekacakrā", "addAka": "Vīracandra-pura, Garbhavāsa", "people": [{ "personId": 1851, "role": "birth" }, { "personId": 1066, "role": "lived" }, { "personId": 439, "role": "lived" }] },
+    { "id": 23, "name": "Gopīvallabhapura", "people": [{ "personId": 1908, "role": "sripata" }, { "personId": 1908, "role": "samadhi" }] },
+    { "id": 9, "name": "Jhāmaṭapura (Bardhamān)", "people": [{ "personId": 759, "role": "lived" }, { "personId": 918, "role": "lived" }] },
+    { "id": 8, "name": "Khānākula", "people": [{ "personId": 6, "role": "lived" }] },
+    { "id": 24, "name": "Viṣṇupura", "people": [{ "personId": 1700, "role": "lived" }, { "personId": 1466, "role": "other" }] },
+    { "id": 7, "name": "Varāhanagara", "people": [{ "personId": 1791, "role": "lived" }, { "personId": 1791, "role": "samadhi" }] },
+    { "id": 1, "name": "Jājigrāma", "addAka": "Yājīgrāma", "people": [{ "personId": 1466, "role": "sripata" }] },
+    { "id": 20, "name": "Ambikā-Kālnā", "people": [{ "personId": 325, "role": "lived" }, { "personId": 1503, "role": "lived" }, { "personId": 504, "role": "lived" }] },
+    { "id": 96, "name": "Saidābād", "addAka": "Saiyadābāda", "people": [{ "personId": 2004, "role": "lived" }, { "personId": 747, "role": "lived" }, { "personId": 1723, "role": "other" }] }
+  ]
+}

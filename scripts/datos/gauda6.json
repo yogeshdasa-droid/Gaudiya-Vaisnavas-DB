@@ -1,0 +1,7 @@
+{
+  "update": [
+    { "id": 75, "name": "Buḍhan", "addAka": "Buḍhana", "people": [{ "personId": 475, "role": "birth" }] },
+    { "id": 70, "name": "Cākundi", "addAka": "Cākundī", "people": [{ "personId": 1466, "role": "birth" }, { "personId": 1466, "role": "samadhi" }, { "personId": 165, "role": "lived" }] },
+    { "id": 11, "name": "Kenduli", "addAka": "Kendubilva", "people": [{ "personId": 598, "role": "birth" }] }
+  ]
+}

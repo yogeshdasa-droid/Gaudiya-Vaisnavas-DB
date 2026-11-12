@@ -1,5 +1,6 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { BookMarked, ChevronRight, ChevronsDownUp, ChevronsUpDown, Flower2, MapPin, Plus, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
+import { GAUDA_AREAS, placeZone, VRAJA_AREAS, ZONES } from "../places";
 import { api, Bookmark, DocListItem, hueOf, isDeity, isPoet, Marks, PersonListItem, Place, sortDisciples, TreeKind, TreePlace } from "../api";
 import { foldWord } from "../fold";
 import { arrange, TreeLine } from "./TreeView";
@@ -966,6 +967,67 @@ function PlaceList({ t, lang, places, activeId, onPlace }: { t: T; lang: Lang; p
       return words.every((w) => f.includes(` ${w}`));
     });
   }, [filter, sorted]);
+  // by areas (folders: Navadvīpa, Gauḍa, Kṣetra, Vraja with its parts, others), or A–Z; a filter shows a plain list
+  const [byZone, setByZone] = useState(() => {
+    try {
+      return localStorage.getItem("bio.placesByZone") !== "0";
+    } catch {
+      return true;
+    }
+  });
+  const flipZone = () =>
+    setByZone((v) => {
+      try {
+        localStorage.setItem("bio.placesByZone", v ? "0" : "1");
+      } catch {
+        /* storage unavailable */
+      }
+      return !v;
+    });
+  const [openZones, toggleZone] = useStoredSet<string>("placeZonesOpen");
+  const zoned = useMemo(() => {
+    const m = new Map<string, Place[]>();
+    for (const pl of sorted) {
+      const z = placeZone(pl);
+      const k = z.area ? `${z.zone}/${z.area}` : z.zone;
+      m.set(k, [...(m.get(k) ?? []), pl]);
+    }
+    return m;
+  }, [sorted]);
+  // the folder of the place being shown opens by itself
+  useEffect(() => {
+    const pl = places.find((x) => x.id === activeId);
+    if (!pl || !byZone) return;
+    const z = placeZone(pl);
+    toggleZone(z.zone, true);
+    if (z.area) toggleZone(`${z.zone}/${z.area}`, true);
+  }, [activeId]); // eslint-disable-line react-hooks/exhaustive-deps
+  const row = (pl: Place, indent = 0) => (
+    <div
+      key={pl.id}
+      data-ctx="place"
+      data-id={pl.id}
+      className={`tree-row person place${activeId === pl.id ? " active" : ""}`}
+      style={indent ? { paddingLeft: 8 + indent * 14 } : undefined}
+      onClick={() => onPlace(pl.id)}
+      title={[pl.name, pl.aka, pl.region].filter(Boolean).join(" · ")}
+    >
+      <MapPin size={13} className="place-icon" />
+      <span className="name">{pl.name}</span>
+      {pl.region && <span className="place-region">{pl.region.split(",")[0]}</span>}
+    </div>
+  );
+  const folder = (key: string, label: string, n: number, depth: number) => {
+    const open = openZones.has(key);
+    return (
+      <div key={`z:${key}`} className="tree-row tree-folder" style={{ paddingLeft: 4 + depth * 14 }} onClick={() => toggleZone(key)}>
+        <ChevronRight size={13} className={`caret ${open ? "open" : ""}`} />
+        {open ? <FolderOpen size={14} className="folder-icon" /> : <Folder size={14} className="folder-icon" />}
+        <span className="name">{label}</span>
+        <span className="count">{n.toLocaleString(lang)}</span>
+      </div>
+    );
+  };
   let letter = "";
   return (
     <div className="fade-in">
@@ -983,9 +1045,44 @@ function PlaceList({ t, lang, places, activeId, onPlace }: { t: T; lang: Lang; p
       {shown.length > 0 && (
         <div className="letter mentions-head">
           {t.tirthas} <span className="count">{shown.length.toLocaleString(lang)}</span>
+          {!filter && (
+            <button className="link-btn small places-order" onClick={flipZone} title={t.placesOrderHint}>
+              {byZone ? t.placesAZ : t.placesByZone}
+            </button>
+          )}
         </div>
       )}
-      {shown.map((pl) => {
+      {!filter && byZone &&
+        ZONES.map((z) => {
+          const AREAS = z === "vraja" ? VRAJA_AREAS : z === "gauda" ? GAUDA_AREAS : null;
+          const areaName = (a: string) => (z === "vraja" ? t.vrajaArea[a as (typeof VRAJA_AREAS)[number]] : t.gaudaArea[a as (typeof GAUDA_AREAS)[number]]);
+          if (!AREAS) {
+            const list = zoned.get(z) ?? [];
+            if (!list.length) return null;
+            return (
+              <div key={z}>
+                {folder(z, t.placeZone[z], list.length, 0)}
+                {openZones.has(z) && list.map((pl) => row(pl, 1))}
+              </div>
+            );
+          }
+          const areas = AREAS.map((a) => [a, zoned.get(`${z}/${a}`) ?? []] as const).filter(([, l]) => l.length);
+          const n = areas.reduce((s, [, l]) => s + l.length, 0);
+          if (!n) return null;
+          return (
+            <div key={z}>
+              {folder(z, t.placeZone[z], n, 0)}
+              {openZones.has(z) &&
+                areas.map(([a, list]) => (
+                  <div key={a}>
+                    {folder(`${z}/${a}`, areaName(a), list.length, 1)}
+                    {openZones.has(`${z}/${a}`) && list.map((pl) => row(pl, 2))}
+                  </div>
+                ))}
+            </div>
+          );
+        })}
+      {(filter || !byZone) && shown.map((pl) => {
         const first = foldWord(pl.name.trim()[0] ?? "#").toUpperCase() || "#";
         const header = !filter && first !== letter ? (letter = first) : null;
         return (

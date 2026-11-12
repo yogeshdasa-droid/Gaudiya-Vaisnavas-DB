@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ArrowUp, BookOpen, MapPin, ChevronDown, ChevronLeft, ChevronRight, Star, Combine, FileDown, FilePlus2, Printer, FileText, GitFork, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Route, Search, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
+import { ArrowUp, BookOpen, MapPin, ChevronDown, ChevronLeft, ChevronRight, Star, Combine, FileDown, FilePlus2, Printer, FileText, Folder, GitFork, GitMerge, Globe, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Route, Search, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
 import { api, fileUrl, isNamesake, LifeSpan, MAIN_TEXT, NAMESAKES, Place, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
@@ -10,6 +10,7 @@ import type { Term } from "../fold";
 import { foldName } from "./Sidebar";
 import { placesOfPerson } from "../places";
 import { journeysOf } from "./journeys";
+import { linkKind, linkLabel, splitNotes } from "../notesLinks";
 
 /** Titles that come and go after a name: "Rupa" = "Rupa Gosvami". */
 const TITLES = new Set(
@@ -626,6 +627,7 @@ export function PersonView(p: Props) {
       [t.works, person.works, !!person.works.trim()],
     ],
   ];
+  const notes = splitNotes(person.notes);
   const hasFacts = facts.flat().some(([, , show]) => show) || person.notes.trim() || disciples.length > 0;
   const tags = person.tags
     .split(",")
@@ -873,11 +875,37 @@ export function PersonView(p: Props) {
                   </dd>
                 </details>
               )}
-              {person.notes.trim() && (
+              {notes.body.trim() && (
                 <div className="fact wide">
                   <dt>{t.notes}</dt>
                   <dd className="notes">
-                    <WebLinks text={person.notes} onError={p.onToast} />
+                    <WebLinks text={notes.body} onError={p.onToast} />
+                  </dd>
+                </div>
+              )}
+              {notes.links.length > 0 && (
+                <div className="fact wide">
+                  <dt>{t.linksSection}</dt>
+                  <dd className="note-links">
+                    {notes.links.map((l, i) => {
+                      const kind = linkKind(l.target);
+                      const Icon = kind === "web" ? Globe : kind === "folder" ? Folder : FileText;
+                      return (
+                        <a
+                          key={i}
+                          href={kind === "web" ? l.target : "#"}
+                          className={`note-link ${kind}`}
+                          title={l.target}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            api.openExternal(kind === "web" && !/^[a-z]+:/i.test(l.target) ? `https://${l.target}` : openTarget(l.target)).catch((err) => p.onToast(String(err)));
+                          }}
+                        >
+                          <Icon size={14} />
+                          <span>{linkLabel(l)}</span>
+                        </a>
+                      );
+                    })}
                   </dd>
                 </div>
               )}

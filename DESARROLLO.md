@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **12-11-2026** (versión **0.16.2**).
+Última actualización: **12-11-2026** (versión **0.16.3**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,18 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.16.2)
+## 5. Qué hace hoy (v0.16.3)
+
+### Novedades de la 0.16.3 (12-11-2026) — Tīrthas por zonas y «Enlaces» en la ficha (formato 10 sin cambios)
+- **Tīrthas en carpetas** en el lateral (Sidebar.tsx PlaceList): Navadvīpa-dhāma, Gauḍa-maṇḍala con sus distritos,
+  Kṣetra-maṇḍala, Vraja-maṇḍala con sus partes, otros. La zona la calcula `placeZone` (places.ts) por coordenadas o por
+  el distrito escrito; botón «A–Z / Por zonas»; con filtro, lista plana. i18n `placeZone`, `gaudaArea`, `vrajaArea`.
+- **«Enlaces»** en la ficha (debajo de las notas) y en el editor (lista nombre + destino, «Archivo…», «Carpeta…»): se
+  guardan al final de las notas tras la marca `<!-- links -->` (`src/notesLinks.ts`: splitNotes / joinNotes), así van
+  con la ficha a versiones, copias, búsqueda y exportación sin tabla nueva. Los enlaces dentro del texto siguen igual.
+- Datos (no es código): ~120 tīrthas nuevos de los libros «Śrī Navadvīpa-dhāma» y «Śrī Vraja-maṇḍala Parikramā»
+  (`tirthas-plan.mjs`, `gauda1..6.json`, `vraja1.json`, `lila1..5.json`), ~230 fotos (`fotos-poner.mjs`), lugares de
+  fichas (`lugar-poner.mjs`, `lugares1..7.json`).
 
 ### Novedades de la 0.16.2 (12-11-2026) — «Ver viajes» en la ficha (formato 10 sin cambios)
 - Botón **«Ver viajes»** en la ficha (en el sitio de «Paramparā…», que pasa al menú «…»): solo si la ficha tiene viajes
@@ -1492,6 +1503,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **12-11-2026 — v0.16.3**: Tīrthas en carpetas por zona; sección «Enlaces» en la ficha.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.16.3
 
 - **12-11-2026 — v0.16.2**: «Ver viajes» en la ficha («Paramparā…» al menú «…»), «1·4» en las etapas repetidas.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.16.2

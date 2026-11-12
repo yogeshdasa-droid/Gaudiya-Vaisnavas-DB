@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { AlertTriangle, MapPin, ListTree, ListX, FilePen, FileText, FolderInput, GitMerge, History, Link2, Scissors, Search, Trash2, Undo2, Upload, UserPlus, UserRound, X } from "lucide-react";
+import { AlertTriangle, MapPin, ListTree, ListX, FilePen, FileText, Folder, FolderInput, GitMerge, History, Link2, Plus, Scissors, Search, Trash2, Undo2, Upload, UserPlus, UserRound, X } from "lucide-react";
 import { api, DocInfo, EMPTY_PERSON, EMPTY_PLACE, Person, PersonFields, PersonListItem, SectionText, TREE_KINDS, TreeKind, Version, Place, PlaceFields, PLACE_ROLES, PlaceRole } from "../api";
 import { T } from "../i18n";
 import { ask, Modal } from "./ui";
 import { foldName } from "./Sidebar";
+import { joinNotes, NoteLink, splitNotes } from "../notesLinks";
 
 function useCtrlS(enabled: boolean, save: () => void) {
   useEffect(() => {
@@ -1310,7 +1311,8 @@ export function PersonDialog({
         </label>
         {field("works", t.works, t.listHint)}
         {field("tags", t.tags, t.tagsHint)}
-        <NotesEditor t={t} value={f.notes} onChange={(v) => setF((x) => ({ ...x, notes: v }))} />
+        <NotesEditor t={t} value={splitNotes(f.notes).body} onChange={(v) => setF((x) => ({ ...x, notes: joinNotes(v, splitNotes(x.notes).links) }))} />
+        <LinksEditor t={t} value={splitNotes(f.notes).links} onChange={(ls) => setF((x) => ({ ...x, notes: joinNotes(splitNotes(x.notes).body, ls) }))} />
       </div>
       {error && <div className="error-box">{error}</div>}
     </Modal>
@@ -1377,6 +1379,48 @@ function NotesEditor({ t, value, onChange }: { t: T; value: string; onChange: (v
         </div>
       )}
       <textarea ref={ref} className="notes-editor" value={value} placeholder={t.notesHint} aria-label={t.notes} onChange={(e) => onChange(e.target.value)} />
+    </div>
+  );
+}
+
+/** The «Links» of a record (12-11-2026): a name and a target per row — a web page, a file or a folder of the PC.
+ *  Kept at the end of the notes (notesLinks.ts); an empty row is dropped when saving. */
+function LinksEditor({ t, value, onChange }: { t: T; value: NoteLink[]; onChange: (v: NoteLink[]) => void }) {
+  // rows being typed (an empty target would be dropped from the notes at once)
+  const [rows, setRows] = useState<NoteLink[]>(value);
+  const put = (next: NoteLink[]) => {
+    setRows(next);
+    onChange(next.filter((l) => l.target.trim()));
+  };
+  const set = (i: number, l: Partial<NoteLink>) => put(rows.map((x, k) => (k === i ? { ...x, ...l } : x)));
+  const pick = async (i: number, directory: boolean) => {
+    const p = await open({ multiple: false, directory });
+    if (typeof p === "string") set(i, { target: p, label: rows[i].label || p.replace(/[\\/]+$/, "").split(/[\\/]/).pop() || "" });
+  };
+  return (
+    <div className="text-label links-field">
+      <span className="notes-head">
+        {t.linksSection}
+        <button type="button" className="btn ghost small" onClick={() => put([...rows, { label: "", target: "" }])} title={t.linksAddHint}>
+          <Plus size={14} /> {t.linksAdd}
+        </button>
+      </span>
+      {rows.length === 0 && <em className="lunar-hint">{t.linksEmpty}</em>}
+      {rows.map((l, i) => (
+        <div key={i} className="link-row">
+          <input value={l.label} placeholder={t.linksLabel} onChange={(e) => set(i, { label: e.target.value })} />
+          <input className="target" value={l.target} placeholder={t.linksTarget} onChange={(e) => set(i, { target: e.target.value })} />
+          <button type="button" className="icon-btn" title={t.linksPickFile} onClick={() => pick(i, false)}>
+            <FileText size={15} />
+          </button>
+          <button type="button" className="icon-btn" title={t.linksPickFolder} onClick={() => pick(i, true)}>
+            <Folder size={15} />
+          </button>
+          <button type="button" className="icon-btn" title={t.linksRemove} onClick={() => put(rows.filter((_, k) => k !== i))}>
+            <X size={15} />
+          </button>
+        </div>
+      ))}
     </div>
   );
 }

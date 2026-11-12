@@ -6273,3 +6273,44 @@ svg.satellite .map-dot {
   white-space: nowrap;
   padding-left: 12px;
 }
+
+/* Tīrthas by area (12-11-2026): the «A–Z / By area» switch in the list heading */
+.mentions-head .places-order {
+  margin-left: auto;
+  font-weight: normal;
+}
+
+/* «Links» of a record (12-11-2026): in the record, one link per line with its icon; in the editor, a row each */
+.note-links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.note-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--accent-text);
+  text-decoration: none;
+  width: fit-content;
+}
+.note-link:hover span {
+  text-decoration: underline;
+}
+.note-link.folder svg,
+.note-link.file svg {
+  color: var(--muted);
+}
+.links-field .link-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 6px;
+}
+.links-field .link-row input {
+  flex: 1;
+  min-width: 0;
+}
+.links-field .link-row input.target {
+  flex: 2;
+}

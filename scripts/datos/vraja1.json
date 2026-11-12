@@ -1,0 +1,21 @@
+{
+  "create": [
+    { "name": "Kṛṣṇa-Balarāma Mandira", "aka": "Krishna-Balaram Mandir, ISKCON Vṛndāvana, Ramaṇa-reti", "region": "Vṛndāvana, Mathurā, Uttar Pradesh", "location": "Ramaṇa-reti, on the Vṛndāvana–Chaṭīkarā road", "about": "Established in 1975 by Śrīla Bhaktivedānta Svāmī Mahārāja: Kṛṣṇa-Balarāma, Rādhā-Śyāmasundara with Lalitā and Viśākhā, and Gaura-Nitāī. His samādhi is here; at his request the author (Śrīla Bhaktivedānta Nārāyaṇa Gosvāmī Mahārāja) placed him in samādhi in Kārttika (November) 1977.", "source": "Śrī Vraja-maṇḍala Parikramā (Bhaktivedānta Nārāyaṇa Gosvāmī Mahārāja), p. 650", "lat": 27.572, "lon": 77.679, "people": [{ "personId": 125, "role": "samadhi" }] },
+    { "name": "Ṭer-kadamba", "aka": "Ter-kadamba, Ter Kadamb", "region": "Near Nandagrāma, Vraja", "about": "Śrīla Rūpa Gosvāmī's bhajana-kuṭī was near Ṭer-kadamba; Sanātana Gosvāmī came from Pāvana-sarovara to meet him here.", "source": "Śrī Vraja-maṇḍala Parikramā, p. 377", "people": [{ "personId": 1325, "role": "lived" }, { "personId": 1353, "role": "other" }] }
+  ],
+  "update": [
+    { "id": 39, "name": "Govindajī temple", "people": [{ "personId": 1202, "role": "samadhi" }] },
+    { "id": 40, "name": "Madana-mohana temple", "people": [{ "personId": 1353, "role": "lived" }, { "personId": 1353, "role": "samadhi" }] },
+    { "id": 41, "name": "Rādhā-Dāmodara temple", "people": [{ "personId": 1325, "role": "lived" }, { "personId": 1325, "role": "samadhi" }, { "personId": 618, "role": "lived" }, { "personId": 618, "role": "samadhi" }, { "personId": 759, "role": "samadhi" }, { "personId": 150, "role": "samadhi" }] },
+    { "id": 42, "name": "Rādhā-ramaṇa temple", "people": [{ "personId": 343, "role": "samadhi" }] },
+    { "id": 43, "name": "Gokulānanda temple", "people": [{ "personId": 844, "role": "samadhi" }, { "personId": 1010, "role": "samadhi" }, { "personId": 1723, "role": "samadhi" }] },
+    { "id": 44, "name": "Gopīnātha temple", "people": [{ "personId": 874, "role": "samadhi" }] },
+    { "id": 45, "name": "Śyāmasundara temple", "people": [{ "personId": 1535, "role": "samadhi" }, { "personId": 73, "role": "lived" }] },
+    { "id": 46, "name": "Dhīra-samīra", "people": [{ "personId": 1466, "role": "samadhi" }, { "personId": 1244, "role": "samadhi" }, { "personId": 325, "role": "other" }] },
+    { "id": 47, "name": "Kāliya-daha", "people": [{ "personId": 1095, "role": "lived" }, { "personId": 1095, "role": "samadhi" }, { "personId": 156, "role": "lived" }] },
+    { "id": 48, "name": "Keśī-ghāṭa", "people": [{ "personId": 274, "role": "samadhi" }] },
+    { "id": 49, "name": "Rādhā-kuṇḍa", "people": [{ "personId": 1206, "role": "lived" }, { "personId": 1206, "role": "samadhi" }, { "personId": 343, "role": "lived" }, { "personId": 759, "role": "lived" }, { "personId": 759, "role": "samadhi" }, { "personId": 150, "role": "samadhi" }, { "personId": 618, "role": "lived" }, { "personId": 1466, "role": "lived" }, { "personId": 1723, "role": "lived" }, { "personId": 574, "role": "other" }, { "personId": 868, "role": "other" }, { "personId": 128, "role": "lived" }, { "personId": 124, "role": "lived" }, { "personId": 1224, "role": "samadhi" }] },
+    { "id": 50, "name": "Govardhana", "people": [{ "personId": 1353, "role": "lived" }, { "personId": 1599, "role": "other" }, { "personId": 2071, "role": "lived" }, { "personId": 1828, "role": "lived" }] },
+    { "id": 66, "name": "Nandagrāma", "people": [{ "personId": 1353, "role": "lived" }, { "personId": 1325, "role": "other" }] }
+  ]
+}
