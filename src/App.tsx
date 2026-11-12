@@ -1633,7 +1633,7 @@ export default function App() {
         <DuplicatesDialog
           t={t}
           persons={persons}
-          onClose={() => setDialog({ kind: "settings", tab: "review" })}
+          onClose={() => setDialog(null)}
           onChanged={() => {
             showToast(t.merged);
             refreshAll();

@@ -1,0 +1,6 @@
+[
+  { "id": 97, "name": "Siddha Bhagavān dāsa Bābājī (Kālnā)", "edits": [{ "field": "disciples", "from": "; Jagadānanda dāsa Bābājī (Rādhākuṇḍa)", "to": "" }] },
+  { "id": 522, "name": "Jagadānanda dāsa Bābājī (Rādhākuṇḍa)", "edits": [{ "field": "guru", "from": "Bhagavān dāsa Bābājī, mahānta of an ākhaḍā at Samādiā, Faridpur (bheka, at 18 or 19)", "to": "Bhagavān dāsa Bābājī of Samādiā (Faridpur), the mahānta of an ākhaḍā there (bheka, at 18 or 19)" }] },
+  { "id": 246, "name": "Dvija Gopāla Dāsa Ṭhākura", "edits": [{ "field": "guru", "from": "Narahari Ṭhākura", "to": "Narahari Sarakāra Ṭhākura" }] },
+  { "id": 753, "name": "Siddha Kṛṣṇadāsa Bābājī (Govardhana)", "edits": [{ "field": "guru", "from": "Vaiṣṇava caraṇa dāsa Bābājī of Brahmakuṇḍa, the compiler", "to": "Vaiṣṇava Caraṇa Dāsa, bābājī of Brahmakuṇḍa, the compiler" }] }
+]

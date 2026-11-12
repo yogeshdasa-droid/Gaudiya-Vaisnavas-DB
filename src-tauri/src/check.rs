@@ -120,7 +120,14 @@ pub fn check(conn: &Connection) -> rusqlite::Result<Vec<Issue>> {
         let rows: Vec<_> = rows.collect::<rusqlite::Result<_>>()?;
         let parents: HashMap<i64, i64> = rows.iter().filter_map(|r| r.6.map(|p| (r.0, p))).collect();
         // disciple `d` joined to guru `g` in the tree (its place or an extra line)
-        let joined = |d: i64, g: i64| parents.get(&d) == Some(&g) || links.get(&d).is_some_and(|l| l.iter().any(|(x, _)| *x == g));
+        // a line marked «disputed» does not tell which namesake a name is (12-11-2026: Jagadānanda's Bhagavān dāsa)
+        let disputed: std::collections::HashSet<(i64, i64)> = conn
+            .prepare("SELECT person_id, parent_id FROM person_tree WHERE disputed = 1 AND parent_id IS NOT NULL UNION SELECT person_id, guru_id FROM person_links WHERE disputed = 1")?
+            .query_map([], |r| Ok((r.get::<_, i64>(0)?, r.get::<_, i64>(1)?)))?
+            .collect::<rusqlite::Result<_>>()?;
+        let joined = |d: i64, g: i64| {
+            !disputed.contains(&(d, g)) && (parents.get(&d) == Some(&g) || links.get(&d).is_some_and(|l| l.iter().any(|(x, _)| *x == g)))
+        };
         for (id, name, appearance, disappearance, guru, disciples, parent, kind, in_tree) in rows {
             // the whole name first («Govinda (disciple of Śyāmānanda)» is that record), then without brackets;
             // among namesakes («Ananta», «Rāmadāsa»…) the one the tree joins to this record (12-11-2026)
@@ -135,7 +142,12 @@ pub fn check(conn: &Connection) -> rusqlite::Result<Vec<Issue>> {
                         if let Some(w) = whole.filter(|_| crate::store::without_kind(x).contains('(')) {
                             return Some((w, true, vec![w]));
                         }
-                        let cands: Vec<i64> = index.candidates(plain(x)).into_iter().filter(|&c| c != id).collect();
+                        // «Siddha Kṛṣṇadāsa Bābājī of Govardhana»: if the whole has no record, the name before «of»
+                        let mut cands: Vec<i64> = index.candidates(plain(x)).into_iter().filter(|&c| c != id).collect();
+                        let head = plain(x).split(" of ").next().unwrap_or("").trim();
+                        if cands.is_empty() && head != plain(x) {
+                            cands = index.candidates(head).into_iter().filter(|&c| c != id).collect();
+                        }
                         let mut tied: Vec<i64> =
                             cands.iter().copied().filter(|&c| if as_guru { joined(id, c) } else { joined(c, id) }).collect();
                         // two of them joined here: the one with exactly this name («Puruṣottama Tīrtha», not
@@ -149,7 +161,7 @@ pub fn check(conn: &Connection) -> rusqlite::Result<Vec<Issue>> {
                         if tied.len() == 1 {
                             return Some((tied[0], true, cands));
                         }
-                        let found = whole.or_else(|| index.find(plain(x)))?;
+                        let found = whole.or_else(|| index.find(plain(x))).or_else(|| (cands.len() == 1).then(|| cands[0]))?;
                         let sure = cands.len() <= 1;
                         Some((found, sure, cands))
                     })
@@ -224,12 +236,19 @@ pub fn check(conn: &Connection) -> rusqlite::Result<Vec<Issue>> {
             for x in list_entries(&p.guru) {
                 let n = plain(x);
                 let looks_like_name = n.chars().next().is_some_and(char::is_uppercase) && (n.contains(' ') || n.chars().count() >= 8);
-                if looks_like_name
-                    && n.chars().count() <= 60
-                    && !n.chars().any(|c| c.is_ascii_digit())
-                    && index.find(n).is_none()
-                    && index.find_whole(crate::store::without_kind(x)).is_none()
-                {
+                // a sentence, not a name: «A descendant of Śrī Advaita», «Not given in his texts», «His father …»
+                let first = n.split_whitespace().next().unwrap_or("");
+                let sentence = ["A", "An", "The", "Not", "Of", "His", "Her", "Initiated", "Dīkṣā", "Served", "Some", "None", "Kṛṣṇa Himself"]
+                    .iter()
+                    .any(|w| first == *w || n == *w)
+                    || n.ends_with("Himself");
+                // «Siddha Kṛṣṇadāsa Bābājī of Govardhana» is the record «Siddha Kṛṣṇadāsa Bābājī (Govardhana)»
+                let head = n.split(" of ").next().unwrap_or(n).trim();
+                let known = index.find(n).is_some()
+                    || index.find_whole(crate::store::without_kind(x)).is_some()
+                    || !index.candidates(n).is_empty()
+                    || (head != n && !index.candidates(head).is_empty());
+                if looks_like_name && !sentence && n.chars().count() <= 60 && !n.chars().any(|c| c.is_ascii_digit()) && !known {
                     push("unknownGuru", true, n.to_string(), String::new(), None);
                 }
             }

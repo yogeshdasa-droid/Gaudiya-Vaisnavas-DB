@@ -10,7 +10,8 @@ const expr = `(async () => {
   const issues = await inv("check_data");
   const rows = await inv("list_persons");
   const by = new Map(rows.map((p) => [p.id, p]));
-  const tied = (d, g) => { const p = by.get(d); return !!p && ((p.tree && p.tree.parent === g) || p.links.some((l) => l.guru === g && l.kind !== "family")); };
+  // a line marked «disputed» confirms nothing (12-11-2026: Jagadānanda dāsa's Bhagavān dāsa)
+  const tied = (d, g) => { const p = by.get(d); return !!p && ((p.tree && p.tree.parent === g && !p.tree.disputed) || p.links.some((l) => l.guru === g && l.kind !== "family" && !l.disputed)); };
   const out = { safe: [], comma: [], unconfirmed: [] };
   for (const i of issues) {
     if (i.kind !== "notBackGuru" && i.kind !== "notBackDisciple") continue;

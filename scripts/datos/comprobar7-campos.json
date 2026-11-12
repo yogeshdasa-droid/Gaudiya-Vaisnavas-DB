@@ -1,0 +1,8 @@
+[
+  { "id": 97, "name": "Siddha Bhagavān dāsa Bābājī (Kālnā)", "edits": [
+    { "field": "guru", "from": "Siddha Kṛṣṇa Dās Bābājī, Siddha Kṛṣṇadāsa Bābājī (Govardhana)", "to": "Siddha Kṛṣṇadāsa Bābājī (Govardhana)" },
+    { "field": "disciples", "from": "Jagadīśa dās; Viṣṇu dās; Prāṇa Kṛṣṇa dās; Jagadīśa dāsa Bābājī (Kāliya-daha); Prāṇakṛṣṇa Dāsa Bābājī", "to": "Jagadīśa dāsa Bābājī (Kāliya-daha); Viṣṇu dās; Prāṇakṛṣṇa Dāsa Bābājī" } ] },
+  { "id": 1045, "name": "Siddha Nityānanda dāsa Bābājī (Madana-mohana Ṭhaurā)", "edits": [
+    { "field": "disciples", "from": "; Gaurakiśora dāsa; Nṛsiṁhānanda Bhaṭṭa", "to": "; Gaura Kiśora Śiromaṇi (Gaurakiśora dāsa); Nṛsiṁhānanda Bhaṭṭa" },
+    { "field": "disciples", "from": "(bābājī veśa); Gaura Kiśora Śiromaṇi", "to": "(bābājī veśa)" } ] }
+]

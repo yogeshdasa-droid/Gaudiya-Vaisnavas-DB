@@ -3,8 +3,6 @@ import { open, save } from "@tauri-apps/plugin-dialog";
 import {
   ArchiveRestore,
   CalendarDays,
-  UserCheck,
-  ClipboardCheck,
   Database,
   FileDown,
   DatabaseBackup,
@@ -311,7 +309,7 @@ interface Props {
 
 export function Settings(p: Props) {
   const { t, lang, status } = p;
-  const [tab, setTab] = useState<SettingsTab>(p.initialTab);
+  const [tab, setTab] = useState<SettingsTab>(p.initialTab === "review" || p.initialTab === "fill" ? "general" : p.initialTab);
   const [trash, setTrash] = useState<Trashed[]>([]);
   const [sources, setSources] = useState<DefaultSource[]>([]);
 
@@ -340,8 +338,9 @@ export function Settings(p: Props) {
   const tabs: [SettingsTab, typeof Gear, string][] = [
     ["general", Gear, t.general],
     ["backups", DatabaseBackup, t.backups],
-    ["review", ClipboardCheck, t.review],
-    ["fill", UserCheck, t.fillTab],
+    // «Revisar» (Comprobar los datos, repetidas…) and «Rellenar fichas» hidden (12-11-2026, Whisper: «más lío que
+    // ayuda»); their panes and commands stay (Claude's scripts use check_data etc.): to show them again, put back
+    // ["review", ClipboardCheck, t.review] and ["fill", UserCheck, t.fillTab] here (and their lucide-react imports).
     ["replace", Replace, t.replaceTab],
     ["meaning", Sparkles, t.meaningTab],
     ["sources", FolderInput, t.sourcesTitle],

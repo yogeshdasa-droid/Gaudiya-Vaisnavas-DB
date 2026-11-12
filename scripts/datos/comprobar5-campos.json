@@ -1,0 +1,11 @@
+[
+  { "id": 1108, "name": "Prasāda Dāsa (Prakāśa Dāsa)", "edits": [{ "field": "guru", "from": "Srinivasacarya", "to": "Śrīnivāsa Ācārya" }] },
+  { "id": 403, "name": "Govinda Adhikārī", "edits": [{ "field": "guru", "from": "Kṛṣṇa Dāsa Punjabi, Kṛṣṇadāsa (Rāmadāsa) Punjabi", "to": "Kṛṣṇadāsa (Rāmadāsa) Punjabi" }] },
+  { "id": 1022, "name": "Navakiśora Gosvāmīpāda", "edits": [{ "field": "guru", "from": "Siddha Kṛṣṇadāsa Bābā of Govardhana", "to": "Siddha Kṛṣṇadāsa Bābājī (Govardhana)" }] },
+  { "id": 1846, "name": "Locanānanda Gosvāmī (with Navakiśora)", "edits": [{ "field": "guru", "from": "Siddha Kṛṣṇadāsa Bābā of Govardhana", "to": "Siddha Kṛṣṇadāsa Bābājī (Govardhana)" }] },
+  { "id": 1971, "name": "Govinda dāsa Bābājī (Haridāsa Ṭhākura Maṭha, Purī)", "edits": [{ "field": "guru", "from": "Rādhāramaṇa Caraṇa Dāsa Deva", "to": "Rādhāramaṇa-caraṇa dāsa Deva" }] },
+  { "id": 2145, "name": "Giridhārī dāsa Bābājī (Haribol Kuṭīra, Navadvīpa)", "edits": [{ "field": "guru", "from": "Vipina Candra (Bihārī) Caṭṭopādhyāya", "to": "Vipina Bihārī Caṭṭopādhyāya" }] },
+  { "id": 1695, "name": "Vipina Bihārī Caṭṭopādhyāya", "edits": [{ "field": "aka", "from": "", "to": "Vipina Candra Caṭṭopādhyāya" }] },
+  { "id": 1906, "name": "Śrī Lakṣmīpati", "edits": [{ "field": "aka", "from": "", "to": "Lakṣmīpati Tīrtha" }] },
+  { "id": 1168, "name": "Rādhāramaṇa-caraṇa dāsa Deva («Rājen Bābu»)", "edits": [{ "field": "aka", "from": "Baḍa Bābājī", "to": "Baḍa Bābājī, Rādhāramaṇa-caraṇa dāsa Bābājī" }] }
+]

@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **12-11-2026** (versión **0.14.5**).
+Última actualización: **12-11-2026** (versión **0.14.6**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,18 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.14.5)
+## 5. Qué hace hoy (v0.14.6)
+
+### Novedades de la 0.14.6 (12-11-2026) — Ajustes más sencillos; comprobación más fina (formato 10 sin cambios)
+- **Ajustes: pestañas «Revisar» y «Rellenar fichas» ocultas** (Whisper: «más lío que ayuda»). Sus paneles
+  (`ReviewPane`, `FillPane`) y comandos (`check_data`, `complete_back`, propuestas…) siguen: los scripts de
+  `scripts/datos` los usan. Para volver a mostrarlas: ver el comentario en `Settings.tsx` (lista `tabs`).
+- check.rs: «unknownGuru» no cuenta frases («A descendant of…», «Not given…», «His father…») ni nombres con ficha
+  escritos «X of Lugar» («Siddha Kṛṣṇadāsa Bābājī of Govardhana» = «… (Govardhana)», también al relacionar); las
+  líneas **discutidas** del árbol no sirven para decidir qué homónimo es un nombre (`backplan.mjs` igual).
+- Datos (12-11): erratas de gurus y otros nombres (`comprobar5`–`comprobar8`), Śrīnivāsa sin su yerno como guru,
+  Gauracaraṇa (Dāujī) bajo Siddha Caitanya dāsa, líneas śikṣā nuevas, Yādavācārya → Puruṣottama dāsa (discutida).
+  «Comprobar los datos»: ~187 cosas.
 
 ### Novedades de la 0.14.5 (12-11-2026) — «Comprobar los datos»: solo nombres seguros (formato 10 sin cambios)
 - `PersonIndex::candidates` (todas las fichas que un nombre puede ser) y `ends_with` (un nombre que termina en otro,
@@ -1442,6 +1453,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **12-11-2026 — v0.14.6**: Ajustes sin «Revisar» ni «Rellenar fichas»; «Comprobar los datos» entiende «X of Lugar»,
+  no cuenta frases como gurus y no usa líneas discutidas para decidir homónimos.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.14.6
 
 - **12-11-2026 — v0.14.5**: «Comprobar los datos» solo avisa con nombres seguros (sin confusiones entre homónimos
   ni «of Vṛndāvana»); lista de ~386 a ~262.
