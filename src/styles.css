@@ -6314,3 +6314,13 @@ svg.satellite .map-dot {
 .links-field .link-row input.target {
   flex: 2;
 }
+
+/* Panorama › Map: the journeys as a list grouped by person (12-11-2026) */
+.map-eras .journey-pick {
+  max-width: 420px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}

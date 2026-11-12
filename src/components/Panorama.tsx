@@ -1357,11 +1357,19 @@ function PlacesMap({
       </div>
       <div className="map-eras">
         <span className="muted small">{t.mapJourneys}</span>
-        {JOURNEYS.map((j) => (
-          <button key={j.id} className={`btn ghost small${journey === j.id ? " on" : ""}`} onClick={() => openJourney(journey === j.id ? null : j.id)}>
-            {j.title[lang === "en" ? "en" : "es"]}
-          </button>
-        ))}
+        {/* a list grouped by person (14 journeys made a wall of buttons) */}
+        <select className="journey-pick" value={journey ?? ""} onChange={(e) => openJourney(e.target.value || null)}>
+          <option value="">{t.mapJourneyPick}</option>
+          {[...new Set(JOURNEYS.map((j) => j.person))].map((pid) => (
+            <optgroup key={pid} label={persons.find((p) => p.id === pid)?.name ?? `#${pid}`}>
+              {JOURNEYS.filter((j) => j.person === pid).map((j) => (
+                <option key={j.id} value={j.id}>
+                  {j.title[lang === "en" ? "en" : "es"]} · {j.when}
+                </option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
         {J && (
           <>
             <button
