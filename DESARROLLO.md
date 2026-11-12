@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **12-11-2026** (versión **0.14.3**).
+Última actualización: **12-11-2026** (versión **0.14.4**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,20 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.14.3)
+## 5. Qué hace hoy (v0.14.4)
+
+### Novedades de la 0.14.4 (12-11-2026) — «Comprobar los datos» más fino (formato 10 sin cambios)
+- `calendar::year_of` (usado también por la Línea de tiempo y el Panorama): entiende los años **bengalíes** («1328 BS»,
+  +593), los marcados **AD / CE** (mandan), «1302 (25 August 1895)» (el año bengalí seguido del de nuestra era) y un
+  número suelto pegado a un año Śaka («1459 Śaka (another source: 1456)»). Tests nuevos en `calendar::tests`.
+- `PersonIndex`: `tails` para «un nombre termina en el otro» sin los paréntesis que describen («Lalita Sakhī (disciple
+  of Muralīdhara)» ya no es «Muralīdhara»: falsas alarmas de «su propio guru»); los otros nombres entre paréntesis
+  («Kṛṣṇadāsa Premī (Kṛṣṇadāsa Vāṇī)») cuentan como homónimos (`plain`); `has_whole`: si dos homónimos están bajo el
+  mismo guru, el de nombre exacto (Puruṣottama Tīrtha #1140 / #1946).
+- Datos (12-11, en la BD de Whisper): rama de Raghunandana Ṭhākura corregida (Rāyaśekhara, Śaśiśekhara, Sulocana,
+  Vanamālī Kavirāja movidos de Śrīnivāsa a Raghunandana; #711 Kaviśekhara unido a #1319 Rāyaśekhara), Vrajamohana
+  separado (#2177 el poeta de 1875), gurus escritos de otra forma. Herramienta `scripts/datos/campos-editar.mjs`.
+  «Comprobar los datos»: 781 → ~400.
 
 ### Novedades de la 0.14.3 (12-11-2026) — el árbol «De arriba abajo» ya no deja la ventana en blanco (formato 10 sin cambios)
 - **Avisado por Whisper** («Ver en el árbol» → ventana en blanco, sin poder pinchar ni volver): con el árbol dibujado
@@ -1418,6 +1431,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **12-11-2026 — v0.14.4**: años bengalíes (BS) y AD/CE bien leídos; «Comprobar los datos» sin falsas alarmas de
+  «su propio guru» y mejor con los homónimos.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.14.4
 
 - **12-11-2026 — v0.14.3**: el Paramparā Tree «De arriba abajo» ya no deja la ventana en blanco; aviso con «Volver al
   inicio» si una vista falla; «Comprobar los datos» distingue mejor los homónimos.

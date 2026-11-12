@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1735,
+    "name": "Vrajamohana",
+    "fields": {
+      "name": "Vrajamohana (disciple of Rasikānanda)",
+      "appearance": "",
+      "notes": "He was a disciple of Rasikānanda prabhu (Rasikamaṅgala Paścima 14.112, 128, 149, 150, 152).\n\n(12-11-2026: the Vaiṣṇava poet Vrajamohana, born 1875, was in this record too; now his own record, «Vrajamohana (poet, born 1875)».)"
+    },
+    "new": [
+      {
+        "key": "poet",
+        "name": "Vrajamohana (poet, born 1875)",
+        "fields": {
+          "appearance": "1875 AD / 1797 Śaka (Digdarśanī)",
+          "notes": "He was a Vaiṣṇava poet (Baṅgīya Sāhitya Sevaka).\n\n(12-11-2026: split from #1735 Vrajamohana, the disciple of Rasikānanda, who lived about 1600.)"
+        },
+        "poet": true
+      }
+    ]
+  }
+]

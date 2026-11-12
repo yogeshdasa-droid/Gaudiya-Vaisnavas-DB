@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1200,
+    "name": "Raghunandana Ṭhākura",
+    "edits": [
+      { "field": "disciples", "from": "Kaviśekhara (Rājaśekhara), ", "to": "Rāyaśekhara (Kaviśekhara Rāya), " },
+      { "field": "disciples", "from": "; Rāyaśekhara;", "to": ";" }
+    ]
+  },
+  {
+    "id": 1319,
+    "name": "Rāyaśekhara",
+    "edits": [
+      { "field": "notes", "from": "It was he who wrote the book \"Dandatmika\".", "to": "It was he who wrote the book \"Dandatmika\".\n\nCalled «Kaviśekhara Rāya» in the Abhidhāna's list of Raghunandana's branch (the record «Kaviśekhara (Rājaśekhara)», #711, joined here on 12-11-2026, Whisper)." }
+    ]
+  }
+]

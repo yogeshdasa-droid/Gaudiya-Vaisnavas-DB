@@ -124,8 +124,16 @@ pub fn check(conn: &Connection) -> rusqlite::Result<Vec<Issue>> {
                     .filter_map(|x| {
                         index.find_whole(crate::store::without_kind(x)).or_else(|| {
                             let same = index.same_name(plain(x));
-                            let tied: Vec<i64> =
+                            let mut tied: Vec<i64> =
                                 same.iter().copied().filter(|&c| c != id && if as_guru { joined(id, c) } else { joined(c, id) }).collect();
+                            // two of them joined here: the one with exactly this name («Puruṣottama Tīrtha», not
+                            // «Puruṣottama Tīrtha (Puruṣottama Purī)»)
+                            if tied.len() > 1 {
+                                let exact: Vec<i64> = tied.iter().copied().filter(|&c| index.has_whole(c, crate::store::without_kind(x))).collect();
+                                if exact.len() == 1 {
+                                    tied = exact;
+                                }
+                            }
                             if same.len() > 1 && tied.len() == 1 { Some(tied[0]) } else { index.find(plain(x)) }
                         })
                     })

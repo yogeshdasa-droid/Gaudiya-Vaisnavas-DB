@@ -1,0 +1,15 @@
+[
+  {
+    "id": 469,
+    "name": "Haridāsa dāsa (Haribol Kuṭīra, Navadvīpa; author of the Gauḍīya Vaiṣṇava Abhidhāna)",
+    "edits": [
+      { "field": "guru", "from": "Giridhārī «Haribol» Sādhu of the Haribol Kuṭīra (veśa)", "to": "Giridhārī dāsa Bābājī (Haribol Kuṭīra, Navadvīpa) (veśa)" },
+      { "field": "aka", "from": "Haridāsa Dāsa (Śrīdhāma Navadvīpa, Haribola-kuṭīr)", "to": "Haridāsa Dāsa (Śrīdhāma Navadvīpa · Haribola-kuṭīr)" }
+    ]
+  },
+  {
+    "id": 668,
+    "name": "Kanakapriyā Devī (daughter of Vyāsācārya)",
+    "edits": [{ "field": "guru", "from": "Gatigovinda (dīkṣā)", "to": "Gati Govinda (dīkṣā)" }]
+  }
+]

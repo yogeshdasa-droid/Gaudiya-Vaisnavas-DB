@@ -370,22 +370,48 @@ pub fn parse_day(text: &str) -> Option<LunarDay> {
 /// "1407 Saka" (+78), or the first plausible year.
 pub fn year_of(text: &str) -> Option<i32> {
     static RE: OnceLock<Regex> = OnceLock::new();
-    let re = RE.get_or_init(|| Regex::new(r"(?i)\b(\d{3,4})\b(\s*(?:saka|śaka|sakabda|śakābda))?").unwrap());
-    let mut first = None;
+    // 12-11-2026: also Bengali years («1328 BS (1921)» was read as 1328) and years marked AD / CE
+    let re = RE.get_or_init(|| {
+        Regex::new(r"(?i)\b(\d{3,4})\b(?:\s*(?P<saka>saka\b|śaka|sakabda|śakābda)|\s*(?P<bs>bs\b|b\.\s?s\.|bangabda|bengali)|\s*(?P<ad>ad\b|a\.\s?d\.|ce\b|c\.\s?e\.))?").unwrap()
+    });
+    let in_range = |y: i32| (400..=2100).contains(&y);
+    // (number, years to add for its era: None = common era not said)
+    let mut found: Vec<(i32, Option<i32>, bool)> = Vec::new(); // (n, offset, explicit AD)
     for c in re.captures_iter(text) {
-        let n: i32 = c[1].parse().ok()?;
-        let saka = c.get(2).is_some();
-        let ad = if saka { n + 78 } else { n };
-        if !(400..=2100).contains(&ad) {
-            continue;
-        }
-        // an explicit common-era year wins over a Śaka one
-        if !saka {
-            return Some(ad);
-        }
-        first.get_or_insert(ad);
+        let Ok(n) = c[1].parse::<i32>() else { continue };
+        let offset = if c.name("saka").is_some() { Some(78) } else if c.name("bs").is_some() { Some(593) } else { None };
+        found.push((n, offset, c.name("ad").is_some()));
     }
-    first
+    // a year marked AD / CE wins
+    if let Some(&(n, _, _)) = found.iter().find(|(n, _, ad)| *ad && in_range(*n)) {
+        return Some(n);
+    }
+    let marked: Vec<(i32, i32)> = found.iter().filter_map(|(n, o, _)| o.map(|o| (*n, o))).collect();
+    let mut first_marked = None;
+    for &(n, offset, _) in &found {
+        match offset {
+            Some(o) => {
+                if in_range(n + o) {
+                    first_marked.get_or_insert(n + o);
+                }
+            }
+            None => {
+                // a bare number next to a Śaka / BS year is of that era: «1459 Śaka (another source: 1456)»
+                if let Some(&(_, o)) = marked.iter().find(|(m, _)| (m - n).abs() <= 10) {
+                    if in_range(n + o) {
+                        first_marked.get_or_insert(n + o);
+                    }
+                    continue;
+                }
+                // «1302 (25 August 1895)»: a Bengali / Śaka year with its common-era year after it
+                let era_of_other = found.iter().any(|(m, o, _)| o.is_none() && matches!(m - n, 76..=80 | 592..=595));
+                if in_range(n) && !era_of_other {
+                    return Some(n);
+                }
+            }
+        }
+    }
+    first_marked
 }
 
 // ---------------------------------------------------------------- the user's calendar (.ics)
@@ -508,6 +534,9 @@ pub struct PersonIndex {
     whole: Vec<(i64, String)>,
     /// (id, loose words of the name without its brackets): the namesakes
     plain: Vec<(i64, Vec<String>)>,
+    /// (id, loose words) for «one name ending the other»: the whole name, but without a bracket that
+    /// describes («(disciple of Muralīdhara)»)
+    tails: Vec<(i64, Vec<String>)>,
     /// how much each record weighs when one name fits several (repeated
     /// records): in the Guru Paramparā first, then the one with more texts
     weight: std::collections::HashMap<i64, (bool, i64)>,
@@ -526,6 +555,7 @@ impl PersonIndex {
         let mut names = Vec::new();
         let mut whole = Vec::new();
         let mut plain = Vec::new();
+        let mut tails = Vec::new();
         let mut weight = std::collections::HashMap::new();
         for row in rows {
             let (id, name, aka, tree, docs) = row?;
@@ -533,16 +563,39 @@ impl PersonIndex {
             for n in std::iter::once(name.as_str()).chain(aka.split(',')).map(str::trim).filter(|n| !n.is_empty()) {
                 let w = loose_words(n);
                 if !w.is_empty() {
+                    // a bracket that describes («(disciple of X)») is left out of the ends; one that names a
+                    // place or another name («(Varṣāṇā)») keeps namesakes apart
+                    let describes = n.split_once('(').is_some_and(|(_, r)| r.contains(" of ") || r.contains("’s ") || r.contains("'s "));
+                    if !(n.contains(')') && !n.contains('(')) {
+                        tails.push((id, if describes { loose_words(n.split('(').next().unwrap_or(n)) } else { w.clone() }));
+                    }
                     names.push((id, w));
                     whole.push((id, crate::store::person_key(n)));
                 }
-                let p = loose_words(n.split('(').next().unwrap_or(n));
+                // «Haribola-kuṭīr)»: the end of a bracket cut by a comma in the other names, not a name
+                let p = if n.contains(')') && !n.contains('(') { Vec::new() } else { loose_words(n.split('(').next().unwrap_or(n)) };
                 if !p.is_empty() {
                     plain.push((id, p));
                 }
+                // another name in brackets, «Kṛṣṇadāsa Premī (Kṛṣṇadāsa Vāṇī)», but not «(disciple of …)»
+                if let Some(inner) = n.split_once('(').map(|(_, r)| r.trim_end_matches(')').trim()) {
+                    let words = inner.split_whitespace().count();
+                    if !inner.contains(" of ") && !inner.contains(['(', ')', ';', ',']) && (2..=5).contains(&words) && !inner.chars().any(|c| c.is_ascii_digit()) {
+                        let w = loose_words(inner);
+                        if !w.is_empty() {
+                            plain.push((id, w));
+                        }
+                    }
+                }
             }
         }
-        Ok(PersonIndex { names, whole, plain, weight })
+        Ok(PersonIndex { names, whole, plain, tails, weight })
+    }
+
+    /// This record has exactly this whole name (or other name), brackets and all.
+    pub fn has_whole(&self, id: i64, name: &str) -> bool {
+        let key = crate::store::person_key(name);
+        !key.is_empty() && self.whole.iter().any(|(i, k)| *i == id && *k == key)
     }
 
     /// Every record with this name, the words in brackets apart: «Ananta» →
@@ -601,7 +654,8 @@ impl PersonIndex {
         let ends = |long: &[String], short: &[String]| {
             short.len() < long.len() && long.ends_with(short) && (short.len() >= 2 || short[0].len() >= 7)
         };
-        unique(self.names.iter().filter(|(_, n)| ends(n, &w) || ends(&w, n)).map(|(id, _)| *id).collect())
+        // «Lalita Sakhī (disciple of Muralīdhara)» does not end in «Muralīdhara» (12-11-2026): see `tails`
+        unique(self.tails.iter().filter(|(_, n)| ends(n, &w) || ends(&w, n)).map(|(id, _)| *id).collect())
     }
 }
 
@@ -933,6 +987,15 @@ END:VCALENDAR
         assert_eq!(year_of("Asvina Sukla Dvadasi, 1504 Saka"), Some(1582));
         assert_eq!(year_of("Early 18th century"), None);
         assert_eq!(year_of("Utthana Ekadasi, Friday 18 November 1904, 8 am"), Some(1904));
+        // 12-11-2026: Bengali years, years marked AD, a bare year next to a Śaka one
+        assert_eq!(year_of("1 Āśvina 1328 BS (1921)"), Some(1921));
+        assert_eq!(year_of("Phālguna śukla tṛtīyā, 1313 BS"), Some(1906));
+        assert_eq!(year_of("Bhādra Śukla Ṣaṣṭhī 1302 (25 August 1895), at Sandvīpa"), Some(1895));
+        assert_eq!(year_of("1760 Śaka (1838 AD)"), Some(1838));
+        assert_eq!(year_of("Māgha kṛṣṇa aṣṭamī, 1923 AD (1330 BS)"), Some(1923));
+        assert_eq!(year_of("1459 Śaka (another source: 1456)"), Some(1537));
+        assert_eq!(year_of("1428 Śaka (1506), at Jhāmaṭapura (which also gives 1418 Śaka); other dates given: 1496; 1482 Śaka (1560)"), Some(1506));
+        assert_eq!(year_of("Between 1620 and 1630 Śaka (1698-1708 CE)"), Some(1708));
         assert_eq!(add_days(2026, 12, 31, 1), (2027, 1, 1));
     }
 }

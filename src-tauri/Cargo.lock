@@ -1310,7 +1310,7 @@ dependencies = [
 
 [[package]]
 name = "gaudiya-vaisnavas-db"
-version = "0.14.3"
+version = "0.14.4"
 dependencies = [
  "encoding_rs",
  "image",
