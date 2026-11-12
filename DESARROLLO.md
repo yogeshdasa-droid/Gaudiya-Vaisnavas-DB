@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **12-11-2026** (versión **0.16.4**).
+Última actualización: **12-11-2026** (versión **0.16.5**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,15 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.16.4)
+## 5. Qué hace hoy (v0.16.5)
+
+### Novedades de la 0.16.5 (12-11-2026) — la ficha como artículo de enciclopedia (formato 10 sin cambios)
+- Whisper: «más formal y serio; al darle a una ficha esté todo disponible». PersonView: `.person-inner.ency`; cabecera
+  limpia; `aside.infobox` a la derecha (foto + filas `ib-row`); el **texto principal abierto siempre**, con su índice
+  en una línea arriba (busca el título al pulsar); secciones `ency-sec` con filetes finos (Discípulos plegados a
+  `DISC_SHOWN` = 6 con «Ver todos (N)», Coincidieron, Enlaces), «Otras versiones» en una línea, Imágenes.
+- Notas detrás de «Ver notas» (encima del texto). Botones: Ver notas · Editar ficha · Buscar menciones · diana ·
+  Árbol · Linaje · Viajes · ⋯. Estilos al final de styles.css («The record as an encyclopedia article»).
 
 ### Novedades de la 0.16.4 (12-11-2026) — seis viajes más (formato 10 sin cambios)
 - `journeys.ts`: Raghunātha dāsa (de Saptagrāma a Rādhā-kuṇḍa), Rūpa y Anupama (de Rāmakeli a Vṛndāvana; `others`
@@ -1509,6 +1517,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **12-11-2026 — v0.16.5**: la ficha como artículo de enciclopedia (texto abierto, recuadro de datos, «Ver notas»).
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.16.5
 
 - **12-11-2026 — v0.16.4**: seis viajes más (Raghunātha dāsa, Rūpa, Sanātana, Śrīnivāsa, Narottama, Śyāmānanda);
   los viajes en un desplegable. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.16.4

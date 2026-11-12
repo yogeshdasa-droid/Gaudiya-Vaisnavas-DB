@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ArrowUp, BookOpen, MapPin, ChevronDown, ChevronLeft, ChevronRight, Star, Combine, FileDown, FilePlus2, Printer, FileText, Folder, GitFork, GitMerge, Globe, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Route, Search, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
+import { ArrowUp, BookOpen, MapPin, ChevronDown, ChevronLeft, ChevronRight, Star, Combine, FileDown, FilePlus2, Printer, FileText, Folder, GitFork, GitMerge, Globe, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Route, Search, StickyNote, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
 import { api, fileUrl, isNamesake, LifeSpan, MAIN_TEXT, NAMESAKES, Place, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
@@ -228,6 +228,8 @@ function cardTitle(title: string, name: string): string {
 
 /** How much of a single text is shown inside the record (the rest in the reader). */
 const INLINE_SECTIONS = 4;
+/** Disciples shown before «See all» (12-11-2026, Whisper: «si son más de digamos 6»). */
+const DISC_SHOWN = 6;
 
 /** Links in a text (notes of a record or a place):
  *  - [word](<target>) or [word](https://…) → the word, opening the target (made with «Link…» in the editor);
@@ -403,9 +405,16 @@ export function PersonView(p: Props) {
   const single = main ?? (person && person.id === p.id && person.docs.length === 1 ? person.docs[0] : null);
   const otherVersions = main && person ? person.docs.filter((d) => d.id !== main.id) : [];
   const isMain = !!main;
-  // the text of the record starts folded (Whisper, 07-11-2026): opened when it is to be read
-  const [textOpen, setTextOpen] = useState(false);
-  useEffect(() => setTextOpen(false), [p.id]);
+  // the text of the record is open (12-11-2026, Whisper: «al darle a una ficha esté todo disponible»; folded since 07-11)
+  const [textOpen, setTextOpen] = useState(true);
+  useEffect(() => setTextOpen(true), [p.id]);
+  // the notes open with «See notes» above the text; more than DISC_SHOWN disciples open with «See all»
+  const [showNotes, setShowNotes] = useState(false);
+  const [discOpen, setDiscOpen] = useState(false);
+  useEffect(() => {
+    setShowNotes(false);
+    setDiscOpen(false);
+  }, [p.id]);
   // with several parts (texts joined into one): one part at a time, chosen
   // in a bar like the reader's
   const [inline, setInline] = useState<{ docId: number; sections: SectionText[]; total: number; toc: TocEntry[]; ord: number; all: boolean } | null>(null);
@@ -628,6 +637,7 @@ export function PersonView(p: Props) {
     ],
   ];
   const notes = splitNotes(person.notes);
+  const discTotal = disciples.reduce((n, [, l]) => n + l.length, 0);
   const hasFacts = facts.flat().some(([, , show]) => show) || person.notes.trim() || disciples.length > 0;
   const tags = person.tags
     .split(",")
@@ -665,28 +675,8 @@ export function PersonView(p: Props) {
         </button>
       )}
       <div className="reader-scroll" ref={scrollRef} onScroll={(e) => setFar(e.currentTarget.scrollTop > 900)}>
-        <div className="person-inner">
+        <div className="person-inner ency">
           <header className="person-head">
-            <div className="person-cover-wrap">
-              <button className="person-cover" title={t.choosePhoto} onClick={choosePhoto}>
-                {person.hasPhoto ? (
-                  <img src={`${fileUrl("photo", person.id)}?v=${encodeURIComponent(person.modified)}`} alt="" />
-                ) : cover ? (
-                  <img src={fileUrl("cover", cover.id)} alt="" />
-                ) : (
-                  <UserRound size={44} />
-                )}
-                <span className="cover-overlay">
-                  <ImagePlus size={20} />
-                  {person.hasPhoto ? t.changePhoto : t.choosePhoto}
-                </span>
-              </button>
-              {person.hasPhoto && (
-                <button className="icon-btn cover-remove" title={t.removePhoto} onClick={removePhoto}>
-                  <X size={14} />
-                </button>
-              )}
-            </div>
             <div className="person-title">
               {me?.tree && (
                 <button className="parampara-seal" title={t.revealInTree} onClick={() => p.onReveal(person)}>
@@ -710,26 +700,34 @@ export function PersonView(p: Props) {
                 </div>
               )}
               <div className="person-actions">
-                <button className="btn" onClick={() => p.onEdit(person)}>
+                {notes.body.trim() && (
+                  <button className={`btn small${showNotes ? " on" : ""}`} onClick={() => setShowNotes((v) => !v)} title={t.seeNotesHint}>
+                    <StickyNote size={15} /> {showNotes ? t.hideNotes : t.seeNotes}
+                  </button>
+                )}
+                <button className="btn small" onClick={() => p.onEdit(person)}>
                   <Pencil size={15} /> {t.editPerson}
                 </button>
-                <button className="btn ghost" onClick={() => p.onFindMentions(person)} title={t.findMentions}>
-                  <Search size={15} /> {t.findMentions}
+                <button className="btn ghost small" onClick={() => p.onFindMentions(person)} title={t.findMentions}>
+                  <Search size={15} /> {t.findMentionsShort}
+                </button>
+                <button className="icon-btn" onClick={() => p.onReveal(person)} title={t.revealInTree}>
+                  <LocateFixed size={17} />
                 </button>
                 {me?.tree && (
-                  <button className="btn ghost" onClick={() => p.onShowInTree(person)} title={t.showInTreeHint}>
+                  <button className="btn ghost small" onClick={() => p.onShowInTree(person)} title={t.showInTreeHint}>
                     <Network size={15} /> {t.showInTree}
                   </button>
                 )}
                 {me && (
-                  <button className="btn ghost" onClick={() => p.onShowLineage(person)} title={t.showLineageHint}>
+                  <button className="btn ghost small" onClick={() => p.onShowLineage(person)} title={t.showLineageHint}>
                     <GitFork size={15} /> {t.showLineage}
                   </button>
                 )}
                 {trips.length > 0 && (
                   <div className="menu-wrap">
                     <button
-                      className="btn ghost"
+                      className="btn ghost small"
                       title={t.seeJourneysHint}
                       onClick={(e) => {
                         if (trips.length === 1) return p.onShowJourney(trips[0].id);
@@ -751,9 +749,6 @@ export function PersonView(p: Props) {
                     )}
                   </div>
                 )}
-                <button className="icon-btn" onClick={() => p.onReveal(person)} title={t.revealInTree}>
-                  <LocateFixed size={17} />
-                </button>
                 <div className="menu-wrap">
                   <button
                     className={`icon-btn ${menu ? "on" : ""}`}
@@ -824,98 +819,78 @@ export function PersonView(p: Props) {
             </div>
           )}
 
-          {hasFacts ? (
-            <dl className="facts">
-              {/* the cards flow down and across as many columns as fit: no
-                  empty space under a short card (gurus, dates, place, works) */}
-              {facts.flat().some(([, , show]) => show) && (
-                <div className="facts-flow">
+          <div className="ency-body">
+            <aside className="infobox">
+                <div className="person-cover-wrap">
+                  <button className="person-cover" title={t.choosePhoto} onClick={choosePhoto}>
+                    {person.hasPhoto ? (
+                      <img src={`${fileUrl("photo", person.id)}?v=${encodeURIComponent(person.modified)}`} alt="" />
+                    ) : cover ? (
+                      <img src={fileUrl("cover", cover.id)} alt="" />
+                    ) : (
+                      <UserRound size={44} />
+                    )}
+                    <span className="cover-overlay">
+                      <ImagePlus size={20} />
+                      {person.hasPhoto ? t.changePhoto : t.choosePhoto}
+                    </span>
+                  </button>
+                  {person.hasPhoto && (
+                    <button className="icon-btn cover-remove" title={t.removePhoto} onClick={removePhoto}>
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
+                  {hasFacts ? (
+                <dl>
                   {facts
                     .flat()
                     .filter(([, , show]) => show)
                     .map(([label, value]) => (
-                      <div key={label} className="fact">
+                      <div key={label} className="ib-row">
                         <dt>{label}</dt>
                         <dd>{value}</dd>
                       </div>
                     ))}
-                </div>
+                  {disciples.length > 0 && (
+                    <div className="ib-row">
+                      <dt>
+                        {t.disciples} <span className="count">{disciples.reduce((n, [, l]) => n + l.length, 0)}</span>
+                      </dt>
+                      <dd>
+                        {disciples.map(([kind, list]) => (
+                          <button
+                            key={kind}
+                            className="link-btn ib-count"
+                            onClick={() => document.getElementById("person-disciples")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                          >
+                            {kind ? t.disciplesOfKind[kind] : t.disciplesNoKind} · {list.length}
+                          </button>
+                        ))}
+                      </dd>
+                    </div>
+                  )}
+                </dl>
+              ) : (
+                <p className="muted small no-facts" onClick={() => p.onEdit(person)}>
+                  {t.noDetails}
+                </p>
               )}
-              {disciples.length > 0 && (
-                <div className="fact wide">
-                  <dt>
-                    {t.disciples} <span className="count">{disciples.reduce((n, [, l]) => n + l.length, 0)}</span>
-                  </dt>
-                  <dd className="disciple-groups">
-                    {disciples.map(([kind, list]) => (
-                      <div key={kind} className="disciple-group">
-                        <span className="disciple-kind">
-                          {kind ? t.disciplesOfKind[kind] : t.disciplesNoKind} <span className="count">{list.length}</span>
-                        </span>
-                        <span className="disciple-names">{names(list)}</span>
-                      </div>
-                    ))}
-                  </dd>
-                </div>
-              )}
-              {contemporaries.length > 0 && (
-                <details className="fact wide contemporaries">
-                  <summary>
-                    <dt>
-                      {t.contemporaries} <span className="count">{contemporaries.length}</span>
-                    </dt>
-                  </summary>
-                  <p className="muted small">{t.contemporariesHint(contemporaries.length)}</p>
-                  <dd>
-                    {contemporaries.map(({ l }) => (
-                      <button key={l.id} className="name-link" title={years(l)} onClick={() => p.onPerson(l.id)}>
-                        {l.name} <span className="muted">{years(l)}</span>
-                      </button>
-                    ))}
-                  </dd>
-                </details>
-              )}
-              {notes.body.trim() && (
-                <div className="fact wide">
-                  <dt>{t.notes}</dt>
-                  <dd className="notes">
+            </aside>
+            <div className="ency-main">
+              {showNotes && notes.body.trim() && (
+                <section className="ency-sec notes-open">
+                  <h2>
+                    {t.notes}
+                    <button className="icon-btn" title={t.hideNotes} onClick={() => setShowNotes(false)}>
+                      <X size={14} />
+                    </button>
+                  </h2>
+                  <div className="notes">
                     <WebLinks text={notes.body} onError={p.onToast} />
-                  </dd>
-                </div>
+                  </div>
+                </section>
               )}
-              {notes.links.length > 0 && (
-                <div className="fact wide">
-                  <dt>{t.linksSection}</dt>
-                  <dd className="note-links">
-                    {notes.links.map((l, i) => {
-                      const kind = linkKind(l.target);
-                      const Icon = kind === "web" ? Globe : kind === "folder" ? Folder : FileText;
-                      return (
-                        <a
-                          key={i}
-                          href={kind === "web" ? l.target : "#"}
-                          className={`note-link ${kind}`}
-                          title={l.target}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            api.openExternal(kind === "web" && !/^[a-z]+:/i.test(l.target) ? `https://${l.target}` : openTarget(l.target)).catch((err) => p.onToast(String(err)));
-                          }}
-                        >
-                          <Icon size={14} />
-                          <span>{linkLabel(l)}</span>
-                        </a>
-                      );
-                    })}
-                  </dd>
-                </div>
-              )}
-            </dl>
-          ) : (
-            <p className="muted small no-facts" onClick={() => p.onEdit(person)}>
-              {t.noDetails}
-            </p>
-          )}
-
           {single ? (
             <section>
               <h2>
@@ -995,7 +970,16 @@ export function PersonView(p: Props) {
                     <nav className="book-nav">
                       <div className="outline-title">{t.inThisText}</div>
                       {outline.map((h, i) => (
-                        <button key={i} title={h.text} onClick={() => h.el.scrollIntoView({ block: "start", behavior: "smooth" })}>
+                        <button
+                          key={i}
+                          title={h.text}
+                          onClick={() => {
+                            const el = h.el.isConnected
+                              ? h.el
+                              : [...(bodyRef.current?.querySelectorAll<HTMLElement>("h1, h2, h3, h4, .ln.h") ?? [])].find((x) => (x.textContent ?? "").replace(/^#+\s*/, "").trim() === h.text);
+                            el?.scrollIntoView({ block: "start", behavior: "smooth" });
+                          }}
+                        >
                           {h.text}
                         </button>
                       ))}
@@ -1135,6 +1119,81 @@ export function PersonView(p: Props) {
           </section>
           )}
 
+          {disciples.length > 0 && (
+            <section id="person-disciples" className="ency-sec">
+              <h2>
+                {t.disciples} <span className="count">{disciples.reduce((n, [, l]) => n + l.length, 0)}</span>
+              </h2>
+                <div className="disciple-groups">
+                  {(() => {
+                    // folded: the first DISC_SHOWN names, taken from the groups in order
+                    let left = discOpen ? Infinity : DISC_SHOWN;
+                    return disciples.map(([kind, list]) => {
+                      if (left <= 0) return null;
+                      const shown = list.slice(0, left);
+                      left -= shown.length;
+                      return (
+                        <div key={kind} className="disciple-group">
+                          <span className="disciple-kind">
+                            {kind ? t.disciplesOfKind[kind] : t.disciplesNoKind} <span className="count">{list.length}</span>
+                          </span>
+                          <span className="disciple-names">{names(shown)}</span>
+                        </div>
+                      );
+                    });
+                  })()}
+                </div>
+                {discTotal > DISC_SHOWN && (
+                  <button className="link-btn disc-more" onClick={() => setDiscOpen((v) => !v)}>
+                    {discOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />} {discOpen ? t.discFold : t.discSeeAll(discTotal)}
+                  </button>
+                )}
+            </section>
+          )}
+            {contemporaries.length > 0 && (
+              <details className="ency-sec contemporaries">
+                <summary>
+                  <dt>
+                    {t.contemporaries} <span className="count">{contemporaries.length}</span>
+                  </dt>
+                </summary>
+                <p className="muted small">{t.contemporariesHint(contemporaries.length)}</p>
+                <dd>
+                  {contemporaries.map(({ l }) => (
+                    <button key={l.id} className="name-link" title={years(l)} onClick={() => p.onPerson(l.id)}>
+                      {l.name} <span className="muted">{years(l)}</span>
+                    </button>
+                  ))}
+                </dd>
+              </details>
+            )}
+          {notes.links.length > 0 && (
+            <section className="ency-sec">
+              <h2>{t.linksSection}</h2>
+                <div className="note-links">
+                  {notes.links.map((l, i) => {
+                    const kind = linkKind(l.target);
+                    const Icon = kind === "web" ? Globe : kind === "folder" ? Folder : FileText;
+                    return (
+                      <a
+                        key={i}
+                        href={kind === "web" ? l.target : "#"}
+                        className={`note-link ${kind}`}
+                        title={l.target}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          api.openExternal(kind === "web" && !/^[a-z]+:/i.test(l.target) ? `https://${l.target}` : openTarget(l.target)).catch((err) => p.onToast(String(err)));
+                        }}
+                      >
+                        <Icon size={14} />
+                        <span>{linkLabel(l)}</span>
+                      </a>
+                    );
+                  })}
+                </div>
+            </section>
+          )}
+
           <section>
             <h2>
               <Images size={14} /> {t.gallery} {person.images.length > 0 && <span className="pill">{person.images.length}</span>}
@@ -1199,6 +1258,8 @@ export function PersonView(p: Props) {
               </div>
             </section>
           )}
+            </div>
+          </div>
         </div>
       </div>
       {zoom !== null && (
