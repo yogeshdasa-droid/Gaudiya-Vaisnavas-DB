@@ -170,7 +170,7 @@ export function Panorama({
               <Status t={t} lang={lang} list={list} onPerson={onPerson} />
             </>
           ) : tab === "map" ? (
-            <PlacesMap t={t} lang={lang} list={list} onPerson={onPerson} places={places} onPlace={onPlace} focus={focus} />
+            <PlacesMap t={t} lang={lang} list={list} persons={persons} onPerson={onPerson} places={places} onPlace={onPlace} focus={focus} />
           ) : tab === "branches" ? (
             <Branches t={t} lang={lang} persons={persons} onPerson={onPerson} />
           ) : tab === "year" ? (
@@ -486,9 +486,18 @@ function MapSvg({
   onTile,
   zoomReq,
   onShow,
+  goto,
+  onView,
+  cluster = false,
 }: {
   t: T;
   mp: MapPlace[];
+  /** go to that piece of the map (`n` tells two requests apart) */
+  goto?: { box: Box; n: number };
+  /** the piece in view, once the map stops moving: [south, north, west, east] */
+  onView?: (b: Box) => void;
+  /** places pressed together on the screen drawn as one dot with their total (12-11-2026) */
+  cluster?: boolean;
   /** a place picked (on the map or with «See on the map»): if others are pressed against it,
    *  the map comes close enough to show them apart (`n` tells two requests apart) */
   zoomReq?: { i: number; n: number };
@@ -622,6 +631,31 @@ function MapSvg({
     .sort((a, b) => Number(a[0] === picked) - Number(b[0] === picked) || b[1].length - a[1].length);
   const vh = (view[2] * H) / width;
   const right = (lo: number) => x(lo) > view[0] + view[2] * 0.78;
+  // places pressed together on the screen: one dot with the people of all of them, named after the
+  // biggest («Navadvīpa-dhāma +12»); a click comes close enough to show them apart
+  const unitPx = view[2] / (screenW || width); // map units in a pixel of the screen
+  const groups = useMemo(() => {
+    const out: { lead: number; members: number[]; people: Set<number> }[] = [];
+    for (const [i, ps] of [...shown].sort((a, b) => Number(b[0] === picked) - Number(a[0] === picked) || b[1].length - a[1].length)) {
+      const px = x(mp[i].lon);
+      const py = y(mp[i].lat);
+      const g = cluster && i !== picked ? out.find((o) => o.lead !== picked && Math.hypot(x(mp[o.lead].lon) - px, y(mp[o.lead].lat) - py) < 16 * unitPx) : undefined;
+      if (g) {
+        g.members.push(i);
+        for (const p of ps) g.people.add(p.id);
+      } else out.push({ lead: i, members: [i], people: new Set(ps.map((p) => p.id)) });
+    }
+    return out;
+  }, [shown, cluster, unitPx, picked]); // eslint-disable-line react-hooks/exhaustive-deps
+  const comeClose = (js: number[]) => {
+    const xs = js.map((j) => x(mp[j].lon));
+    const ys = js.map((j) => y(mp[j].lat));
+    const bw = Math.max(Math.max(...xs) - Math.min(...xs), ((Math.max(...ys) - Math.min(...ys)) * width) / H);
+    const vw = Math.min(view[2] / 2.5, Math.max(width / maxZoom, bw * 2.2));
+    const cx = (Math.max(...xs) + Math.min(...xs)) / 2;
+    const cy = (Math.max(...ys) + Math.min(...ys)) / 2;
+    setView(clampView([cx - vw / 2, cy - (vw * H) / width / 2, vw]));
+  };
 
   // a place picked among others close together (Vṛndāvana and its temples): the map
   // zooms in on the group; picked again, closer still
@@ -662,6 +696,23 @@ function MapSvg({
     const id = window.setTimeout(() => setTileView(view), 140);
     return () => window.clearTimeout(id);
   }, [view]);
+  // the piece in view, in degrees, for the list beside the map
+  useEffect(() => {
+    if (!onView) return;
+    const [vx, vy, vw] = tileView;
+    const vhh = (vw * H) / width;
+    onView([n - ((vy + vhh) / H) * (n - s), n - (vy / H) * (n - s), w + (vx / width) * (e - w), w + ((vx + vw) / width) * (e - w)]);
+  }, [tileView]); // eslint-disable-line react-hooks/exhaustive-deps
+  // «Go to»: that piece fills the map
+  useEffect(() => {
+    if (!goto) return;
+    const [gs, gn, gw, ge] = goto.box;
+    const bw = Math.max(x(ge) - x(gw), ((y(gs) - y(gn)) * width) / H);
+    const vw = Math.min(width, Math.max(width / maxZoom, bw));
+    const cx = (x(gw) + x(ge)) / 2;
+    const cy = (y(gn) + y(gs)) / 2;
+    setView(clampView([cx - vw / 2, cy - (vw * H) / width / 2, vw]));
+  }, [goto?.n]); // eslint-disable-line react-hooks/exhaustive-deps
   const tiles = useMemo(() => {
     if (!satellite) return [];
     const tv = tileView;
@@ -752,8 +803,40 @@ function MapSvg({
         {frames.map((frame) => (
           <rect key={frame.join()} className="map-frame" x={x(frame[2])} y={y(frame[1])} width={x(frame[3]) - x(frame[2])} height={y(frame[0]) - y(frame[1])} rx={6} />
         ))}
-        {shown.map(([i, ps]) => {
+        {groups.map(({ lead: i, members, people }) => {
           const { name, lat: la, lon: lo } = mp[i];
+          if (members.length > 1) {
+            const rr = r(people.size);
+            return (
+              <g
+                key={`c${i}`}
+                className="map-place cluster"
+                onClick={() => !drag.current?.moved && comeClose(members)}
+                onMouseEnter={() => setHover(i)}
+                onMouseLeave={() => setHover(null)}
+              >
+                <circle cx={x(lo)} cy={y(la)} r={rr + 6 / z} className="map-hit" />
+                <circle cx={x(lo)} cy={y(la)} r={rr} className="map-dot" />
+                <text x={x(lo)} y={y(la) + 4 / z} textAnchor="middle" className="map-count" fontSize={11 / z}>
+                  {members.length}
+                </text>
+                {(labels(i, people.size) || z >= 2.5 || hover === i) && (
+                  <text
+                    x={right(lo) ? x(lo) - rr - 4 / z : x(lo) + rr + 4 / z}
+                    y={y(la) + 4 / z}
+                    textAnchor={right(lo) ? "end" : "start"}
+                    className="map-label"
+                    fontSize={13 / z}
+                    strokeWidth={4 / z}
+                  >
+                    {name} +{members.length - 1} · {people.size}
+                  </text>
+                )}
+                <title>{t.mapClusterHint(members.length)}</title>
+              </g>
+            );
+          }
+          const ps = at.get(i) ?? [];
           const rr = r(ps.length);
           return (
             <g
@@ -802,10 +885,54 @@ function MapSvg({
   );
 }
 
+/** The ages of the map (12-11-2026, «the time over the map»): [first year, last year]. */
+const ERAS: [number, number][] = [
+  [-3000, 1479], // before Mahāprabhu
+  [1480, 1540], // Mahāprabhu and His associates
+  [1520, 1600], // the Gosvāmīs of Vraja
+  [1580, 1660], // Narottama, Śrīnivāsa, Śyāmānanda
+  [1650, 1800], // 17th–18th centuries
+  [1800, 1900], // the bābājīs of the 19th century
+  [1900, 2100], // 20th century
+];
+
+/** The years each record lived: its own dates, or else guessed from its gurus in the tree
+ *  (about 25 years a generation): [from, to, guessed]. */
+function lifeYears(list: OverviewPerson[], persons: PersonListItem[]) {
+  const own = new Map<number, [number, number]>();
+  for (const p of list) {
+    if (p.born != null) own.set(p.id, [p.born, p.died ?? p.born + 70]);
+    else if (p.died != null) own.set(p.id, [p.died - 70, p.died]);
+  }
+  // an associate is of the same generation as the one he is placed under; a disciple, about 25 years later
+  const up = new Map(persons.map((p) => [p.id, p.tree ? { parent: p.tree.parent, step: p.tree.kind === "associate" ? 0 : 25 } : null]));
+  const out = new Map<number, [number, number, boolean]>();
+  for (const p of list) {
+    const o = own.get(p.id);
+    if (o) {
+      out.set(p.id, [o[0], o[1], false]);
+      continue;
+    }
+    let shift = 0;
+    let cur = up.get(p.id);
+    for (let k = 1; cur && cur.parent != null && k <= 6; k++) {
+      shift += cur.step;
+      const a = own.get(cur.parent);
+      if (a) {
+        out.set(p.id, [a[0] + shift, a[0] + shift + 60, true]);
+        break;
+      }
+      cur = up.get(cur.parent);
+    }
+  }
+  return out;
+}
+
 function PlacesMap({
   t,
   lang,
-  list,
+  list: all,
+  persons,
   onPerson,
   places,
   onPlace,
@@ -814,6 +941,7 @@ function PlacesMap({
   t: T;
   lang: Lang;
   list: OverviewPerson[];
+  persons: PersonListItem[];
   onPerson: (id: number) => void;
   places: Place[];
   onPlace: (id: number) => void;
@@ -821,6 +949,26 @@ function PlacesMap({
 }) {
   const [picked, setPicked] = useState<number | null>(null);
   const mp = useMemo(() => mapPlaces(places), [places]);
+  // the time over the map: one age, or all of them; «play» goes through them one by one
+  const [era, setEra] = useState<number | null>(null);
+  const [playing, setPlaying] = useState(false);
+  useEffect(() => {
+    if (!playing) return;
+    const id = window.setInterval(() => setEra((e) => (e === null || e >= ERAS.length - 1 ? 0 : e + 1)), 2600);
+    return () => window.clearInterval(id);
+  }, [playing]);
+  const years = useMemo(() => lifeYears(all, persons), [all, persons]);
+  const list = useMemo(() => {
+    if (era === null) return all;
+    const [a, b] = ERAS[era];
+    return all.filter((p) => {
+      // the years of their work: from about twenty to the end of their life
+      const y = years.get(p.id);
+      return !!y && Math.min(y[0] + 20, y[1]) <= b && y[1] >= a;
+    });
+  }, [all, era, years]);
+  const guessed = list.filter((p) => years.get(p.id)?.[2]).length;
+  const undated = all.filter((p) => p.hasPlace && !years.has(p.id)).length;
   // drawing or satellite (remembered on this computer)
   const [style, setStyleState] = useState<"draw" | "sat">(() => {
     try {
@@ -860,7 +1008,12 @@ function PlacesMap({
   }, [focus?.n, mp]); // eslint-disable-line react-hooks/exhaustive-deps
   const withPlace = list.filter((p) => p.hasPlace).length;
   const located = new Set([...at.values()].flat().map((p) => p.id)).size;
-  const most = Math.max(1, ...[...at.values()].map((ps) => ps.length));
+  // the size of the dots is the same whatever the age: the ages can be compared
+  const most = useMemo(() => {
+    const c = new Map<number, number>();
+    for (const p of all) for (const i of placesOf(p, mp)) c.set(i, (c.get(i) ?? 0) + 1);
+    return Math.max(1, ...c.values());
+  }, [all, mp]);
   const sorted = [...at].sort((a, b) => b[1].length - a[1].length);
   const far = sorted.filter(([i]) => !inBox(NORTH, mp[i].lat, mp[i].lon));
   const pick = (i: number) => setPicked(picked === i ? null : i);
@@ -906,6 +1059,21 @@ function PlacesMap({
     if (!bigVraja.some((j) => Math.abs(mp[j].lat - la) < 0.012 && Math.abs(mp[j].lon - lo) < 0.02)) bigVraja.push(i);
   }
   const common = { t, mp, at, most, picked, onPick: pickOnMap, satellite: style === "sat" && !offline, onTile, zoomReq, onShow: showOnMap };
+  // one big map (12-11-2026, Whisper: the three small ones were cramped): the piece in view, and «Go to»
+  const [inView, setInView] = useState<Box>(NORTH);
+  const [goto, setGoto] = useState<{ box: Box; n: number } | undefined>();
+  const jumps: [string, Box][] = [
+    [t.mapGoIndia, NORTH],
+    [t.mapGoBengal, BENGAL],
+    [t.mapGoNavadvipa, [23.33, 23.52, 88.28, 88.46]],
+    [t.mapGoVraja, VRAJA],
+    [t.mapGoPuri, [19.77, 19.84, 85.79, 85.87]],
+  ];
+  const visible = sorted.filter(([i]) => inBox(inView, mp[i].lat, mp[i].lon));
+  const listPick = (i: number) => {
+    setPicked(i);
+    setZoomReq({ i, n: Date.now() });
+  };
 
   return (
     <>
@@ -921,32 +1089,84 @@ function PlacesMap({
           </button>
         </div>
         {offline && <span className="muted small">{t.mapOffline}</span>}
-        <span className="muted small map-legend">
-          <i className="legend-dot" /> {t.mapLegendPlace} <i className="legend-dot district" /> {t.mapLegendDistrict}
+        <span className="map-go">
+          <span className="muted small">{t.mapGo}</span>
+          {jumps.map(([label, box]) => (
+            <button key={label} className="btn ghost small" onClick={() => setGoto({ box, n: Date.now() })}>
+              {label}
+            </button>
+          ))}
         </span>
       </div>
-      <div className="pano-maps">
-        <div className="pano-map">
+      <div className="map-eras">
+        <span className="muted small">{t.mapEra}</span>
+        <button className={`btn ghost small${era === null ? " on" : ""}`} onClick={() => (setPlaying(false), setEra(null))}>
+          {t.mapEraAll}
+        </button>
+        {t.mapEras.map((label, k) => (
+          <button key={k} className={`btn ghost small${era === k ? " on" : ""}`} onClick={() => (setPlaying(false), setEra(k))} title={`${ERAS[k][0] < 0 ? "…" : ERAS[k][0]}–${ERAS[k][1] > 2026 ? "" : ERAS[k][1]}`}>
+            {label}
+          </button>
+        ))}
+        <button className="btn small" onClick={() => setPlaying((v) => !v)}>
+          {playing ? `■ ${t.mapStop}` : `▶ ${t.mapPlay}`}
+        </button>
+      </div>
+      {era !== null && <p className="muted small map-era-note">{t.mapEraNote(list.length, guessed, undated)}</p>}
+      <div className="pano-onemap">
+        <div className="pano-map big">
           <MapSvg
             {...common}
             box={NORTH}
-            width={620}
-            frames={[BENGAL, VRAJA]}
-            labels={(i) => !inBox(BENGAL, mp[i].lat, mp[i].lon) && bigOutside.includes(i)}
+            width={900}
+            cluster
+            goto={goto}
+            onView={setInView}
+            labels={(i) => (inBox(BENGAL, mp[i].lat, mp[i].lon) ? bigBengal.includes(i) : inBox(VRAJA, mp[i].lat, mp[i].lon) ? bigVraja.includes(i) : bigOutside.includes(i))}
             regions={[
               [t.regionVraja, 29.6, 77.6],
               [t.regionOrissa, 20.4, 84.4],
+              [t.regionBengal, 25.6, 89.6],
             ]}
           />
         </div>
-        <div className="pano-map">
-          <div className="map-title">{t.mapBengal}</div>
-          <MapSvg {...common} box={BENGAL} width={620} labels={(i) => bigBengal.includes(i)} regions={[[t.regionBengal, 25.05, 89.4]]} />
-        </div>
-        <div className="pano-map">
-          <div className="map-title">{t.mapVraja}</div>
-          <MapSvg {...common} box={VRAJA} width={620} labels={(i) => bigVraja.includes(i)} regions={[[t.regionVraja, 27.74, 77.7]]} />
-        </div>
+        <aside className="map-side">
+          {picked !== null && at.get(picked) ? (
+            <section ref={shownRef} className="map-picked">
+              <button className="btn ghost small" onClick={() => setPicked(null)}>
+                ← {t.mapBack}
+              </button>
+              <h2>
+                {mp[picked].name} <span className="count">{at.get(picked)!.length}</span>
+              </h2>
+              {mp[picked].placeId !== null && (
+                <button className="btn ghost small map-open-place" onClick={() => onPlace(mp[picked].placeId!)}>
+                  <MapPin size={13} /> {t.placeOpen}
+                </button>
+              )}
+              <Names t={t} people={at.get(picked)!} onPerson={onPerson} />
+            </section>
+          ) : (
+            <>
+              <h3>{t.mapInView(visible.length.toLocaleString(lang))}</h3>
+              <p className="muted small">{t.mapInViewHint}</p>
+              <p className="muted small map-legend">
+                <i className="legend-dot" /> {t.mapLegendPlace} · <i className="legend-dot district" /> {t.mapLegendDistrict}
+              </p>
+              <div className="map-side-list">
+                {visible.map(([i, ps]) => (
+                  <button key={i} className={`map-side-row${mp[i].district ? " district" : ""}`} onClick={() => listPick(i)}>
+                    <span className="map-side-name">{mp[i].name}</span>
+                    <span className="map-side-bar">
+                      <i style={{ width: `${(100 * ps.length) / most}%` }} />
+                    </span>
+                    <span className="count">{ps.length.toLocaleString(lang)}</span>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </aside>
       </div>
       {far.length > 0 && (
         <p className="muted small">
@@ -961,35 +1181,6 @@ function PlacesMap({
           ))}
         </p>
       )}
-      {picked !== null && at.get(picked) && (
-        <section ref={shownRef} className="map-picked">
-          <h2>
-            {mp[picked].name} <span className="count">{at.get(picked)!.length}</span>
-            {mp[picked].placeId !== null && (
-              <button className="btn ghost small map-open-place" onClick={() => onPlace(mp[picked].placeId!)}>
-                <MapPin size={13} /> {t.placeOpen}
-              </button>
-            )}
-          </h2>
-          <Names t={t} people={at.get(picked)!} onPerson={onPerson} />
-        </section>
-      )}
-      <h2>{t.mapListTitle}</h2>
-      <div className="pano-bars">
-        {sorted.map(([i, ps]) => (
-          <BarRow
-            key={i}
-            label={mp[i].name}
-            value={ps.length}
-            of={most}
-            text={ps.length.toLocaleString(lang)}
-            open={picked === i}
-            onToggle={() => pick(i)}
-          >
-            <Names t={t} people={ps} onPerson={onPerson} />
-          </BarRow>
-        ))}
-      </div>
     </>
   );
 }

@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **12-11-2026** (versión **0.14.6**).
+Última actualización: **12-11-2026** (versión **0.15.0**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,18 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.14.6)
+## 5. Qué hace hoy (v0.15.0)
+
+### Novedades de la 0.15.0 (12-11-2026) — Panorama › Mapa nuevo (formato 10 sin cambios)
+- **Un solo mapa grande** (Whisper: los tres pequeños no convencían): `PlacesMap` usa un `MapSvg` (width 900) con
+  `cluster` (lugares a menos de 16 px en pantalla → un círculo con el nº de lugares y el total de personas, «Vṛndāvana
+  +10 · 101»; clic = acercarse), `goto` (botones «Ir a: Todo · Bengala · Navadvīpa · Vraja · Purī») y `onView` (la
+  zona a la vista). Panel `map-side` a la derecha: «Lugares a la vista» (cambia al mover el mapa) o las personas del
+  lugar elegido («Abrir lugar», «Volver a la lista»). Fuera: los mapas pequeños de Bengala/Vraja y la lista de barras.
+- **Épocas**: fila «Época:» (Todas + 7 épocas gauḍīyas, `ERAS`) y «▶ Ver pasar el tiempo». `lifeYears`: años de la
+  ficha, o calculados desde el guru en el árbol (+25 por generación; +0 si la línea es «associate»), marcados como
+  aproximados; una persona sale en una época si sus años de actividad (desde los 20) la tocan. El tamaño de los puntos
+  no cambia con la época.
 
 ### Novedades de la 0.14.6 (12-11-2026) — Ajustes más sencillos; comprobación más fina (formato 10 sin cambios)
 - **Ajustes: pestañas «Revisar» y «Rellenar fichas» ocultas** (Whisper: «más lío que ayuda»). Sus paneles
@@ -1453,6 +1464,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **12-11-2026 — v0.15.0**: Panorama › Mapa nuevo: un solo mapa grande con «Lugares a la vista», «Ir a», puntos
+  agrupados, y las épocas con «Ver pasar el tiempo».
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.15.0
 
 - **12-11-2026 — v0.14.6**: Ajustes sin «Revisar» ni «Rellenar fichas»; «Comprobar los datos» entiende «X of Lugar»,
   no cuenta frases como gurus y no usa líneas discutidas para decidir homónimos.

@@ -6018,3 +6018,114 @@ svg.satellite .map-dot {
 /* a view that failed to draw (ViewGuard) */
 .view-failed { flex: 1; padding: 32px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
 
+
+/* Panorama › Mapa: one big map with the places in view beside it (12-11-2026) */
+.map-go {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+.pano-onemap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 12px;
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  .pano-onemap {
+    grid-template-columns: 1fr;
+  }
+}
+.pano-map.big svg {
+  max-height: calc(100vh - 200px);
+}
+.map-side {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  max-height: calc(100vh - 220px);
+  overflow: auto;
+}
+.map-side h3 {
+  margin: 2px 0 2px;
+  font-size: 14px;
+}
+.map-side .map-picked h2 {
+  margin: 8px 0 6px;
+  font-size: 17px;
+}
+.map-side-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 6px;
+}
+.map-side-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 70px 32px;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+}
+.map-side-row:hover {
+  background: var(--hover);
+}
+.map-side-row.district .map-side-name {
+  color: var(--muted);
+}
+.map-side-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.map-side-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  overflow: hidden;
+}
+.map-side-bar i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  opacity: 0.7;
+}
+.map-side-row .count {
+  text-align: right;
+  color: var(--muted);
+}
+.map-place.cluster .map-dot {
+  fill-opacity: 0.85;
+  stroke-dasharray: 3 2;
+}
+.map-count {
+  fill: #1a1a1a;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+/* Panorama › Mapa: the ages (12-11-2026) */
+.map-eras {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 8px 0 0;
+}
+.map-eras .btn.on {
+  background: var(--accent);
+  color: #1a1a1a;
+}
+.map-era-note {
+  margin: 4px 0 0;
+}
