@@ -83,6 +83,15 @@ fn odd_name(name: &str) -> bool {
 
 pub fn check(conn: &Connection) -> rusqlite::Result<Vec<Issue>> {
     let index = PersonIndex::load(conn)?;
+    let mut links: HashMap<i64, Vec<(i64, String)>> = HashMap::new();
+    {
+        // family lines (format 9) are not guru and disciple
+        let mut st = conn.prepare("SELECT person_id, guru_id, kind FROM person_links WHERE kind <> 'family'")?;
+        for row in st.query_map([], |r| Ok((r.get::<_, i64>(0)?, r.get::<_, i64>(1)?, r.get::<_, String>(2)?)))? {
+            let (p, g, k) = row?;
+            links.entry(p).or_default().push((g, k));
+        }
+    }
     let mut recs: HashMap<i64, Rec> = HashMap::new();
     {
         let mut st = conn.prepare(
@@ -102,12 +111,25 @@ pub fn check(conn: &Connection) -> rusqlite::Result<Vec<Issue>> {
                 r.get::<_, bool>(8)?,
             ))
         })?;
-        for row in rows {
-            let (id, name, appearance, disappearance, guru, disciples, parent, kind, in_tree) = row?;
-            // the whole name first («Govinda (disciple of Śyāmānanda)» is that record), then without brackets
-            let find = |field: &str| -> Vec<i64> {
-                let mut ids: Vec<i64> =
-                    list_entries(field).into_iter().filter_map(|x| index.find_whole(crate::store::without_kind(x)).or_else(|| index.find(plain(x)))).collect();
+        let rows: Vec<_> = rows.collect::<rusqlite::Result<_>>()?;
+        let parents: HashMap<i64, i64> = rows.iter().filter_map(|r| r.6.map(|p| (r.0, p))).collect();
+        // disciple `d` joined to guru `g` in the tree (its place or an extra line)
+        let joined = |d: i64, g: i64| parents.get(&d) == Some(&g) || links.get(&d).is_some_and(|l| l.iter().any(|(x, _)| *x == g));
+        for (id, name, appearance, disappearance, guru, disciples, parent, kind, in_tree) in rows {
+            // the whole name first («Govinda (disciple of Śyāmānanda)» is that record), then without brackets;
+            // among namesakes («Ananta», «Rāmadāsa»…) the one the tree joins to this record (12-11-2026)
+            let find = |field: &str, as_guru: bool| -> Vec<i64> {
+                let mut ids: Vec<i64> = list_entries(field)
+                    .into_iter()
+                    .filter_map(|x| {
+                        index.find_whole(crate::store::without_kind(x)).or_else(|| {
+                            let same = index.same_name(plain(x));
+                            let tied: Vec<i64> =
+                                same.iter().copied().filter(|&c| c != id && if as_guru { joined(id, c) } else { joined(c, id) }).collect();
+                            if same.len() > 1 && tied.len() == 1 { Some(tied[0]) } else { index.find(plain(x)) }
+                        })
+                    })
+                    .collect();
                 ids.dedup();
                 ids
             };
@@ -116,8 +138,8 @@ pub fn check(conn: &Connection) -> rusqlite::Result<Vec<Issue>> {
             recs.insert(
                 id,
                 Rec {
-                    gurus: find(&guru),
-                    disciples: find(&disciples),
+                    gurus: find(&guru, true),
+                    disciples: find(&disciples, false),
                     name,
                     appearance,
                     disappearance,
@@ -129,15 +151,6 @@ pub fn check(conn: &Connection) -> rusqlite::Result<Vec<Issue>> {
                     died,
                 },
             );
-        }
-    }
-    let mut links: HashMap<i64, Vec<(i64, String)>> = HashMap::new();
-    {
-        // family lines (format 9) are not guru and disciple
-        let mut st = conn.prepare("SELECT person_id, guru_id, kind FROM person_links WHERE kind <> 'family'")?;
-        for row in st.query_map([], |r| Ok((r.get::<_, i64>(0)?, r.get::<_, i64>(1)?, r.get::<_, String>(2)?)))? {
-            let (p, g, k) = row?;
-            links.entry(p).or_default().push((g, k));
         }
     }
 
@@ -328,5 +341,35 @@ mod tests {
         move_person(&mut conn, nab, Some(TreePlace { parent: Some(agr), before: None })).unwrap();
         crate::store::complete_back(&mut conn, nab, agr).unwrap();
         assert_eq!(crate::store::get_fields(&conn, agr).unwrap().disciples, "Nābhājī (Nābhādāsa · Nārāyaṇadāsa)");
+    }
+
+    /// Namesakes with the very same name (12-11-2026): «Ananta» in Advaita's list is the Ananta the tree puts under
+    /// him, not the other Ananta.
+    #[test]
+    fn namesakes_told_by_the_tree() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        crate::db::init(&conn).unwrap();
+        let p = |c: &mut Connection, name: &str, guru: &str, disciples: &str| {
+            new_person(c, &PersonFields { name: name.into(), guru: guru.into(), disciples: disciples.into(), ..Default::default() }).unwrap()
+        };
+        let adv = p(&mut conn, "Advaita Ācārya", "", "Ananta");
+        let nit = p(&mut conn, "Nityānanda Prabhu", "", "Ananta");
+        let ana = p(&mut conn, "Ananta", "Advaita Ācārya", "");
+        let other = p(&mut conn, "Ananta", "Nityānanda Prabhu", "");
+        let root = Some(TreePlace { parent: None, before: None });
+        move_person(&mut conn, adv, root).unwrap();
+        move_person(&mut conn, nit, root).unwrap();
+        move_person(&mut conn, ana, Some(TreePlace { parent: Some(adv), before: None })).unwrap();
+        move_person(&mut conn, other, Some(TreePlace { parent: Some(nit), before: None })).unwrap();
+        let issues = check(&conn).unwrap();
+        let bad: Vec<_> = issues.iter().filter(|i| [adv, ana, other].contains(&i.id) && i.kind != "sameDates").map(|i| (i.kind, i.id)).collect();
+        assert!(bad.is_empty(), "{bad:?}");
+        // «vāṇī» in brackets as part of a name, not the kind of relation
+        use crate::store::without_kind;
+        assert_eq!(without_kind("Kṛṣṇadāsa Vāṇī (Vāṇī Kṛṣṇadāsa)"), "Kṛṣṇadāsa Vāṇī (Vāṇī Kṛṣṇadāsa)");
+        assert_eq!(without_kind("Rūpa Gosvāmī (śikṣā)"), "Rūpa Gosvāmī");
+        assert_eq!(without_kind("Bhaktivinoda (śikṣā guru)"), "Bhaktivinoda");
+        assert_eq!(without_kind("Jagannātha dās Bābājī (bābājī veśa)"), "Jagannātha dās Bābājī");
+        assert_eq!(without_kind("Govinda (disciple of Śyāmānanda)"), "Govinda (disciple of Śyāmānanda)");
     }
 }

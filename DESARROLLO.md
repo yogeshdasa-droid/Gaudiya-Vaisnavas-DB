@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **11-11-2026** (versión **0.14.2**).
+Última actualización: **12-11-2026** (versión **0.14.3**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,20 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.14.2)
+## 5. Qué hace hoy (v0.14.3)
+
+### Novedades de la 0.14.3 (12-11-2026) — el árbol «De arriba abajo» ya no deja la ventana en blanco (formato 10 sin cambios)
+- **Avisado por Whisper** («Ver en el árbol» → ventana en blanco, sin poder pinchar ni volver): con el árbol dibujado
+  «De arriba abajo», dagre fallaba («Cannot read properties of undefined (reading 'dummy')») con 7 recuadros de grupo
+  cuyas líneas cruzan entre ellos (Pañca-tattva, ramas de Advaita / Gadādhara / Nityānanda, discípulos de Mādhavendra
+  Purī, seis Gosvāmīs, tres ācāryas), y el error tiraba toda la interfaz. `treeLayoutTB.ts`: si falla, se dibuja sin
+  el recuadro de grupo más pequeño que lo resuelva (y, si ninguno basta, sin recuadros).
+- `ViewGuard` (ui.tsx), alrededor de las vistas dibujadas en App.tsx (Línea de tiempo, Linaje, Panorama, Calendario,
+  Paramparā Tree): si una falla, sale un aviso con «Volver al inicio» en vez de la ventana en blanco (`viewFailed*`).
+- «Comprobar los datos»: entre homónimos con el mismo nombre («Ananta», «Rāmadāsa»…) toma el que el árbol une a esa
+  ficha (`PersonIndex::same_name`, check.rs; test `namesakes_told_by_the_tree`); `without_kind` solo quita el
+  paréntesis si todas sus palabras son de relación o años («Kṛṣṇadāsa Vāṇī (Vāṇī Kṛṣṇadāsa)» ya no se lee como
+  «vāṇī» y no se escribe dos veces al completar). En la BD de Whisper: 781 → 434 cosas en la lista.
 
 ### Novedades de la 0.14.2 (11-11-2026) — el Paramparā Tree ya no se abre en blanco (formato 10 sin cambios)
 - **Avisado por Whisper** («se queda en blank»): con un solo primer nivel (Lord Kṛṣṇa) el árbol dibujado de izquierda
@@ -1405,6 +1418,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **12-11-2026 — v0.14.3**: el Paramparā Tree «De arriba abajo» ya no deja la ventana en blanco; aviso con «Volver al
+  inicio» si una vista falla; «Comprobar los datos» distingue mejor los homónimos.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.14.3
 
 - **11-11-2026 — v0.14.2**: el Paramparā Tree dibujado se abre en Lord Kṛṣṇa (antes salía en blanco) y «Comprobar
   los datos» reconoce los homónimos con paréntesis.

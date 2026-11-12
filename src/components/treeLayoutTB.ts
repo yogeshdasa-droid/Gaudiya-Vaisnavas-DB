@@ -38,10 +38,44 @@ export function layoutTB(
   kids: Map<number | null, PersonListItem[]>,
   busy: Set<number>,
 ) {
-  const g = new dagre.graphlib.Graph({ compound: true, multigraph: false });
+  // dagre sometimes fails on the group boxes («reading 'dummy'», 12-11-2026: with lines going from one group to
+  // another the whole window went blank). Then the drawing leaves out one group box (the smallest that does it),
+  // and if that is not enough, all of them.
+  try {
+    return layoutWith(under, byPerson, kids, busy, new Set());
+  } catch (e) {
+    console.warn("tree layout with groups failed:", e);
+  }
+  const size = new Map<string, number>();
+  for (const id of under.keys()) {
+    const grp = (byPerson.get(id)?.tree?.group ?? "").trim();
+    if (grp) size.set(grp, (size.get(grp) ?? 0) + 1);
+  }
+  for (const grp of [...size.keys()].sort((a, b) => size.get(a)! - size.get(b)!)) {
+    try {
+      return layoutWith(under, byPerson, kids, busy, new Set([grp]));
+    } catch {
+      /* the next one */
+    }
+  }
+  return layoutWith(under, byPerson, kids, busy, null);
+}
+
+/** without: group boxes left out (null: all of them) */
+function layoutWith(
+  under: Map<number, { parent: number | null; kind: TreeKind | null }>,
+  byPerson: Map<number, PersonListItem>,
+  kids: Map<number | null, PersonListItem[]>,
+  busy: Set<number>,
+  without: Set<string> | null,
+) {
+  const g = new dagre.graphlib.Graph({ compound: without !== null, multigraph: false });
   g.setGraph({ rankdir: "TB", nodesep: 18, ranksep: 56, edgesep: 8, marginx: 10, marginy: 24 });
   g.setDefaultEdgeLabel(() => ({}));
-  const groupOf = (id: number) => (byPerson.get(id)?.tree?.group ?? "").trim();
+  const groupOf = (id: number) => {
+    const grp = (byPerson.get(id)?.tree?.group ?? "").trim();
+    return without === null || without.has(grp) ? "" : grp;
+  };
   const nodeOf = new Map<number, string>(); // person → the node it is drawn in
   const lists = new Map<string, { p: PersonListItem; kind: TreeKind | null }[]>();
   const chains = new Set<string>();

@@ -506,6 +506,8 @@ pub struct PersonIndex {
     /// (id, whole key, titles and all) of the same names: "Śrīnivāsa Ācārya"
     /// and "Śrīnivāsa Ṭhākura" are told apart by them
     whole: Vec<(i64, String)>,
+    /// (id, loose words of the name without its brackets): the namesakes
+    plain: Vec<(i64, Vec<String>)>,
     /// how much each record weighs when one name fits several (repeated
     /// records): in the Guru Paramparā first, then the one with more texts
     weight: std::collections::HashMap<i64, (bool, i64)>,
@@ -523,6 +525,7 @@ impl PersonIndex {
         })?;
         let mut names = Vec::new();
         let mut whole = Vec::new();
+        let mut plain = Vec::new();
         let mut weight = std::collections::HashMap::new();
         for row in rows {
             let (id, name, aka, tree, docs) = row?;
@@ -533,9 +536,26 @@ impl PersonIndex {
                     names.push((id, w));
                     whole.push((id, crate::store::person_key(n)));
                 }
+                let p = loose_words(n.split('(').next().unwrap_or(n));
+                if !p.is_empty() {
+                    plain.push((id, p));
+                }
             }
         }
-        Ok(PersonIndex { names, whole, weight })
+        Ok(PersonIndex { names, whole, plain, weight })
+    }
+
+    /// Every record with this name, the words in brackets apart: «Ananta» →
+    /// all the Anantas, «Govinda (disciple of Śyāmānanda)» among the Govindas.
+    pub fn same_name(&self, name: &str) -> Vec<i64> {
+        let w = loose_words(name.split('(').next().unwrap_or(name));
+        if w.is_empty() {
+            return Vec::new();
+        }
+        let mut ids: Vec<i64> = self.plain.iter().filter(|(_, n)| *n == w).map(|(id, _)| *id).collect();
+        ids.sort();
+        ids.dedup();
+        ids
     }
 
     /// Only the whole name, the words in brackets included, when exactly one

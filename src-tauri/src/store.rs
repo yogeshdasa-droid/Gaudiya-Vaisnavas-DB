@@ -1980,7 +1980,11 @@ pub(crate) fn without_kind(entry: &str) -> &str {
     if let Some((head, last)) = e.strip_suffix(')').and_then(|s| s.rsplit_once('(')) {
         let l = fold_text(last);
         let kinds = ["siksa", "diksa", "vani", "sannyasa", "vesa", "associate", "disciple", "mantra", "instruction"];
-        if l.split(' ').count() <= 4 && kinds.iter().any(|k| l.split(' ').any(|w| w == *k)) && !l.contains(" of ") {
+        // every word a relation word (or a year): «(Vāṇī Kṛṣṇadāsa)» is part of a name (12-11-2026)
+        let filler = ["guru", "gurus", "and", "y", "also", "first", "second", "harinama", "nama", "initiation", "by", "in", "from", "babaji", "bheka"];
+        let words: Vec<&str> = l.split(|c: char| c == ' ' || c == ',' || c == ';').filter(|w| !w.is_empty()).collect();
+        let fits = |w: &&str| kinds.contains(w) || filler.contains(w) || w.chars().any(|c| c.is_ascii_digit());
+        if words.len() <= 4 && kinds.iter().any(|k| words.contains(k)) && words.iter().all(|w| fits(w)) && !l.contains(" of ") {
             return head.trim();
         }
     }

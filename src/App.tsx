@@ -96,7 +96,7 @@ import { Reveal, SideTab, Sidebar } from "./components/Sidebar";
 import { Lineage } from "./components/Lineage";
 import { Rail } from "./components/Rail";
 import { Calendar } from "./components/Calendar";
-import { ask, Kbd, Splitter } from "./components/ui";
+import { ask, Kbd, Splitter, ViewGuard } from "./components/ui";
 
 const PAGE = 50;
 
@@ -1288,13 +1288,15 @@ export default function App() {
             onCalendar={() => setMain({ kind: "calendar" })}
           />
         )}
-        {main.kind === "timeline" && <Timeline t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} onOpenDoc={openDoc} />}
-        {main.kind === "lineage" && <Lineage t={t} lang={lang} persons={persons} onPerson={openPerson} focus={main.focus} />}
-        {main.kind === "panorama" && (
-          <Panorama t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} places={places} onPlace={openPlace} focus={main.place} status={status} />
-        )}
-        {main.kind === "calendar" && <Calendar t={t} lang={lang} reload={dataTick} onPerson={openPerson} page />}
-        {main.kind === "tree" && <TreeView t={t} persons={persons} onPerson={openPerson} marks={marks} onMark={cycleMark} focus={main.focus} />}
+        <ViewGuard key={main.kind} message={t.viewFailed} back={t.viewFailedBack} onBack={() => setMain({ kind: "home" })}>
+          {main.kind === "timeline" && <Timeline t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} onOpenDoc={openDoc} />}
+          {main.kind === "lineage" && <Lineage t={t} lang={lang} persons={persons} onPerson={openPerson} focus={main.focus} />}
+          {main.kind === "panorama" && (
+            <Panorama t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} places={places} onPlace={openPlace} focus={main.place} status={status} />
+          )}
+          {main.kind === "calendar" && <Calendar t={t} lang={lang} reload={dataTick} onPerson={openPerson} page />}
+          {main.kind === "tree" && <TreeView t={t} persons={persons} onPerson={openPerson} marks={marks} onMark={cycleMark} focus={main.focus} />}
+        </ViewGuard>
       </main>
 
       <footer className="statusbar">

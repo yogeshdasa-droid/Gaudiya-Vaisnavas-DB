@@ -6014,3 +6014,7 @@ svg.satellite .map-dot {
 .lin-count {
   margin-top: 10px;
 }
+
+/* a view that failed to draw (ViewGuard) */
+.view-failed { flex: 1; padding: 32px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+

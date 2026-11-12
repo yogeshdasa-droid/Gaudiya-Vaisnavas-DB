@@ -1,6 +1,28 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { Component, ReactNode, useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { hueOf } from "../api";
+
+/** A view that fails shows this note instead of leaving the whole window blank (12-11-2026: the Paramparā Tree
+ *  drawn from top to bottom took the window down and nothing could be clicked). Give it a `key` of the view, so that
+ *  going to another view starts it again. */
+export class ViewGuard extends Component<{ message: string; back: string; onBack: () => void; children: ReactNode }, { error: string | null }> {
+  state = { error: null as string | null };
+  static getDerivedStateFromError(e: unknown) {
+    return { error: String(e) };
+  }
+  render() {
+    if (this.state.error === null) return this.props.children;
+    return (
+      <section className="view-failed">
+        <p>{this.props.message}</p>
+        <p className="muted small">{this.state.error}</p>
+        <button className="btn" onClick={this.props.onBack}>
+          {this.props.back}
+        </button>
+      </section>
+    );
+  }
+}
 
 /** Asks yes / no and waits for the answer. The dialog plugin turns
  *  window.confirm into a promise: used directly, it always reads as "yes". */
