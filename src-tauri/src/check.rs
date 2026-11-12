@@ -37,8 +37,14 @@ struct Rec {
     kind: String,
     born: Option<i32>,
     died: Option<i32>,
+    /// every record the fields name (an unsure name: the likeliest)
     gurus: Vec<i64>,
-    disciples: Vec<i64>,
+    /// only those named surely: the warnings are about these
+    gurus_sure: Vec<i64>,
+    disciples_sure: Vec<i64>,
+    /// every record each name could be: «said back» if any of them is the other record
+    gurus_any: Vec<i64>,
+    disciples_any: Vec<i64>,
 }
 
 /// The entries of a guru / disciples field, like `store::list_entries` but
@@ -118,24 +124,34 @@ pub fn check(conn: &Connection) -> rusqlite::Result<Vec<Issue>> {
         for (id, name, appearance, disappearance, guru, disciples, parent, kind, in_tree) in rows {
             // the whole name first («Govinda (disciple of Śyāmānanda)» is that record), then without brackets;
             // among namesakes («Ananta», «Rāmadāsa»…) the one the tree joins to this record (12-11-2026)
-            let find = |field: &str, as_guru: bool| -> Vec<i64> {
-                let mut ids: Vec<i64> = list_entries(field)
+            // each entry → (record, sure): sure when the name can only be that record, or the tree joins exactly one
+            // of the records it could be to this one (12-11-2026: an unsure name gives no «not said back» warnings)
+            let find = |field: &str, as_guru: bool| -> Vec<(i64, bool, Vec<i64>)> {
+                let mut ids: Vec<(i64, bool, Vec<i64>)> = list_entries(field)
                     .into_iter()
                     .filter_map(|x| {
-                        index.find_whole(crate::store::without_kind(x)).or_else(|| {
-                            let same = index.same_name(plain(x));
-                            let mut tied: Vec<i64> =
-                                same.iter().copied().filter(|&c| c != id && if as_guru { joined(id, c) } else { joined(c, id) }).collect();
-                            // two of them joined here: the one with exactly this name («Puruṣottama Tīrtha», not
-                            // «Puruṣottama Tīrtha (Puruṣottama Purī)»)
-                            if tied.len() > 1 {
-                                let exact: Vec<i64> = tied.iter().copied().filter(|&c| index.has_whole(c, crate::store::without_kind(x))).collect();
-                                if exact.len() == 1 {
-                                    tied = exact;
-                                }
+                        let whole = index.find_whole(crate::store::without_kind(x));
+                        // «Govinda (disciple of Śyāmānanda)»: the brackets make it that record
+                        if let Some(w) = whole.filter(|_| crate::store::without_kind(x).contains('(')) {
+                            return Some((w, true, vec![w]));
+                        }
+                        let cands: Vec<i64> = index.candidates(plain(x)).into_iter().filter(|&c| c != id).collect();
+                        let mut tied: Vec<i64> =
+                            cands.iter().copied().filter(|&c| if as_guru { joined(id, c) } else { joined(c, id) }).collect();
+                        // two of them joined here: the one with exactly this name («Puruṣottama Tīrtha», not
+                        // «Puruṣottama Tīrtha (Puruṣottama Purī)»)
+                        if tied.len() > 1 {
+                            let exact: Vec<i64> = tied.iter().copied().filter(|&c| index.has_whole(c, crate::store::without_kind(x))).collect();
+                            if exact.len() == 1 {
+                                tied = exact;
                             }
-                            if same.len() > 1 && tied.len() == 1 { Some(tied[0]) } else { index.find(plain(x)) }
-                        })
+                        }
+                        if tied.len() == 1 {
+                            return Some((tied[0], true, cands));
+                        }
+                        let found = whole.or_else(|| index.find(plain(x)))?;
+                        let sure = cands.len() <= 1;
+                        Some((found, sure, cands))
                     })
                     .collect();
                 ids.dedup();
@@ -143,11 +159,17 @@ pub fn check(conn: &Connection) -> rusqlite::Result<Vec<Issue>> {
             };
             let born = year_of(&appearance);
             let died = year_of(&disappearance);
+            let (g, d) = (find(&guru, true), find(&disciples, false));
+            let sure = |v: &[(i64, bool, Vec<i64>)]| v.iter().filter(|(_, s, _)| *s).map(|(i, _, _)| *i).collect::<Vec<_>>();
+            let any = |v: &[(i64, bool, Vec<i64>)]| v.iter().flat_map(|(i, _, c)| std::iter::once(*i).chain(c.iter().copied())).collect::<Vec<_>>();
             recs.insert(
                 id,
                 Rec {
-                    gurus: find(&guru, true),
-                    disciples: find(&disciples, false),
+                    gurus_sure: sure(&g),
+                    disciples_sure: sure(&d),
+                    gurus_any: any(&g),
+                    disciples_any: any(&d),
+                    gurus: g.iter().map(|(i, _, _)| *i).collect(),
                     name,
                     appearance,
                     disappearance,
@@ -175,7 +197,7 @@ pub fn check(conn: &Connection) -> rusqlite::Result<Vec<Issue>> {
         let tied = |g: i64| p.parent == Some(g) || my_links.contains(&g);
 
         // its own name among its gurus
-        if p.gurus.contains(&id) {
+        if p.gurus_sure.contains(&id) {
             push("selfGuru", p.in_tree, p.guru.clone(), String::new(), None);
         }
         // the tree and the record say different gurus
@@ -186,13 +208,13 @@ pub fn check(conn: &Connection) -> rusqlite::Result<Vec<Issue>> {
         }
         if p.in_tree {
             // a guru written in the record, in the tree, but not joined to it there
-            for &g in &p.gurus {
+            for &g in &p.gurus_sure {
                 if g != id && recs.get(&g).is_some_and(|r| r.in_tree) && !tied(g) {
                     push("missingGuru", true, name_of(g), String::new(), Some(g));
                 }
             }
             // a disciple written in the record, in the tree, but not under it there
-            for &d in &p.disciples {
+            for &d in &p.disciples_sure {
                 let joined = recs.get(&d).is_some_and(|r| r.parent == Some(id)) || links.get(&d).is_some_and(|l| l.iter().any(|(g, _)| *g == id));
                 if d != id && recs.get(&d).is_some_and(|r| r.in_tree) && !joined {
                     push("missingDisciple", true, name_of(d), String::new(), Some(d));
@@ -213,16 +235,16 @@ pub fn check(conn: &Connection) -> rusqlite::Result<Vec<Issue>> {
             }
         }
         // one record says it, the other does not (only where the tree is concerned)
-        for &g in &p.gurus {
+        for &g in &p.gurus_sure {
             if let Some(r) = recs.get(&g) {
-                if g != id && (p.in_tree || r.in_tree) && !r.disciples.contains(&id) {
+                if g != id && (p.in_tree || r.in_tree) && !r.disciples_any.contains(&id) {
                     push("notBackGuru", true, r.name.clone(), String::new(), Some(g));
                 }
             }
         }
-        for &d in &p.disciples {
+        for &d in &p.disciples_sure {
             if let Some(r) = recs.get(&d) {
-                if d != id && (p.in_tree || r.in_tree) && !r.gurus.contains(&id) {
+                if d != id && (p.in_tree || r.in_tree) && !r.gurus_any.contains(&id) {
                     push("notBackDisciple", true, r.name.clone(), String::new(), Some(d));
                 }
             }

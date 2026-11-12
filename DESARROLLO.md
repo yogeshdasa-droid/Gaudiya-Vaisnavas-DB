@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **12-11-2026** (versión **0.14.4**).
+Última actualización: **12-11-2026** (versión **0.14.5**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,18 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.14.4)
+## 5. Qué hace hoy (v0.14.5)
+
+### Novedades de la 0.14.5 (12-11-2026) — «Comprobar los datos»: solo nombres seguros (formato 10 sin cambios)
+- `PersonIndex::candidates` (todas las fichas que un nombre puede ser) y `ends_with` (un nombre que termina en otro,
+  pero no después de «of»: «Dayāla dāsa Bābājī of Vṛndāvana» ya no es la ficha «Vṛndāvana»).
+- check.rs: cada nombre de los campos Guru / Discípulos se lee como (ficha, segura). Segura = solo puede ser esa
+  ficha, o el árbol une a esta exactamente una de las posibles. Los avisos «su propio guru», «falta en el árbol» y
+  «no lo dice al revés» solo salen con nombres seguros («Śrīnivāsa» también es Śrīvāsa Paṇḍita; «Śacīnandana», el
+  Señor); y una ficha «lo dice al revés» si cualquiera de las fichas posibles es la otra.
+- Datos (12-11): campos «Discípulos» al revés corregidos (Indumukhī, Kanakalatikā, Kāñcanalatikā, Mukunda Ojhā,
+  Gaṅgādāsa #291). En la BD de Whisper la lista baja de 386 a ~262; lo que queda son sobre todo maestros de estudios,
+  quien dio sannyāsa / nombre, fichas con varios gurus y versiones distintas: no son errores.
 
 ### Novedades de la 0.14.4 (12-11-2026) — «Comprobar los datos» más fino (formato 10 sin cambios)
 - `calendar::year_of` (usado también por la Línea de tiempo y el Panorama): entiende los años **bengalíes** («1328 BS»,
@@ -1431,6 +1442,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **12-11-2026 — v0.14.5**: «Comprobar los datos» solo avisa con nombres seguros (sin confusiones entre homónimos
+  ni «of Vṛndāvana»); lista de ~386 a ~262.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.14.5
 
 - **12-11-2026 — v0.14.4**: años bengalíes (BS) y AD/CE bien leídos; «Comprobar los datos» sin falsas alarmas de
   «su propio guru» y mejor con los homónimos.

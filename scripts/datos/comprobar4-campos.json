@@ -1,0 +1,13 @@
+[
+  { "id": 291, "name": "Gaṅgādāsa (disciple of Rasikānanda)", "edits": [{ "field": "disciples", "from": "Nimāi", "to": "" }] },
+  { "id": 512, "name": "Indumukhi Devī", "edits": [
+    { "field": "disciples", "from": "Śrīnivāsa Ācārya", "to": "" },
+    { "field": "guru", "from": "", "to": "Śrīnivāsa Ācārya" } ] },
+  { "id": 667, "name": "Kanakalatikā Devī", "edits": [
+    { "field": "disciples", "from": "Rāmakṛṣṇa Ācārya", "to": "" },
+    { "field": "guru", "from": "", "to": "Rāmakṛṣṇa Ācārya" } ] },
+  { "id": 669, "name": "Kāñcanalatikā Devī", "edits": [
+    { "field": "disciples", "from": "Śrīnivāsa Ācārya", "to": "" },
+    { "field": "guru", "from": "", "to": "Śrīnivāsa Ācārya" } ] },
+  { "id": 936, "name": "Mukunda Ojhā", "edits": [{ "field": "disciples", "from": "Nityānanda Prabhu", "to": "" }] }
+]

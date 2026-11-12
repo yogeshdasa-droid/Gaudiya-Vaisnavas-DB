@@ -651,12 +651,36 @@ impl PersonIndex {
             exact.dedup();
             return exact.into_iter().max_by_key(|id| self.weight.get(id).copied().unwrap_or_default());
         }
-        let ends = |long: &[String], short: &[String]| {
-            short.len() < long.len() && long.ends_with(short) && (short.len() >= 2 || short[0].len() >= 7)
-        };
         // «Lalita Sakhī (disciple of Muralīdhara)» does not end in «Muralīdhara» (12-11-2026): see `tails`
-        unique(self.tails.iter().filter(|(_, n)| ends(n, &w) || ends(&w, n)).map(|(id, _)| *id).collect())
+        unique(self.tails.iter().filter(|(_, n)| ends_with(n, &w) || ends_with(&w, n)).map(|(id, _)| *id).collect())
     }
+
+    /// Every record this name could be: the same whole name, the same name, a namesake (brackets apart) or one
+    /// name ending the other. One only: the name is sure; several: `find` takes the weightiest, which may be
+    /// another person (12-11-2026: «Śrīnivāsa» is also Śrīvāsa Paṇḍita's name, «Śacīnandana» the Lord's).
+    pub fn candidates(&self, name: &str) -> Vec<i64> {
+        let w = loose_words(name);
+        if w.is_empty() {
+            return Vec::new();
+        }
+        let key = crate::store::person_key(name);
+        let mut ids: Vec<i64> = self.whole.iter().filter(|(_, k)| *k == key).map(|(id, _)| *id).collect();
+        ids.extend(self.names.iter().filter(|(_, n)| *n == w).map(|(id, _)| *id));
+        ids.extend(self.same_name(name));
+        ids.extend(self.tails.iter().filter(|(_, n)| ends_with(n, &w) || ends_with(&w, n)).map(|(id, _)| *id));
+        ids.sort();
+        ids.dedup();
+        ids
+    }
+}
+
+/// One name ending the other ("Saccidānanda Bhaktivinoda" ~ "Bhaktivinoda"), but not after «of»: «Dayāla dāsa
+/// Bābājī of Vṛndāvana» is not a record called «Vṛndāvana» (12-11-2026).
+fn ends_with(long: &[String], short: &[String]) -> bool {
+    short.len() < long.len()
+        && long.ends_with(short)
+        && (short.len() >= 2 || short[0].len() >= 7)
+        && long[long.len() - short.len() - 1] != "of"
 }
 
 /// An appearance or disappearance day of a record, from the imported calendar.
