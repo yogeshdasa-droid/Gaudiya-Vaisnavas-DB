@@ -687,6 +687,11 @@ async fn update_doc(state: State<'_, AppState>, doc_id: i64, meta: store::DocMet
 }
 
 #[tauri::command]
+async fn set_doc_tag(state: State<'_, AppState>, doc_id: i64, tag: String, on: bool) -> CmdResult<()> {
+    store::set_doc_tag(&state.conn.lock().unwrap(), doc_id, &tag, on)
+}
+
+#[tauri::command]
 async fn rename_folder(state: State<'_, AppState>, dir: String, name: String) -> CmdResult<()> {
     store::rename_folder(&mut state.conn.lock().unwrap(), &dir, &name)
 }
@@ -1271,6 +1276,7 @@ fn main() {
             create_doc,
             save_section,
             update_doc,
+            set_doc_tag,
             rename_folder,
             trash_folder,
             trash_doc,

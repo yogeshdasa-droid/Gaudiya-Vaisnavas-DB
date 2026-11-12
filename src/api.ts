@@ -222,6 +222,9 @@ export function isPoet(p: PersonListItem): boolean {
  *  Vaiṣṇava-maṇḍala. */
 export const DEITIES = "Deidades";
 
+/** label of a text that always opens on its original PDF (its text is only for searching) */
+export const ALWAYS_ORIGINAL = "original";
+
 export function isDeity(p: PersonListItem): boolean {
   return p.tags.split(",").some((x) => x.trim().toLowerCase() === DEITIES.toLowerCase());
 }
@@ -513,6 +516,7 @@ export const api = {
   /** takes the piece out of its text (whole lines; earlier version kept) and gives it back as written */
   cutText: (docId: number, fragment: string) => invoke<string>("cut_text", { docId, fragment }),
   updateDoc: (docId: number, meta: DocMeta) => invoke<void>("update_doc", { docId, meta }),
+  setDocTag: (docId: number, tag: string, on: boolean) => invoke<void>("set_doc_tag", { docId, tag, on }),
   renameFolder: (dir: string, name: string) => invoke<void>("rename_folder", { dir, name }),
   trashFolder: (dir: string) => invoke<number>("trash_folder", { dir }),
   trashDoc: (docId: number) => invoke<void>("trash_doc", { docId }),

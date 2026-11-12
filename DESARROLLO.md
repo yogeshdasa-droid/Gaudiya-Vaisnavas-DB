@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **12-11-2026** (versión **0.16.5**).
+Última actualización: **12-11-2026** (versión **0.16.6**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,16 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.16.5)
+## 5. Qué hace hoy (v0.16.6)
+
+### Novedades de la 0.16.6 (12-11-2026) — «Abrir siempre como original» (formato 10 sin cambios)
+- Menú «⋯» del lector (solo PDF): **«Abrir siempre como original»** / «Dejar de abrir como original». Guarda la etiqueta
+  fija `original` en `docs.tags` (`ALWAYS_ORIGINAL` en api.ts; comando `set_doc_tag` en store.rs/main.rs). Un texto
+  marcado abre en la vista «Original» (el PDF dentro de la app) aunque se llegue desde una búsqueda; su texto sigue
+  sirviendo para buscar. La etiqueta no se enseña como «#original». Para PDF de diagramas cuyo texto sale revuelto.
+- Datos (en la BD de Whisper, sin código): doc #3808 «Árbol del Gauḍīya Vaiṣṇava Sampradāya» y #3809 «Purāṇic
+  Encyclopaedia — Genealogy (Vettam Mani, pp. 901–922)» en Libros, marcados `original`; 173 fotos más del libro
+  «Śrī Vraja-maṇḍala Parikramā» en 47 tīrthas (`scripts/datos/fotos-mas.mjs`).
 
 ### Novedades de la 0.16.5 (12-11-2026) — la ficha como artículo de enciclopedia (formato 10 sin cambios)
 - Whisper: «más formal y serio; al darle a una ficha esté todo disponible». PersonView: `.person-inner.ency`; cabecera
@@ -1517,6 +1526,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **12-11-2026 — v0.16.6**: «Abrir siempre como original» para los PDF de diagramas (el Árbol y la Genealogía purāṇica).
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.16.6
 
 - **12-11-2026 — v0.16.5**: la ficha como artículo de enciclopedia (texto abierto, recuadro de datos, «Ver notas»).
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.16.5

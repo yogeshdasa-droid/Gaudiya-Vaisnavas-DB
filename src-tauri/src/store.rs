@@ -407,6 +407,21 @@ pub struct DocMeta {
     pub person_id: Option<i64>,
 }
 
+/// Adds or removes one label of a text (docs.tags, comma separated), e.g. "original" = always open on the PDF.
+pub fn set_doc_tag(conn: &Connection, doc_id: i64, tag: &str, on: bool) -> Res<()> {
+    let tag = tag.trim();
+    if tag.is_empty() || tag.contains(',') {
+        return Err("Etiqueta no válida".into());
+    }
+    let tags: String = conn.query_row("SELECT tags FROM docs WHERE id = ?1", [doc_id], |r| r.get(0)).map_err(e)?;
+    let mut list: Vec<&str> = tags.split(',').map(str::trim).filter(|t| !t.is_empty() && !t.eq_ignore_ascii_case(tag)).collect();
+    if on {
+        list.push(tag);
+    }
+    conn.execute("UPDATE docs SET tags = ?1 WHERE id = ?2", params![list.join(","), doc_id]).map_err(e)?;
+    Ok(())
+}
+
 pub fn update_doc(conn: &mut Connection, doc_id: i64, m: &DocMeta) -> Res<()> {
     let title = m.title.trim();
     let date = m.date.trim();

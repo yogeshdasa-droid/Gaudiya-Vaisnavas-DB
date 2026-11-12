@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
+  FileImage,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -15,7 +16,7 @@ import {
   Trash2,
   UserRound,
 } from "lucide-react";
-import { api, DocInfo, fileUrl, SectionText, TocEntry } from "../api";
+import { ALWAYS_ORIGINAL, api, DocInfo, fileUrl, SectionText, TocEntry } from "../api";
 import { highlightDom, Term } from "../fold";
 import { formatDate, Lang, T } from "../i18n";
 import { renderMarkdown, renderSource } from "../markdown";
@@ -134,10 +135,12 @@ export function Reader(p: Props) {
       setDoc(r.doc);
       setToc(r.toc);
       onLoaded(r.doc);
-      // a PDF without text (scanned) opens on its original
-      if (r.doc.size < 50 && r.doc.original?.toLowerCase().endsWith(".pdf")) setView("original");
+      // a PDF without text (scanned), or marked «always as original», opens on its original
+      const pdf = !!r.doc.original?.toLowerCase().endsWith(".pdf");
+      const always = pdf && r.doc.tags.includes(ALWAYS_ORIGINAL);
+      setView(pdf && (always || r.doc.size < 50) ? "original" : "text");
       await jump(target.docId, Math.min(target.ordinal, Math.max(0, r.doc.sections - 1)));
-      if (target.terms.length) setView("text");
+      if (target.terms.length && !always) setView("text");
     })().catch((e) => onToast(String(e)));
     return () => {
       cancelled = true;
@@ -297,9 +300,9 @@ export function Reader(p: Props) {
             </span>
           </div>
           <h1>{doc.title}</h1>
-          {doc.tags.length > 0 && (
+          {doc.tags.some((tg) => tg !== ALWAYS_ORIGINAL) && (
             <div className="tags">
-              {doc.tags.slice(0, 10).map((tg) => (
+              {doc.tags.filter((tg) => tg !== ALWAYS_ORIGINAL).slice(0, 10).map((tg) => (
                 <span key={tg} className="tag">
                   #{tg}
                 </span>
@@ -359,6 +362,19 @@ export function Reader(p: Props) {
                     <button onClick={() => (setMenu(false), p.onSaveOriginal(doc))}>
                       <Download size={15} /> {t.saveOriginal}
                     </button>
+                    {isPdf && (
+                      <button
+                        onClick={guard(async () => {
+                          const on = !doc.tags.includes(ALWAYS_ORIGINAL);
+                          await api.setDocTag(doc.id, ALWAYS_ORIGINAL, on);
+                          setDoc({ ...doc, tags: on ? [...doc.tags, ALWAYS_ORIGINAL] : doc.tags.filter((x) => x !== ALWAYS_ORIGINAL) });
+                          if (on) setView("original");
+                          setMenu(false);
+                        })}
+                      >
+                        <FileImage size={15} /> {doc.tags.includes(ALWAYS_ORIGINAL) ? t.alwaysOriginalOff : t.alwaysOriginal}
+                      </button>
+                    )}
                   </>
                 )}
                 <button onClick={() => (setMenu(false), p.onExport(doc))}>
