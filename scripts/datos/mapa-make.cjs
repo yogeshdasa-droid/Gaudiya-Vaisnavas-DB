@@ -1,9 +1,11 @@
 // Builds src/components/mapData.ts from Natural Earth (public domain).
+// node mapa-make.js <out mapData.ts> [folder with the ne_10m_*.geojson files]
+// 12-11-2026: the whole of India (the South for Mahāprabhu's journey), not only the North and Bengal.
 const fs = require("fs");
 const path = require("path");
-const dir = __dirname;
+const dir = process.argv[3] || __dirname;
 const out = process.argv[2];
-const [W, E, S, N] = [72.5, 95, 16.5, 32];
+const [W, E, S, N] = [66.5, 97.5, 5.5, 33];
 const load = (f) => JSON.parse(fs.readFileSync(path.join(dir, f + ".geojson"), "utf8"));
 const inb = ([x, y]) => x >= W && x <= E && y >= S && y <= N;
 
@@ -114,8 +116,8 @@ for (const f of load("ne_10m_rivers_lake_centerlines").features) {
   for (const l of lines(f.geometry)) for (const part of clipLine(l)) rivers.push([w, enc(dp(part, 0.004))]);
 }
 
-const ts = `// The map's background: land, lakes, borders and rivers of North India and
-// Bengal, from Natural Earth (public domain), made by a script once. Each line is
+const ts = `// The map's background: land, lakes, borders and rivers of India (and around it),
+// from Natural Earth (public domain), made by a script once. Each line is
 // "x,y x,y…" in hundredths of a degree (longitude, latitude), each point relative
 // to the one before.
 /* eslint-disable */

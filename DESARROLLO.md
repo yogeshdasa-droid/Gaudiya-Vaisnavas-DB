@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **12-11-2026** (versión **0.15.0**).
+Última actualización: **12-11-2026** (versión **0.16.0**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,18 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.15.0)
+## 5. Qué hace hoy (v0.16.0)
+
+### Novedades de la 0.16.0 (12-11-2026) — líneas y viajes sobre el mapa (formato 10 sin cambios)
+- **«Seguir una línea»** (Panorama › Mapa): buscador con los nombres del árbol y 1–5 generaciones; flechas curvas del
+  lugar del guru al de cada discípulo (`arcs` de `MapSvg`, color por generación; su guru en morado a rayas); quien no
+  tiene lugar pasa la línea al siguiente. Panel: la línea por generaciones, con su lugar y «↳» para seguir otra línea.
+- **El mapa cubre toda la India**: `mapData.ts` regenerado con `scripts/datos/mapa-make.cjs <out> <carpeta con los
+  ne_10m_*.geojson de Natural Earth>` (caja 5,5–33 N, 66,5–97,5 E). El mapa usa `INDIA` y se abre en `NORTH`.
+- **Viajes** (`src/components/journeys.ts`, `JOURNEYS`): etapas con lugar, nota (inglés) y fuente; `from` (el viaje se
+  separa) y `untold` (tramo no contado, a rayas). Mahāprabhu por el sur (CC Madhya 7–9), a Vraja y vuelta (CC Madhya
+  17–25), los libros de Śrīnivāsa, Narottama y Śyāmānanda (BRK 7). Fila «Viajes:», «▶ Recorrerlo etapa por etapa»,
+  panel con las etapas. Para añadir un viaje: otra entrada en `JOURNEYS`.
 
 ### Novedades de la 0.15.0 (12-11-2026) — Panorama › Mapa nuevo (formato 10 sin cambios)
 - **Un solo mapa grande** (Whisper: los tres pequeños no convencían): `PlacesMap` usa un `MapSvg` (width 900) con
@@ -1464,6 +1475,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **12-11-2026 — v0.16.0**: Panorama › Mapa: «Seguir una línea» (guru → discípulos sobre el mapa), toda la India, y
+  los viajes (Mahāprabhu por el sur, a Vraja, los libros de Śrīnivāsa).
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.16.0
 
 - **12-11-2026 — v0.15.0**: Panorama › Mapa nuevo: un solo mapa grande con «Lugares a la vista», «Ir a», puntos
   agrupados, y las épocas con «Ver pasar el tiempo».

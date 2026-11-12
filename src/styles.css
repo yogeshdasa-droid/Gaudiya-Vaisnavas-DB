@@ -6129,3 +6129,137 @@ svg.satellite .map-dot {
 .map-era-note {
   margin: 4px 0 0;
 }
+
+/* Panorama › Mapa: a line of the Paramparā over the map (12-11-2026) */
+.map-line-input {
+  width: 260px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+}
+.map-eras select {
+  padding: 3px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+}
+.map-arcs {
+  pointer-events: none;
+}
+.map-arc {
+  fill: none;
+  stroke: #e5484d;
+  stroke-width: 2;
+  stroke-opacity: 0.9;
+  vector-effect: non-scaling-stroke;
+}
+.map-arc.g0 {
+  stroke: #9b8cff;
+  stroke-dasharray: 5 4;
+}
+.map-arc.g2 {
+  stroke: #f08c4a;
+  stroke-opacity: 0.8;
+}
+.map-arc.g3 {
+  stroke: #e5b84a;
+  stroke-opacity: 0.7;
+}
+.map-arc.g4,
+.map-arc.g5 {
+  stroke: #9ccf6a;
+  stroke-opacity: 0.6;
+  stroke-width: 1.5;
+}
+.map-arrow {
+  fill: #e5484d;
+}
+.map-line-gen {
+  margin: 8px 0 4px;
+}
+.map-line-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 2px 0;
+  font-size: 13px;
+}
+.map-line-row.noplace .name-link {
+  opacity: 0.7;
+}
+.link-like {
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  text-decoration: underline dotted;
+}
+
+/* Panorama › Mapa: the journeys (12-11-2026) */
+.map-route {
+  pointer-events: auto;
+}
+.route-leg {
+  stroke: #e5484d;
+  stroke-width: 2.5;
+  stroke-opacity: 0.9;
+  vector-effect: non-scaling-stroke;
+}
+.route-leg.dashed {
+  stroke-dasharray: 7 5;
+  stroke-opacity: 0.7;
+}
+.route-arrow {
+  fill: #e5484d;
+}
+.route-stage {
+  cursor: pointer;
+}
+.route-stage circle {
+  fill: #fff4d6;
+  stroke: #e5484d;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.route-stage.on circle {
+  fill: #e5484d;
+  stroke: #fff;
+}
+.route-stage text {
+  fill: #1a1a1a;
+  font-weight: 700;
+  pointer-events: none;
+}
+.route-stage.on text {
+  fill: #fff;
+}
+.route-stage .route-label {
+  fill: var(--text);
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: var(--map-land);
+}
+.map-stages {
+  margin: 8px 0 0;
+  padding-left: 22px;
+  font-size: 13px;
+}
+.map-stages li {
+  margin: 0 0 8px;
+}
+.map-stages li.on > .link-like {
+  color: #ff8a8d;
+  font-weight: 700;
+}
+.map-stages li.later {
+  opacity: 0.45;
+}

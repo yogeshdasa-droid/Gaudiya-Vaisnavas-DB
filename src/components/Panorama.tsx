@@ -6,6 +6,7 @@ import { namesPlace, placeKeys, textKeys } from "../places";
 import { Lang, T } from "../i18n";
 import { foldName } from "./Sidebar";
 import { BORDERS, LAKES, LAND, RIVERS, STATES } from "./mapData";
+import { JOURNEYS } from "./journeys";
 
 const centuryOf = (p: { born: number | null; died: number | null }) => {
   const y = p.born ?? (p.died !== null ? p.died - 60 : null);
@@ -406,6 +407,8 @@ function placesOf(p: OverviewPerson, mp: MapPlace[]): number[] {
 type Box = [number, number, number, number];
 /** North India, from Vraja to Bengal and Orissa; Bengal close up. */
 const NORTH: Box = [18.6, 30.6, 74.6, 92.6];
+/** The whole drawing (mapData.ts, 12-11-2026): all India, for the journeys to the South. */
+const INDIA: Box = [5.5, 33, 66.5, 97.5];
 const BENGAL: Box = [21.7, 25.3, 86.5, 90.2];
 /** Vraja close up: Vṛndāvana, Mathurā, Govardhana, Rādhā-kuṇḍa, Nandagrāma, Varṣāṇā. */
 const VRAJA: Box = [27.42, 27.76, 77.32, 77.76];
@@ -489,9 +492,15 @@ function MapSvg({
   goto,
   onView,
   cluster = false,
+  arcs = [],
+  route,
 }: {
   t: T;
   mp: MapPlace[];
+  /** a journey: its stages numbered, the legs between them (dashed where not told), shown up to `upTo` */
+  route?: { pts: { lat: number; lon: number; label: string }[]; legs: { a: number; b: number; dashed: boolean }[]; upTo: number; current: number | null; onStage: (k: number) => void };
+  /** a line of the Paramparā over the map: guru's place → disciple's place (indices of `mp`); gen 0 = above */
+  arcs?: { from: number; to: number; gen: number }[];
   /** go to that piece of the map (`n` tells two requests apart) */
   goto?: { box: Box; n: number };
   /** the piece in view, once the map stops moving: [south, north, west, east] */
@@ -552,7 +561,7 @@ function MapSvg({
       return clampView([px - (px - vx) * f, py - (py - vy) * f, nw]);
     });
   // the view stays over the drawn land: a little beyond the map's own box at most
-  const [minX, minY, maxX, maxY] = [x(72.5), y(32), x(95), y(16.5)];
+  const [minX, minY, maxX, maxY] = [x(INDIA[2]), y(INDIA[1]), x(INDIA[3]), y(INDIA[0])];
   const clampView = ([vx, vy, vw]: [number, number, number]): [number, number, number] => {
     const vh = (vw * H) / width;
     if (vw >= width) return [0, 0, width];
@@ -800,6 +809,73 @@ function MapSvg({
             {name}
           </text>
         ))}
+        {arcs.length > 0 && (
+          <g className="map-arcs">
+            <defs>
+              <marker id="map-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth={9 / z} markerHeight={9 / z} orient="auto" markerUnits="userSpaceOnUse">
+                <path d="M0 0L10 5L0 10z" className="map-arrow" />
+              </marker>
+            </defs>
+            {[...new Map(arcs.map((a) => [`${a.from}-${a.to}`, a])).values()].map((a) => {
+              const [x1, y1, x2, y2] = [x(mp[a.from].lon), y(mp[a.from].lat), x(mp[a.to].lon), y(mp[a.to].lat)];
+              // a curve bowed to one side, so that lines there and back do not cover each other
+              const [mx, my] = [(x1 + x2) / 2 - (y2 - y1) * 0.18, (y1 + y2) / 2 + (x2 - x1) * 0.18];
+              return (
+                <path
+                  key={`${a.from}-${a.to}`}
+                  className={`map-arc g${Math.min(a.gen, 5)}`}
+                  d={`M${x1} ${y1}Q${mx} ${my} ${x2} ${y2}`}
+                  markerEnd="url(#map-arrow)"
+                />
+              );
+            })}
+          </g>
+        )}
+        {route && (
+          <g className="map-route">
+            <defs>
+              <marker id="route-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth={10 / z} markerHeight={10 / z} orient="auto" markerUnits="userSpaceOnUse">
+                <path d="M0 0L10 5L0 10z" className="route-arrow" />
+              </marker>
+            </defs>
+            {route.legs
+              .filter((l) => l.b <= route.upTo)
+              .map((l) => {
+                const [p, q] = [route.pts[l.a], route.pts[l.b]];
+                // stop the arrow at the edge of the stage's dot
+                const [x1, y1, x2, y2] = [x(p.lon), y(p.lat), x(q.lon), y(q.lat)];
+                const len = Math.hypot(x2 - x1, y2 - y1) || 1;
+                const back = Math.min(len / 2, 9 / z);
+                return (
+                  <line
+                    key={`${l.a}-${l.b}`}
+                    className={`route-leg${l.dashed ? " dashed" : ""}`}
+                    x1={x1}
+                    y1={y1}
+                    x2={x2 - ((x2 - x1) / len) * back}
+                    y2={y2 - ((y2 - y1) / len) * back}
+                    markerEnd="url(#route-arrow)"
+                  />
+                );
+              })}
+            {route.pts.map((p, k) =>
+              k > route.upTo ? null : (
+                <g key={k} className={`route-stage${route.current === k ? " on" : ""}`} onClick={() => !drag.current?.moved && route.onStage(k)}>
+                  <circle cx={x(p.lon)} cy={y(p.lat)} r={(route.current === k ? 10 : 8) / z} />
+                  <text x={x(p.lon)} y={y(p.lat) + 3.5 / z} textAnchor="middle" fontSize={9 / z}>
+                    {k + 1}
+                  </text>
+                  {(route.current === k || z >= 2) && (
+                    <text className="route-label" x={x(p.lon) + 12 / z} y={y(p.lat) + 4 / z} fontSize={13 / z} strokeWidth={4 / z}>
+                      {p.label}
+                    </text>
+                  )}
+                  <title>{`${k + 1}. ${p.label}`}</title>
+                </g>
+              ),
+            )}
+          </g>
+        )}
         {frames.map((frame) => (
           <rect key={frame.join()} className="map-frame" x={x(frame[2])} y={y(frame[1])} width={x(frame[3]) - x(frame[2])} height={y(frame[0]) - y(frame[1])} rx={6} />
         ))}
@@ -958,7 +1034,101 @@ function PlacesMap({
     return () => window.clearInterval(id);
   }, [playing]);
   const years = useMemo(() => lifeYears(all, persons), [all, persons]);
+  // «Follow a line» (12-11-2026): a guru's line over the map, from the guru's place to each disciple's
+  const [lineRoot, setLineRoot] = useState<number | null>(null);
+  const [gens, setGens] = useState(3);
+  const [lineText, setLineText] = useState("");
+  const byId = useMemo(() => new Map(all.map((p) => [p.id, p])), [all]);
+  const kids = useMemo(() => {
+    const m = new Map<number, number[]>();
+    const add = (g: number, d: number) => m.set(g, [...(m.get(g) ?? []), d]);
+    for (const p of persons) {
+      if (p.tree?.parent != null) add(p.tree.parent, p.id);
+      for (const l of p.links) add(l.guru, p.id);
+    }
+    return m;
+  }, [persons]);
+  const line = useMemo(() => {
+    if (lineRoot === null) return null;
+    const placeOf = (id: number) => {
+      const p = byId.get(id);
+      const ps = p ? placesOf(p, mp) : [];
+      return ps.length ? ps[0] : null;
+    };
+    const arcs: { from: number; to: number; gen: number }[] = [];
+    const rows: { id: number; gen: number; place: number | null }[] = [];
+    const root = persons.find((p) => p.id === lineRoot);
+    const rp = placeOf(lineRoot);
+    // above: its gurus (its place in the tree and its other lines)
+    const ups = [root?.tree?.parent, ...(root?.links ?? []).map((l) => l.guru)].filter((g): g is number => g != null);
+    for (const g of new Set(ups)) {
+      const gp = placeOf(g);
+      rows.push({ id: g, gen: -1, place: gp });
+      if (gp !== null && rp !== null && gp !== rp) arcs.push({ from: gp, to: rp, gen: 0 });
+    }
+    rows.push({ id: lineRoot, gen: 0, place: rp });
+    // below, generation by generation; one without a place passes the line on from the last place
+    let frontier = [{ id: lineRoot, src: rp }];
+    const seen = new Set([lineRoot]);
+    for (let g = 1; g <= gens; g++) {
+      const next: { id: number; src: number | null }[] = [];
+      for (const f of frontier)
+        for (const d of kids.get(f.id) ?? []) {
+          if (seen.has(d)) continue;
+          seen.add(d);
+          const dp = placeOf(d);
+          rows.push({ id: d, gen: g, place: dp });
+          if (dp !== null && f.src !== null && dp !== f.src) arcs.push({ from: f.src, to: dp, gen: g });
+          next.push({ id: d, src: dp ?? f.src });
+        }
+      frontier = next;
+    }
+    return { arcs, rows, ids: new Set(rows.map((r) => r.id)) };
+  }, [lineRoot, gens, byId, kids, persons, mp]);
+  const treeNames = useMemo(() => persons.filter((p) => p.tree).map((p) => p.name).sort((a, b) => a.localeCompare(b)), [persons]);
+  const followLine = (id: number | null) => {
+    if (id !== null) setJourney(null);
+    setLineRoot(id);
+    setLineText(id === null ? "" : (persons.find((p) => p.id === id)?.name ?? ""));
+    setPicked(null);
+    setPlaying(false);
+  };
+  // the journeys (journeys.ts): one chosen, the stage in view, and «walk it» stage by stage
+  const [journey, setJourney] = useState<string | null>(null);
+  const [stage, setStage] = useState<number | null>(null);
+  const [upTo, setUpTo] = useState(999);
+  const [walking, setWalking] = useState(false);
+  const J = JOURNEYS.find((j) => j.id === journey) ?? null;
+  useEffect(() => {
+    if (!walking || !J) return;
+    const id = window.setTimeout(() => {
+      if (upTo >= J.stages.length - 1) return setWalking(false);
+      setUpTo(upTo + 1);
+      setStage(upTo + 1);
+    }, 1800);
+    return () => window.clearTimeout(id);
+  }, [walking, upTo, J]);
+  const openJourney = (id: string | null) => {
+    setJourney(id);
+    setStage(null);
+    setUpTo(999);
+    setWalking(false);
+    if (id) {
+      followLine(null);
+      setEra(null);
+    }
+  };
+  const route = useMemo(
+    () =>
+      J && {
+        pts: J.stages.map((s) => ({ lat: s.lat, lon: s.lon, label: s.name })),
+        legs: J.stages.slice(1).map((s, k) => ({ a: s.from ?? k, b: k + 1, dashed: !!s.untold })),
+      },
+    [J],
+  );
   const list = useMemo(() => {
+    if (J) return [];
+    if (line) return all.filter((p) => line.ids.has(p.id));
     if (era === null) return all;
     const [a, b] = ERAS[era];
     return all.filter((p) => {
@@ -966,7 +1136,7 @@ function PlacesMap({
       const y = years.get(p.id);
       return !!y && Math.min(y[0] + 20, y[1]) <= b && y[1] >= a;
     });
-  }, [all, era, years]);
+  }, [all, era, years, line, J]);
   const guessed = list.filter((p) => years.get(p.id)?.[2]).length;
   const undated = all.filter((p) => p.hasPlace && !years.has(p.id)).length;
   // drawing or satellite (remembered on this computer)
@@ -993,10 +1163,10 @@ function PlacesMap({
   const at = useMemo(() => {
     const by = new Map<number, OverviewPerson[]>();
     for (const p of list) for (const i of placesOf(p, mp)) by.set(i, [...(by.get(i) ?? []), p]);
-    // a saved place is on the map even with nobody yet
-    mp.forEach((m, i) => m.placeId !== null && !by.has(i) && by.set(i, []));
+    // a saved place is on the map even with nobody yet (not while a line or an age is shown)
+    if (list === all) mp.forEach((m, i) => m.placeId !== null && !by.has(i) && by.set(i, []));
     return by;
-  }, [list, mp]);
+  }, [list, mp, all]);
   // opened from a place: that one chosen
   useEffect(() => {
     if (!focus) return;
@@ -1015,7 +1185,7 @@ function PlacesMap({
     return Math.max(1, ...c.values());
   }, [all, mp]);
   const sorted = [...at].sort((a, b) => b[1].length - a[1].length);
-  const far = sorted.filter(([i]) => !inBox(NORTH, mp[i].lat, mp[i].lon));
+  const far = sorted.filter(([i]) => !inBox(INDIA, mp[i].lat, mp[i].lon));
   const pick = (i: number) => setPicked(picked === i ? null : i);
   // a dot clicked on the map: the page goes down just enough to show its people
   const shownRef = useRef<HTMLElement>(null);
@@ -1061,15 +1231,40 @@ function PlacesMap({
   const common = { t, mp, at, most, picked, onPick: pickOnMap, satellite: style === "sat" && !offline, onTile, zoomReq, onShow: showOnMap };
   // one big map (12-11-2026, Whisper: the three small ones were cramped): the piece in view, and «Go to»
   const [inView, setInView] = useState<Box>(NORTH);
-  const [goto, setGoto] = useState<{ box: Box; n: number } | undefined>();
+  const [goto, setGoto] = useState<{ box: Box; n: number } | undefined>({ box: NORTH, n: 0 });
   const jumps: [string, Box][] = [
-    [t.mapGoIndia, NORTH],
+    [t.mapGoIndia, INDIA],
+    [t.mapGoNorth, NORTH],
     [t.mapGoBengal, BENGAL],
     [t.mapGoNavadvipa, [23.33, 23.52, 88.28, 88.46]],
     [t.mapGoVraja, VRAJA],
     [t.mapGoPuri, [19.77, 19.84, 85.79, 85.87]],
   ];
   const visible = sorted.filter(([i]) => inBox(inView, mp[i].lat, mp[i].lon));
+  // a journey chosen: the map shows it all; a stage chosen: the map comes close to it
+  useEffect(() => {
+    if (!J) return;
+    const la = J.stages.map((s) => s.lat);
+    const lo = J.stages.map((s) => s.lon);
+    setGoto({ box: [Math.min(...la) - 0.6, Math.max(...la) + 0.6, Math.min(...lo) - 0.6, Math.max(...lo) + 0.6], n: Date.now() });
+  }, [J]); // eslint-disable-line react-hooks/exhaustive-deps
+  const toStage = (k: number) => {
+    if (!J) return;
+    const s = J.stages[k];
+    setStage(k);
+    setUpTo((u) => Math.max(u, k));
+    setGoto({ box: [s.lat - 1.2, s.lat + 1.2, s.lon - 1.6, s.lon + 1.6], n: Date.now() });
+  };
+  // a line chosen: the map shows all its places
+  useEffect(() => {
+    if (!line) return;
+    const ps = line.rows.map((r) => r.place).filter((i): i is number => i !== null && inBox(INDIA, mp[i].lat, mp[i].lon));
+    if (!ps.length) return;
+    const la = ps.map((i) => mp[i].lat);
+    const lo = ps.map((i) => mp[i].lon);
+    const pad = 0.15;
+    setGoto({ box: [Math.min(...la) - pad, Math.max(...la) + pad, Math.min(...lo) - pad, Math.max(...lo) + pad], n: Date.now() });
+  }, [line]); // eslint-disable-line react-hooks/exhaustive-deps
   const listPick = (i: number) => {
     setPicked(i);
     setZoomReq({ i, n: Date.now() });
@@ -1077,7 +1272,7 @@ function PlacesMap({
 
   return (
     <>
-      <p className="muted small">{t.mapHint(withPlace.toLocaleString(lang), located.toLocaleString(lang))}</p>
+      {!J && <p className="muted small">{t.mapHint(withPlace.toLocaleString(lang), located.toLocaleString(lang))}</p>}
       <div className="map-style">
         <div className="seg small" data-n={2} data-on={style === "sat" ? 1 : 0}>
           <span className="seg-ink" />
@@ -1100,26 +1295,89 @@ function PlacesMap({
       </div>
       <div className="map-eras">
         <span className="muted small">{t.mapEra}</span>
-        <button className={`btn ghost small${era === null ? " on" : ""}`} onClick={() => (setPlaying(false), setEra(null))}>
+        <button className={`btn ghost small${era === null ? " on" : ""}`} onClick={() => (setPlaying(false), setEra(null), setJourney(null))}>
           {t.mapEraAll}
         </button>
         {t.mapEras.map((label, k) => (
-          <button key={k} className={`btn ghost small${era === k ? " on" : ""}`} onClick={() => (setPlaying(false), setEra(k))} title={`${ERAS[k][0] < 0 ? "…" : ERAS[k][0]}–${ERAS[k][1] > 2026 ? "" : ERAS[k][1]}`}>
+          <button key={k} className={`btn ghost small${era === k ? " on" : ""}`} onClick={() => (setPlaying(false), setEra(k), setJourney(null))} title={`${ERAS[k][0] < 0 ? "…" : ERAS[k][0]}–${ERAS[k][1] > 2026 ? "" : ERAS[k][1]}`}>
             {label}
           </button>
         ))}
-        <button className="btn small" onClick={() => setPlaying((v) => !v)}>
+        <button className="btn small" onClick={() => (setJourney(null), setPlaying((v) => !v))}>
           {playing ? `■ ${t.mapStop}` : `▶ ${t.mapPlay}`}
         </button>
       </div>
-      {era !== null && <p className="muted small map-era-note">{t.mapEraNote(list.length, guessed, undated)}</p>}
+      <div className="map-eras">
+        <span className="muted small">{t.mapLine}</span>
+        <input
+          className="map-line-input"
+          list="map-line-names"
+          placeholder={t.mapLinePlaceholder}
+          value={lineText}
+          onChange={(ev) => {
+            setLineText(ev.target.value);
+            const p = persons.find((x) => x.tree && x.name === ev.target.value);
+            if (p) followLine(p.id);
+          }}
+        />
+        <datalist id="map-line-names">
+          {treeNames.map((nm) => (
+            <option key={nm} value={nm} />
+          ))}
+        </datalist>
+        <select value={gens} onChange={(ev) => setGens(Number(ev.target.value))} title={t.mapLineGensHint}>
+          {[1, 2, 3, 4, 5].map((g) => (
+            <option key={g} value={g}>
+              {t.mapLineGens(g)}
+            </option>
+          ))}
+        </select>
+        {lineRoot !== null && (
+          <button className="btn ghost small" onClick={() => followLine(null)}>
+            ✕ {t.mapLineClear}
+          </button>
+        )}
+      </div>
+      <div className="map-eras">
+        <span className="muted small">{t.mapJourneys}</span>
+        {JOURNEYS.map((j) => (
+          <button key={j.id} className={`btn ghost small${journey === j.id ? " on" : ""}`} onClick={() => openJourney(journey === j.id ? null : j.id)}>
+            {j.title[lang === "en" ? "en" : "es"]}
+          </button>
+        ))}
+        {J && (
+          <>
+            <button
+              className="btn small"
+              onClick={() => {
+                if (walking) return setWalking(false);
+                setUpTo(0);
+                setStage(0);
+                setWalking(true);
+              }}
+            >
+              {walking ? `■ ${t.mapStop}` : `▶ ${t.mapWalk}`}
+            </button>
+            <button className="btn ghost small" onClick={() => openJourney(null)}>
+              ✕ {t.mapJourneyClose}
+            </button>
+          </>
+        )}
+      </div>
+      {line ? (
+        <p className="muted small map-era-note">{t.mapLineNote(line.rows.length, line.rows.filter((r) => r.place !== null).length)}</p>
+      ) : (
+        era !== null && <p className="muted small map-era-note">{t.mapEraNote(list.length, guessed, undated)}</p>
+      )}
       <div className="pano-onemap">
         <div className="pano-map big">
           <MapSvg
             {...common}
-            box={NORTH}
+            box={INDIA}
             width={900}
-            cluster
+            cluster={!line}
+            arcs={line?.arcs}
+            route={route ? { ...route, upTo, current: stage, onStage: toStage } : undefined}
             goto={goto}
             onView={setInView}
             labels={(i) => (inBox(BENGAL, mp[i].lat, mp[i].lon) ? bigBengal.includes(i) : inBox(VRAJA, mp[i].lat, mp[i].lon) ? bigVraja.includes(i) : bigOutside.includes(i))}
@@ -1131,7 +1389,62 @@ function PlacesMap({
           />
         </div>
         <aside className="map-side">
-          {picked !== null && at.get(picked) ? (
+          {J ? (
+            <section className="map-journey">
+              <h3>{J.title[lang === "en" ? "en" : "es"]}</h3>
+              <p className="muted small">
+                {J.when} ·{" "}
+                <button className="name-link" onClick={() => onPerson(J.person)}>
+                  {persons.find((p) => p.id === J.person)?.name}
+                </button>
+              </p>
+              <p className="muted small">{t.mapJourneyHint}</p>
+              <ol className="map-stages">
+                {J.stages.map((s, k) => (
+                  <li key={k} className={stage === k ? "on" : k > upTo ? "later" : ""}>
+                    <button className="link-like" onClick={() => toStage(k)}>
+                      {s.name}
+                    </button>
+                    {s.untold && <span className="muted small"> · {t.mapJourneyUntold}</span>}
+                    {s.note && <div className="small">{s.note}</div>}
+                    <div className="muted small">{s.source}</div>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          ) : line && picked === null ? (
+            <section className="map-line-list">
+              <h3>{t.mapLineTitle(persons.find((p) => p.id === lineRoot)?.name ?? "")}</h3>
+              {[-1, ...Array.from({ length: gens + 1 }, (_, k) => k)].map((g) => {
+                const rows = line.rows.filter((r) => r.gen === g);
+                if (!rows.length) return null;
+                return (
+                  <div key={g} className="map-line-gen">
+                    <div className="muted small">{g === -1 ? t.mapLineAbove : g === 0 ? "" : t.mapLineGen(g)}</div>
+                    {rows.map((r) => (
+                      <div key={r.id} className={`map-line-row${r.place === null ? " noplace" : ""}`}>
+                        <button className="name-link" onClick={() => onPerson(r.id)}>
+                          {persons.find((p) => p.id === r.id)?.name ?? r.id}
+                        </button>
+                        {r.place !== null ? (
+                          <button className="link-like muted small" onClick={() => listPick(r.place!)}>
+                            {mp[r.place].name}
+                          </button>
+                        ) : (
+                          <span className="muted small">{t.mapLineNoPlace}</span>
+                        )}
+                        {r.id !== lineRoot && (kids.get(r.id)?.length ?? 0) > 0 && (
+                          <button className="icon-btn small" title={t.mapLineFollow} onClick={() => followLine(r.id)}>
+                            ↳
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </section>
+          ) : picked !== null && at.get(picked) ? (
             <section ref={shownRef} className="map-picked">
               <button className="btn ghost small" onClick={() => setPicked(null)}>
                 ← {t.mapBack}
