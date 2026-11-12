@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ArrowUp, BookOpen, MapPin, ChevronDown, ChevronLeft, ChevronRight, Star, Combine, FileDown, FilePlus2, Printer, FileText, GitFork, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Search, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
+import { ArrowUp, BookOpen, MapPin, ChevronDown, ChevronLeft, ChevronRight, Star, Combine, FileDown, FilePlus2, Printer, FileText, GitFork, GitMerge, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Route, Search, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
 import { api, fileUrl, isNamesake, LifeSpan, MAIN_TEXT, NAMESAKES, Place, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
@@ -9,6 +9,7 @@ import type { NameIndex } from "../personLinks";
 import type { Term } from "../fold";
 import { foldName } from "./Sidebar";
 import { placesOfPerson } from "../places";
+import { journeysOf } from "./journeys";
 
 /** Titles that come and go after a name: "Rupa" = "Rupa Gosvami". */
 const TITLES = new Set(
@@ -51,6 +52,8 @@ interface Props {
   onShowInTree: (p: Person) => void;
   /** «Ver linaje»: its gurus and disciples in the Lineage view */
   onShowLineage: (p: Person) => void;
+  /** open Panorama › Map with one of the record's journeys (journeys.ts) */
+  onShowJourney: (id: string) => void;
   onPhotoChanged: () => void;
   onToast: (msg: string) => void;
   /** some records were called different people: the lists that mark repeated ones are read again */
@@ -280,6 +283,15 @@ export function PersonView(p: Props) {
   const [person, setPerson] = useState<Person | null>(null);
   const [menu, setMenu] = useState(false);
   const [zoom, setZoom] = useState<number | null>(null);
+  // «See journeys» (12-11-2026, Whisper): in place of «Paramparā…», which went into the «…» menu
+  const trips = useMemo(() => journeysOf(p.id), [p.id]);
+  const [tripMenu, setTripMenu] = useState(false);
+  useEffect(() => {
+    if (!tripMenu) return;
+    const close = () => setTripMenu(false);
+    window.addEventListener("click", close);
+    return () => window.removeEventListener("click", close);
+  }, [tripMenu]);
 
   useEffect(() => {
     let cancelled = false;
@@ -702,9 +714,6 @@ export function PersonView(p: Props) {
                 <button className="btn ghost" onClick={() => p.onFindMentions(person)} title={t.findMentions}>
                   <Search size={15} /> {t.findMentions}
                 </button>
-                <button className="btn ghost" onClick={() => p.onGuru(person)} title={t.guruTitle}>
-                  <ListTree size={15} /> {t.guruButton}
-                </button>
                 {me?.tree && (
                   <button className="btn ghost" onClick={() => p.onShowInTree(person)} title={t.showInTreeHint}>
                     <Network size={15} /> {t.showInTree}
@@ -714,6 +723,31 @@ export function PersonView(p: Props) {
                   <button className="btn ghost" onClick={() => p.onShowLineage(person)} title={t.showLineageHint}>
                     <GitFork size={15} /> {t.showLineage}
                   </button>
+                )}
+                {trips.length > 0 && (
+                  <div className="menu-wrap">
+                    <button
+                      className="btn ghost"
+                      title={t.seeJourneysHint}
+                      onClick={(e) => {
+                        if (trips.length === 1) return p.onShowJourney(trips[0].id);
+                        e.stopPropagation();
+                        setTripMenu((m) => !m);
+                      }}
+                    >
+                      <Route size={15} /> {t.seeJourneys}
+                      {trips.length > 1 && <ChevronDown size={14} />}
+                    </button>
+                    {tripMenu && (
+                      <div className="menu trips-menu" onClick={(e) => e.stopPropagation()}>
+                        {trips.map((j) => (
+                          <button key={j.id} onClick={() => (setTripMenu(false), p.onShowJourney(j.id))}>
+                            <Route size={15} /> {j.title[lang === "en" ? "en" : "es"]} <span className="muted small">{j.when}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 )}
                 <button className="icon-btn" onClick={() => p.onReveal(person)} title={t.revealInTree}>
                   <LocateFixed size={17} />
@@ -731,6 +765,9 @@ export function PersonView(p: Props) {
                   </button>
                   {menu && (
                     <div className="menu" onClick={(e) => e.stopPropagation()}>
+                      <button onClick={() => (setMenu(false), p.onGuru(person))} title={t.guruTitle}>
+                        <ListTree size={15} /> {t.guruButton}
+                      </button>
                       <button onClick={() => (setMenu(false), p.onSearchIn(person))}>
                         <TextSearch size={15} /> {t.searchInPerson}
                       </button>

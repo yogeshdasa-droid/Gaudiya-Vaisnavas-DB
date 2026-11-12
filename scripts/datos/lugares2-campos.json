@@ -1,0 +1,101 @@
+[
+ {
+  "id": 129,
+  "name": "Bhañjana Adhikārī",
+  "edits": [
+   {
+    "field": "place",
+    "from": "Fatepur",
+    "to": "Fatepur (Gadadharpur), Midnapore"
+   }
+  ]
+ },
+ {
+  "id": 226,
+  "name": "Divyasiṁha Rāja",
+  "edits": [
+   {
+    "field": "place",
+    "from": "Lauda village",
+    "to": "Lauda village (Navagrāma), Śrīhaṭṭa"
+   }
+  ]
+ },
+ {
+  "id": 1065,
+  "name": "Padmanābha (father of Lokanātha)",
+  "edits": [
+   {
+    "field": "place",
+    "from": "Talakhadi",
+    "to": "Talakhadi, Jessore (Yaśohara)"
+   }
+  ]
+ },
+ {
+  "id": 636,
+  "name": "Kālidāsa",
+  "edits": [
+   {
+    "field": "place",
+    "from": "Sankhanagar",
+    "to": "Sankhanagar, Saptagrāma"
+   }
+  ]
+ },
+ {
+  "id": 1103,
+  "name": "Prakāśānanda",
+  "edits": [
+   {
+    "field": "place",
+    "from": "Kasthakata",
+    "to": "Kasthakata, Dhaka"
+   }
+  ]
+ },
+ {
+  "id": 1220,
+  "name": "Rajanī Paṇḍita",
+  "edits": [
+   {
+    "field": "place",
+    "from": "Bhangamora",
+    "to": "Bhangamora, west of Tārakeśvara, Hugli"
+   }
+  ]
+ },
+ {
+  "id": 1309,
+  "name": "Ratnagarbha Ācārya",
+  "edits": [
+   {
+    "field": "place",
+    "from": "Burunga village",
+    "to": "Burunga village, Śrīhaṭṭa"
+   }
+  ]
+ },
+ {
+  "id": 1592,
+  "name": "Vaiṣṇava Caraṇa Dāsa",
+  "edits": [
+   {
+    "field": "place",
+    "from": "Tena Vaidyapura",
+    "to": "Tena Vaidyapura, near Jhāmaṭapura (Kāṭwā)"
+   }
+  ]
+ },
+ {
+  "id": 1527,
+  "name": "Śyāmadāsa",
+  "edits": [
+   {
+    "field": "place",
+    "from": "Hariharpura",
+    "to": "Hariharpura (Kedarkunda), east of Midnapore"
+   }
+  ]
+ }
+]

@@ -6263,3 +6263,13 @@ svg.satellite .map-dot {
 .map-stages li.later {
   opacity: 0.45;
 }
+
+/* «See journeys» on a record (12-11-2026): the list of its journeys */
+.menu.trips-menu {
+  min-width: 330px;
+}
+.menu.trips-menu button .muted {
+  margin-left: auto;
+  white-space: nowrap;
+  padding-left: 12px;
+}

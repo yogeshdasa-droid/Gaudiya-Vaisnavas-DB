@@ -96,6 +96,7 @@ export function Panorama({
   places,
   onPlace,
   focus,
+  journey,
   status,
 }: {
   t: T;
@@ -107,6 +108,8 @@ export function Panorama({
   onPlace: (id: number) => void;
   /** opened from a place: the map, with every record, at that place */
   focus?: { id: number; n: number };
+  /** opened from a record's «See journeys»: the map, with that journey */
+  journey?: { id: string; n: number };
   /** the size of the library, shown on «Status» */
   status: LibraryStatus | null;
 }) {
@@ -134,6 +137,9 @@ export function Panorama({
     setTabState("map");
     setScope("all");
   }, [focus?.n]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (journey) setTabState("map");
+  }, [journey?.n]);
   const list = useMemo(() => (all ?? []).filter((p) => scope === "all" || (scope === "tree") === p.tree), [all, scope]);
 
   return (
@@ -171,7 +177,7 @@ export function Panorama({
               <Status t={t} lang={lang} list={list} onPerson={onPerson} />
             </>
           ) : tab === "map" ? (
-            <PlacesMap t={t} lang={lang} list={list} persons={persons} onPerson={onPerson} places={places} onPlace={onPlace} focus={focus} />
+            <PlacesMap t={t} lang={lang} list={list} persons={persons} onPerson={onPerson} places={places} onPlace={onPlace} focus={focus} journeyFocus={journey} />
           ) : tab === "branches" ? (
             <Branches t={t} lang={lang} persons={persons} onPerson={onPerson} />
           ) : tab === "year" ? (
@@ -858,22 +864,28 @@ function MapSvg({
                   />
                 );
               })}
-            {route.pts.map((p, k) =>
-              k > route.upTo ? null : (
+            {route.pts.map((p, k) => {
+              if (k > route.upTo) return null;
+              // a place the journey comes back to (Navadvīpa in Gayā, Purī…): one point, «1·4»
+              const same = route.pts.flatMap((q, j) => (j <= route.upTo && q.lat === p.lat && q.lon === p.lon ? [j] : []));
+              const drawn = route.current !== null && same.includes(route.current) ? route.current : same[same.length - 1];
+              if (k !== drawn) return null;
+              const num = same.map((j) => j + 1).join("·");
+              return (
                 <g key={k} className={`route-stage${route.current === k ? " on" : ""}`} onClick={() => !drag.current?.moved && route.onStage(k)}>
-                  <circle cx={x(p.lon)} cy={y(p.lat)} r={(route.current === k ? 10 : 8) / z} />
+                  <circle cx={x(p.lon)} cy={y(p.lat)} r={((route.current === k ? 10 : 8) + 2.6 * (num.length - 1)) / z} />
                   <text x={x(p.lon)} y={y(p.lat) + 3.5 / z} textAnchor="middle" fontSize={9 / z}>
-                    {k + 1}
+                    {num}
                   </text>
                   {(route.current === k || z >= 2) && (
                     <text className="route-label" x={x(p.lon) + 12 / z} y={y(p.lat) + 4 / z} fontSize={13 / z} strokeWidth={4 / z}>
                       {p.label}
                     </text>
                   )}
-                  <title>{`${k + 1}. ${p.label}`}</title>
+                  <title>{`${num}. ${p.label}`}</title>
                 </g>
-              ),
-            )}
+              );
+            })}
           </g>
         )}
         {frames.map((frame) => (
@@ -1013,6 +1025,7 @@ function PlacesMap({
   places,
   onPlace,
   focus,
+  journeyFocus,
 }: {
   t: T;
   lang: Lang;
@@ -1022,6 +1035,7 @@ function PlacesMap({
   places: Place[];
   onPlace: (id: number) => void;
   focus?: { id: number; n: number };
+  journeyFocus?: { id: string; n: number };
 }) {
   const [picked, setPicked] = useState<number | null>(null);
   const mp = useMemo(() => mapPlaces(places), [places]);
@@ -1118,6 +1132,9 @@ function PlacesMap({
       setEra(null);
     }
   };
+  useEffect(() => {
+    if (journeyFocus) openJourney(journeyFocus.id);
+  }, [journeyFocus?.n]); // eslint-disable-line react-hooks/exhaustive-deps
   const route = useMemo(
     () =>
       J && {

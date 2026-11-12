@@ -24,8 +24,15 @@ export interface Journey {
   title: { es: string; en: string };
   /** the record it is about (opens from the panel) */
   person: number;
+  /** other records who make the journey too (their «See journeys» button opens it) */
+  others?: number[];
   when: string;
   stages: Stage[];
+}
+
+/** The journeys a record makes, in time order (the record's «See journeys» button). */
+export function journeysOf(id: number): Journey[] {
+  return JOURNEYS.filter((j) => j.person === id || j.others?.includes(id));
 }
 
 const CC = "Caitanya-caritāmṛta";
@@ -201,6 +208,7 @@ export const JOURNEYS: Journey[] = [
     id: "books",
     title: { es: "Śrīnivāsa, Narottama y Śyāmānanda llevan los libros", en: "Śrīnivāsa, Narottama and Śyāmānanda carry the books" },
     person: 1466,
+    others: [1010, 1535],
     when: "Agrahāyaṇa",
     stages: [
       { name: "Vṛndāvana", lat: 27.58, lon: 77.7, note: "After bowing to Govinda, Gopīnātha and Madana-mohana, they leave with the Gosvāmīs' books in a chest on an ox-cart, sent by Jīva Gosvāmī.", source: "Bhakti-ratnākara 7; Śrīnivāsa's record" },

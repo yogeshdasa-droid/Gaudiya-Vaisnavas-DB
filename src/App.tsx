@@ -121,7 +121,7 @@ function usePersisted<T>(key: string, fallback: T) {
 }
 
 /** panorama.place: open on the map at that place (`n` tells two requests apart) */
-type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "tree"; focus?: { id: number; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number };
+type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number }; journey?: { id: string; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "tree"; focus?: { id: number; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number };
 
 type Dialog =
   | { kind: "settings"; tab: SettingsTab }
@@ -1232,6 +1232,7 @@ export default function App() {
             onReveal={(person) => revealIn("person", person.id)}
             onShowInTree={(person) => setMain({ kind: "tree", focus: { id: person.id, n: Date.now() } })}
             onShowLineage={(person) => setMain({ kind: "lineage", focus: { id: person.id, n: Date.now() } })}
+            onShowJourney={(id) => setMain({ kind: "panorama", journey: { id, n: Date.now() } })}
             onPhotoChanged={() => {
               reloadPerson();
               refreshAll();
@@ -1292,7 +1293,7 @@ export default function App() {
           {main.kind === "timeline" && <Timeline t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} onOpenDoc={openDoc} />}
           {main.kind === "lineage" && <Lineage t={t} lang={lang} persons={persons} onPerson={openPerson} focus={main.focus} />}
           {main.kind === "panorama" && (
-            <Panorama t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} places={places} onPlace={openPlace} focus={main.place} status={status} />
+            <Panorama t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} places={places} onPlace={openPlace} focus={main.place} journey={main.journey} status={status} />
           )}
           {main.kind === "calendar" && <Calendar t={t} lang={lang} reload={dataTick} onPerson={openPerson} page />}
           {main.kind === "tree" && <TreeView t={t} persons={persons} onPerson={openPerson} marks={marks} onMark={cycleMark} focus={main.focus} />}

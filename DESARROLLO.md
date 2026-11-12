@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **12-11-2026** (versión **0.16.1**).
+Última actualización: **12-11-2026** (versión **0.16.2**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,17 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.16.1)
+## 5. Qué hace hoy (v0.16.2)
+
+### Novedades de la 0.16.2 (12-11-2026) — «Ver viajes» en la ficha (formato 10 sin cambios)
+- Botón **«Ver viajes»** en la ficha (en el sitio de «Paramparā…», que pasa al menú «…»): solo si la ficha tiene viajes
+  (`journeysOf` en `journeys.ts`; `others` = otras fichas del mismo viaje: el de los libros también para Narottama 1010
+  y Śyāmānanda 1535). Con uno, abre Panorama › Mapa con él (`Main.panorama.journey`, `journeyFocus` en `PlacesMap`);
+  con varios, una lista.
+- Mapa: una etapa que vuelve al mismo sitio (Navadvīpa en Gayā, Purī…) es un solo punto con «1·4».
+- Datos (no es código): campo «Lugar» de 113 fichas sacado de sus textos (`scripts/datos/lugar-poner.mjs`, solo si
+  está vacío), distrito en 9 (`lugares2-campos.json`), tīrthas nuevos #103–#106 (`tirthas2.mjs`). Árbol en el mapa:
+  406 → 534 de 1.258.
 
 ### Novedades de la 0.16.1 (12-11-2026) — más viajes (formato 10 sin cambios)
 - `journeys.ts`, en orden de fechas: **Nityānanda por los tīrthas** (CB Ādi 9, de su ficha #1851), **Mahāprabhu a
@@ -1482,6 +1492,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **12-11-2026 — v0.16.2**: «Ver viajes» en la ficha («Paramparā…» al menú «…»), «1·4» en las etapas repetidas.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.16.2
 
 - **12-11-2026 — v0.16.1**: más viajes en el mapa (Nityānanda por los tīrthas y en Bengala, Mahāprabhu a Gayā, el
   sannyāsa, a Bengala por Rāmakeli) y el viaje al sur revisado.
