@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **12-11-2026** (versión **0.16.0**).
+Última actualización: **12-11-2026** (versión **0.16.1**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,14 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.16.0)
+## 5. Qué hace hoy (v0.16.1)
+
+### Novedades de la 0.16.1 (12-11-2026) — más viajes (formato 10 sin cambios)
+- `journeys.ts`, en orden de fechas: **Nityānanda por los tīrthas** (CB Ādi 9, de su ficha #1851), **Mahāprabhu a
+  Gayā** (CB Ādi 17), **Sannyāsa: de Navadvīpa a Purī** (CC Madhya 3–6), el **sur revisado** con CC Madhya 9
+  (Vṛddhakāśī antes de Tirupati, Siddhavaṭa y Dakṣiṇa-mathurā nuevas, notas en todas las etapas), **Nityānanda predica
+  en Bengala** (CB Antya 5–6, c. 1516), **Mahāprabhu a Bengala (Rāmakeli)** (CC Madhya 1, 16), Vraja y los libros.
+  Lugares aproximados (Picchaldā, Kānāi-nāṭaśālā, Chatrabhoga, Rāḍha) lo dicen en su nota.
 
 ### Novedades de la 0.16.0 (12-11-2026) — líneas y viajes sobre el mapa (formato 10 sin cambios)
 - **«Seguir una línea»** (Panorama › Mapa): buscador con los nombres del árbol y 1–5 generaciones; flechas curvas del
@@ -1475,6 +1482,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **12-11-2026 — v0.16.1**: más viajes en el mapa (Nityānanda por los tīrthas y en Bengala, Mahāprabhu a Gayā, el
+  sannyāsa, a Bengala por Rāmakeli) y el viaje al sur revisado.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.16.1
 
 - **12-11-2026 — v0.16.0**: Panorama › Mapa: «Seguir una línea» (guru → discípulos sobre el mapa), toda la India, y
   los viajes (Mahāprabhu por el sur, a Vraja, los libros de Śrīnivāsa).
