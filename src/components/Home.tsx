@@ -32,6 +32,8 @@ interface Props {
   places: Place[];
   onPlace: (id: number) => void;
   onCalendar: () => void;
+  /** «Recently opened» emptied */
+  onClearRecent: () => void;
 }
 
 /** The size of the library: records, texts, original files, database (Panorama › Status). */
@@ -65,7 +67,7 @@ function ofTheDay<X>(list: X[]): X | null {
   return list[(day * 7919) % list.length];
 }
 
-export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, onRecent, onBookmark, onImportDefaults, reload, onTimeline, onTree, onPanorama, places, onPlace, onCalendar }: Props) {
+export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, onRecent, onBookmark, onImportDefaults, reload, onTimeline, onTree, onPanorama, places, onPlace, onCalendar, onClearRecent }: Props) {
   const empty = status !== null && status.docs === 0 && !status.busy;
   // something to discover each day: a record of the Guru Paramparā and a holy place
   const person = useMemo(() => ofTheDay([...persons].filter((p) => p.tree).sort((a, b) => a.id - b.id)), [persons]);
@@ -113,42 +115,30 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
           </div>
         )}
 
-        {!empty && <Calendar t={t} lang={lang} reload={reload} onPerson={onPerson} onOpen={onCalendar} />}
+        {favorites.length > 0 && (
+          <section>
+            <h2>
+              <Star size={14} /> {t.favorites}
+            </h2>
+            <div className="fav-grid">
+              {favorites.map((f) => (
+                <button key={f.id} className="fav-card" data-ctx="person" data-id={f.id} onClick={() => onPerson(f.id)} title={f.aka ? `${f.name}\n${f.aka}` : f.name}>
+                  <span className="fav-photo">
+                    {f.hasPhoto ? (
+                      <img src={fileUrl("photo", f.id)} alt="" loading="lazy" />
+                    ) : f.coverDoc ? (
+                      <img src={fileUrl("cover", f.coverDoc)} alt="" loading="lazy" />
+                    ) : (
+                      <UserRound size={30} />
+                    )}
+                  </span>
+                  <span className="fav-name">{f.name}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
 
-        <div className="home-cols">
-          {recent.length > 0 && (
-            <section>
-              <h2>
-                <Clock size={14} /> {t.recent}
-              </h2>
-              <div className="mini-list">
-                {recent.slice(0, 8).map((r) => (
-                  <button key={r.docId} onClick={() => onRecent(r)} style={{ "--h": hueOf(r.collection) } as React.CSSProperties}>
-                    <i className="dot" />
-                    <span>{r.title}</span>
-                    <em>{r.collection}</em>
-                  </button>
-                ))}
-              </div>
-            </section>
-          )}
-          {bookmarks.length > 0 && (
-            <section>
-              <h2>
-                <Star size={14} /> {t.recentBookmarks}
-              </h2>
-              <div className="mini-list">
-                {bookmarks.slice(0, 8).map((b) => (
-                  <button key={b.id} onClick={() => onBookmark(b)} disabled={!b.docId}>
-                    <Star size={12} />
-                    <span>{b.title}</span>
-                    {b.note && <em>{b.note}</em>}
-                  </button>
-                ))}
-              </div>
-            </section>
-          )}
-        </div>
 
         {(person || place) && (
           <section>
@@ -191,29 +181,49 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
           </section>
         )}
 
-        {favorites.length > 0 && (
-          <section>
-            <h2>
-              <Star size={14} /> {t.favorites}
-            </h2>
-            <div className="fav-grid">
-              {favorites.map((f) => (
-                <button key={f.id} className="fav-card" data-ctx="person" data-id={f.id} onClick={() => onPerson(f.id)} title={f.aka ? `${f.name}\n${f.aka}` : f.name}>
-                  <span className="fav-photo">
-                    {f.hasPhoto ? (
-                      <img src={fileUrl("photo", f.id)} alt="" loading="lazy" />
-                    ) : f.coverDoc ? (
-                      <img src={fileUrl("cover", f.coverDoc)} alt="" loading="lazy" />
-                    ) : (
-                      <UserRound size={30} />
-                    )}
-                  </span>
-                  <span className="fav-name">{f.name}</span>
+
+        {!empty && <Calendar t={t} lang={lang} reload={reload} onPerson={onPerson} onOpen={onCalendar} />}
+
+        <div className="home-cols">
+          {recent.length > 0 && (
+            <section>
+              <h2>
+                <Clock size={14} /> {t.recent}
+                <button className="link-btn small home-clear" onClick={onClearRecent} title={t.recentClearHint}>
+                  {t.recentClear}
                 </button>
-              ))}
-            </div>
-          </section>
-        )}
+              </h2>
+              <div className="mini-list">
+                {recent.slice(0, 5).map((r) => (
+                  <button key={r.docId} onClick={() => onRecent(r)} style={{ "--h": hueOf(r.collection) } as React.CSSProperties}>
+                    <i className="dot" />
+                    <span>{r.title}</span>
+                    <em>{r.collection}</em>
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
+          {bookmarks.length > 0 && (
+            <section>
+              <h2>
+                <Star size={14} /> {t.recentBookmarks}
+              </h2>
+              <div className="mini-list">
+                {bookmarks.slice(0, 8).map((b) => (
+                  <button key={b.id} onClick={() => onBookmark(b)} disabled={!b.docId}>
+                    <Star size={12} />
+                    <span>{b.title}</span>
+                    {b.note && <em>{b.note}</em>}
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+
+
+
       </div>
     </div>
   );

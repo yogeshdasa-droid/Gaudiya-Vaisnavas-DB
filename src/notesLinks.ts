@@ -51,47 +51,6 @@ export function linkOpenTarget(target: string): string {
   return target.startsWith("file:///") ? decodeURI(target.slice(8)) : target;
 }
 
-/** A YouTube page as its player for other sites (the page itself refuses to be shown inside the app);
- *  any other address as it is. */
-export function embedUrl(url: string): string {
-  let u: URL;
-  try {
-    u = new URL(url);
-  } catch {
-    return url;
-  }
-  const host = u.hostname.replace(/^(www\.|m\.|music\.)/, "");
-  const start = (u.searchParams.get("t") ?? u.searchParams.get("start") ?? "").replace(/s$/, "");
-  const at = /^\d+$/.test(start) ? `?start=${start}` : "";
-  if (host === "youtu.be") {
-    const id = u.pathname.slice(1).split("/")[0];
-    if (id) return `https://www.youtube.com/embed/${id}${at}`;
-  }
-  if (host === "youtube.com") {
-    const list = u.searchParams.get("list");
-    const v = u.searchParams.get("v");
-    if (u.pathname === "/watch" && v) return `https://www.youtube.com/embed/${v}${at}`;
-    const m = u.pathname.match(/^\/(?:shorts|live|embed)\/([\w-]+)/);
-    if (m) return `https://www.youtube.com/embed/${m[1]}${at}`;
-    if (u.pathname === "/playlist" && list) return `https://www.youtube.com/embed/videoseries?list=${list}`;
-  }
-  // a SoundCloud page (a person, a track, a set) in SoundCloud's player for other sites
-  if (host === "soundcloud.com" && u.pathname.length > 1)
-    return `https://w.soundcloud.com/player/?url=${encodeURIComponent(`https://soundcloud.com${u.pathname}`)}&visual=true&show_artwork=true`;
-  return url;
-}
-
-/** A YouTube channel page (/@name, /c/name, /user/name, /channel/UC…): shown as the player of its uploads, whose
- *  address the app has to look up (api.youtubeChannelEmbed). */
-export function isYoutubeChannel(url: string): boolean {
-  try {
-    const u = new URL(url);
-    return /(^|\.)youtube\.com$/.test(u.hostname) && /^\/(@[^/]+|c\/[^/]+|user\/[^/]+|channel\/UC[\w-]+)/.test(u.pathname);
-  } catch {
-    return false;
-  }
-}
-
 /** The name shown for a link without one: the page's host, or the file's or folder's name. */
 export function linkLabel(l: NoteLink): string {
   if (l.label) return l.label;

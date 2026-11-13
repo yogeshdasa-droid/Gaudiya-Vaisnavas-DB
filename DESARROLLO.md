@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **13-11-2026** (versión **0.17.2**).
+Última actualización: **13-11-2026** (versión **0.17.3**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,20 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.2)
+## 5. Qué hace hoy (v0.17.3)
+
+### Novedades de la 0.17.3 (13-11-2026) — un navegador dentro de la ventana; bibliotecas grandes; Inicio
+- **Webs en una vista de navegador propia** (Whisper: «no puedo hacer clic en los enlaces de Pure Bhakti TV… en YouTube
+  solo 1 vídeo, sería como ir al canal»): `web.rs` — una webview hija de la ventana («webpage», tauri feature
+  `unstable`, `Window::add_child`) colocada sobre la caja de `WebPage.tsx` (`web_open`, `web_bounds` con
+  ResizeObserver, `web_hide`/`web_show` — se oculta con un diálogo o menú encima —, `web_go` ◀ ▶ recargar,
+  `web_current`). Script `SAME_TAB` (initialization_script): enlaces target=_blank y window.open siguen en la misma
+  vista (WebView2 no pasaba esas peticiones a `on_new_window`). Las páginas de fuera no pueden llamar a la app (los
+  permisos son solo para sus páginas). Fuera el iframe, `web_frame_check`, `youtube_channel_embed` y `embedUrl`.
+- **Bibliotecas grandes**: .md = «Conferencias escritas» (1.021 de Nārāyaṇa Mahārāja); en «Todo» cada carpeta enseña 12
+  con «Ver los N» / «Ver menos»; filtro por título junto a las pestañas.
+- **Inicio**: Mis fichas favoritas → Del día → Hoy → Abiertos recientemente (5, «Borrar»).
+- Botón «Biblioteca» de la ficha en naranja (`.btn.lib-btn`).
 
 ### Novedades de la 0.17.2 (13-11-2026) — webs dentro de la app, portadas, fichas favoritas
 - **Webs dentro** (Whisper: «que las webs se abran como nuestros vídeos»): `WebPage.tsx` (Main `web` en App.tsx) con
@@ -1586,6 +1599,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **13-11-2026 — v0.17.3**: las webs en un navegador dentro de la ventana (enlaces, canales de YouTube); bibliotecas
+  grandes por carpetas con «Ver los N» y filtro; Inicio con las favoritas primero; botón «Biblioteca» en naranja.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.3
 
 - **13-11-2026 — v0.17.2**: webs (YouTube, SoundCloud…) dentro de la app; portadas de los libros de Calibre en la
   biblioteca y botón «Actualizar»; fichas favoritas en la pantalla de inicio.

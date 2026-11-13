@@ -1333,6 +1333,7 @@ export default function App() {
             places={places}
             onPlace={openPlace}
             onCalendar={() => setMain({ kind: "calendar" })}
+            onClearRecent={() => setRecent([])}
           />
         )}
         <ViewGuard key={main.kind} message={t.viewFailed} back={t.viewFailedBack} onBack={() => setMain({ kind: "home" })}>
@@ -1357,6 +1358,7 @@ export default function App() {
               t={t}
               url={main.url}
               title={main.title}
+              hidden={!!dialog || !!menu}
               onBack={() => (backStack.current.length ? travel("back") : setMain({ kind: "home" }))}
               onToast={showToast}
             />

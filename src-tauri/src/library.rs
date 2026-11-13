@@ -54,8 +54,9 @@ pub fn all_folders(conn: &Connection) -> Res<Vec<(i64, String)>> {
 pub fn kind_of(path: &Path) -> &'static str {
     match crate::extract::ext(path).as_str() {
         // («original_epub»: the EPUB Calibre keeps when it converts a book)
-        "pdf" | "epub" | "original_epub" | "doc" | "docx" | "txt" | "md" => "book",
-        "htm" | "html" => "page",
+        "pdf" | "epub" | "original_epub" | "doc" | "docx" | "txt" => "book",
+        // (.md: written lectures — 1.018 of Nārāyaṇa Mahārāja's «Lectures», 13-11-2026)
+        "htm" | "html" | "md" => "page",
         "mp3" | "m4a" | "ogg" | "wav" | "flac" | "aac" | "opus" => "audio",
         "mp4" | "webm" | "m4v" | "mov" | "mkv" => "video",
         "jpg" | "jpeg" | "png" | "webp" | "gif" | "bmp" | "avif" => "image",

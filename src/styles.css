@@ -6819,6 +6819,13 @@ svg.satellite .map-dot {
 .lib-folder {
   word-break: break-all;
 }
+/* «Recently opened» on the home page: «Clear» at the end of its title */
+.home-clear {
+  margin-left: auto;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+}
 /* favourite records: the star by the name, and the photos on the home page */
 .fav-star {
   border: none;
@@ -6890,7 +6897,12 @@ svg.satellite .map-dot {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-/* a web page inside the window (WebPage.tsx) */
+/* a web page inside the window (WebPage.tsx): the box the browser view (web.rs) is laid over */
+.web-box {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
 .web-note {
   margin: 24px;
 }
@@ -7024,6 +7036,38 @@ svg.satellite .map-dot {
 }
 .lib-group {
   margin-bottom: 18px;
+}
+/* the record's «Library» button, in orange so that it is seen (Whisper, 13-11-2026) */
+.btn.lib-btn {
+  background: #e8731c;
+  border-color: #e8731c;
+  color: #fff;
+}
+.btn.lib-btn:hover {
+  background: #f08a35;
+  border-color: #f08a35;
+  color: #fff;
+}
+/* the filter by title, at the end of the tabs; «See all N» under a folder cut short */
+.lib-filter {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  color: var(--muted);
+}
+.lib-filter input {
+  width: 190px;
+  border: none;
+  background: none;
+  color: var(--text);
+  outline: none;
+  font: inherit;
+  font-size: 13px;
+}
+.lib-more {
+  margin-top: 8px;
 }
 .lib-dir {
   font-size: 14px;

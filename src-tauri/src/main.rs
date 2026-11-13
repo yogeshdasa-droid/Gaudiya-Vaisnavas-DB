@@ -2,6 +2,7 @@
 
 mod ai;
 mod backup;
+mod web;
 mod calendar;
 mod check;
 mod chronicle;
@@ -1099,93 +1100,36 @@ async fn open_external(app: AppHandle, target: String) -> CmdResult<()> {
     }
 }
 
-/// Whether a web page lets itself be shown inside the app (13-11-2026, Whisper: «que las webs se abran dentro, como los
-/// vídeos»): "ok", "blocked" (X-Frame-Options / CSP frame-ancestors say no) or "unreachable" (no answer: the frame
-/// is tried anyway, the page may still load in the browser engine).
+// ---------------------------------------------------------------- a web page inside the window (web.rs)
+
 #[tauri::command]
-async fn web_frame_check(url: String) -> CmdResult<&'static str> {
-    if !(url.starts_with("http://") || url.starts_with("https://")) {
-        return Err("Solo páginas web (http/https)".into());
-    }
-    tauri::async_runtime::spawn_blocking(move || {
-        let agent = ureq::AgentBuilder::new()
-            .timeout_connect(std::time::Duration::from_secs(6))
-            .timeout_read(std::time::Duration::from_secs(10))
-            .redirects(8)
-            .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36 Edg/130.0")
-            .build();
-        let res = match agent.get(&url).call() {
-            Ok(r) => r,
-            Err(ureq::Error::Status(_, r)) => r,
-            Err(_) => return "unreachable",
-        };
-        frame_verdict(res.header("x-frame-options"), res.header("content-security-policy"))
-    })
-    .await
-    .map_err(err)
+async fn web_open(app: AppHandle, url: String, x: f64, y: f64, w: f64, h: f64) -> CmdResult<()> {
+    web::open(&app, &url, x, y, w, h)
 }
 
-/// A YouTube channel page (/@name, /c/name, /user/name, /channel/UC…) as the player of its uploads, which may be shown
-/// inside the app (the channel page itself may not): https://www.youtube.com/embed/videoseries?list=UU…
 #[tauri::command]
-async fn youtube_channel_embed(url: String) -> CmdResult<Option<String>> {
-    tauri::async_runtime::spawn_blocking(move || {
-        let id = if let Some(i) = url.find("/channel/UC") {
-            url[i + 9..].split(['/', '?', '#']).next().unwrap_or("").to_string()
-        } else {
-            let agent = ureq::AgentBuilder::new()
-                .timeout_connect(std::time::Duration::from_secs(6))
-                .timeout_read(std::time::Duration::from_secs(15))
-                .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36")
-                .build();
-            // (the cookie skips YouTube's consent page)
-            let Ok(res) = agent.get(&url).set("Accept-Language", "en").set("Cookie", "CONSENT=YES+1; SOCS=CAI").call() else { return None };
-            let Ok(page) = res.into_string() else { return None };
-            let key = "<link rel=\"canonical\" href=\"https://www.youtube.com/channel/";
-            let a = page.find(key)? + key.len();
-            page[a..].split('"').next().unwrap_or("").to_string()
-        };
-        (id.starts_with("UC") && id.len() == 24).then(|| format!("https://www.youtube.com/embed/videoseries?list=UU{}", &id[2..]))
-    })
-    .await
-    .map_err(err)
+async fn web_bounds(app: AppHandle, x: f64, y: f64, w: f64, h: f64) -> CmdResult<()> {
+    web::bounds(&app, x, y, w, h)
 }
 
-/// "blocked" when the headers forbid other sites to frame the page.
-fn frame_verdict(xfo: Option<&str>, csp: Option<&str>) -> &'static str {
-    if let Some(x) = xfo {
-        let x = x.trim().to_ascii_lowercase();
-        if x == "deny" || x == "sameorigin" || x.starts_with("allow-from") {
-            return "blocked";
-        }
-    }
-    if let Some(c) = csp {
-        for part in c.split(';') {
-            let part = part.trim().to_ascii_lowercase();
-            if let Some(v) = part.strip_prefix("frame-ancestors") {
-                let v = v.trim();
-                // only «*» (or any https page) lets our window show it
-                if !(v.split_whitespace().any(|s| s == "*" || s == "https:")) {
-                    return "blocked";
-                }
-            }
-        }
-    }
-    "ok"
+#[tauri::command]
+async fn web_hide(app: AppHandle) -> CmdResult<()> {
+    web::hide(&app)
 }
 
-#[cfg(test)]
-mod frame_tests {
-    use super::frame_verdict;
-    #[test]
-    fn frames() {
-        assert_eq!(frame_verdict(None, None), "ok");
-        assert_eq!(frame_verdict(Some("SAMEORIGIN"), None), "blocked");
-        assert_eq!(frame_verdict(Some("DENY"), None), "blocked");
-        assert_eq!(frame_verdict(None, Some("default-src 'self'; frame-ancestors 'self'")), "blocked");
-        assert_eq!(frame_verdict(None, Some("frame-ancestors *")), "ok");
-        assert_eq!(frame_verdict(None, Some("default-src *")), "ok");
-    }
+#[tauri::command]
+async fn web_show(app: AppHandle) -> CmdResult<()> {
+    web::show(&app)
+}
+
+#[tauri::command]
+async fn web_go(app: AppHandle, dir: String) -> CmdResult<()> {
+    web::go(&app, &dir)
+}
+
+#[tauri::command]
+async fn web_current(app: AppHandle) -> CmdResult<Option<String>> {
+    Ok(web::current(&app))
 }
 
 #[tauri::command]
@@ -1510,8 +1454,12 @@ fn main() {
             library_search,
             library_open,
             open_external,
-            web_frame_check,
-            youtube_channel_embed,
+            web_open,
+            web_bounds,
+            web_hide,
+            web_show,
+            web_go,
+            web_current,
             path_kinds,
             replace_preview,
             replace_apply,

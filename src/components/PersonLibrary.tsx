@@ -302,15 +302,23 @@ export function PersonLibrary({
   };
 
   // ---- the files, by sub-folder
+  // big libraries (1.000 books, 1.000 lectures): «All» shows the first few of each folder, «See all» the rest; and a
+  // filter by title
+  const [flt, setFlt] = useState("");
+  const [opened, setOpened] = useState<Set<string>>(new Set());
+  useEffect(() => (setFlt(""), setOpened(new Set())), [id]);
+  const fold = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
   const groups = useMemo(() => {
     const out: { dir: string; items: LibEntry[] }[] = [];
-    for (const e of entries.filter((x) => section === "all" || x.kind === section)) {
+    const words = fold(flt).split(/\s+/).filter(Boolean);
+    const match = (e: LibEntry) => !words.length || words.every((w) => fold(`${title(e).title} ${e.name} ${e.dir}`).includes(w));
+    for (const e of entries.filter((x) => (section === "all" || x.kind === section) && match(x))) {
       const last = out[out.length - 1];
       if (last && last.dir === e.dir) last.items.push(e);
       else out.push({ dir: e.dir, items: [e] });
     }
     return out;
-  }, [entries, section]);
+  }, [entries, section, flt]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const openEntry = (e: LibEntry, at?: number) => {
     if (e.kind === "audio") {
@@ -481,13 +489,34 @@ export function PersonLibrary({
                     {icon(s)} {t.lib.sections[s]} <span className="pill">{counts.get(s)}</span>
                   </button>
                 ))}
+                <span className="lib-filter">
+                  <Search size={13} />
+                  <input value={flt} placeholder={t.lib.filter} spellCheck={false} onChange={(e) => setFlt(e.target.value)} onKeyDown={(e) => e.key === "Escape" && setFlt("")} />
+                  {flt && (
+                    <button className="icon-btn" onClick={() => setFlt("")}>
+                      <X size={12} />
+                    </button>
+                  )}
+                </span>
               </div>
+              {flt && !groups.length && <p className="muted">{t.lib.filterNone}</p>}
 
-              {groups.map((g) => (
-                <section key={g.dir + g.items[0].rel} className="lib-group">
-                  {g.dir && <h2 className="lib-dir">{prettyDir(g.dir, base)}</h2>}
-                  <div className={`lib-items ${g.items.every((e) => e.kind === "image") ? "images" : g.items.filter((e) => e.cover).length * 2 >= g.items.length ? "covers" : ""}`}>
-                    {g.items.map((e) => {
+              {groups.map((g) => {
+                const key = g.dir + g.items[0].rel;
+                const covers = g.items.filter((e) => e.cover).length * 2 >= g.items.length;
+                // «All» without a filter: the first few of each folder, so that the next folders are seen at once
+                const max = 12;
+                const cut = section === "all" && !flt && !opened.has(key) && g.items.length > max + 3;
+                const items = cut ? g.items.slice(0, max) : g.items;
+                return (
+                <section key={key} className="lib-group">
+                  {(g.dir || cut) && (
+                    <h2 className="lib-dir">
+                      {g.dir ? prettyDir(g.dir, base) : t.lib.all} <span className="muted small">({g.items.length})</span>
+                    </h2>
+                  )}
+                  <div className={`lib-items ${g.items.every((e) => e.kind === "image") ? "images" : covers ? "covers" : ""}`}>
+                    {items.map((e) => {
                       const tt = title(e);
                       // a book with its cover (Calibre folders): a card with the cover
                       if (e.cover)
@@ -518,8 +547,19 @@ export function PersonLibrary({
                       );
                     })}
                   </div>
+                  {cut && (
+                    <button className="btn ghost small lib-more" onClick={() => setOpened((o) => new Set(o).add(key))}>
+                      {t.lib.seeAll(g.items.length)}
+                    </button>
+                  )}
+                  {section === "all" && !flt && opened.has(key) && (
+                    <button className="btn ghost small lib-more" onClick={() => setOpened((o) => { const n = new Set(o); n.delete(key); return n; })}>
+                      {t.lib.seeFewer}
+                    </button>
+                  )}
                 </section>
-              ))}
+                );
+              })}
             </>
           )}
         </div>

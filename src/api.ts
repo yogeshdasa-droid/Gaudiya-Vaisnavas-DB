@@ -539,10 +539,13 @@ export const api = {
   cutText: (docId: number, fragment: string) => invoke<string>("cut_text", { docId, fragment }),
   updateDoc: (docId: number, meta: DocMeta) => invoke<void>("update_doc", { docId, meta }),
   setDocTag: (docId: number, tag: string, on: boolean) => invoke<void>("set_doc_tag", { docId, tag, on }),
-  /** whether a web page lets itself be shown inside the app */
-  webFrameCheck: (url: string) => invoke<"ok" | "blocked" | "unreachable">("web_frame_check", { url }),
-  /** a YouTube channel as the player of its uploads (null: not found) */
-  youtubeChannelEmbed: (url: string) => invoke<string | null>("youtube_channel_embed", { url }),
+  /** a web page in the window's browser view (web.rs), at that place (CSS pixels) */
+  webOpen: (url: string, r: { x: number; y: number; w: number; h: number }) => invoke<void>("web_open", { url, ...r }),
+  webBounds: (r: { x: number; y: number; w: number; h: number }) => invoke<void>("web_bounds", r),
+  webHide: () => invoke<void>("web_hide"),
+  webShow: () => invoke<void>("web_show"),
+  webGo: (dir: "back" | "fwd" | "reload") => invoke<void>("web_go", { dir }),
+  webCurrent: () => invoke<string | null>("web_current"),
   renameFolder: (dir: string, name: string) => invoke<void>("rename_folder", { dir, name }),
   trashFolder: (dir: string) => invoke<number>("trash_folder", { dir }),
   trashDoc: (docId: number) => invoke<void>("trash_doc", { docId }),
