@@ -4,10 +4,105 @@
 // window (App.tsx) — and a search only in this library's books, lectures and subtitles.
 import { useEffect, useMemo, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { ArrowLeft, BookOpen, FileText, Film, FolderOpen, Image as ImageIcon, Library, Link2Off, Music, Pause, Play, Search, X } from "lucide-react";
-import { api, fileUrl, LibEntry, LibHit, libUrl, LibraryView } from "../api";
+import { ArrowLeft, BookOpen, FileText, Film, Folder, FolderOpen, Globe, Image as ImageIcon, Library, Link2Off, Music, Pause, Play, Plus, Search, X } from "lucide-react";
+import { api, EMPTY_PERSON, fileUrl, LibEntry, LibHit, libUrl, LibraryView, PersonFields } from "../api";
 import { T } from "../i18n";
+import { joinNotes, linkKind, linkLabel, linkOpenTarget, NoteLink, splitNotes } from "../notesLinks";
 import { ask } from "./ui";
+
+/** The record's links at the top of its library (14-11-2026, Whisper: «arriba una opción para añadir links… especialmente
+ *  online links», better there than at the bottom of the record). The same links as the record's «Enlaces» (kept at the
+ *  end of its notes: notesLinks.ts): what is added here shows there too. */
+function LibLinks({ t, id, onToast }: { t: T; id: number; onToast: (m: string) => void }) {
+  const [links, setLinks] = useState<NoteLink[] | null>(null);
+  const [draft, setDraft] = useState<NoteLink | null>(null);
+  const load = () => api.getPerson(id).then((p) => setLinks(splitNotes(p.notes).links), (e) => onToast(String(e)));
+  useEffect(() => {
+    setLinks(null);
+    setDraft(null);
+    void load();
+  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+  // write the links into the record's notes (read again just now, so nothing else in the record is lost)
+  const save = async (next: NoteLink[]) => {
+    try {
+      const p = await api.getPerson(id);
+      const fields = Object.fromEntries((Object.keys(EMPTY_PERSON) as (keyof PersonFields)[]).map((k) => [k, (p as unknown as PersonFields)[k] ?? ""])) as unknown as PersonFields;
+      await api.updatePerson(id, { ...fields, notes: joinNotes(splitNotes(p.notes).body, next) });
+      setLinks(next);
+      return true;
+    } catch (e) {
+      onToast(String(e));
+      return false;
+    }
+  };
+  const pick = async (directory: boolean) => {
+    const p = await open({ multiple: false, directory });
+    if (typeof p === "string" && draft) setDraft({ target: p, label: draft.label || p.replace(/[\\/]+$/, "").split(/[\\/]/).pop() || "" });
+  };
+  if (!links) return null;
+  return (
+    <div className="lib-links">
+      <span className="lib-links-head">{t.linksSection}</span>
+      {links.map((l, i) => {
+        const kind = linkKind(l.target);
+        const Icon = kind === "web" ? Globe : kind === "folder" ? Folder : FileText;
+        return (
+          <span key={i} className={`lib-link ${kind}`}>
+            <a
+              href={kind === "web" ? linkOpenTarget(l.target) : "#"}
+              title={l.target}
+              onClick={(e) => {
+                e.preventDefault();
+                api.openExternal(linkOpenTarget(l.target)).catch((err) => onToast(String(err)));
+              }}
+            >
+              <Icon size={13} />
+              <span>{linkLabel(l)}</span>
+            </a>
+            <button
+              className="lib-link-x"
+              title={t.linksRemove}
+              onClick={async () => {
+                if (await ask(`${t.linksRemove}: «${linkLabel(l)}»?`)) void save(links.filter((_, k) => k !== i));
+              }}
+            >
+              <X size={11} />
+            </button>
+          </span>
+        );
+      })}
+      {!draft ? (
+        <button className="btn ghost small" onClick={() => setDraft({ label: "", target: "" })} title={t.linksAddHint}>
+          <Plus size={13} /> {t.linksAdd}
+        </button>
+      ) : (
+        <form
+          className="lib-link-form"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            if (!draft.target.trim()) return;
+            if (await save([...links, { label: draft.label.trim(), target: draft.target.trim() }])) setDraft(null);
+          }}
+        >
+          <input autoFocus value={draft.target} placeholder={t.linksTarget} onChange={(e) => setDraft({ ...draft, target: e.target.value })} className="target" />
+          <input value={draft.label} placeholder={t.linksLabel} onChange={(e) => setDraft({ ...draft, label: e.target.value })} />
+          <button type="button" className="icon-btn" title={t.linksPickFile} onClick={() => pick(false)}>
+            <FileText size={14} />
+          </button>
+          <button type="button" className="icon-btn" title={t.linksPickFolder} onClick={() => pick(true)}>
+            <Folder size={14} />
+          </button>
+          <button type="submit" className="btn small" disabled={!draft.target.trim()}>
+            {t.save}
+          </button>
+          <button type="button" className="btn ghost small" onClick={() => setDraft(null)}>
+            {t.cancel}
+          </button>
+        </form>
+      )}
+    </div>
+  );
+}
 
 type Section = LibEntry["kind"];
 const SECTIONS: Section[] = ["book", "page", "audio", "video", "image", "other"];
@@ -287,6 +382,7 @@ export function PersonLibrary({
                   </button>
                 </p>
               )}
+              <LibLinks t={t} id={id} onToast={onToast} />
             </div>
           </header>
 

@@ -45,6 +45,12 @@ export function linkKind(target: string): "web" | "folder" | "file" {
   return /[\\/]$/.test(target) || !/\.[A-Za-z0-9]{1,6}$/.test(last) ? "folder" : "file";
 }
 
+/** What to hand to the system to open a link («www.x.org» → «https://www.x.org», «file:///E:/…» → «E:/…»). */
+export function linkOpenTarget(target: string): string {
+  if (linkKind(target) === "web") return /^[a-z]+:/i.test(target) ? target : `https://${target}`;
+  return target.startsWith("file:///") ? decodeURI(target.slice(8)) : target;
+}
+
 /** The name shown for a link without one: the page's host, or the file's or folder's name. */
 export function linkLabel(l: NoteLink): string {
   if (l.label) return l.label;

@@ -221,6 +221,7 @@ export default function App() {
   const [updatePct, setUpdatePct] = useState<number | null | undefined>(undefined);
   const [reveal, setReveal] = useState<Reveal | null>(null);
   const revealIn = (kind: Reveal["kind"], id: number) => {
+    sideAutoHid.current = false;
     setSideOpen(true);
     setReveal({ kind, id, n: Date.now() });
   };
@@ -512,7 +513,33 @@ export default function App() {
   const openDoc = useCallback((docId: number, ordinal = 0) => {
     setMain({ kind: "doc", target: { docId, ordinal, terms: [], nonce: Date.now() } });
   }, []);
-  const openPerson = useCallback((id: number) => setMain({ kind: "person", id }), []);
+  // In a record the list on the left is not needed (Whisper): opening one folds the
+  // side panel away, and it comes back when the record is left — unless it was opened
+  // or closed by hand meanwhile (the «Vaiṣṇavas» button: one click opens, another closes).
+  const sideAutoHid = useRef(false);
+  const sideOpenNow = useRef(sideOpen);
+  sideOpenNow.current = sideOpen;
+  const openPerson = useCallback(
+    (id: number) => {
+      if (sideOpenNow.current) {
+        sideAutoHid.current = true;
+        setSideOpen(false);
+      }
+      setMain({ kind: "person", id });
+    },
+    [setSideOpen],
+  );
+  const toggleSide = useCallback(() => {
+    sideAutoHid.current = false;
+    setSideOpen((o) => !o);
+  }, [setSideOpen]);
+  useEffect(() => {
+    // (a record's library is still the record)
+    if (main.kind !== "person" && main.kind !== "library" && sideAutoHid.current) {
+      sideAutoHid.current = false;
+      setSideOpen(true);
+    }
+  }, [main.kind]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // «Recently opened» forgets the texts that are no longer there (merged, split, emptied
   // from the bin): they would only give «Query returned no rows»
@@ -540,7 +567,7 @@ export default function App() {
         searchRef.current?.select();
       } else if (e.ctrlKey && e.key === "b") {
         e.preventDefault();
-        setSideOpen((o) => !o);
+        toggleSide();
       } else if (e.ctrlKey && e.key === "j") {
         e.preventDefault();
         setResultsOpen((o) => !o);
@@ -548,7 +575,7 @@ export default function App() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [setSideOpen]);
+  }, [toggleSide]);
 
   const onSearchKey = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowDown") {
@@ -1029,6 +1056,7 @@ export default function App() {
           sideOpen={sideOpen}
           onView={(kind) => setMain({ kind })}
           onSide={(tab) => {
+            sideAutoHid.current = false;
             if (sideOpen && sideTab === tab) setSideOpen(false);
             else {
               setSideTab(tab);
@@ -1041,7 +1069,7 @@ export default function App() {
       )}
       <header className="topbar">
         <div className="brand">
-          <button className="icon-btn" onClick={() => setSideOpen((o) => !o)} title={sideOpen ? t.collapse : t.expand}>
+          <button className="icon-btn" onClick={toggleSide} title={sideOpen ? t.collapse : t.expand}>
             {sideOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
           </button>
           <button className="logo" onClick={() => setMain({ kind: "home" })} title={t.home}>
@@ -1125,7 +1153,7 @@ export default function App() {
               t={t}
               lang={lang}
               tab={sideTab}
-              onTab={setSideTab}
+              onTab={(k) => (k === sideTab ? toggleSide() : setSideTab(k))}
               persons={persons}
               activePersonId={personId}
               onPerson={openPerson}

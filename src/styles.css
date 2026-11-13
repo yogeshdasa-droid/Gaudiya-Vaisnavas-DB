@@ -6819,6 +6819,63 @@ svg.satellite .map-dot {
 .lib-folder {
   word-break: break-all;
 }
+/* the record's links at the top of its library */
+.lib-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+.lib-links-head {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-right: 2px;
+}
+.lib-link {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 13px;
+}
+.lib-link a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 4px 3px 10px;
+  color: var(--accent);
+  text-decoration: none;
+}
+.lib-link a:hover {
+  text-decoration: underline;
+}
+.lib-link-x {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  padding: 3px 7px 3px 2px;
+  cursor: pointer;
+  opacity: 0;
+}
+.lib-link:hover .lib-link-x {
+  opacity: 1;
+}
+.lib-link-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+.lib-link-form input {
+  min-width: 140px;
+}
+.lib-link-form input.target {
+  flex: 1 1 260px;
+}
 .lib-empty {
   padding: 24px;
   border: 1px dashed var(--border-strong);

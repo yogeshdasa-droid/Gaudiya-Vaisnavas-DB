@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **13-11-2026** (versión **0.17.0**).
+Última actualización: **13-11-2026** (versión **0.17.1**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,16 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.0)
+## 5. Qué hace hoy (v0.17.1)
+
+### Novedades de la 0.17.1 (13-11-2026) — la ficha sin la lista; enlaces en la biblioteca
+- Whisper: «una vez en una ficha la lista de Vaiṣṇavas no se necesita». Al abrir una ficha el panel lateral se pliega
+  (`sideAutoHid` en App.tsx) y vuelve solo al salir de la ficha o de su biblioteca, salvo si se abrió o cerró a mano.
+  Un clic en la pestaña ya abierta del panel la cierra (como en la barra de la izquierda); `toggleSide` = botón de
+  arriba y Ctrl+B.
+- Whisper: «en la biblioteca, arriba, una opción para añadir links, especialmente online». `LibLinks` en
+  PersonLibrary.tsx: fila «Enlaces» bajo la ruta (abrir, quitar con ×, «Añadir enlace»). Son los mismos «Enlaces» de la
+  ficha (al final de las notas, notesLinks.ts; `linkOpenTarget`).
 
 ### Novedades de la 0.17.0 (13-11-2026) — la biblioteca de una ficha (formato 10 sin cambios)
 - Whisper: «desde su ficha… his books, his lectures mp3, videos mp4, images… que se abran dentro de la ventana».
@@ -1565,6 +1574,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **13-11-2026 — v0.17.1**: la lista lateral se pliega en una ficha; enlaces (web, archivos, carpetas) arriba en la
+  biblioteca de la ficha.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.1
 
 - **13-11-2026 — v0.17.0**: la biblioteca de una ficha (carpeta del PC: libros, conferencias, audio, vídeo), con
   búsqueda solo en ella y reproductores dentro de la ventana.
