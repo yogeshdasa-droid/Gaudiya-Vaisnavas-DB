@@ -5,6 +5,7 @@ import { api, lineOfKind, Marks, PersonListItem, sortDisciples, TreeKind } from 
 import { T } from "../i18n";
 import { possibleRepeats } from "./Review";
 import { layoutTB, TB_ROW } from "./treeLayoutTB";
+import { paramparaById, paramparaMembers, PARAMPARAS } from "./paramparas";
 
 const W = 200; // box width (left to right)
 const H = 30; // box height
@@ -176,6 +177,8 @@ export function TreeView({
   marks,
   onMark,
   focus,
+  lang,
+  ppFocus,
 }: {
   t: T;
   persons: PersonListItem[];
@@ -184,6 +187,9 @@ export function TreeView({
   onMark: (id: number) => void;
   /** a record to bring to the middle and light up (from its ficha); n: a new request */
   focus?: { id: number; n: number };
+  lang: "es" | "en";
+  /** a paramparā to light up (from «Linaje»); n: a new request */
+  ppFocus?: { id: string; n: number };
 }) {
   // 0 = only the dīkṣā Paramparā … 100 = the śikṣā relations stand out
   const [mix, setMix] = useState(0);
@@ -361,13 +367,57 @@ export function TreeView({
     return () => clearTimeout(timer);
   }, [focus, at, line]);
 
+  // a paramparā lit up (13-11-2026): its people stand out, the rest of the tree fades
+  const [ppId, setPpIdState] = useState<string | null>(() => {
+    try {
+      return paramparaById(localStorage.getItem("bio.treePp"))?.id ?? null;
+    } catch {
+      return null;
+    }
+  });
+  const [ppGo, setPpGo] = useState(0); // a new paramparā chosen: go to it
+  const setPp = (id: string | null) => {
+    setPpIdState(id);
+    store("bio.treePp", id ?? "");
+    if (id) setPpGo((n) => n + 1);
+  };
+  const ppDone = useRef(0);
+  useEffect(() => {
+    if (ppFocus && ppDone.current !== ppFocus.n) {
+      ppDone.current = ppFocus.n;
+      if (line !== "all") setLine("all");
+      setPp(ppFocus.id);
+    }
+  }, [ppFocus]); // eslint-disable-line react-hooks/exhaustive-deps
+  const pp = paramparaById(ppId);
+  const hi = useMemo(() => (pp ? paramparaMembers(pp, persons, pp.down) : null), [pp, persons]);
+  const hiSet = useMemo(() => (hi ? new Set(hi.gen.keys()) : null), [hi]);
+  // the view goes to the last step of the chain (or the first one drawn)
+  const ppGoDone = useRef(0);
+  useEffect(() => {
+    if (!hi || ppGoDone.current === ppGo || !ppGo) return;
+    const ids = [hi.last, ...[...hi.gen.keys()]].filter((x): x is number => x !== undefined);
+    const r = ids.map((x) => at.get(x)).find(Boolean);
+    if (!r) return;
+    ppGoDone.current = ppGo;
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        const el = canvas.current;
+        if (!el) return;
+        const z = zoomRef.current;
+        el.scrollLeft = (r.x + 10 + r.w / 2) * z - el.clientWidth / 2;
+        el.scrollTop = (r.y + 10 + r.h / 2) * z - el.clientHeight / 2;
+      }),
+    );
+  }, [ppGo, hi, at]);
+
   // opened without a record to show (or the way of drawing changed): start at the first
   // level. With a single first level (Lord Kṛṣṇa) drawn left to right it sits halfway
   // down a very tall tree, and the top-left corner the view used to open at is empty.
   const startDone = useRef("");
   useEffect(() => {
     const key = `${dir}|${line}`;
-    if (focus || startDone.current === key) return;
+    if (focus || ppGo || startDone.current === key) return;
     const root = nodes.find((n) => n.p && n.kind === null);
     if (!root) return;
     startDone.current = key;
@@ -393,7 +443,8 @@ export function TreeView({
   // the other gurus' lines are always there, faint, and stand out with the slider (Whisper, 04-11)
   const siksaOpacity = hasSiksa ? 0.35 + 0.65 * Math.max(m, 0) : 0;
   const nodeOpacity = (id: number) => (line !== "all" || inSiksa.has(id) ? 1 : 1 - 0.7 * m);
-  const cls = (l: Line, strong = false) => `tree-link ${l.kind}${l.disputed ? " disputed" : ""}${strong ? " strong" : ""}`;
+  const cls = (l: Line, strong = false) =>
+    `tree-link ${l.kind}${l.disputed ? " disputed" : ""}${strong ? " strong" : ""}${hiSet && !(hiSet.has(l.from) && hiSet.has(l.to)) ? " pp-dim" : ""}`;
   // the word on a line: its note («Gayā 1508», «son»), or «?» when the sources disagree
   const word = (l: Line) => (l.note ? short(l.note, 40) : l.disputed ? "?" : "");
   const label = (l: Line) =>
@@ -405,7 +456,8 @@ export function TreeView({
     );
   const personTitle = (p: PersonListItem, kind: TreeKind | null) =>
     (kind ? `${p.name} · ${t.treeKinds[kind]}` : p.name) + (repeats.has(p.id) ? `\n${t.maybeRepeated(repeats.get(p.id)!.map((x) => x.name).join(", "))}` : "");
-  const nodeClass = (id: number) => `tree-node${marks[id] ? ` mark-${marks[id]}` : ""}${repeats.has(id) ? " repeated" : ""}${lit === id ? " lit" : ""}`;
+  const nodeClass = (id: number) =>
+    `tree-node${marks[id] ? ` mark-${marks[id]}` : ""}${repeats.has(id) ? " repeated" : ""}${lit === id ? " lit" : ""}${hiSet ? (hiSet.has(id) ? " pp-hi" : " pp-dim") : ""}`;
 
   /** The drawing as an .svg file: the lines and boxes with their colours written in (no app needed to open it). */
   const exportSvg = async () => {
@@ -470,7 +522,23 @@ export function TreeView({
               <button className="btn ghost" title={t.treeExportHint} onClick={() => void exportSvg().catch((e) => setExported(`⚠ ${e}`))}>
                 <Download size={15} /> {t.treeExport}
               </button>
+              <label className="tree-pp" title={t.treePpHint}>
+                <span>{t.treePp}</span>
+                <select value={ppId ?? ""} onChange={(e) => setPp(e.target.value || null)}>
+                  <option value="">{t.treePpNone}</option>
+                  {(["gaudiya", "iskcon", "matha", "family"] as const).map((g) => (
+                    <optgroup key={g} label={t.lineagePpGroup[g]}>
+                      {PARAMPARAS.filter((p) => p.group === g).map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.title[lang]}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </select>
+              </label>
             </div>
+            {pp && hi && <p className="muted small">{t.treePpOn(pp.title[lang], hi.gen.size)}</p>}
             <p className="muted small">
               {t.treeLineHint[line]} {dir === "tb" && t.treeDirHint.tb}
             </p>

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { FilePlus2, FileText, History, ImagePlus, Images, Map as MapIcon, MapPin, MoreHorizontal, Pencil, Trash2, UserRound, X } from "lucide-react";
-import { api, fileUrl, OverviewPerson, Place, PLACE_ROLES, PersonListItem, PlaceText } from "../api";
+import { api, fileUrl, imageCaption, OverviewPerson, Place, PLACE_ROLES, PersonListItem, PlaceText } from "../api";
 import { Lang, T } from "../i18n";
 import { namesPlace, placeKeys, textKeys } from "../places";
 import { WebLinks } from "./PersonView";
@@ -153,6 +153,14 @@ export function PlaceView({
   };
   // more pictures (format 10)
   const [zoom, setZoom] = useState<number | null>(null);
+  // the caption being written ({ id, name })
+  const [cap, setCap] = useState<{ id: number; name: string } | null>(null);
+  const saveCap = () => {
+    if (!cap) return;
+    const c = cap;
+    setCap(null);
+    api.renamePlaceImage(c.id, c.name).then(onChanged, (e) => onToast(String(e)));
+  };
   const addImages = async () => {
     try {
       const picked = await open({ multiple: true, filters: [{ name: t.imageFiles, extensions: ["jpg", "jpeg", "png", "webp", "gif", "bmp", "avif"] }] });
@@ -320,12 +328,32 @@ export function PlaceView({
               <Images size={14} /> {t.gallery} {place.images.length > 0 && <span className="pill">{place.images.length}</span>}
             </h2>
             <div className="gallery">
-              {place.images.map((id) => (
+              {place.images.map(({ id, name }) => (
                 <figure key={id}>
                   <a href={fileUrl("placeimage", id)} target="_blank" rel="noreferrer" onClick={(e) => (e.preventDefault(), setZoom(id))}>
                     <img src={fileUrl("placeimage", id)} alt="" loading="lazy" />
                   </a>
+                  {cap?.id === id ? (
+                    <input
+                      className="gallery-cap-edit"
+                      autoFocus
+                      value={cap.name}
+                      placeholder={t.imageCaptionHint}
+                      onChange={(e) => setCap({ id, name: e.target.value })}
+                      onBlur={saveCap}
+                      onKeyDown={(e) => (e.key === "Enter" ? saveCap() : e.key === "Escape" && setCap(null))}
+                    />
+                  ) : (
+                    imageCaption(name) && (
+                      <div className="gallery-cap" title={imageCaption(name)}>
+                        {imageCaption(name)}
+                      </div>
+                    )
+                  )}
                   <figcaption>
+                    <button className="icon-btn" title={t.imageCaptionEdit} onClick={() => setCap({ id, name: imageCaption(name) })}>
+                      <Pencil size={14} />
+                    </button>
                     <button className="icon-btn" title={t.useAsMainPlace} onClick={imageAction(() => api.placeImageAsPhoto(id))}>
                       <MapPin size={14} />
                     </button>
@@ -357,6 +385,9 @@ export function PlaceView({
       {zoom !== null && (
         <div className="zoom" onClick={() => setZoom(null)}>
           <img src={fileUrl("placeimage", zoom)} alt="" />
+          {imageCaption(place.images.find((x) => x.id === zoom)?.name ?? "") && (
+            <div className="zoom-cap">{imageCaption(place.images.find((x) => x.id === zoom)?.name ?? "")}</div>
+          )}
         </div>
       )}
     </div>

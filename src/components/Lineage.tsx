@@ -4,8 +4,9 @@
 // double click: its ficha. Laid out by dagre (top to bottom), like the Paramparā Tree.
 import { useEffect, useMemo, useRef, useState } from "react";
 import dagre from "@dagrejs/dagre";
-import { GitFork, Maximize, Search, UserRound, X, ZoomIn, ZoomOut } from "lucide-react";
-import { lineOfKind, PersonListItem, TreeKind } from "../api";
+import { GitFork, Maximize, Network, Search, UserRound, X, ZoomIn, ZoomOut } from "lucide-react";
+import { lineOfKind, PersonListItem } from "../api";
+import { paramparaById, paramparaMembers, PARAMPARAS, RelKind } from "./paramparas";
 import { Lang, T } from "../i18n";
 import { foldName } from "./Sidebar";
 
@@ -21,9 +22,11 @@ export type LineageLine = "all" | "diksa" | "siksa";
 interface Rel {
   from: number;
   to: number;
-  kind: TreeKind;
+  kind: RelKind;
   note: string;
   disputed: boolean;
+  /** a step of a paramparā list where the data has no line */
+  list?: boolean;
 }
 
 function stored(key: string, def: number, min: number, max: number): number {
@@ -55,7 +58,7 @@ function relations(persons: PersonListItem[]): Rel[] {
   return out;
 }
 
-const keep = (r: Rel, line: LineageLine) => line === "all" || lineOfKind(r.kind) === line;
+const keep = (r: Rel, line: LineageLine) => line === "all" || r.kind === "family" || lineOfKind(r.kind) === line;
 
 export function Lineage({
   t,
@@ -63,11 +66,14 @@ export function Lineage({
   persons,
   onPerson,
   focus,
+  onTreePp,
 }: {
   t: T;
   lang: Lang;
   persons: PersonListItem[];
   onPerson: (id: number) => void;
+  /** «Resaltar en el árbol»: the Paramparā Tree with that paramparā lit */
+  onTreePp: (id: string) => void;
   /** «Ver linaje» from a ficha: that person; n: a new request */
   focus?: { id: number; n: number };
 }) {
@@ -80,11 +86,31 @@ export function Lineage({
     setCenterState(id);
     store("bio.lineageId", String(id ?? 0));
   };
+  // a whole paramparā (13-11-2026) instead of one person in the middle
+  const [ppId, setPpIdState] = useState<string | null>(() => {
+    try {
+      return paramparaById(localStorage.getItem("bio.lineagePp"))?.id ?? null;
+    } catch {
+      return null;
+    }
+  });
+  const pp = paramparaById(ppId);
+  const setPp = (id: string | null) => {
+    setPpIdState(id);
+    store("bio.lineagePp", id ?? "");
+    const p = paramparaById(id);
+    if (p) setDown(p.down);
+  };
+  /** one person in the middle again (a click on a box, a search) */
+  const toPerson = (id: number) => {
+    if (ppId) setPp(null);
+    setCenter(id);
+  };
   const focusDone = useRef(0);
   useEffect(() => {
     if (focus && focusDone.current !== focus.n) {
       focusDone.current = focus.n;
-      setCenter(focus.id);
+      toPerson(focus.id);
     }
   }, [focus]); // eslint-disable-line react-hooks/exhaustive-deps
   const [up, setUpState] = useState(() => stored("bio.lineageUp", 3, 0, 5));
@@ -130,23 +156,33 @@ export function Lineage({
     return scored.sort((a, b) => a.s - b.s).slice(0, 14).map((x) => x.p);
   }, [query, persons]);
   const pick = (id: number) => {
-    setCenter(id);
+    toPerson(id);
     setQuery("");
     setListOpen(false);
   };
 
   // ---- the graph: gurus up to `up` generations, disciples down to `down`
   const graph = useMemo(() => {
-    if (center === null || !byId.has(center)) return null;
-    const rels = relations(persons).filter((r) => keep(r, line));
     const gurusOf = new Map<number, Rel[]>();
     const discOf = new Map<number, Rel[]>();
+    let gen: Map<number, number>;
+    let cut = false;
+    let edges: Rel[];
+    if (pp) {
+      // a paramparā: its steps 1, 2, 3… and the disciples of the last one
+      const m = paramparaMembers(pp, persons, down, (r) => keep(r, line), MAX_NODES);
+      if (!m.steps) return null;
+      gen = m.gen;
+      cut = m.cut;
+      edges = m.edges;
+    } else {
+    if (center === null || !byId.has(center)) return null;
+    const rels = relations(persons).filter((r) => keep(r, line));
     for (const r of rels) {
       gurusOf.set(r.to, [...(gurusOf.get(r.to) ?? []), r]);
       discOf.set(r.from, [...(discOf.get(r.from) ?? []), r]);
     }
-    const gen = new Map<number, number>([[center, 0]]); // generation: −n gurus, +n disciples
-    let cut = false;
+    gen = new Map<number, number>([[center, 0]]); // generation: −n gurus, +n disciples
     // up: the gurus of the gurus…
     let frontier = [center];
     for (let g = 1; g <= up && frontier.length; g++) {
@@ -179,7 +215,8 @@ export function Lineage({
       frontier = next;
     }
     // the lines between the people drawn (also a second guru of someone, if he is drawn)
-    const edges = rels.filter((r) => gen.has(r.from) && gen.has(r.to) && r.from !== r.to);
+    edges = rels.filter((r) => gen.has(r.from) && gen.has(r.to) && r.from !== r.to);
+    }
     // the notes and doubts, numbered for the margin
     const notes: { n: number; rel: Rel }[] = [];
     for (const r of edges) if (r.note || r.disputed) notes.push({ n: notes.length + 1, rel: r });
@@ -245,10 +282,10 @@ export function Lineage({
     const width = Math.max(...nodes.map((n) => n.x + W)) + 60;
     const height = Math.max(...nodes.map((n) => n.y + H)) + 20;
     // how far the data goes (for the hint: «there are more generations above / below»)
-    const moreUp = [...gen.entries()].some(([id, gg]) => gg === -up && (gurusOf.get(id) ?? []).some((r) => !gen.has(r.from)));
-    const moreDown = [...gen.entries()].some(([id, gg]) => gg === down && (discOf.get(id) ?? []).some((r) => !gen.has(r.to)));
+    const moreUp = !pp && [...gen.entries()].some(([id, gg]) => gg === -up && (gurusOf.get(id) ?? []).some((r) => !gen.has(r.from)));
+    const moreDown = !pp && [...gen.entries()].some(([id, gg]) => gg === down && (discOf.get(id) ?? []).some((r) => !gen.has(r.to)));
     return { nodes, lines, notes, rows: [...rows.entries()].sort((a, b) => a[0] - b[0]), width, height, cut, relOf, moreUp, moreDown };
-  }, [center, persons, byId, up, down, line]);
+  }, [center, persons, byId, up, down, line, pp]);
 
   // ---- zoom and moving around (as in the Paramparā Tree)
   const canvas = useRef<HTMLDivElement>(null);
@@ -304,18 +341,22 @@ export function Lineage({
   // a new person: the person in the middle of the view
   useEffect(() => {
     const el = canvas.current;
-    const me = graph?.nodes.find((n) => n.gen === 0);
+    const me = pp ? graph?.nodes.find((n) => n.gen === 1) : graph?.nodes.find((n) => n.gen === 0);
     if (!el || !me) return;
     requestAnimationFrame(() => {
       el.scrollLeft = (me.x + W / 2 + 10) * zoomRef.current - el.clientWidth / 2;
       el.scrollTop = (me.y + H / 2 + 10) * zoomRef.current - el.clientHeight / 2;
     });
-  }, [center, graph === null]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [center, ppId, graph === null]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [hot, setHot] = useState<number | null>(null); // a note lit from the margin
   const short = (s: string, n: number) => (s.length > n ? s.slice(0, n - 1) + "…" : s);
-  const me = center !== null ? byId.get(center) : undefined;
-  const genLabel = (g: number) => (g === 0 ? t.lineageGenSelf : g < 0 ? t.lineageGenUp(-g) : t.lineageGenDown(g));
+  const me = !pp && center !== null ? byId.get(center) : undefined;
+  const ppSteps = pp ? pp.steps.filter((s) => byId.has(s.id)).length : 0;
+  const genLabel = (g: number) =>
+    pp ? (g <= ppSteps ? String(g) : t.lineageGenDown(g - ppSteps)) : g === 0 ? t.lineageGenSelf : g < 0 ? t.lineageGenUp(-g) : t.lineageGenDown(g);
+  const kindName = (k: RelKind) => (k === "family" ? t.lineageFamily : t.treeKinds[k]);
+  const kindShort = (k: RelKind) => (k === "family" ? t.lineageFamilyShort : t.treeKindShort[k]);
   const steps = (max: number, val: number, set: (n: number) => void, title: string) => (
     <label className="lin-steps" title={title}>
       <span>{title}</span>
@@ -338,6 +379,34 @@ export function Lineage({
               <GitFork size={22} /> {t.lineage}
             </h1>
             <p className="muted small">{t.lineageHint}</p>
+            <div className="lin-pp">
+              <label>
+                <span>{t.lineagePp}</span>
+                <select value={ppId ?? ""} onChange={(e) => setPp(e.target.value || null)}>
+                  <option value="">{t.lineagePpNone}</option>
+                  {(["gaudiya", "iskcon", "matha", "family"] as const).map((g) => (
+                    <optgroup key={g} label={t.lineagePpGroup[g]}>
+                      {PARAMPARAS.filter((p) => p.group === g).map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.title[lang]}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </select>
+              </label>
+              {pp && (
+                <button className="btn ghost" title={t.lineagePpTreeHint} onClick={() => onTreePp(pp.id)}>
+                  <Network size={15} /> {t.lineagePpTree}
+                </button>
+              )}
+            </div>
+            {pp && (
+              <p className="small lin-pp-about">
+                {pp.about[lang]}
+                {pp.source && <span className="muted"> — {pp.source}</span>}
+              </p>
+            )}
             <div className="lin-search">
               <Search size={15} />
               <input
@@ -376,8 +445,8 @@ export function Lineage({
               )}
             </div>
             <div className="tree-bar lin-bar">
-              {steps(5, up, setUp, t.lineageUp)}
-              {steps(10, down, setDown, t.lineageDown)}
+              {!pp && steps(5, up, setUp, t.lineageUp)}
+              {steps(10, down, setDown, pp ? t.lineagePpDown : t.lineageDown)}
               <div className="seg tree-line">
                 {(["all", "diksa", "siksa"] as LineageLine[]).map((l) => (
                   <button key={l} className={line === l ? "on" : ""} title={t.lineageLineHint[l]} onClick={() => setLine(l)}>
@@ -426,7 +495,7 @@ export function Lineage({
           </header>
           {!graph ? (
             <p className="muted">{t.lineageEmpty}</p>
-          ) : graph.nodes.length === 1 ? (
+          ) : graph.nodes.length === 1 && !pp ? (
             <p className="muted">{t.lineageAlone(me?.name ?? "", line)}</p>
           ) : (
             <div className="lin-body">
@@ -441,10 +510,10 @@ export function Lineage({
                   {graph.lines.map((l) => (
                     <path
                       key={l.key}
-                      className={`tree-link ${l.rel.kind}${l.rel.disputed ? " disputed" : ""}${hot !== null && hot === l.n ? " strong" : ""}`}
+                      className={`tree-link ${l.rel.kind}${l.rel.disputed ? " disputed" : ""}${l.rel.list ? " pp-list" : ""}${hot !== null && hot === l.n ? " strong" : ""}`}
                       d={l.d}
                     >
-                      <title>{`${byId.get(l.rel.from)?.name} → ${byId.get(l.rel.to)?.name} · ${t.treeKinds[l.rel.kind]}${l.rel.disputed ? ` · ${t.treeDisputed}` : ""}${l.rel.note ? `\n${l.rel.note}` : ""}`}</title>
+                      <title>{`${byId.get(l.rel.from)?.name} → ${byId.get(l.rel.to)?.name} · ${l.rel.list ? t.lineagePpListLine : kindName(l.rel.kind)}${l.rel.disputed ? ` · ${t.treeDisputed}` : ""}${l.rel.note ? `\n${l.rel.note}` : ""}`}</title>
                     </path>
                   ))}
                   {/* the notes and doubts: their number (and, if wished, a short word) on the line */}
@@ -471,9 +540,9 @@ export function Lineage({
                         key={n.id}
                         data-ctx="person"
                         data-id={n.id}
-                        className={`tree-node lin-node${n.gen === 0 ? " lit-self" : ""}${rel?.disputed ? " doubtful" : ""}`}
+                        className={`tree-node lin-node${!pp && n.gen === 0 ? " lit-self" : ""}${pp && n.gen <= ppSteps ? " pp-step" : ""}${rel?.disputed ? " doubtful" : ""}`}
                         transform={`translate(${n.x},${n.y})`}
-                        onClick={(e) => e.detail === 1 && n.id !== center && setCenter(n.id)}
+                        onClick={(e) => e.detail === 1 && (pp || n.id !== center) && toPerson(n.id)}
                         onDoubleClick={() => onPerson(n.id)}
                       >
                         <title>{`${n.p.name}${n.p.aka ? `\n${n.p.aka}` : ""}\n${t.lineageClickHint}`}</title>
@@ -482,7 +551,15 @@ export function Lineage({
                           {short(n.p.name, 26)}
                         </text>
                         <text className="lin-sub" x={10} y={32}>
-                          {rel ? t.treeKindShort[rel.kind] + (rel.disputed ? " · ?" : "") + (n.gen === 0 ? ` · ${genLabel(0)}` : "") : n.gen === 0 ? genLabel(0) : ""}
+                          {pp
+                            ? rel
+                              ? (rel.list ? t.lineagePpListShort : kindShort(rel.kind)) + (rel.disputed ? " · ?" : "")
+                              : ""
+                            : rel
+                              ? kindShort(rel.kind) + (rel.disputed ? " · ?" : "") + (n.gen === 0 ? ` · ${genLabel(0)}` : "")
+                              : n.gen === 0
+                                ? genLabel(0)
+                                : ""}
                         </text>
                       </g>
                     );
@@ -498,16 +575,16 @@ export function Lineage({
                     <span className={`lin-num${rel.disputed ? " disputed" : ""}`}>{n}</span>
                     <div>
                       <div className="small">
-                        <button className="link-btn" onClick={() => setCenter(rel.from)}>
+                        <button className="link-btn" onClick={() => toPerson(rel.from)}>
                           {byId.get(rel.from)?.name}
                         </button>{" "}
                         →{" "}
-                        <button className="link-btn" onClick={() => setCenter(rel.to)}>
+                        <button className="link-btn" onClick={() => toPerson(rel.to)}>
                           {byId.get(rel.to)?.name}
                         </button>
                       </div>
                       <div className="muted small">
-                        {t.treeKinds[rel.kind]}
+                        {kindName(rel.kind)}
                         {rel.disputed && <b className="lin-doubt"> · {t.treeDisputed}</b>}
                       </div>
                       {rel.note && <div className="small">{rel.note}</div>}

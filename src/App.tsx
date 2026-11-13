@@ -121,7 +121,7 @@ function usePersisted<T>(key: string, fallback: T) {
 }
 
 /** panorama.place: open on the map at that place (`n` tells two requests apart) */
-type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number }; journey?: { id: string; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "tree"; focus?: { id: number; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number };
+type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number }; journey?: { id: string; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "tree"; focus?: { id: number; n: number }; pp?: { id: string; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number };
 
 type Dialog =
   | { kind: "settings"; tab: SettingsTab }
@@ -1291,12 +1291,14 @@ export default function App() {
         )}
         <ViewGuard key={main.kind} message={t.viewFailed} back={t.viewFailedBack} onBack={() => setMain({ kind: "home" })}>
           {main.kind === "timeline" && <Timeline t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} onOpenDoc={openDoc} />}
-          {main.kind === "lineage" && <Lineage t={t} lang={lang} persons={persons} onPerson={openPerson} focus={main.focus} />}
+          {main.kind === "lineage" && (
+            <Lineage t={t} lang={lang} persons={persons} onPerson={openPerson} focus={main.focus} onTreePp={(id) => setMain({ kind: "tree", pp: { id, n: Date.now() } })} />
+          )}
           {main.kind === "panorama" && (
             <Panorama t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} places={places} onPlace={openPlace} focus={main.place} journey={main.journey} status={status} />
           )}
           {main.kind === "calendar" && <Calendar t={t} lang={lang} reload={dataTick} onPerson={openPerson} page />}
-          {main.kind === "tree" && <TreeView t={t} persons={persons} onPerson={openPerson} marks={marks} onMark={cycleMark} focus={main.focus} />}
+          {main.kind === "tree" && <TreeView t={t} lang={lang} persons={persons} onPerson={openPerson} marks={marks} onMark={cycleMark} focus={main.focus} ppFocus={main.pp} />}
         </ViewGuard>
       </main>
 

@@ -257,13 +257,27 @@ export interface PlaceText {
   body: string;
 }
 
+/** A gallery picture of a place; `name` is its caption (at first, the file name). */
+export interface PlaceImage {
+  id: number;
+  name: string;
+}
+
+/** What to show under a gallery picture: the name without «.jpg», nothing for
+ *  camera names («IMG_1234») or the old main picture («anterior»). */
+export function imageCaption(name: string): string {
+  const s = name.replace(/\.(jpe?g|png|webp|gif|bmp|avif)$/i, "").trim();
+  if (!s || s === "anterior" || /^(img|dsc|dscn|pxl|photo|image|screenshot|wa)[\s_-]*\d/i.test(s) || /^\d+$/.test(s)) return "";
+  return s;
+}
+
 export interface Place extends PlaceFields {
   id: number;
   modified: string;
   /** a picture chosen for it (served at /placephoto/<id>) */
   hasPhoto: boolean;
-  /** more pictures (served at /placeimage/<image id>) */
-  images: number[];
+  /** more pictures (served at /placeimage/<image id>), with their caption */
+  images: PlaceImage[];
 }
 
 export const EMPTY_PLACE: PlaceFields = { name: "", aka: "", region: "", location: "", about: "", source: "", lat: null, lon: null, people: [] };
@@ -578,6 +592,7 @@ export const api = {
   addPlaceImages: (id: number, paths: string[]) => invoke<number>("add_place_images", { id, paths }),
   removePlaceImage: (imageId: number) => invoke<void>("remove_place_image", { imageId }),
   placeImageAsPhoto: (imageId: number) => invoke<void>("place_image_as_photo", { imageId }),
+  renamePlaceImage: (imageId: number, name: string) => invoke<void>("rename_place_image", { imageId, name }),
   unmarkDistinct: (a: number, b: number) => invoke<void>("unmark_distinct", { a, b }),
   /** merges into a record that can be undone (newest first): the names that went away */
   listMerges: (person: number) => invoke<{ id: number; saved: string; names: string[] }[]>("list_merges", { person }),

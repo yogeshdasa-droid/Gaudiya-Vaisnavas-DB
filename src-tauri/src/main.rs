@@ -1018,6 +1018,11 @@ async fn place_image_as_photo(state: State<'_, AppState>, image_id: i64) -> CmdR
     places::image_as_photo(&mut state.conn.lock().unwrap(), image_id)
 }
 
+#[tauri::command]
+async fn rename_place_image(state: State<'_, AppState>, image_id: i64, name: String) -> CmdResult<()> {
+    places::rename_image(&state.conn.lock().unwrap(), image_id, &name)
+}
+
 // ---------------------------------------------------------------- earlier versions
 
 #[tauri::command]
@@ -1337,6 +1342,7 @@ fn main() {
             add_place_images,
             remove_place_image,
             place_image_as_photo,
+            rename_place_image,
             open_external,
             path_kinds,
             replace_preview,

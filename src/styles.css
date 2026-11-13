@@ -6701,3 +6701,76 @@ svg.satellite .map-dot {
 .person-view .ency .other-versions > summary .muted {
   font-weight: 400;
 }
+
+/* Captions under the pictures of a place (what each one shows) */
+.gallery-cap {
+  margin-top: 4px;
+  font-size: 11.5px;
+  line-height: 1.3;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.gallery-cap-edit {
+  margin-top: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 11.5px;
+}
+.zoom {
+  flex-direction: column;
+  gap: 10px;
+}
+.zoom img {
+  max-height: 86vh;
+}
+.zoom-cap {
+  color: #eee;
+  font-size: 14px;
+  max-width: 80vw;
+  text-align: center;
+}
+
+/* Paramparās in «Linaje» and lit in the Paramparā Tree (13-11-2026) */
+.lin-pp {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 6px;
+}
+.lin-pp label,
+.tree-pp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+.lin-pp select,
+.tree-pp select {
+  max-width: 320px;
+}
+.lin-pp-about {
+  max-width: 900px;
+  margin: 0 0 8px;
+}
+.tree-node.lin-node.pp-step rect {
+  stroke: var(--accent);
+  stroke-width: 1.8;
+}
+.tree-link.pp-list {
+  stroke-dasharray: 2 5;
+  opacity: 0.7;
+}
+.tree-node.pp-dim {
+  opacity: 0.18;
+}
+.tree-link.pp-dim {
+  opacity: 0.1;
+}
+.tree-node.pp-hi rect {
+  stroke: var(--accent);
+  stroke-width: 2;
+}

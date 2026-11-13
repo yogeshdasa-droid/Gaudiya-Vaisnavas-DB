@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **12-11-2026** (versión **0.16.6**).
+Última actualización: **13-11-2026** (versión **0.16.7**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,21 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.16.6)
+## 5. Qué hace hoy (v0.16.7)
+
+### Novedades de la 0.16.7 (13-11-2026) — paramparās y pies de foto (formato 10 sin cambios)
+- **Paramparās** (Whisper: «varias opciones de paramparā… Gauḍīya, ISKCON…»): `src/components/paramparas.ts` —
+  `PARAMPARAS` (Gauḍīya oficial: 31 pasos, lista de Bhaktivinoda / BG; ISKCON: 32 + discípulos de Prabhupāda; Gauḍīya
+  Maṭha: de Jagannātha dāsa a Bhaktisiddhānta + 2 generaciones; familias y parivāras: Nityānanda, Advaita, Narottama,
+  Śrīnivāsa, Śyāmānanda, con las líneas de familia). Pasos con `with` (compañeros en la misma fila). `paramparaMembers`:
+  la cadena (si los datos no tienen la línea entre dos pasos, una línea «en la lista», a puntos) + los discípulos del
+  último paso. «Linaje»: selector «Paramparā:», texto y fuente, «Discípulos del último», botón «Resaltar en el árbol».
+  Paramparā Tree: selector «Resaltar:» (`pp-hi` / `pp-dim`; la vista va al último paso; `bio.treePp`).
+- **Pies de foto** en la galería de los tīrthas: `places.rs` devuelve `images: [{id, name}]`; comando
+  `rename_place_image`; `imageCaption()` en api.ts (sin «.jpg», oculta «anterior» / IMG_1234); lápiz para escribirlo.
+- Datos (en la BD de Whisper, 13-11): `scripts/datos/pies-fotos.mjs` (acentos estropeados de 148 fotos y del crédito de
+  47 tīrthas, 118 pies escritos con `pies116.json`); `lila6.json` + `plan-lila6.mjs`: 7 tīrthas nuevos #226–#232
+  (Añjanauka, Caraṇa-pahāḍī de Choṭī-baiṭhana, Khelanvana, Vihāravana, Muñjāṭavī, Bandī-Ānandī, Garuḍa-Govinda).
 
 ### Novedades de la 0.16.6 (12-11-2026) — «Abrir siempre como original» (formato 10 sin cambios)
 - Menú «⋯» del lector (solo PDF): **«Abrir siempre como original»** / «Dejar de abrir como original». Guarda la etiqueta
@@ -1526,6 +1540,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **13-11-2026 — v0.16.7**: paramparās en «Linaje» (Gauḍīya, ISKCON, Gauḍīya Maṭha, familias) y resaltadas en el árbol;
+  pies de foto en las galerías de los tīrthas.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.16.7
 
 - **12-11-2026 — v0.16.6**: «Abrir siempre como original» para los PDF de diagramas (el Árbol y la Genealogía purāṇica).
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.16.6

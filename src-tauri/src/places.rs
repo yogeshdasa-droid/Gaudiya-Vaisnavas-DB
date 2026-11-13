@@ -55,7 +55,15 @@ pub struct Place {
     /** a picture chosen for it (format 8), served at /placephoto/<id> */
     pub has_photo: bool,
     /** more pictures (format 10), served at /placeimage/<image id> */
-    pub images: Vec<i64>,
+    pub images: Vec<PlaceImage>,
+}
+
+/// A gallery picture: its number and what it shows (its caption; at first
+/// the name of the file it came from).
+#[derive(Serialize)]
+pub struct PlaceImage {
+    pub id: i64,
+    pub name: String,
 }
 
 fn texts_of(conn: &Connection, id: i64) -> rusqlite::Result<Vec<PlaceText>> {
@@ -64,9 +72,9 @@ fn texts_of(conn: &Connection, id: i64) -> rusqlite::Result<Vec<PlaceText>> {
     rows.collect()
 }
 
-fn images_of(conn: &Connection, id: i64) -> rusqlite::Result<Vec<i64>> {
-    let mut st = conn.prepare("SELECT id FROM place_images WHERE place_id = ?1 ORDER BY id")?;
-    let rows = st.query_map([id], |r| r.get(0))?;
+fn images_of(conn: &Connection, id: i64) -> rusqlite::Result<Vec<PlaceImage>> {
+    let mut st = conn.prepare("SELECT id, name FROM place_images WHERE place_id = ?1 ORDER BY id")?;
+    let rows = st.query_map([id], |r| Ok(PlaceImage { id: r.get(0)?, name: r.get(1)? }))?;
     rows.collect()
 }
 
@@ -261,6 +269,12 @@ pub fn image_as_photo(conn: &mut Connection, image_id: i64) -> Res<()> {
     tx.commit().map_err(e)
 }
 
+/// Changes the caption of a gallery picture.
+pub fn rename_image(conn: &Connection, image_id: i64, name: &str) -> Res<()> {
+    conn.execute("UPDATE place_images SET name = ?2 WHERE id = ?1", params![image_id, name.trim()]).map_err(e)?;
+    Ok(())
+}
+
 /// A gallery picture of a place (served at /placeimage/<id>).
 pub fn get_image(conn: &Connection, image_id: i64) -> rusqlite::Result<Option<(String, Vec<u8>)>> {
     conn.query_row("SELECT mime, data FROM place_images WHERE id = ?1", [image_id], |r| Ok((r.get(0)?, r.get(1)?))).optional()
@@ -358,13 +372,16 @@ mod tests {
         std::fs::write(&img, b"\x89PNG\r\n\x1a\nfake").unwrap();
         let p = img.to_string_lossy().to_string();
         assert_eq!(add_images(&mut c, id, &[p.clone(), p]).unwrap(), 2);
-        let imgs = list(&c).unwrap()[0].images.clone();
+        let imgs: Vec<i64> = list(&c).unwrap()[0].images.iter().map(|x| x.id).collect();
+        assert_eq!(list(&c).unwrap()[0].images[0].name, "a.png");
+        rename_image(&c, imgs[1], " Kaṅkālī-devī ").unwrap();
         assert_eq!(imgs.len(), 2);
         image_as_photo(&mut c, imgs[0]).unwrap();
         let now = &list(&c).unwrap()[0];
         assert!(now.has_photo);
         assert_eq!(now.images.len(), 1); // no main photo before: nothing went to the gallery
-        remove_image(&c, now.images[0]).unwrap();
+        assert_eq!(now.images[0].name, "Kaṅkālī-devī");
+        remove_image(&c, now.images[0].id).unwrap();
         assert!(list(&c).unwrap()[0].images.is_empty());
         let _ = std::fs::remove_dir_all(dir);
     }
