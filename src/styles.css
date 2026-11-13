@@ -7037,13 +7037,26 @@ svg.satellite .map-dot {
 .lib-group {
   margin-bottom: 18px;
 }
+/* a written lecture (.md) of a library, in the reader's look */
+.lib-text {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+.lib-text .reader-body {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 28px 60px;
+}
 /* the record's «Library» button, in orange so that it is seen (Whisper, 13-11-2026) */
-.btn.lib-btn {
+.btn.lib-btn,
+.person-view .ency .person-actions .btn.lib-btn:not(.ghost) {
   background: #e8731c;
   border-color: #e8731c;
   color: #fff;
 }
-.btn.lib-btn:hover {
+.btn.lib-btn:hover,
+.person-view .ency .person-actions .btn.lib-btn:not(.ghost):hover {
   background: #f08a35;
   border-color: #f08a35;
   color: #fff;

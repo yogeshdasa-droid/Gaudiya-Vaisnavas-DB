@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **13-11-2026** (versión **0.17.3**).
+Última actualización: **13-11-2026** (versión **0.17.4**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,14 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.3)
+## 5. Qué hace hoy (v0.17.4)
+
+### Novedades de la 0.17.4 (13-11-2026)
+- Las conferencias escritas (.md / .txt) de una biblioteca se leen con el lector de la app (`TextFile` en
+  PersonLibrary.tsx: `SectionView` con el estilo de lectura y el tamaño de letra de Ajustes); antes, en un marco, salían
+  en blanco (Whisper).
+- El botón «Biblioteca» de la ficha, naranja de verdad: la regla `.person-view .ency .person-actions .btn:not(.ghost)`
+  lo tapaba.
 
 ### Novedades de la 0.17.3 (13-11-2026) — un navegador dentro de la ventana; bibliotecas grandes; Inicio
 - **Webs en una vista de navegador propia** (Whisper: «no puedo hacer clic en los enlaces de Pure Bhakti TV… en YouTube
@@ -1599,6 +1606,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **13-11-2026 — v0.17.4**: las conferencias .md de la biblioteca se leen en el lector; botón «Biblioteca» naranja.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.4
 
 - **13-11-2026 — v0.17.3**: las webs en un navegador dentro de la ventana (enlaces, canales de YouTube); bibliotecas
   grandes por carpetas con «Ver los N» y filtro; Inicio con las favoritas primero; botón «Biblioteca» en naranja.

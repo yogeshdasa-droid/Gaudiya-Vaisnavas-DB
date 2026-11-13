@@ -1350,6 +1350,8 @@ export default function App() {
               onToast={showToast}
               onChanged={() => api.libraryIds().then(setLibIds, () => {})}
               onOpenWeb={openWeb}
+              readerStyle={readerStyle}
+              fontSize={fontSize}
             />
           )}
           {main.kind === "web" && (

@@ -9,6 +9,32 @@ import { api, EMPTY_PERSON, fileUrl, LibEntry, LibHit, libUrl, LibraryView, Pers
 import { T } from "../i18n";
 import { joinNotes, linkKind, linkLabel, linkOpenTarget, NoteLink, splitNotes } from "../notesLinks";
 import { ask } from "./ui";
+import { ReaderStyle, SectionView } from "./Reader";
+
+/** A Markdown or text file of the library (written lectures, 13-11-2026: «los .md salen en blanco» in a frame), read
+ *  in the app's own reader look. */
+function TextFile({ url, readerStyle, fontSize }: { url: string; readerStyle: ReaderStyle; fontSize: number }) {
+  const [text, setText] = useState<string | null>(null);
+  const [err, setErr] = useState("");
+  useEffect(() => {
+    let live = true;
+    fetch(url)
+      .then((r) => (r.ok ? r.text() : Promise.reject(new Error(`${r.status}`))))
+      .then((x) => live && setText(x), (e) => live && setErr(String(e)));
+    return () => {
+      live = false;
+    };
+  }, [url]);
+  if (err) return <p className="muted web-note">{err}</p>;
+  if (text === null) return <p className="muted web-note">…</p>;
+  return (
+    <div className="reader-scroll lib-text">
+      <div className={`reader-body ${readerStyle === "editor" ? "src-view" : readerStyle}`} style={{ fontSize }}>
+        <SectionView s={{ id: 0, ordinal: 0, heading: null, text }} terms={[]} multi={false} source={readerStyle === "editor"} names={null} self={null} />
+      </div>
+    </div>
+  );
+}
 
 /** The record's links at the top of its library (14-11-2026, Whisper: «arriba una opción para añadir links… especialmente
  *  online links», better there than at the bottom of the record). The same links as the record's «Enlaces» (kept at the
@@ -216,8 +242,13 @@ export function PersonLibrary({
   onToast,
   onChanged,
   onOpenWeb,
+  readerStyle,
+  fontSize,
 }: {
   t: T;
+  /** how the app's texts are read (Settings): the written lectures in .md are read the same way */
+  readerStyle: ReaderStyle;
+  fontSize: number;
   /** a web link of the record, opened inside the window */
   onOpenWeb: (url: string, title: string) => void;
   id: number;
@@ -372,7 +403,12 @@ export function PersonLibrary({
               <img src={url} alt={tt.title} />
             </div>
           ) : (
-            <iframe key={e.rel + (shown.at ?? "")} className="lib-frame" src={e.kind === "book" && shown.at ? `${url}#page=${shown.at}` : url} title={tt.title} />
+            /\.(md|txt)$/i.test(e.name) ? (
+              // a written lecture in Markdown (Obsidian): read like the app's texts, in the reading style chosen
+              <TextFile key={e.rel} url={url} readerStyle={readerStyle} fontSize={fontSize} />
+            ) : (
+              <iframe key={e.rel + (shown.at ?? "")} className="lib-frame" src={e.kind === "book" && shown.at ? `${url}#page=${shown.at}` : url} title={tt.title} />
+            )
           )}
         </div>
       </div>
