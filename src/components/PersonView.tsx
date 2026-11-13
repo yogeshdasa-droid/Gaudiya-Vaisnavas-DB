@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { ArrowUp, BookOpen, Library, MapPin, ChevronDown, ChevronLeft, ChevronRight, Star, Combine, FileDown, FilePlus2, Printer, FileText, Folder, GitFork, GitMerge, Globe, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Route, Search, StickyNote, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
-import { api, fileUrl, isNamesake, LifeSpan, MAIN_TEXT, NAMESAKES, Place, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
+import { api, FAVORITES, fileUrl, isNamesake, LifeSpan, MAIN_TEXT, NAMESAKES, Place, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
 import { ReaderStyle, SectionView } from "./Reader";
@@ -10,7 +10,7 @@ import type { Term } from "../fold";
 import { foldName } from "./Sidebar";
 import { placesOfPerson } from "../places";
 import { journeysOf } from "./journeys";
-import { linkKind, linkLabel, splitNotes } from "../notesLinks";
+import { linkKind, linkLabel, linkOpenTarget, splitNotes } from "../notesLinks";
 
 /** Titles that come and go after a name: "Rupa" = "Rupa Gosvami". */
 const TITLES = new Set(
@@ -68,6 +68,8 @@ interface Props {
   hasLibrary: boolean;
   /** its library page */
   onLibrary: (p: Person) => void;
+  /** a web link of the record, opened inside the window */
+  onOpenWeb: (url: string, title: string) => void;
 }
 
 const NO_TERMS: Term[] = [];
@@ -643,10 +645,13 @@ export function PersonView(p: Props) {
   const notes = splitNotes(person.notes);
   const discTotal = disciples.reduce((n, [, l]) => n + l.length, 0);
   const hasFacts = facts.flat().some(([, , show]) => show) || person.notes.trim() || disciples.length > 0;
-  const tags = person.tags
+  const allTags = person.tags
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
+  const favorite = allTags.some((x) => x.toLowerCase() === FAVORITES.toLowerCase());
+  // (the favourite label is the star by the name, not one more «#label»)
+  const tags = allTags.filter((x) => x.toLowerCase() !== FAVORITES.toLowerCase());
 
   const addImages = async () => {
     try {
@@ -692,6 +697,19 @@ export function PersonView(p: Props) {
                 <span className="record-number" title={t.recordNumberHint}>
                   #{person.id}
                 </span>
+                {/* a favourite record: on the home page, under «Of the day» (the label «Favoritas») */}
+                <button
+                  className={`fav-star${favorite ? " on" : ""}`}
+                  title={favorite ? t.favoriteRemove : t.favoriteAdd}
+                  onClick={() =>
+                    api.setTag([person.id], FAVORITES, !favorite).then(() => {
+                      p.onToast(favorite ? t.favoriteRemoved : t.favoriteAdded);
+                      p.onPhotoChanged();
+                    }, (e) => p.onToast(String(e)))
+                  }
+                >
+                  <Star size={20} />
+                </button>
               </h1>
               {person.aka && <div className="aka">{person.aka}</div>}
               {tags.length > 0 && (
@@ -1194,6 +1212,7 @@ export function PersonView(p: Props) {
                         title={l.target}
                         onClick={(e) => {
                           e.preventDefault();
+                          if (kind === "web" && /^(https?:|www\.)/i.test(l.target)) return p.onOpenWeb(linkOpenTarget(l.target), linkLabel(l));
                           api.openExternal(kind === "web" && !/^[a-z]+:/i.test(l.target) ? `https://${l.target}` : openTarget(l.target)).catch((err) => p.onToast(String(err)));
                         }}
                       >

@@ -1,0 +1,15 @@
+[
+ { "id": 1425, "name": "Śivānanda Cakravartī",
+   "fields": {
+     "notes": "He was a disciple of Advaita Ācārya Prabhu. (CC. 1.8.70)\n\nNot the Śivānanda Cakravartī of Gadādhara Paṇḍita's branch who lived in Vṛndāvana (Lavaṅga-mañjarī, Gaura-gaṇoddeśa-dīpikā 183): the two were in this record until 13-11-2026; he has a record of his own, «Śivānanda Cakravartī (Gadādhara's branch)»."
+   },
+   "new": [
+     { "key": "g", "name": "Śivānanda Cakravartī (Gadādhara's branch)",
+       "place": [274, "disciple"],
+       "fields": {
+         "guru": "Śrī Gadādhara Paṇḍita Gosvāmī",
+         "place": "Vṛndāvana",
+         "notes": "He belonged to the branch (śākhā) of Gadādhara Paṇḍita and lived in Vṛndāvana: «śivānanda-cakravartī kṛta-vṛndāvana-sthitiḥ» (Gaura-gaṇoddeśa-dīpikā 183).\n\nIn Kṛṣṇa-līlā: a manifestation of Lavaṅga-mañjarī (Gaura-gaṇoddeśa-dīpikā 183, Sakhānirṇayāmṛta 20).\n\nTaken out of the record #1425 Śivānanda Cakravartī, disciple of Advaita Ācārya, which mixed the two (13-11-2026)."
+       } }
+   ] }
+]

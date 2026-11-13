@@ -4,7 +4,7 @@
 // window (App.tsx) — and a search only in this library's books, lectures and subtitles.
 import { useEffect, useMemo, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { ArrowLeft, BookOpen, FileText, Film, Folder, FolderOpen, Globe, Image as ImageIcon, Library, Link2Off, Music, Pause, Play, Plus, Search, X } from "lucide-react";
+import { ArrowLeft, BookOpen, FileText, Film, Folder, FolderOpen, Globe, Image as ImageIcon, Library, Link2Off, Music, Pause, Play, Plus, RotateCw, Search, X } from "lucide-react";
 import { api, EMPTY_PERSON, fileUrl, LibEntry, LibHit, libUrl, LibraryView, PersonFields } from "../api";
 import { T } from "../i18n";
 import { joinNotes, linkKind, linkLabel, linkOpenTarget, NoteLink, splitNotes } from "../notesLinks";
@@ -13,7 +13,7 @@ import { ask } from "./ui";
 /** The record's links at the top of its library (14-11-2026, Whisper: «arriba una opción para añadir links… especialmente
  *  online links», better there than at the bottom of the record). The same links as the record's «Enlaces» (kept at the
  *  end of its notes: notesLinks.ts): what is added here shows there too. */
-function LibLinks({ t, id, onToast }: { t: T; id: number; onToast: (m: string) => void }) {
+function LibLinks({ t, id, onToast, onOpenWeb }: { t: T; id: number; onToast: (m: string) => void; onOpenWeb: (url: string, title: string) => void }) {
   const [links, setLinks] = useState<NoteLink[] | null>(null);
   const [draft, setDraft] = useState<NoteLink | null>(null);
   const load = () => api.getPerson(id).then((p) => setLinks(splitNotes(p.notes).links), (e) => onToast(String(e)));
@@ -53,6 +53,8 @@ function LibLinks({ t, id, onToast }: { t: T; id: number; onToast: (m: string) =
               title={l.target}
               onClick={(e) => {
                 e.preventDefault();
+                // web pages inside the window (WebPage.tsx); files and folders with Windows
+                if (kind === "web" && /^(https?:|www\.)/i.test(l.target)) return onOpenWeb(linkOpenTarget(l.target), linkLabel(l));
                 api.openExternal(linkOpenTarget(l.target)).catch((err) => onToast(String(err)));
               }}
             >
@@ -213,8 +215,11 @@ export function PersonLibrary({
   playing,
   onToast,
   onChanged,
+  onOpenWeb,
 }: {
   t: T;
+  /** a web link of the record, opened inside the window */
+  onOpenWeb: (url: string, title: string) => void;
   id: number;
   name: string;
   hasPhoto: boolean;
@@ -246,7 +251,8 @@ export function PersonLibrary({
     for (const e of entries) c.set(e.kind, (c.get(e.kind) ?? 0) + 1);
     return c;
   }, [entries]);
-  const title = (e: LibEntry) => prettyTitle(e.name, prefix);
+  // a Calibre book has its real title (folder / metadata.opf); the rest, from the file name
+  const title = (e: LibEntry) => (e.title ? { title: e.title.replace(/_/g, " ").replace(/\s+/g, " ").trim(), date: "" } : prettyTitle(e.name, prefix));
 
   const link = async () => {
     const picked = await open({ directory: true, title: t.lib.pickFolder(name) });
@@ -255,6 +261,17 @@ export function PersonLibrary({
       await api.setLibraryFolder(id, picked);
       setTick((n) => n + 1);
       onChanged();
+    } catch (e) {
+      onToast(String(e));
+    }
+  };
+  // the folder read again (books or lectures added or taken away by hand); the search index follows at the next search
+  const refresh = async () => {
+    try {
+      const v = await api.getLibrary(id);
+      setView(v);
+      setHits(null);
+      onToast(t.lib.refreshed(v.entries.filter((e) => e.kind !== "subtitle").length));
     } catch (e) {
       onToast(String(e));
     }
@@ -300,7 +317,9 @@ export function PersonLibrary({
       const list = entries.filter((x) => x.kind === "audio" && x.dir === e.dir);
       return onPlay(list, list.indexOf(e));
     }
-    if (e.kind === "other") return void api.libraryOpen(id, e.rel).catch((err) => onToast(String(err)));
+    // what the window cannot show (EPUB, Word…) opens with its program
+    if (e.kind === "other" || (e.kind === "book" && !/\.(pdf|txt|md)$/i.test(e.name)))
+      return void api.libraryOpen(id, e.rel).catch((err) => onToast(String(err)));
     setShown({ e, at });
   };
 
@@ -373,6 +392,10 @@ export function PersonLibrary({
                     {t.lib.openFolder}
                   </button>
                   {" · "}
+                  <button className="link-btn" onClick={refresh} title={t.lib.refreshHint}>
+                    <RotateCw size={12} /> {t.lib.refresh}
+                  </button>
+                  {" · "}
                   <button className="link-btn" onClick={link}>
                     {t.lib.changeFolder}
                   </button>
@@ -382,7 +405,7 @@ export function PersonLibrary({
                   </button>
                 </p>
               )}
-              <LibLinks t={t} id={id} onToast={onToast} />
+              <LibLinks t={t} id={id} onToast={onToast} onOpenWeb={onOpenWeb} />
             </div>
           </header>
 
@@ -463,9 +486,20 @@ export function PersonLibrary({
               {groups.map((g) => (
                 <section key={g.dir + g.items[0].rel} className="lib-group">
                   {g.dir && <h2 className="lib-dir">{prettyDir(g.dir, base)}</h2>}
-                  <div className={`lib-items ${g.items.every((e) => e.kind === "image") ? "images" : ""}`}>
+                  <div className={`lib-items ${g.items.every((e) => e.kind === "image") ? "images" : g.items.filter((e) => e.cover).length * 2 >= g.items.length ? "covers" : ""}`}>
                     {g.items.map((e) => {
                       const tt = title(e);
+                      // a book with its cover (Calibre folders): a card with the cover
+                      if (e.cover)
+                        return (
+                          <button key={e.rel} className="lib-book" onClick={() => openEntry(e)} title={`${tt.title}\n${e.name}`}>
+                            <span className="lib-book-cover">
+                              <img src={libUrl(id, e.cover)} alt="" loading="lazy" />
+                            </span>
+                            <span className="lib-book-title">{tt.title}</span>
+                            <span className="muted small">{size(e.size)}</span>
+                          </button>
+                        );
                       if (e.kind === "image")
                         return (
                           <button key={e.rel} className="lib-thumb" onClick={() => openEntry(e)} title={tt.title}>

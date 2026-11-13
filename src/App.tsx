@@ -96,6 +96,7 @@ import { Settings, SettingsTab, Theme } from "./components/Settings";
 import { Reveal, SideTab, Sidebar } from "./components/Sidebar";
 import { Lineage } from "./components/Lineage";
 import { AudioBar, PersonLibrary } from "./components/PersonLibrary";
+import { WebPage } from "./components/WebPage";
 import { Rail } from "./components/Rail";
 import { Calendar } from "./components/Calendar";
 import { ask, Kbd, Splitter, ViewGuard } from "./components/ui";
@@ -123,7 +124,7 @@ function usePersisted<T>(key: string, fallback: T) {
 }
 
 /** panorama.place: open on the map at that place (`n` tells two requests apart) */
-type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number }; journey?: { id: string; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "tree"; focus?: { id: number; n: number }; pp?: { id: string; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number } | { kind: "library"; id: number };
+type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number }; journey?: { id: string; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "tree"; focus?: { id: number; n: number }; pp?: { id: string; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number } | { kind: "library"; id: number } | { kind: "web"; url: string; title: string };
 
 type Dialog =
   | { kind: "settings"; tab: SettingsTab }
@@ -259,7 +260,13 @@ export default function App() {
   const [, setNavTick] = useState(0);
   const samePlace = (a: Main, b: Main) =>
     a.kind === b.kind &&
-    (a.kind === "person" || a.kind === "place" ? a.id === (b as typeof a).id : a.kind === "doc" ? a.target.docId === (b as typeof a).target.docId : true);
+    (a.kind === "person" || a.kind === "place" || a.kind === "library"
+      ? a.id === (b as typeof a).id
+      : a.kind === "doc"
+        ? a.target.docId === (b as typeof a).target.docId
+        : a.kind === "web"
+          ? a.url === (b as typeof a).url
+          : true);
   const withPosition = (m: Main): Main =>
     m.kind === "doc" ? { ...m, target: { ...m.target, ordinal: readingOrd.current.get(m.target.docId) ?? m.target.ordinal } } : m;
   useEffect(() => {
@@ -529,13 +536,15 @@ export default function App() {
     },
     [setSideOpen],
   );
+  // a web link of a record, inside the window (WebPage.tsx)
+  const openWeb = useCallback((url: string, title: string) => setMain({ kind: "web", url, title }), []);
   const toggleSide = useCallback(() => {
     sideAutoHid.current = false;
     setSideOpen((o) => !o);
   }, [setSideOpen]);
   useEffect(() => {
-    // (a record's library is still the record)
-    if (main.kind !== "person" && main.kind !== "library" && sideAutoHid.current) {
+    // (a record's library, and a web page opened from it, are still the record)
+    if (main.kind !== "person" && main.kind !== "library" && main.kind !== "web" && sideAutoHid.current) {
       sideAutoHid.current = false;
       setSideOpen(true);
     }
@@ -1280,6 +1289,7 @@ export default function App() {
             onPlace={openPlace}
             hasLibrary={libIds.includes(main.id)}
             onLibrary={(person) => setMain({ kind: "library", id: person.id })}
+            onOpenWeb={openWeb}
           />
         )}
         {main.kind === "place" &&
@@ -1338,6 +1348,17 @@ export default function App() {
               playing={player && player.id === main.id ? player.list[player.index]?.rel ?? null : null}
               onToast={showToast}
               onChanged={() => api.libraryIds().then(setLibIds, () => {})}
+              onOpenWeb={openWeb}
+            />
+          )}
+          {main.kind === "web" && (
+            <WebPage
+              key={main.url}
+              t={t}
+              url={main.url}
+              title={main.title}
+              onBack={() => (backStack.current.length ? travel("back") : setMain({ kind: "home" }))}
+              onToast={showToast}
             />
           )}
           {main.kind === "lineage" && (

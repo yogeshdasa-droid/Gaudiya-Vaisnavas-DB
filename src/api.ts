@@ -209,7 +209,15 @@ export function isNamesake(p: PersonListItem): boolean {
   return p.tags.split(",").some((x) => x.trim().toLowerCase() === NAMESAKES.toLowerCase());
 }
 
-/** The label of the "Poets" group: Vaiṣṇava poets (padakartās) with no clear guru.
+/** The label of the favourite records (13-11-2026, Whisper: «fichas favoritas… que salgan en la pantalla principal»):
+ *  the star by a record's name; the home page shows them under «Of the day». */
+export const FAVORITES = "Favoritas";
+
+export function isFavorite(p: PersonListItem): boolean {
+  return p.tags.split(",").some((x) => x.trim().toLowerCase() === FAVORITES.toLowerCase());
+}
+
+/** The label of the "Poets" group:Vaiṣṇava poets (padakartās) with no clear guru.
  *  Outside the tree they are shown in their own group, not in the Vaiṣṇava-maṇḍala. */
 export const POETS = "Poetas";
 
@@ -531,6 +539,10 @@ export const api = {
   cutText: (docId: number, fragment: string) => invoke<string>("cut_text", { docId, fragment }),
   updateDoc: (docId: number, meta: DocMeta) => invoke<void>("update_doc", { docId, meta }),
   setDocTag: (docId: number, tag: string, on: boolean) => invoke<void>("set_doc_tag", { docId, tag, on }),
+  /** whether a web page lets itself be shown inside the app */
+  webFrameCheck: (url: string) => invoke<"ok" | "blocked" | "unreachable">("web_frame_check", { url }),
+  /** a YouTube channel as the player of its uploads (null: not found) */
+  youtubeChannelEmbed: (url: string) => invoke<string | null>("youtube_channel_embed", { url }),
   renameFolder: (dir: string, name: string) => invoke<void>("rename_folder", { dir, name }),
   trashFolder: (dir: string) => invoke<number>("trash_folder", { dir }),
   trashDoc: (docId: number) => invoke<void>("trash_doc", { docId }),
@@ -778,6 +790,10 @@ export interface LibEntry {
   size: number;
   /** a video's subtitles */
   subs: string | null;
+  /** a book's cover («cover.jpg» of its own folder, as Calibre keeps them) */
+  cover: string | null;
+  /** a book's title from its Calibre folder or «metadata.opf» */
+  title: string | null;
 }
 export interface LibraryView {
   folder: string | null;

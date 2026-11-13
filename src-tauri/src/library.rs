@@ -53,7 +53,8 @@ pub fn all_folders(conn: &Connection) -> Res<Vec<(i64, String)>> {
 /// What a file is, for the page: its section and how it opens.
 pub fn kind_of(path: &Path) -> &'static str {
     match crate::extract::ext(path).as_str() {
-        "pdf" | "epub" | "doc" | "docx" | "txt" | "md" => "book",
+        // («original_epub»: the EPUB Calibre keeps when it converts a book)
+        "pdf" | "epub" | "original_epub" | "doc" | "docx" | "txt" | "md" => "book",
         "htm" | "html" => "page",
         "mp3" | "m4a" | "ogg" | "wav" | "flac" | "aac" | "opus" => "audio",
         "mp4" | "webm" | "m4v" | "mov" | "mkv" => "video",
@@ -109,6 +110,31 @@ pub struct Entry {
     pub size: u64,
     /// a video's subtitles (same name, .srt / .vtt)
     pub subs: Option<String>,
+    /// a book's cover: the «cover.jpg» of its own folder (folders copied from a Calibre library)
+    pub cover: Option<String>,
+    /// a book's title from its folder (Calibre: «Beyond Liberation - 4th (2224)» → «Beyond Liberation - 4th»), or from
+    /// the «metadata.opf» next to it
+    pub title: Option<String>,
+}
+
+/// «Beyond Liberation - 4th (2224)» → «Beyond Liberation - 4th» (Calibre puts its book number at the end).
+fn calibre_title(dir_name: &str) -> String {
+    let s = dir_name.trim();
+    match s.rfind(" (") {
+        Some(i) if s.ends_with(')') && s[i + 2..s.len() - 1].chars().all(|c| c.is_ascii_digit()) && i > 0 => s[..i].trim().to_string(),
+        _ => s.to_string(),
+    }
+}
+
+/// The title in a Calibre «metadata.opf» (<dc:title>…</dc:title>).
+fn opf_title(path: &Path) -> Option<String> {
+    let t = std::fs::read_to_string(path).ok()?;
+    let a = t.find("<dc:title")?;
+    let a = a + t[a..].find('>')? + 1;
+    let b = a + t[a..].find("</dc:title>")?;
+    let s = t[a..b].replace("&amp;", "&").replace("&apos;", "'").replace("&quot;", "\"").replace("&lt;", "<").replace("&gt;", ">");
+    let s = s.trim();
+    (!s.is_empty()).then(|| s.to_string())
 }
 
 fn rel_of(root: &Path, p: &Path) -> String {
@@ -132,12 +158,34 @@ pub fn scan(folder: &str) -> Res<Vec<Entry>> {
             continue;
         }
         let ext = crate::extract::ext(p);
-        if ["nojpg", "js", "css", "ini", "db", "lnk"].contains(&ext.as_str()) {
+        // (.opf: a Calibre book's data, read below for its title)
+        if ["nojpg", "js", "css", "ini", "db", "lnk", "opf"].contains(&ext.as_str()) {
             continue;
         }
         let rel = rel_of(&root, p);
         let dir = rel.rsplit_once('/').map(|(d, _)| d.to_string()).unwrap_or_default();
-        out.push(Entry { rel, name, dir, kind: kind_of(p), size: d.metadata().map(|m| m.len()).unwrap_or(0), subs: None });
+        out.push(Entry { rel, name, dir, kind: kind_of(p), size: d.metadata().map(|m| m.len()).unwrap_or(0), subs: None, cover: None, title: None });
+    }
+    // A folder with a «cover.jpg» and its book (copied from Calibre: «Title (1234)/cover.jpg + Title - Author.pdf»):
+    // the picture is the book's cover, not one more image, and the book is listed with the folder around it, so that
+    // 170 books are one list and not 170 sub-folders of one book each.
+    let book_dirs: std::collections::HashSet<String> = out
+        .iter()
+        .filter(|x| x.name.eq_ignore_ascii_case("cover.jpg") && !x.dir.is_empty())
+        .map(|x| x.dir.clone())
+        .filter(|d| out.iter().any(|x| x.kind == "book" && &x.dir == d))
+        .collect();
+    if !book_dirs.is_empty() {
+        out.retain(|x| !(x.name.eq_ignore_ascii_case("cover.jpg") && book_dirs.contains(&x.dir)));
+        for x in out.iter_mut().filter(|x| book_dirs.contains(&x.dir)) {
+            let own = x.dir.rsplit('/').next().unwrap_or(&x.dir).to_string();
+            if x.kind == "book" {
+                x.cover = Some(format!("{}/cover.jpg", x.dir));
+                let opf = root.join(x.dir.replace('/', std::path::MAIN_SEPARATOR_STR)).join("metadata.opf");
+                x.title = opf_title(&opf).or_else(|| Some(calibre_title(&own)));
+            }
+            x.dir = x.dir.rsplit_once('/').map(|(d, _)| d.to_string()).unwrap_or_default();
+        }
     }
     // subtitles go with their video
     let subs: Vec<(String, String)> = out
@@ -456,6 +504,35 @@ pub fn indexed(db_path: &Path, folder: &str) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn calibre_folders() {
+        let dir = std::env::temp_dir().join(format!("lib-calibre-{}", std::process::id()));
+        let a = dir.join("Books").join("Beyond Liberation - 4th (2224)");
+        let b = dir.join("Books").join("True Conception (2199)");
+        std::fs::create_dir_all(&a).unwrap();
+        std::fs::create_dir_all(&b).unwrap();
+        std::fs::write(a.join("Beyond Liberation - 4th - Sri Srimad.pdf"), "x").unwrap();
+        std::fs::write(a.join("cover.jpg"), "x").unwrap();
+        std::fs::write(b.join("True Conception - Sri.pdf"), "x").unwrap();
+        std::fs::write(b.join("cover.jpg"), "x").unwrap();
+        std::fs::write(b.join("metadata.opf"), "<package><metadata><dc:title>True Conception Of Sri Guru Tattva</dc:title></metadata></package>").unwrap();
+        std::fs::write(dir.join("photo.jpg"), "x").unwrap();
+        let list = scan(&dir.to_string_lossy()).unwrap();
+        let books: Vec<_> = list.iter().filter(|x| x.kind == "book").collect();
+        assert_eq!(books.len(), 2);
+        assert!(books.iter().all(|x| x.dir == "Books"));
+        assert_eq!(books[0].title.as_deref(), Some("Beyond Liberation - 4th"));
+        assert_eq!(books[0].cover.as_deref(), Some("Books/Beyond Liberation - 4th (2224)/cover.jpg"));
+        assert_eq!(books[1].title.as_deref(), Some("True Conception Of Sri Guru Tattva"));
+        // the covers are not images of the library; a picture of its own is
+        let imgs: Vec<_> = list.iter().filter(|x| x.kind == "image").map(|x| x.rel.as_str()).collect();
+        assert_eq!(imgs, vec!["photo.jpg"]);
+        assert!(list.iter().all(|x| !x.name.ends_with(".opf")));
+        assert_eq!(calibre_title("Arcana-Dipika_  - 1st ed (2256)"), "Arcana-Dipika_  - 1st ed");
+        assert_eq!(calibre_title("Seminar (Puri)"), "Seminar (Puri)");
+        let _ = std::fs::remove_dir_all(&dir);
+    }
 
     #[test]
     fn ranges_and_folders() {

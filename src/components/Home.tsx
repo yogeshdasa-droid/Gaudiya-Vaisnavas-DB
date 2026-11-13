@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { BarChart3, Clock, Clock3, Database, MapPin, Network, FileText, HardDrive, Sparkles, Star, Upload, UserRound, Users } from "lucide-react";
-import { Bookmark, fileUrl, hueOf, PersonListItem, Place, SearchResult, Status } from "../api";
+import { Bookmark, fileUrl, hueOf, isFavorite, PersonListItem, Place, SearchResult, Status } from "../api";
 import { Lang, T } from "../i18n";
 import { AnimatedNumber } from "./ui";
 import { Calendar } from "./Calendar";
@@ -70,6 +70,8 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
   // something to discover each day: a record of the Guru Paramparā and a holy place
   const person = useMemo(() => ofTheDay([...persons].filter((p) => p.tree).sort((a, b) => a.id - b.id)), [persons]);
   const place = useMemo(() => ofTheDay([...places].filter((p) => p.about.trim()).sort((a, b) => a.id - b.id)), [places]);
+  // the records marked with the star, to reach them at once
+  const favorites = useMemo(() => persons.filter(isFavorite).sort((a, b) => a.name.localeCompare(b.name)), [persons]);
   const firstLine = (s: string) => {
     const one = s.split("\n")[0].trim();
     return one.length > 220 ? one.slice(0, 220).replace(/\s+\S*$/, "") + "…" : one;
@@ -185,6 +187,30 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
                   </span>
                 </button>
               )}
+            </div>
+          </section>
+        )}
+
+        {favorites.length > 0 && (
+          <section>
+            <h2>
+              <Star size={14} /> {t.favorites}
+            </h2>
+            <div className="fav-grid">
+              {favorites.map((f) => (
+                <button key={f.id} className="fav-card" data-ctx="person" data-id={f.id} onClick={() => onPerson(f.id)} title={f.aka ? `${f.name}\n${f.aka}` : f.name}>
+                  <span className="fav-photo">
+                    {f.hasPhoto ? (
+                      <img src={fileUrl("photo", f.id)} alt="" loading="lazy" />
+                    ) : f.coverDoc ? (
+                      <img src={fileUrl("cover", f.coverDoc)} alt="" loading="lazy" />
+                    ) : (
+                      <UserRound size={30} />
+                    )}
+                  </span>
+                  <span className="fav-name">{f.name}</span>
+                </button>
+              ))}
             </div>
           </section>
         )}

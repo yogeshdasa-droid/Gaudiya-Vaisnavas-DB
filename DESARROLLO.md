@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **13-11-2026** (versión **0.17.1**).
+Última actualización: **13-11-2026** (versión **0.17.2**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,19 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.1)
+## 5. Qué hace hoy (v0.17.2)
+
+### Novedades de la 0.17.2 (13-11-2026) — webs dentro de la app, portadas, fichas favoritas
+- **Webs dentro** (Whisper: «que las webs se abran como nuestros vídeos»): `WebPage.tsx` (Main `web` en App.tsx) con
+  barra Volver · recargar · «Abrir en el navegador»; iframe con sandbox sin `allow-top-navigation`. `web_frame_check`
+  (main.rs, ureq): X-Frame-Options / CSP frame-ancestors → aviso + botón al navegador. `embedUrl` (notesLinks.ts):
+  vídeos y listas de YouTube → /embed/, SoundCloud → su reproductor; `youtube_channel_embed`: un canal (/@, /c/,
+  /user/, /channel/) → la lista de sus vídeos (UU…), leyendo el «canonical» de la página.
+- **Bibliotecas de Calibre**: library.rs `scan` — carpeta con cover.jpg + libro = portada (`Entry.cover`) y título
+  (`Entry.title`, del metadata.opf o de la carpeta sin «(1234)»); el libro sube a la carpeta de arriba; .opf ocultos;
+  «.original_epub» = libro. Tarjetas con portada (`.lib-items.covers`); botón «Actualizar»; EPUB/Word con su programa.
+- **Fichas favoritas** (Whisper: «que salgan con la foto debajo de Del día»): estrella junto al nombre (etiqueta
+  `FAVORITES` = «Favoritas», no se enseña como #etiqueta); Inicio › «Mis fichas favoritas» con las fotos.
 
 ### Novedades de la 0.17.1 (13-11-2026) — la ficha sin la lista; enlaces en la biblioteca
 - Whisper: «una vez en una ficha la lista de Vaiṣṇavas no se necesita». Al abrir una ficha el panel lateral se pliega
@@ -1574,6 +1586,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **13-11-2026 — v0.17.2**: webs (YouTube, SoundCloud…) dentro de la app; portadas de los libros de Calibre en la
+  biblioteca y botón «Actualizar»; fichas favoritas en la pantalla de inicio.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.2
 
 - **13-11-2026 — v0.17.1**: la lista lateral se pliega en una ficha; enlaces (web, archivos, carpetas) arriba en la
   biblioteca de la ficha.
