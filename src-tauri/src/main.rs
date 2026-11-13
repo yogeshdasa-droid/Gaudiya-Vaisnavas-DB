@@ -11,6 +11,7 @@ mod extract;
 mod fill;
 mod fold;
 mod import;
+mod library;
 mod overview;
 mod places;
 mod replace;
@@ -1023,6 +1024,60 @@ async fn rename_place_image(state: State<'_, AppState>, image_id: i64, name: Str
     places::rename_image(&state.conn.lock().unwrap(), image_id, &name)
 }
 
+// ---------------------------------------------------------------- a record's own library (folder on the PC)
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct LibraryView {
+    folder: Option<String>,
+    entries: Vec<library::Entry>,
+    /// files of it already in the search index
+    indexed: usize,
+    /// the folder is linked but cannot be read (moved, a disk not connected)
+    missing: bool,
+}
+
+#[tauri::command]
+async fn get_library(state: State<'_, AppState>, id: i64) -> CmdResult<LibraryView> {
+    let folder = library::folder_of(&state.conn.lock().unwrap(), id)?;
+    let Some(f) = folder else { return Ok(LibraryView { folder: None, entries: vec![], indexed: 0, missing: false }) };
+    match library::scan(&f) {
+        Ok(entries) => Ok(LibraryView { indexed: library::indexed(&state.db_path, &f), folder: Some(f), entries, missing: false }),
+        Err(_) => Ok(LibraryView { folder: Some(f), entries: vec![], indexed: 0, missing: true }),
+    }
+}
+
+#[tauri::command]
+async fn set_library_folder(state: State<'_, AppState>, id: i64, folder: Option<String>) -> CmdResult<()> {
+    library::set_folder(&state.conn.lock().unwrap(), id, folder.as_deref())
+}
+
+/// The records that have a library (for the button on their ficha).
+#[tauri::command]
+async fn library_ids(state: State<'_, AppState>) -> CmdResult<Vec<i64>> {
+    Ok(library::all_folders(&state.conn.lock().unwrap())?.into_iter().map(|(id, _)| id).collect())
+}
+
+#[tauri::command]
+async fn library_index(state: State<'_, AppState>, id: i64) -> CmdResult<library::IndexState> {
+    let f = library::folder_of(&state.conn.lock().unwrap(), id)?.ok_or("Sin carpeta")?;
+    library::update_index(&state.db_path, &f)
+}
+
+#[tauri::command]
+async fn library_search(state: State<'_, AppState>, id: i64, query: String) -> CmdResult<Vec<library::Hit>> {
+    let f = library::folder_of(&state.conn.lock().unwrap(), id)?.ok_or("Sin carpeta")?;
+    library::search(&state.db_path, &f, &query, 200)
+}
+
+/// Opens a file of the library with its own program, or shows the folder (rel empty).
+#[tauri::command]
+async fn library_open(app: AppHandle, state: State<'_, AppState>, id: i64, rel: String) -> CmdResult<()> {
+    let f = library::folder_of(&state.conn.lock().unwrap(), id)?.ok_or("Sin carpeta")?;
+    let p = if rel.is_empty() { PathBuf::from(&f) } else { library::resolve(&f, &rel).ok_or("No se encuentra el archivo")? };
+    app.opener().open_path(p.to_string_lossy().to_string(), None::<&str>).map_err(err)
+}
+
 // ---------------------------------------------------------------- earlier versions
 
 #[tauri::command]
@@ -1064,9 +1119,24 @@ async fn path_kinds(paths: Vec<String>) -> CmdResult<Vec<&'static str>> {
 /// `bio://localhost/cover/12` and `bio://localhost/original/12` (on Windows
 /// `http://bio.localhost/...`): files stored in the database, for <img> and
 /// the PDF viewer.
-fn serve_file(app: &AppHandle, uri: &str) -> tauri::http::Response<Vec<u8>> {
+fn serve_file(app: &AppHandle, uri: &str, range: Option<&str>) -> tauri::http::Response<Vec<u8>> {
     let not_found = || tauri::http::Response::builder().status(404).body(Vec::new()).unwrap();
     let path = uri.split("://").nth(1).and_then(|r| r.split_once('/')).map(|(_, p)| p).unwrap_or("");
+    // lib/<record>/<path inside its folder>: the files of a record's library, read from the PC
+    if let Some(rest) = path.strip_prefix("lib/") {
+        let rest = rest.split(['?', '#']).next().unwrap_or("");
+        let Some((id, rel)) = rest.split_once('/') else { return not_found() };
+        let Ok(id) = id.parse::<i64>() else { return not_found() };
+        let folder = {
+            let state = app.state::<AppState>();
+            let Ok(conn) = state.conn.lock() else { return not_found() };
+            library::folder_of(&conn, id).ok().flatten()
+        };
+        return match folder.and_then(|f| library::resolve(&f, &library::percent_decode(rel))) {
+            Some(p) => library::respond(&p, range),
+            None => not_found(),
+        };
+    }
     let mut parts = path.split(['/', '?']);
     // tile/z/x/y: a satellite picture of the map, kept on the disk once seen
     if path.starts_with("tile/") {
@@ -1127,7 +1197,8 @@ fn main() {
         .register_asynchronous_uri_scheme_protocol("bio", |ctx, req, responder| {
             let app = ctx.app_handle().clone();
             let uri = req.uri().to_string();
-            std::thread::spawn(move || responder.respond(serve_file(&app, &uri)));
+            let range = req.headers().get("range").and_then(|v| v.to_str().ok()).map(str::to_string);
+            std::thread::spawn(move || responder.respond(serve_file(&app, &uri, range.as_deref())));
         })
         .setup(|app| {
             let dir = app.path().app_data_dir()?;
@@ -1343,6 +1414,12 @@ fn main() {
             remove_place_image,
             place_image_as_photo,
             rename_place_image,
+            get_library,
+            set_library_folder,
+            library_ids,
+            library_index,
+            library_search,
+            library_open,
             open_external,
             path_kinds,
             replace_preview,

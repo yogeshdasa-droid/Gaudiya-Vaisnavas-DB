@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **13-11-2026** (versión **0.16.8**).
+Última actualización: **13-11-2026** (versión **0.17.0**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,23 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.16.8)
+## 5. Qué hace hoy (v0.17.0)
+
+### Novedades de la 0.17.0 (13-11-2026) — la biblioteca de una ficha (formato 10 sin cambios)
+- Whisper: «desde su ficha… his books, his lectures mp3, videos mp4, images… que se abran dentro de la ventana».
+  Una **carpeta del PC enlazada a la ficha** (los archivos se quedan en la carpeta: 35 GB no van en la BD; se aconseja
+  `Documentos\Gaudiya Vaisnavas DB\Biblioteca\<persona>`, NO junto al programa). El enlace va en `meta`
+  (`folder:<id>`): sin cambio de formato.
+- `src-tauri/src/library.rs`: `scan` (sin las carpetas «_archivos» de páginas guardadas ni «cache»; .srt con su vídeo),
+  dirección `bio://…/lib/<id>/<ruta>` solo dentro de la carpeta, con **Range** (trozos de 4 MB, 206: el vídeo salta) y CORS
+  (para los subtítulos); .srt → WebVTT; índice **derivado** `biodata-biblioteca.db` junto a la BD (FTS5 sin diacríticos:
+  páginas de PDF, trozos de .htm, minutos de .srt; solo relee lo nuevo o cambiado). Comandos `get_library`,
+  `set_library_folder`, `library_ids`, `library_index`, `library_search`, `library_open`. Test `ranges_and_folders`.
+- `src/components/PersonLibrary.tsx`: página «Biblioteca — X» (buscador «solo en su biblioteca»: libro + página, vídeo +
+  minuto; pestañas Libros / Conferencias escritas / Audio / Vídeos / Imágenes / Otros, por subcarpeta), visor dentro de la
+  ventana (PDF y .htm en iframe, vídeo con subtítulos, imagen) y `AudioBar` (abajo, sigue sonando al navegar).
+  `prettyTitle`: quita el prefijo común («GGM»), versos («ŚB 1.2.7 — …», CC con 3 līlās), fechas con puntos y lugar.
+- Ficha: botón «Biblioteca» si tiene carpeta; «⋯ › Biblioteca (carpeta del PC)…» para enlazarla.
 
 ### Novedades de la 0.16.8 (13-11-2026) — «Linaje» en columnas (formato 10 sin cambios)
 - Whisper (con una captura del árbol de arriba abajo): «si los discípulos no tienen discípulos se podrían recoger en forma
@@ -1549,6 +1565,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **13-11-2026 — v0.17.0**: la biblioteca de una ficha (carpeta del PC: libros, conferencias, audio, vídeo), con
+  búsqueda solo en ella y reproductores dentro de la ventana.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.0
 
 - **13-11-2026 — v0.16.8**: «Linaje» con los discípulos sin discípulos recogidos en columnas.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.16.8

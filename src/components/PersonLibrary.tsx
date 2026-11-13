@@ -1,0 +1,446 @@
+// A record's own library (13-11-2026, Whisper: «desde su ficha… his books, his lectures mp3, videos mp4, images»):
+// the files of a folder on the PC linked to the record, by kind and sub-folder, opened inside the window — books and
+// written lectures in a viewer, videos with their player (and subtitles), audio in the bar at the bottom of the
+// window (App.tsx) — and a search only in this library's books, lectures and subtitles.
+import { useEffect, useMemo, useState } from "react";
+import { open } from "@tauri-apps/plugin-dialog";
+import { ArrowLeft, BookOpen, FileText, Film, FolderOpen, Image as ImageIcon, Library, Link2Off, Music, Pause, Play, Search, X } from "lucide-react";
+import { api, fileUrl, LibEntry, LibHit, libUrl, LibraryView } from "../api";
+import { T } from "../i18n";
+import { ask } from "./ui";
+
+type Section = LibEntry["kind"];
+const SECTIONS: Section[] = ["book", "page", "audio", "video", "image", "other"];
+
+/** What is open in the viewer. */
+type Shown = { e: LibEntry; at?: number } | null;
+
+const ABBR: Record<string, string> = {
+  cc: "Caitanya-caritāmṛta",
+  sb: "Śrīmad-Bhāgavatam",
+  bg: "Bhagavad-gītā",
+  seminar: "Seminars",
+  various: "Various",
+  kirtans: "Kīrtanas",
+  mix: "Mix",
+};
+
+/** «GGM_SB_-_Krishna_The_Supreme_Thief.mp3» → «Krishna The Supreme Thief» (and its date apart, if it has one). */
+export function prettyTitle(name: string, prefix: string | null): { title: string; date: string } {
+  let s = name.replace(/\.[^.]+$/, "").replace(/_/g, " ").replace(/\s+/g, " ").trim();
+  if (prefix && s.toLowerCase().startsWith(prefix.toLowerCase() + " ")) s = s.slice(prefix.length + 1);
+  // «SB - …», «Seminar - …»: the sub-folder already says it
+  s = s.replace(/^(cc|sb|bg|seminar|various|mix)\s+-\s+/i, "");
+  let date = "";
+  // where it was given, at the end («… bhub», «… uk»): next to the date
+  const PLACES: Record<string, string> = { bhub: "Bhubaneswar", bbsr: "Bhubaneswar", uk: "UK", usa: "USA" };
+  let where = "";
+  s = s.replace(/([a-z])\.(?=[a-z])/gi, "$1 "); // «crying.to.get.the.mercy»
+  const pm = s.match(/(?:\s|\d)(bhub|bbsr|uk|usa)\.?$/i);
+  if (pm) {
+    where = PLACES[pm[1].toLowerCase()];
+    s = s.slice(0, s.length - pm[0].length + (/\d/.test(pm[0][0]) ? 1 : 0)).trim();
+  }
+  // the last real date in the name, with dots («sb9.11.27 … 7.04.94»: the verse comes first; «13.87.92» is no date)
+  const d = [...s.matchAll(/(?<!\d)(\d{1,2})\.(\d{1,2})\.(\d{2}|\d{4})(?!\d)/g)].filter((m) => Number(m[1]) <= 31 && Number(m[2]) <= 12 && Number(m[1]) > 0).pop();
+  // «17.mar.94»
+  const MON = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+  const dm = d ? null : s.match(/(?<!\d)(\d{1,2})[. ]([a-z]{3})[. ](\d{2})(?!\d)/i);
+  if (dm && MON.includes(dm[2].toLowerCase())) {
+    date = `${dm[1].padStart(2, "0")}-${String(MON.indexOf(dm[2].toLowerCase()) + 1).padStart(2, "0")}-${(Number(dm[3]) > 30 ? "19" : "20") + dm[3]}`;
+    s = s.replace(dm[0], "").replace(/\s+/g, " ").trim();
+  }
+  if (d) {
+    const y = d[3].length === 2 ? (Number(d[3]) > 30 ? "19" : "20") + d[3] : d[3];
+    date = `${d[1].padStart(2, "0")}-${d[2].padStart(2, "0")}-${y}`;
+    s = s.replace(d[0], "").replace(/\s+/g, " ").trim();
+  }
+  // «SB 01-02-07 - What is Bhakti» is a verse: «ŚB 1.2.7 — What is Bhakti» («00»: the chapter); also «CC Adi 01-17-45»
+  const BOOK: Record<string, string> = { sb: "ŚB", cc: "CC", bg: "BG" };
+  const vm = s.match(/^(sb|cc|bg)[\s-]+(?:(adi|madhya|antya)[\s-]+)?(\d{1,2})[-.](\d{1,3})(?:[-.](\d{1,3}(?:-\d{1,3})?))?(?=\s|$)\s*(?:-\s*)?/i);
+  // the CC has three līlās and the ŚB twelve cantos: more than that is a date («CC 06-08-94»)
+  const maxPart: Record<string, number> = { sb: 12, cc: 3, bg: 18 };
+  if (vm && !vm[2] && Number(vm[3]) > maxPart[vm[1].toLowerCase()] && Number(vm[4]) <= 12 && vm[5] && /^\d{2}$/.test(vm[5])) {
+    const y = (Number(vm[5]) > 30 ? "19" : "20") + vm[5];
+    date = date || `${vm[3].padStart(2, "0")}-${vm[4].padStart(2, "0")}-${y}`;
+    const rest = s.slice(vm[0].length).trim();
+    s = rest ? `${BOOK[vm[1].toLowerCase()]} — ${rest}` : BOOK[vm[1].toLowerCase()];
+  } else if (vm) {
+    const n = (x: string) => x.split("-").map((k) => String(Number(k))).join("-");
+    const parts = [n(vm[3]), n(vm[4]), vm[5] ? n(vm[5]) : ""].filter((x) => x && x !== "0");
+    const ref = `${BOOK[vm[1].toLowerCase()]} ${parts.join(".")}`;
+    const rest = s.slice(vm[0].length).trim();
+    s = rest ? `${ref} — ${rest}` : ref;
+  }
+  if (where) date = date ? `${date} · ${where}` : where;
+  if (/^\d{1,3}_/.test(name)) s = s.replace(/^\d{1,3}\s+(?=\D)/, ""); // a running number in front («12_radha…»), not «108 Jewels»
+  s = s.replace(/\s+-\s*$/, "").replace(/^-\s*/, "");
+  if (s && s === s.toLowerCase()) s = s[0].toUpperCase() + s.slice(1);
+  return { title: s || name, date };
+}
+
+/** The word most files of a folder start with («GGM»), to leave it out of their titles. */
+function commonPrefix(entries: LibEntry[]): string | null {
+  const counts = new Map<string, number>();
+  for (const e of entries) {
+    const w = e.name.split(/[_\s]/)[0];
+    if (w && w.length <= 6 && /^[A-Za-z]+$/.test(w)) counts.set(w, (counts.get(w) ?? 0) + 1);
+  }
+  const best = [...counts.entries()].sort((a, b) => b[1] - a[1])[0];
+  return best && best[1] >= Math.max(3, entries.length / 3) ? best[0] : null;
+}
+
+/** «Srila Gour Govinda mp3/CC» → «mp3 › Caitanya-caritāmṛta» (the folder's own name left out). */
+function prettyDir(dir: string, base: string): string {
+  if (!dir) return "";
+  const words = base.toLowerCase().split(/\s+/);
+  return dir
+    .split("/")
+    .map((part) => {
+      let w = part.split(/\s+/);
+      while (w.length > 1 && words.includes(w[0].toLowerCase())) w = w.slice(1);
+      const s = w.join(" ");
+      return ABBR[s.toLowerCase()] ?? (s === s.toUpperCase() && s.length > 3 ? s[0] + s.slice(1).toLowerCase() : s);
+    })
+    .join(" › ");
+}
+
+const size = (n: number) => (n > 1e9 ? `${(n / 1e9).toFixed(1)} GB` : n > 1e6 ? `${Math.round(n / 1e6)} MB` : `${Math.max(1, Math.round(n / 1e3))} KB`);
+const clock = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+
+export function PersonLibrary({
+  t,
+  id,
+  name,
+  hasPhoto,
+  onBack,
+  onPlay,
+  playing,
+  onToast,
+  onChanged,
+}: {
+  t: T;
+  id: number;
+  name: string;
+  hasPhoto: boolean;
+  onBack: () => void;
+  /** play an audio file in the bar at the bottom (with the rest of its sub-folder after it) */
+  onPlay: (list: LibEntry[], index: number) => void;
+  /** the audio file playing now (rel), if it is of this library */
+  playing: string | null;
+  onToast: (m: string) => void;
+  /** a folder was linked or unlinked */
+  onChanged: () => void;
+}) {
+  const [view, setView] = useState<LibraryView | null>(null);
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    setView(null);
+    api.getLibrary(id).then(setView, (e) => onToast(String(e)));
+  }, [id, tick]); // eslint-disable-line react-hooks/exhaustive-deps
+  const [section, setSection] = useState<Section | "all">("all");
+  const [shown, setShown] = useState<Shown>(null);
+  useEffect(() => setShown(null), [id]);
+
+  const base = view?.folder?.split(/[\\/]/).pop() ?? "";
+  const entries = useMemo(() => (view?.entries ?? []).filter((e) => e.kind !== "subtitle"), [view]);
+  const byRel = useMemo(() => new Map(entries.map((e) => [e.rel, e])), [entries]);
+  const prefix = useMemo(() => commonPrefix(entries), [entries]);
+  const counts = useMemo(() => {
+    const c = new Map<Section, number>();
+    for (const e of entries) c.set(e.kind, (c.get(e.kind) ?? 0) + 1);
+    return c;
+  }, [entries]);
+  const title = (e: LibEntry) => prettyTitle(e.name, prefix);
+
+  const link = async () => {
+    const picked = await open({ directory: true, title: t.lib.pickFolder(name) });
+    if (typeof picked !== "string") return;
+    try {
+      await api.setLibraryFolder(id, picked);
+      setTick((n) => n + 1);
+      onChanged();
+    } catch (e) {
+      onToast(String(e));
+    }
+  };
+  const unlink = async () => {
+    if (!(await ask(t.lib.unlinkConfirm))) return;
+    await api.setLibraryFolder(id, null).catch((e) => onToast(String(e)));
+    setTick((n) => n + 1);
+    onChanged();
+  };
+
+  // ---- search only in this library
+  const [q, setQ] = useState("");
+  const [hits, setHits] = useState<LibHit[] | null>(null);
+  const [busy, setBusy] = useState("");
+  const search = async () => {
+    if (!q.trim()) return setHits(null);
+    try {
+      setBusy(view && view.indexed > 0 ? t.lib.searching : t.lib.indexing);
+      await api.libraryIndex(id);
+      setHits(await api.librarySearch(id, q));
+      setTick((n) => n + 1);
+    } catch (e) {
+      onToast(String(e));
+    } finally {
+      setBusy("");
+    }
+  };
+
+  // ---- the files, by sub-folder
+  const groups = useMemo(() => {
+    const out: { dir: string; items: LibEntry[] }[] = [];
+    for (const e of entries.filter((x) => section === "all" || x.kind === section)) {
+      const last = out[out.length - 1];
+      if (last && last.dir === e.dir) last.items.push(e);
+      else out.push({ dir: e.dir, items: [e] });
+    }
+    return out;
+  }, [entries, section]);
+
+  const openEntry = (e: LibEntry, at?: number) => {
+    if (e.kind === "audio") {
+      const list = entries.filter((x) => x.kind === "audio" && x.dir === e.dir);
+      return onPlay(list, list.indexOf(e));
+    }
+    if (e.kind === "other") return void api.libraryOpen(id, e.rel).catch((err) => onToast(String(err)));
+    setShown({ e, at });
+  };
+
+  const icon = (k: Section) =>
+    k === "book" ? <BookOpen size={15} /> : k === "page" ? <FileText size={15} /> : k === "audio" ? <Music size={15} /> : k === "video" ? <Film size={15} /> : k === "image" ? <ImageIcon size={15} /> : <FolderOpen size={15} />;
+
+  // ---- the viewer: a book, a written lecture, a video or a picture inside the window
+  if (shown) {
+    const e = shown.e;
+    const url = libUrl(id, e.rel);
+    const tt = title(e);
+    return (
+      <div className="reader">
+        <div className="lib-viewer">
+          <div className="lib-viewer-bar">
+            <button className="btn ghost small" onClick={() => setShown(null)}>
+              <ArrowLeft size={15} /> {t.lib.back}
+            </button>
+            <span className="lib-viewer-title" title={e.rel}>
+              {icon(e.kind)} {tt.title}
+              {tt.date && <span className="muted small"> · {tt.date}</span>}
+            </span>
+            <button className="btn ghost small" onClick={() => api.libraryOpen(id, e.rel).catch((err) => onToast(String(err)))} title={t.lib.openOutsideHint}>
+              <FolderOpen size={15} /> {t.lib.openOutside}
+            </button>
+          </div>
+          {e.kind === "video" ? (
+            <div className="lib-video">
+              <video
+                key={e.rel}
+                src={url + (shown.at ? `#t=${shown.at}` : "")}
+                controls
+                autoPlay
+                preload="metadata"
+                crossOrigin="anonymous"
+              >
+                {e.subs && <track kind="subtitles" src={libUrl(id, e.subs)} srcLang="en" label="English" default />}
+              </video>
+            </div>
+          ) : e.kind === "image" ? (
+            <div className="lib-image">
+              <img src={url} alt={tt.title} />
+            </div>
+          ) : (
+            <iframe key={e.rel + (shown.at ?? "")} className="lib-frame" src={e.kind === "book" && shown.at ? `${url}#page=${shown.at}` : url} title={tt.title} />
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="reader">
+      <div className="reader-scroll">
+        <div className="lib-page">
+          <header className="lib-head">
+            {hasPhoto && <img className="lib-photo" src={fileUrl("photo", id)} alt="" />}
+            <div className="grow">
+              <button className="link-btn small" onClick={onBack}>
+                <ArrowLeft size={13} /> {t.lib.toRecord}
+              </button>
+              <h1>
+                <Library size={22} /> {t.lib.title(name)}
+              </h1>
+              {view?.folder && (
+                <p className="muted small lib-folder">
+                  {view.folder}
+                  {" · "}
+                  <button className="link-btn" onClick={() => api.libraryOpen(id, "").catch((e) => onToast(String(e)))}>
+                    {t.lib.openFolder}
+                  </button>
+                  {" · "}
+                  <button className="link-btn" onClick={link}>
+                    {t.lib.changeFolder}
+                  </button>
+                  {" · "}
+                  <button className="link-btn" onClick={unlink}>
+                    <Link2Off size={12} /> {t.lib.unlink}
+                  </button>
+                </p>
+              )}
+            </div>
+          </header>
+
+          {!view ? (
+            <p className="muted">{t.lib.reading}</p>
+          ) : !view.folder ? (
+            <div className="lib-empty">
+              <p>{t.lib.none(name)}</p>
+              <p className="muted small">{t.lib.noneHint}</p>
+              <button className="btn" onClick={link}>
+                <FolderOpen size={15} /> {t.lib.link}
+              </button>
+            </div>
+          ) : view.missing ? (
+            <div className="lib-empty">
+              <p>{t.lib.missing}</p>
+              <button className="btn" onClick={link}>
+                <FolderOpen size={15} /> {t.lib.changeFolder}
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="lib-search">
+                <Search size={15} />
+                <input
+                  value={q}
+                  placeholder={t.lib.searchHint(name)}
+                  spellCheck={false}
+                  onChange={(e) => setQ(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") void search();
+                    if (e.key === "Escape") (setQ(""), setHits(null));
+                  }}
+                />
+                {(q || hits) && (
+                  <button className="icon-btn" onClick={() => (setQ(""), setHits(null))}>
+                    <X size={13} />
+                  </button>
+                )}
+                <button className="btn small" disabled={!!busy || !q.trim()} onClick={() => void search()}>
+                  {t.lib.searchButton}
+                </button>
+              </div>
+              {busy && <p className="muted small">{busy}</p>}
+              {hits && (
+                <div className="lib-hits">
+                  <p className="muted small">{t.lib.hits(hits.length)}</p>
+                  {hits.map((h, i) => {
+                    const e = byRel.get(h.rel) ?? entries.find((x) => x.subs === h.rel);
+                    if (!e) return null;
+                    const where = e.kind === "video" ? `${t.lib.minute} ${clock(h.at)}` : e.kind === "book" ? `p. ${h.at}` : "";
+                    return (
+                      <button key={i} className="lib-hit" onClick={() => openEntry(e, e.kind === "page" ? undefined : h.at)}>
+                        <span className="lib-hit-title">
+                          {icon(e.kind)} {title(e).title}
+                          {where && <span className="muted small"> · {where}</span>}
+                        </span>
+                        <span className="small lib-snippet">
+                          {h.snippet.split(/(«[^»]*»)/).map((s, j) => (s.startsWith("«") ? <mark key={j}>{s.slice(1, -1)}</mark> : s))}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              <div className="lib-tabs seg">
+                <button className={section === "all" ? "on" : ""} onClick={() => setSection("all")}>
+                  {t.lib.all} <span className="pill">{entries.length}</span>
+                </button>
+                {SECTIONS.filter((s) => counts.get(s)).map((s) => (
+                  <button key={s} className={section === s ? "on" : ""} onClick={() => setSection(s)}>
+                    {icon(s)} {t.lib.sections[s]} <span className="pill">{counts.get(s)}</span>
+                  </button>
+                ))}
+              </div>
+
+              {groups.map((g) => (
+                <section key={g.dir + g.items[0].rel} className="lib-group">
+                  {g.dir && <h2 className="lib-dir">{prettyDir(g.dir, base)}</h2>}
+                  <div className={`lib-items ${g.items.every((e) => e.kind === "image") ? "images" : ""}`}>
+                    {g.items.map((e) => {
+                      const tt = title(e);
+                      if (e.kind === "image")
+                        return (
+                          <button key={e.rel} className="lib-thumb" onClick={() => openEntry(e)} title={tt.title}>
+                            <img src={libUrl(id, e.rel)} alt="" loading="lazy" />
+                          </button>
+                        );
+                      const on = e.kind === "audio" && playing === e.rel;
+                      return (
+                        <button key={e.rel} className={`lib-item ${e.kind}${on ? " on" : ""}`} onClick={() => openEntry(e)} title={e.name}>
+                          <span className="lib-ico">{e.kind === "audio" ? on ? <Pause size={14} /> : <Play size={14} /> : icon(e.kind)}</span>
+                          <span className="lib-name">{tt.title}</span>
+                          {e.subs && <span className="lib-tag">CC</span>}
+                          {tt.date && <span className="muted small">{tt.date}</span>}
+                          <span className="muted small lib-size">{size(e.size)}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+              ))}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** The bar at the bottom of the window that plays a library's audio (it goes on while moving around the app). */
+export function AudioBar({
+  t,
+  id,
+  list,
+  index,
+  onIndex,
+  onClose,
+  onLibrary,
+}: {
+  t: T;
+  id: number;
+  list: LibEntry[];
+  index: number;
+  onIndex: (i: number) => void;
+  onClose: () => void;
+  onLibrary: () => void;
+}) {
+  const e = list[index];
+  const prefix = useMemo(() => commonPrefix(list), [list]);
+  if (!e) return null;
+  const tt = prettyTitle(e.name, prefix);
+  return (
+    <div className="audio-bar">
+      <Music size={16} />
+      <button className="link-btn audio-title" onClick={onLibrary} title={t.lib.toLibrary}>
+        {tt.title}
+        {tt.date && <span className="muted small"> · {tt.date}</span>}
+        <span className="muted small">
+          {" "}
+          ({index + 1}/{list.length})
+        </span>
+      </button>
+      <button className="icon-btn" disabled={index === 0} onClick={() => onIndex(index - 1)} title={t.lib.prev}>
+        ⏮
+      </button>
+      <audio key={e.rel} src={libUrl(id, e.rel)} controls autoPlay onEnded={() => index + 1 < list.length && onIndex(index + 1)} />
+      <button className="icon-btn" disabled={index + 1 >= list.length} onClick={() => onIndex(index + 1)} title={t.lib.next}>
+        ⏭
+      </button>
+      <button className="icon-btn" onClick={onClose} title={t.lib.closePlayer}>
+        <X size={15} />
+      </button>
+    </div>
+  );
+}

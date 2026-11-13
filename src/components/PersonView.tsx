@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ArrowUp, BookOpen, MapPin, ChevronDown, ChevronLeft, ChevronRight, Star, Combine, FileDown, FilePlus2, Printer, FileText, Folder, GitFork, GitMerge, Globe, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Route, Search, StickyNote, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
+import { ArrowUp, BookOpen, Library, MapPin, ChevronDown, ChevronLeft, ChevronRight, Star, Combine, FileDown, FilePlus2, Printer, FileText, Folder, GitFork, GitMerge, Globe, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Route, Search, StickyNote, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
 import { api, fileUrl, isNamesake, LifeSpan, MAIN_TEXT, NAMESAKES, Place, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
@@ -64,6 +64,10 @@ interface Props {
   names: NameIndex | null;
   places: Place[];
   onPlace: (id: number) => void;
+  /** the record has a library (a folder of the PC linked to it) */
+  hasLibrary: boolean;
+  /** its library page */
+  onLibrary: (p: Person) => void;
 }
 
 const NO_TERMS: Term[] = [];
@@ -708,6 +712,11 @@ export function PersonView(p: Props) {
                 <button className="btn small" onClick={() => p.onEdit(person)}>
                   <Pencil size={15} /> {t.editPerson}
                 </button>
+                {p.hasLibrary && (
+                  <button className="btn small lib-btn" onClick={() => p.onLibrary(person)} title={t.lib.buttonHint}>
+                    <Library size={15} /> {t.lib.button}
+                  </button>
+                )}
                 <button className="btn ghost small" onClick={() => p.onFindMentions(person)} title={t.findMentions}>
                   <Search size={15} /> {t.findMentionsShort}
                 </button>
@@ -764,6 +773,9 @@ export function PersonView(p: Props) {
                     <div className="menu" onClick={(e) => e.stopPropagation()}>
                       <button onClick={() => (setMenu(false), p.onGuru(person))} title={t.guruTitle}>
                         <ListTree size={15} /> {t.guruButton}
+                      </button>
+                      <button onClick={() => (setMenu(false), p.onLibrary(person))} title={t.lib.buttonHint}>
+                        <Library size={15} /> {t.lib.menu}
                       </button>
                       <button onClick={() => (setMenu(false), p.onSearchIn(person))}>
                         <TextSearch size={15} /> {t.searchInPerson}

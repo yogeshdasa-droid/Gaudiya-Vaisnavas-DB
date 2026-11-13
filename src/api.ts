@@ -593,6 +593,12 @@ export const api = {
   removePlaceImage: (imageId: number) => invoke<void>("remove_place_image", { imageId }),
   placeImageAsPhoto: (imageId: number) => invoke<void>("place_image_as_photo", { imageId }),
   renamePlaceImage: (imageId: number, name: string) => invoke<void>("rename_place_image", { imageId, name }),
+  getLibrary: (id: number) => invoke<LibraryView>("get_library", { id }),
+  setLibraryFolder: (id: number, folder: string | null) => invoke<void>("set_library_folder", { id, folder }),
+  libraryIds: () => invoke<number[]>("library_ids"),
+  libraryIndex: (id: number) => invoke<{ files: number; changed: number }>("library_index", { id }),
+  librarySearch: (id: number, query: string) => invoke<LibHit[]>("library_search", { id, query }),
+  libraryOpen: (id: number, rel: string) => invoke<void>("library_open", { id, rel }),
   unmarkDistinct: (a: number, b: number) => invoke<void>("unmark_distinct", { a, b }),
   /** merges into a record that can be undone (newest first): the names that went away */
   listMerges: (person: number) => invoke<{ id: number; saved: string; names: string[] }[]>("list_merges", { person }),
@@ -761,6 +767,36 @@ export interface PullProgress {
 }
 
 /** URL of a file stored in the database (cover image, original PDF, or a record's picture by person id). */
+/** A file of a record's library (a folder on the PC linked to it). */
+export interface LibEntry {
+  /** path inside the folder, with «/» */
+  rel: string;
+  name: string;
+  /** its sub-folder («» = the folder itself) */
+  dir: string;
+  kind: "book" | "page" | "audio" | "video" | "image" | "subtitle" | "other";
+  size: number;
+  /** a video's subtitles */
+  subs: string | null;
+}
+export interface LibraryView {
+  folder: string | null;
+  entries: LibEntry[];
+  indexed: number;
+  missing: boolean;
+}
+export interface LibHit {
+  rel: string;
+  /** page of a book, piece of a written lecture, second of a video's subtitles */
+  at: number;
+  snippet: string;
+}
+/** The address the window reads a library file at (with byte ranges: a video can jump). */
+export function libUrl(id: number, rel: string): string {
+  const path = rel.split("/").map(encodeURIComponent).join("/");
+  return navigator.userAgent.includes("Windows") ? `http://bio.localhost/lib/${id}/${path}` : `bio://localhost/lib/${id}/${path}`;
+}
+
 export function fileUrl(role: "cover" | "original" | "photo" | "image" | "placephoto" | "placeimage", docId: number): string {
   return navigator.userAgent.includes("Windows") ? `http://bio.localhost/${role}/${docId}` : `bio://localhost/${role}/${docId}`;
 }

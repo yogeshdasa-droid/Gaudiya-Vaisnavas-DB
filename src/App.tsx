@@ -48,6 +48,7 @@ import {
 import { ContextMenu, MenuItem, MenuState } from "./components/ContextMenu";
 import {
   api,
+  LibEntry,
   Bookmark,
   DocInfo,
   DocListItem,
@@ -94,6 +95,7 @@ import { TreeView } from "./components/TreeView";
 import { Settings, SettingsTab, Theme } from "./components/Settings";
 import { Reveal, SideTab, Sidebar } from "./components/Sidebar";
 import { Lineage } from "./components/Lineage";
+import { AudioBar, PersonLibrary } from "./components/PersonLibrary";
 import { Rail } from "./components/Rail";
 import { Calendar } from "./components/Calendar";
 import { ask, Kbd, Splitter, ViewGuard } from "./components/ui";
@@ -121,7 +123,7 @@ function usePersisted<T>(key: string, fallback: T) {
 }
 
 /** panorama.place: open on the map at that place (`n` tells two requests apart) */
-type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number }; journey?: { id: string; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "tree"; focus?: { id: number; n: number }; pp?: { id: string; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number };
+type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number }; journey?: { id: string; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "tree"; focus?: { id: number; n: number }; pp?: { id: string; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number } | { kind: "library"; id: number };
 
 type Dialog =
   | { kind: "settings"; tab: SettingsTab }
@@ -184,6 +186,10 @@ export default function App() {
   const [backTo, setBackTo] = useState<SettingsTab | null>(null);
   const [dragging, setDragging] = useState(false);
   const [toast, setToast] = useState<{ msg: string; id: number } | null>(null);
+  // the records with a library (a folder of the PC), and the audio of one playing at the bottom
+  const [libIds, setLibIds] = useState<number[]>([]);
+  useEffect(() => void api.libraryIds().then(setLibIds, () => {}), []);
+  const [player, setPlayer] = useState<{ id: number; list: LibEntry[]; index: number } | null>(null);
   const [menu, setMenu] = useState<MenuState | null>(null);
   const [readerDoc, setReaderDoc] = useState<DocInfo | null>(null);
   const [dataTick, setDataTick] = useState(0);
@@ -1244,6 +1250,8 @@ export default function App() {
             names={nameIndex}
             places={places}
             onPlace={openPlace}
+            hasLibrary={libIds.includes(main.id)}
+            onLibrary={(person) => setMain({ kind: "library", id: person.id })}
           />
         )}
         {main.kind === "place" &&
@@ -1291,6 +1299,19 @@ export default function App() {
         )}
         <ViewGuard key={main.kind} message={t.viewFailed} back={t.viewFailedBack} onBack={() => setMain({ kind: "home" })}>
           {main.kind === "timeline" && <Timeline t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} onOpenDoc={openDoc} />}
+          {main.kind === "library" && (
+            <PersonLibrary
+              t={t}
+              id={main.id}
+              name={persons.find((x) => x.id === main.id)?.name ?? ""}
+              hasPhoto={!!persons.find((x) => x.id === main.id)?.hasPhoto}
+              onBack={() => openPerson(main.id)}
+              onPlay={(list, index) => setPlayer({ id: main.id, list, index })}
+              playing={player && player.id === main.id ? player.list[player.index]?.rel ?? null : null}
+              onToast={showToast}
+              onChanged={() => api.libraryIds().then(setLibIds, () => {})}
+            />
+          )}
           {main.kind === "lineage" && (
             <Lineage t={t} lang={lang} persons={persons} onPerson={openPerson} focus={main.focus} onTreePp={(id) => setMain({ kind: "tree", pp: { id, n: Date.now() } })} />
           )}
@@ -1302,6 +1323,17 @@ export default function App() {
         </ViewGuard>
       </main>
 
+      {player && (
+        <AudioBar
+          t={t}
+          id={player.id}
+          list={player.list}
+          index={player.index}
+          onIndex={(index) => setPlayer({ ...player, index })}
+          onClose={() => setPlayer(null)}
+          onLibrary={() => setMain({ kind: "library", id: player.id })}
+        />
+      )}
       <footer className="statusbar">
         {status && (
           <span>
