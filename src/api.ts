@@ -539,6 +539,8 @@ export const api = {
   cutText: (docId: number, fragment: string) => invoke<string>("cut_text", { docId, fragment }),
   updateDoc: (docId: number, meta: DocMeta) => invoke<void>("update_doc", { docId, meta }),
   setDocTag: (docId: number, tag: string, on: boolean) => invoke<void>("set_doc_tag", { docId, tag, on }),
+  /** the pictures a Markdown note of a library embeds: their paths in the library (null: not found) */
+  libraryAttachments: (id: number, rel: string, names: string[]) => invoke<(string | null)[]>("library_attachments", { id, rel, names }),
   /** a web page in the window's browser view (web.rs), at that place (CSS pixels) */
   webOpen: (url: string, r: { x: number; y: number; w: number; h: number }) => invoke<void>("web_open", { url, ...r }),
   webBounds: (r: { x: number; y: number; w: number; h: number }) => invoke<void>("web_bounds", r),

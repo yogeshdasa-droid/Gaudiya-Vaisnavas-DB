@@ -96,7 +96,50 @@ fn mime(path: &Path) -> &'static str {
 /// Folders that only hold the pieces of a saved web page («X_archivos», «X_files») or a player's cache.
 fn helper_dir(name: &str) -> bool {
     let n = name.to_lowercase();
-    n.ends_with("_archivos") || n.ends_with("_files") || n == "cache" || n.starts_with('.')
+    // (+ the pictures of Markdown notes, «_resources» / «attachments»: shown inside the notes, not as files)
+    n.ends_with("_archivos") || n.ends_with("_files") || n == "cache" || n.starts_with('.') || n == "_resources" || n == "attachments" || n == "_attachments"
+}
+
+/// A picture a Markdown note embeds («![[photo.jpg]]», Obsidian): next to the note or in a «_resources» / «attachments»
+/// folder of its folder or of any folder above it (whatever its case: «beautifulGurudeva…» = «beautifulgurudeva…»).
+/// The path inside the library, with «/».
+pub fn attachment(folder: &str, note_rel: &str, name: &str) -> Option<String> {
+    let root = PathBuf::from(folder);
+    let want = name.trim().rsplit(['/', '\\']).next()?.to_lowercase();
+    if want.is_empty() || want.contains("..") {
+        return None;
+    }
+    let mut dir = note_rel.rsplit_once('/').map(|(d, _)| d.to_string()).unwrap_or_default();
+    loop {
+        let here = if dir.is_empty() { root.clone() } else { root.join(dir.replace('/', std::path::MAIN_SEPARATOR_STR)) };
+        let mut places = vec![(here.clone(), 1usize)];
+        for sub in ["_resources", "attachments", "_attachments"] {
+            places.push((here.join(sub), 6));
+        }
+        for (p, depth) in places {
+            if !p.is_dir() {
+                continue;
+            }
+            let hit = walkdir::WalkDir::new(&p)
+                .max_depth(depth)
+                .into_iter()
+                .filter_map(|d| d.ok())
+                .find(|d| d.file_type().is_file() && d.file_name().to_string_lossy().to_lowercase() == want);
+            if let Some(d) = hit {
+                return Some(rel_of(&root, d.path()));
+            }
+        }
+        if dir.is_empty() {
+            break;
+        }
+        dir = dir.rsplit_once('/').map(|(d, _)| d.to_string()).unwrap_or_default();
+    }
+    // an Obsidian vault copied as it is: the picture may be anywhere in it
+    walkdir::WalkDir::new(&root)
+        .into_iter()
+        .filter_map(|d| d.ok())
+        .find(|d| d.file_type().is_file() && d.file_name().to_string_lossy().to_lowercase() == want)
+        .map(|d| rel_of(&root, d.path()))
 }
 
 #[derive(Serialize)]
@@ -505,6 +548,26 @@ pub fn indexed(db_path: &Path, folder: &str) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn note_pictures() {
+        let dir = std::env::temp_dir().join(format!("lib-notes-{}", std::process::id()));
+        let pic = dir.join("Lectures").join("_resources").join("Pic");
+        std::fs::create_dir_all(&pic).unwrap();
+        std::fs::create_dir_all(dir.join("Lectures").join("2001")).unwrap();
+        std::fs::write(dir.join("Lectures").join("2001").join("Jul-19 Ritvik.md"), "![[beautifulGurudevacfbc.jpg]]").unwrap();
+        std::fs::write(pic.join("beautifulgurudevacfbc.jpg"), "x").unwrap();
+        let f = dir.to_string_lossy().to_string();
+        assert_eq!(
+            attachment(&f, "Lectures/2001/Jul-19 Ritvik.md", "beautifulGurudevacfbc.jpg").as_deref(),
+            Some("Lectures/_resources/Pic/beautifulgurudevacfbc.jpg")
+        );
+        assert_eq!(attachment(&f, "Lectures/2001/Jul-19 Ritvik.md", "nothere.jpg"), None);
+        // the pictures are not files of the library
+        let list = scan(&f).unwrap();
+        assert!(list.iter().all(|x| !x.rel.contains("_resources")));
+        let _ = std::fs::remove_dir_all(&dir);
+    }
 
     #[test]
     fn calibre_folders() {

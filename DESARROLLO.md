@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **13-11-2026** (versión **0.17.4**).
+Última actualización: **13-11-2026** (versión **0.17.5**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,16 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.4)
+## 5. Qué hace hoy (v0.17.5)
+
+### Novedades de la 0.17.5 (13-11-2026) — las fotos de las conferencias de Obsidian
+- Whisper copió su bóveda de Obsidian tal cual (fotos en «Lectures\_resources\Pic»). `library::attachment`: la foto de
+  un «![[x.jpg]]» junto a la nota, en «_resources» / «attachments» de su carpeta o de las de arriba (sin distinguir
+  mayúsculas), y si no, en toda la biblioteca; comando `library_attachments`. `TextFile`: en el estilo «editor» la foto
+  va bajo su línea; un MutationObserver la vuelve a poner si SectionView reescribe el texto. Las carpetas «_resources»,
+  «attachments» no salen como archivos de la biblioteca (test `note_pictures`).
+- Los audios que citan las conferencias («Audio Link: ![[771008R2-VRNDAVAN.mp3]]», también en mitad de la línea):
+  un reproductor debajo de la línea (o tras el «📎» en el estilo de libro), con el mismo buscador de archivos.
 
 ### Novedades de la 0.17.4 (13-11-2026)
 - Las conferencias escritas (.md / .txt) de una biblioteca se leen con el lector de la app (`TextFile` en
@@ -1606,6 +1615,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **13-11-2026 — v0.17.5**: las fotos y los audios de las conferencias de Obsidian («_resources») se ven y se oyen en el lector.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.5
 
 - **13-11-2026 — v0.17.4**: las conferencias .md de la biblioteca se leen en el lector; botón «Biblioteca» naranja.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.4

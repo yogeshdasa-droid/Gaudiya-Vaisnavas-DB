@@ -1071,6 +1071,15 @@ async fn library_search(state: State<'_, AppState>, id: i64, query: String) -> C
     library::search(&state.db_path, &f, &query, 200)
 }
 
+/// The pictures a Markdown note of the library embeds, found in its folder or «_resources» (names → paths; null: none).
+#[tauri::command]
+async fn library_attachments(state: State<'_, AppState>, id: i64, rel: String, names: Vec<String>) -> CmdResult<Vec<Option<String>>> {
+    let f = library::folder_of(&state.conn.lock().unwrap(), id)?.ok_or("Sin carpeta")?;
+    tauri::async_runtime::spawn_blocking(move || names.iter().map(|n| library::attachment(&f, &rel, n)).collect())
+        .await
+        .map_err(err)
+}
+
 /// Opens a file of the library with its own program, or shows the folder (rel empty).
 #[tauri::command]
 async fn library_open(app: AppHandle, state: State<'_, AppState>, id: i64, rel: String) -> CmdResult<()> {
@@ -1453,6 +1462,7 @@ fn main() {
             library_index,
             library_search,
             library_open,
+            library_attachments,
             open_external,
             web_open,
             web_bounds,

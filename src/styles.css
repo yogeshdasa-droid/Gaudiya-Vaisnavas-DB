@@ -7048,6 +7048,28 @@ svg.satellite .map-dot {
   margin: 0 auto;
   padding: 24px 28px 60px;
 }
+/* a lecture's pictures: under their «![[…]]» line (editor look) or in their place */
+.lib-text img[data-attach] {
+  display: block;
+  max-width: min(100%, 560px);
+  height: auto;
+  margin: 8px 0 12px;
+  border-radius: 6px;
+}
+.lib-text img[data-attach].missing,
+.lib-text img[data-attach]:not([src]) {
+  display: none;
+}
+/* a lecture's recordings («![[talk.mp3]]»): a player under the line */
+.lib-text audio[data-attach] {
+  display: block;
+  width: min(100%, 560px);
+  height: 40px;
+  margin: 8px 0 12px;
+}
+.lib-text audio[data-attach].missing {
+  display: none;
+}
 /* the record's «Library» button, in orange so that it is seen (Whisper, 13-11-2026) */
 .btn.lib-btn,
 .person-view .ency .person-actions .btn.lib-btn:not(.ghost) {

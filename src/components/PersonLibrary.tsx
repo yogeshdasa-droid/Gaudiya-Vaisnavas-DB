@@ -2,7 +2,7 @@
 // the files of a folder on the PC linked to the record, by kind and sub-folder, opened inside the window — books and
 // written lectures in a viewer, videos with their player (and subtitles), audio in the bar at the bottom of the
 // window (App.tsx) — and a search only in this library's books, lectures and subtitles.
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { ArrowLeft, BookOpen, FileText, Film, Folder, FolderOpen, Globe, Image as ImageIcon, Library, Link2Off, Music, Pause, Play, Plus, RotateCw, Search, X } from "lucide-react";
 import { api, EMPTY_PERSON, fileUrl, LibEntry, LibHit, libUrl, LibraryView, PersonFields } from "../api";
@@ -11,11 +11,86 @@ import { joinNotes, linkKind, linkLabel, linkOpenTarget, NoteLink, splitNotes } 
 import { ask } from "./ui";
 import { ReaderStyle, SectionView } from "./Reader";
 
+const NO_TERMS: never[] = [];
+
 /** A Markdown or text file of the library (written lectures, 13-11-2026: «los .md salen en blanco» in a frame), read
  *  in the app's own reader look. */
-function TextFile({ url, readerStyle, fontSize }: { url: string; readerStyle: ReaderStyle; fontSize: number }) {
+function TextFile({ id, rel, url, readerStyle, fontSize }: { id: number; rel: string; url: string; readerStyle: ReaderStyle; fontSize: number }) {
   const [text, setText] = useState<string | null>(null);
   const [err, setErr] = useState("");
+  const box = useRef<HTMLDivElement>(null);
+  // (the same objects on every render: SectionView writes its text again when they change, and the pictures with it)
+  const section = useMemo(() => (text === null ? null : { id: 0, ordinal: 0, heading: null, text }), [text]);
+  // its pictures («![[photo.jpg]]», Obsidian) and its recordings («![[talk.mp3]]»: a player), found in the library
+  // (next to it, in «_resources»…: library.rs). The text may be written again by SectionView after this: an observer
+  // puts them back.
+  useEffect(() => {
+    const root = box.current;
+    if (!root || text === null) return;
+    let live = true;
+    const IMG = /\.(?:png|jpe?g|gif|bmp|webp|avif)$/i;
+    const AUDIO = /\.(?:mp3|m4a|ogg|opus|wav|flac|aac)$/i;
+    const found = new Map<string, string | null>(); // name → path in the library (null: not there)
+    const asking = new Set<string>();
+    const show = (el: HTMLImageElement | HTMLAudioElement) => {
+      const p = found.get(el.dataset.attach!);
+      if (p === undefined) return;
+      if (p) {
+        if (el.getAttribute("src") !== libUrl(id, p)) el.src = libUrl(id, p);
+        el.classList.remove("missing");
+      } else el.classList.add("missing");
+    };
+    const make = (name: string, width?: string) => {
+      if (AUDIO.test(name)) {
+        const au = document.createElement("audio");
+        au.controls = true;
+        au.preload = "none";
+        au.dataset.attach = name;
+        au.className = "ln-audio";
+        return au;
+      }
+      const img = document.createElement("img");
+      img.dataset.attach = name;
+      if (width) img.width = parseInt(width, 10);
+      img.className = "ln-img";
+      img.loading = "lazy";
+      return img;
+    };
+    const apply = () => {
+      // the editor look shows the line as written: the picture or the player goes under it
+      root.querySelectorAll<HTMLElement>(".ln").forEach((ln) => {
+        if (ln.querySelector("[data-attach]")) return;
+        // («Audio Link: ![[talk.mp3]]»: also in the middle of a line)
+        for (const m of (ln.textContent ?? "").matchAll(/!\[\[([^\]|#]+)(?:\|\s*(\d+))?[^\]]*\]\]/g)) {
+          const n = m[1].trim();
+          if (IMG.test(n) || AUDIO.test(n)) ln.appendChild(make(n, m[2]));
+        }
+      });
+      // the book look: an embedded recording is a link «📎 talk.mp3» — the player after it
+      root.querySelectorAll<HTMLElement>("a.embed[data-wikilink]").forEach((a) => {
+        const n = a.dataset.wikilink!.trim();
+        if (!AUDIO.test(n) || (a.nextElementSibling as HTMLElement | null)?.dataset?.attach) return;
+        a.after(make(n));
+      });
+      const media = Array.from(root.querySelectorAll<HTMLImageElement | HTMLAudioElement>("img[data-attach], audio[data-attach]"));
+      media.forEach(show);
+      const want = [...new Set(media.map((i) => i.dataset.attach!))].filter((n) => !found.has(n) && !asking.has(n));
+      if (!want.length) return;
+      want.forEach((n) => asking.add(n));
+      api.libraryAttachments(id, rel, want).then((paths) => {
+        if (!live) return;
+        want.forEach((n, i) => found.set(n, paths[i]));
+        root.querySelectorAll<HTMLImageElement | HTMLAudioElement>("img[data-attach], audio[data-attach]").forEach(show);
+      }, () => {});
+    };
+    apply();
+    const watch = new MutationObserver(() => apply());
+    watch.observe(root, { childList: true, subtree: true });
+    return () => {
+      live = false;
+      watch.disconnect();
+    };
+  }, [text, readerStyle, id, rel]);
   useEffect(() => {
     let live = true;
     fetch(url)
@@ -29,8 +104,8 @@ function TextFile({ url, readerStyle, fontSize }: { url: string; readerStyle: Re
   if (text === null) return <p className="muted web-note">…</p>;
   return (
     <div className="reader-scroll lib-text">
-      <div className={`reader-body ${readerStyle === "editor" ? "src-view" : readerStyle}`} style={{ fontSize }}>
-        <SectionView s={{ id: 0, ordinal: 0, heading: null, text }} terms={[]} multi={false} source={readerStyle === "editor"} names={null} self={null} />
+      <div ref={box} className={`reader-body ${readerStyle === "editor" ? "src-view" : readerStyle}`} style={{ fontSize }}>
+        <SectionView s={section!} terms={NO_TERMS} multi={false} source={readerStyle === "editor"} names={null} self={null} />
       </div>
     </div>
   );
@@ -405,7 +480,7 @@ export function PersonLibrary({
           ) : (
             /\.(md|txt)$/i.test(e.name) ? (
               // a written lecture in Markdown (Obsidian): read like the app's texts, in the reading style chosen
-              <TextFile key={e.rel} url={url} readerStyle={readerStyle} fontSize={fontSize} />
+              <TextFile key={e.rel} id={id} rel={e.rel} url={url} readerStyle={readerStyle} fontSize={fontSize} />
             ) : (
               <iframe key={e.rel + (shown.at ?? "")} className="lib-frame" src={e.kind === "book" && shown.at ? `${url}#page=${shown.at}` : url} title={tt.title} />
             )
