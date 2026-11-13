@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **13-11-2026** (versión **0.16.7**).
+Última actualización: **13-11-2026** (versión **0.16.8**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,16 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.16.7)
+## 5. Qué hace hoy (v0.16.8)
+
+### Novedades de la 0.16.8 (13-11-2026) — «Linaje» en columnas (formato 10 sin cambios)
+- Whisper (con una captura del árbol de arriba abajo): «si los discípulos no tienen discípulos se podrían recoger en forma
+  de columna». `Lineage.tsx`: los discípulos sin discípulos dibujados y con un solo guru en el dibujo van, si son
+  `LIST_MIN` (3) o más bajo el mismo guru, en cajas de nombres en columna (`lin-list` / `lin-row`; columnas de
+  `LIST_MAX` 20, una al lado de otra); cada fila con su relación y el número de nota; una línea del guru a cada caja.
+  Los pasos de una paramparā y la persona del centro nunca se recogen.
+- Datos (BD de Whisper, 13-11): `scripts/datos/lugares8.json` → 98 fichas con «Lugar» (de sus textos: «resident of»,
+  «Sripata»…; y las unidas a un tīrtha). Quedan ~1.060 con «Lugar» vacío (textos sin lugar).
 
 ### Novedades de la 0.16.7 (13-11-2026) — paramparās y pies de foto (formato 10 sin cambios)
 - **Paramparās** (Whisper: «varias opciones de paramparā… Gauḍīya, ISKCON…»): `src/components/paramparas.ts` —
@@ -1540,6 +1549,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **13-11-2026 — v0.16.8**: «Linaje» con los discípulos sin discípulos recogidos en columnas.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.16.8
 
 - **13-11-2026 — v0.16.7**: paramparās en «Linaje» (Gauḍīya, ISKCON, Gauḍīya Maṭha, familias) y resaltadas en el árbol;
   pies de foto en las galerías de los tīrthas.

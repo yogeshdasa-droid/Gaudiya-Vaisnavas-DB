@@ -12,7 +12,10 @@ import { foldName } from "./Sidebar";
 
 const W = 196; // box width
 const H = 40; // box height (name + relation)
-const MAX_NODES = 450; // more than this is unreadable (and slow): the depths have to come down
+const MAX_NODES = 450;
+const ROW = 18; // a row of a list box (disciples with no disciples, one under the other)
+const LIST_MIN = 3; // from this many such disciples under one guru, they go in a list box
+const LIST_MAX = 20; // names in one list box at most: more go in another box beside it // more than this is unreadable (and slow): the depths have to come down
 const ZOOM_MIN = 0.15;
 const ZOOM_MAX = 2.5;
 
@@ -95,6 +98,7 @@ export function Lineage({
     }
   });
   const pp = paramparaById(ppId);
+  const ppSteps = pp ? pp.steps.filter((s) => byId.has(s.id)).length : 0;
   const setPp = (id: string | null) => {
     setPpIdState(id);
     store("bio.lineagePp", id ?? "");
@@ -222,28 +226,6 @@ export function Lineage({
     for (const r of edges) if (r.note || r.disputed) notes.push({ n: notes.length + 1, rel: r });
     const noteOf = new Map(notes.map((x) => [`${x.rel.from}-${x.rel.to}`, x.n]));
 
-    const g = new dagre.graphlib.Graph({ multigraph: false });
-    g.setGraph({ rankdir: "TB", nodesep: 16, ranksep: 64, edgesep: 10, marginx: 12, marginy: 12 });
-    g.setDefaultEdgeLabel(() => ({}));
-    const order = [...gen.keys()].sort((a, b) => gen.get(a)! - gen.get(b)!);
-    for (const id of order) g.setNode(`P${id}`, { width: W, height: H });
-    for (const r of edges) {
-      // a line against the generations (a disciple drawn above his guru) would turn the drawing over
-      const [ga, gb] = [gen.get(r.from)!, gen.get(r.to)!];
-      if (ga < gb && !g.hasEdge(`P${r.from}`, `P${r.to}`)) g.setEdge(`P${r.from}`, `P${r.to}`, { minlen: gb - ga, weight: r.kind === "diksa" ? 3 : 1 });
-    }
-    dagre.layout(g);
-    const nodes = order.map((id) => {
-      const n = g.node(`P${id}`) as { x: number; y: number };
-      return { id, p: byId.get(id)!, gen: gen.get(id)!, x: n.x - W / 2, y: n.y - H / 2 };
-    });
-    const minX = Math.min(...nodes.map((n) => n.x));
-    const minY = Math.min(...nodes.map((n) => n.y));
-    for (const n of nodes) {
-      n.x -= minX - 70; // room on the left for the generation labels
-      n.y -= minY - 10;
-    }
-    const at = new Map(nodes.map((n) => [n.id, n]));
     // the relation each person is drawn with (to a guru drawn above it)
     const relOf = new Map<number, Rel>();
     for (const r of edges) {
@@ -251,41 +233,98 @@ export function Lineage({
       const own = byId.get(r.to)?.tree?.parent === r.from;
       if (gen.get(r.from)! < gen.get(r.to)! && (!prev || own)) relOf.set(r.to, r);
     }
-    const lines = edges.map((r) => {
-      const a = at.get(r.from)!;
-      const b = at.get(r.to)!;
+    // disciples with no disciples drawn below them and only one guru drawn: under the same guru, three or more go
+    // together in one box, one name under the other (Whisper, 13-11-2026: «que se recojan en forma de columna»)
+    const hasDisc = new Set(edges.filter((r) => gen.get(r.from)! < gen.get(r.to)!).map((r) => r.from));
+    const gurusIn = new Map<number, number>();
+    for (const r of edges) gurusIn.set(r.to, (gurusIn.get(r.to) ?? 0) + 1);
+    const fixed = (id: number) => (pp ? gen.get(id)! <= ppSteps : id === center);
+    const byGuru = new Map<number, number[]>();
+    for (const id of gen.keys()) {
+      const r = relOf.get(id);
+      if (!r || fixed(id) || hasDisc.has(id) || gurusIn.get(id) !== 1) continue;
+      byGuru.set(r.from, [...(byGuru.get(r.from) ?? []), id]);
+    }
+    const listOf = new Map<number, number>(); // person → the guru whose list box holds it
+    for (const [guru, ids] of byGuru) if (ids.length >= LIST_MIN) for (const id of ids) listOf.set(id, guru);
+    // a long list goes in several boxes side by side (columns of LIST_MAX at most)
+    const boxes: { key: string; guru: number; items: number[] }[] = [];
+    for (const gu of new Set(listOf.values())) {
+      const all = (byGuru.get(gu) ?? []).sort((a, b) => (byId.get(a)?.tree?.pos ?? 0) - (byId.get(b)?.tree?.pos ?? 0));
+      const cols = Math.ceil(all.length / LIST_MAX);
+      const per = Math.ceil(all.length / cols);
+      for (let k = 0; k < cols; k++) boxes.push({ key: `L${gu}-${k}`, guru: gu, items: all.slice(k * per, (k + 1) * per) });
+    }
+
+    const g = new dagre.graphlib.Graph({ multigraph: false });
+    g.setGraph({ rankdir: "TB", nodesep: 16, ranksep: 64, edgesep: 10, marginx: 12, marginy: 12 });
+    g.setDefaultEdgeLabel(() => ({}));
+    const order = [...gen.keys()].filter((id) => !listOf.has(id)).sort((a, b) => gen.get(a)! - gen.get(b)!);
+    for (const id of order) g.setNode(`P${id}`, { width: W, height: H });
+    for (const b of boxes) g.setNode(b.key, { width: W, height: 12 + b.items.length * ROW });
+    for (const r of edges) {
+      if (listOf.has(r.to)) continue;
+      // a line against the generations (a disciple drawn above his guru) would turn the drawing over
+      const [ga, gb] = [gen.get(r.from)!, gen.get(r.to)!];
+      if (ga < gb && !g.hasEdge(`P${r.from}`, `P${r.to}`)) g.setEdge(`P${r.from}`, `P${r.to}`, { minlen: gb - ga, weight: r.kind === "diksa" ? 3 : 1 });
+    }
+    for (const b of boxes) g.setEdge(`P${b.guru}`, b.key, { minlen: 1, weight: 2 });
+    dagre.layout(g);
+    const nodes = order.map((id) => {
+      const n = g.node(`P${id}`) as { x: number; y: number };
+      return { id, p: byId.get(id)!, gen: gen.get(id)!, x: n.x - W / 2, y: n.y - H / 2 };
+    });
+    const lists = boxes.map(({ key, guru, items }) => {
+      const h = 12 + items.length * ROW;
+      const n = g.node(key) as { x: number; y: number };
+      return { key, guru, items, gen: gen.get(items[0])!, x: n.x - W / 2, y: n.y - h / 2, h };
+    });
+    const minX = Math.min(...nodes.map((n) => n.x), ...lists.map((l) => l.x));
+    const minY = Math.min(...nodes.map((n) => n.y), ...lists.map((l) => l.y));
+    for (const n of [...nodes, ...lists]) {
+      n.x -= minX - 70; // room on the left for the generation labels
+      n.y -= minY - 10;
+    }
+    const at = new Map<number, { x: number; y: number; h: number }>(nodes.map((n) => [n.id, { x: n.x, y: n.y, h: H }]));
+    const path = (a: { x: number; y: number; h: number }, b: { x: number; y: number; h: number }) => {
       const x1 = a.x + W / 2;
       const x2 = b.x + W / 2;
-      let d: string;
-      let mx: number;
-      let my: number;
-      if (b.y > a.y + H + 4) {
-        const y1 = a.y + H;
+      if (b.y > a.y + a.h + 4) {
+        const y1 = a.y + a.h;
         const bend = Math.max(24, (b.y - y1) / 2);
-        d = `M${x1},${y1} C${x1},${y1 + bend} ${x2},${b.y - bend} ${x2},${b.y}`;
-        mx = (x1 + x2) / 2;
-        my = (y1 + b.y) / 2;
-      } else {
-        // a guru on the same row or lower: an arc on the side
-        const y1 = a.y + H / 2;
-        const y2 = b.y + H / 2;
-        const side = Math.max(a.x, b.x) + W + 40;
-        d = `M${a.x + W},${y1} C${side},${y1} ${side},${y2} ${b.x + W},${y2}`;
-        mx = side - 10;
-        my = (y1 + y2) / 2;
+        return { d: `M${x1},${y1} C${x1},${y1 + bend} ${x2},${b.y - bend} ${x2},${b.y}`, mx: (x1 + x2) / 2, my: (y1 + b.y) / 2 };
       }
-      return { key: `${r.from}-${r.to}`, rel: r, d, mx, my, n: noteOf.get(`${r.from}-${r.to}`) };
-    });
+      // a guru on the same row or lower: an arc on the side
+      const y1 = a.y + a.h / 2;
+      const y2 = b.y + Math.min(b.h, H) / 2;
+      const side = Math.max(a.x, b.x) + W + 40;
+      return { d: `M${a.x + W},${y1} C${side},${y1} ${side},${y2} ${b.x + W},${y2}`, mx: side - 10, my: (y1 + y2) / 2 };
+    };
+    const lines = [
+      ...edges
+        .filter((r) => !listOf.has(r.to))
+        .map((r) => ({ key: `${r.from}-${r.to}`, rel: r, ...path(at.get(r.from)!, at.get(r.to)!), n: noteOf.get(`${r.from}-${r.to}`) })),
+      // one line to each list box, of the kind most of its people have
+      ...lists.map((box) => {
+        const gu = box.guru;
+        const rels = box.items.map((id) => relOf.get(id)!);
+        const kinds = new Map<RelKind, number>();
+        for (const r of rels) kinds.set(r.kind, (kinds.get(r.kind) ?? 0) + 1);
+        const kind = [...kinds.entries()].sort((a, b) => b[1] - a[1])[0][0];
+        const rel: Rel = { from: gu, to: rels[0].to, kind, note: "", disputed: false };
+        return { key: box.key, rel, ...path(at.get(gu)!, box), n: undefined as number | undefined };
+      }),
+    ];
     // the generation labels, on the left of each row
     const rows = new Map<number, number>();
-    for (const n of nodes) rows.set(n.gen, Math.min(rows.get(n.gen) ?? Infinity, n.y));
-    const width = Math.max(...nodes.map((n) => n.x + W)) + 60;
-    const height = Math.max(...nodes.map((n) => n.y + H)) + 20;
+    for (const n of [...nodes, ...lists]) rows.set(n.gen, Math.min(rows.get(n.gen) ?? Infinity, n.y));
+    const width = Math.max(...nodes.map((n) => n.x + W), ...lists.map((l) => l.x + W)) + 60;
+    const height = Math.max(...nodes.map((n) => n.y + H), ...lists.map((l) => l.y + l.h)) + 20;
     // how far the data goes (for the hint: «there are more generations above / below»)
     const moreUp = !pp && [...gen.entries()].some(([id, gg]) => gg === -up && (gurusOf.get(id) ?? []).some((r) => !gen.has(r.from)));
     const moreDown = !pp && [...gen.entries()].some(([id, gg]) => gg === down && (discOf.get(id) ?? []).some((r) => !gen.has(r.to)));
-    return { nodes, lines, notes, rows: [...rows.entries()].sort((a, b) => a[0] - b[0]), width, height, cut, relOf, moreUp, moreDown };
-  }, [center, persons, byId, up, down, line, pp]);
+    return { nodes, lists, noteOf, lines, notes, rows: [...rows.entries()].sort((a, b) => a[0] - b[0]), width, height, cut, relOf, moreUp, moreDown, count: gen.size };
+  }, [center, persons, byId, up, down, line, pp, ppSteps]);
 
   // ---- zoom and moving around (as in the Paramparā Tree)
   const canvas = useRef<HTMLDivElement>(null);
@@ -352,7 +391,6 @@ export function Lineage({
   const [hot, setHot] = useState<number | null>(null); // a note lit from the margin
   const short = (s: string, n: number) => (s.length > n ? s.slice(0, n - 1) + "…" : s);
   const me = !pp && center !== null ? byId.get(center) : undefined;
-  const ppSteps = pp ? pp.steps.filter((s) => byId.has(s.id)).length : 0;
   const genLabel = (g: number) =>
     pp ? (g <= ppSteps ? String(g) : t.lineageGenDown(g - ppSteps)) : g === 0 ? t.lineageGenSelf : g < 0 ? t.lineageGenUp(-g) : t.lineageGenDown(g);
   const kindName = (k: RelKind) => (k === "family" ? t.lineageFamily : t.treeKinds[k]);
@@ -488,7 +526,7 @@ export function Lineage({
               <span className="muted small">{t.lineageClickHint}</span>
             </div>
             <p className="muted small tree-legend">{t.lineageLegend}</p>
-            {graph?.cut && <p className="small lin-warn">{t.lineageTooMany(graph.nodes.length)}</p>}
+            {graph?.cut && <p className="small lin-warn">{t.lineageTooMany(graph.count)}</p>}
             {graph && (graph.moreUp || graph.moreDown) && (
               <p className="muted small">{[graph.moreUp && t.lineageMoreUp, graph.moreDown && t.lineageMoreDown].filter(Boolean).join(" · ")}</p>
             )}
@@ -533,6 +571,41 @@ export function Lineage({
                         )}
                       </g>
                     ))}
+                  {/* disciples with no disciples, one under the other in a box */}
+                  {graph.lists.map((l) => (
+                    <g key={l.key} className="tree-list lin-list" transform={`translate(${l.x},${l.y})`}>
+                      <rect width={W} height={l.h} rx={7} />
+                      {l.items.map((id, i) => {
+                        const p = byId.get(id)!;
+                        const rel = graph.relOf.get(id);
+                        const n = graph.noteOf.get(`${rel?.from}-${id}`);
+                        const kind = rel ? (pp && rel.list ? t.lineagePpListShort : kindShort(rel.kind)) : "";
+                        return (
+                          <g
+                            key={id}
+                            data-ctx="person"
+                            data-id={id}
+                            className={`tree-node lin-row${rel?.disputed ? " doubtful" : ""}${hot !== null && hot === n ? " hot" : ""}`}
+                            onClick={(e) => e.detail === 1 && toPerson(id)}
+                            onDoubleClick={() => onPerson(id)}
+                            onMouseEnter={() => n && setHot(n)}
+                            onMouseLeave={() => n && setHot(null)}
+                          >
+                            <title>{`${p.name}${p.aka ? `\n${p.aka}` : ""}${rel ? `\n${kindName(rel.kind)}${rel.disputed ? ` · ${t.treeDisputed}` : ""}${rel.note ? `\n${rel.note}` : ""}` : ""}\n${t.lineageClickHint}`}</title>
+                            <rect className="tree-list-row" x={3} y={6 + i * ROW} width={W - 6} height={ROW} rx={3} />
+                            <text x={10} y={6 + i * ROW + 12.5}>
+                              {short(p.name, n ? 21 : 24)}
+                            </text>
+                            <text className={`tree-kind ${rel?.kind ?? ""}`} x={W - 8} y={6 + i * ROW + 12.5} textAnchor="end">
+                              {n ? `${n} · ` : ""}
+                              {rel?.disputed ? "? " : ""}
+                              {kind}
+                            </text>
+                          </g>
+                        );
+                      })}
+                    </g>
+                  ))}
                   {graph.nodes.map((n) => {
                     const rel = graph.relOf.get(n.id);
                     return (
@@ -591,7 +664,7 @@ export function Lineage({
                     </div>
                   </div>
                 ))}
-                <p className="muted small lin-count">{t.lineageCount(graph.nodes.length, lang)}</p>
+                <p className="muted small lin-count">{t.lineageCount(graph.count, lang)}</p>
               </aside>
             </div>
           )}

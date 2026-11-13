@@ -6774,3 +6774,17 @@ svg.satellite .map-dot {
   stroke: var(--accent);
   stroke-width: 2;
 }
+
+/* «Linaje»: disciples with no disciples, one under the other in a box (13-11-2026) */
+.lin-list .lin-row text {
+  font-size: 11.5px;
+}
+.lin-list .lin-row text.tree-kind {
+  font-size: 10px;
+}
+.lin-list .lin-row {
+  cursor: pointer;
+}
+.lin-list .lin-row.hot .tree-list-row {
+  fill: var(--accent-soft, rgba(255, 200, 60, 0.18));
+}

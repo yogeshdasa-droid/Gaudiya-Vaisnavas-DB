@@ -1,0 +1,394 @@
+[
+ {
+  "id": 18,
+  "place": "Chittagong"
+ },
+ {
+  "id": 30,
+  "place": "Chittagong"
+ },
+ {
+  "id": 31,
+  "place": "Osakhain (Bansakhali), Chittagong"
+ },
+ {
+  "id": 40,
+  "place": "Śrīhaṭṭa"
+ },
+ {
+  "id": 89,
+  "place": "Jājigrāma, near Kāṭwā"
+ },
+ {
+  "id": 107,
+  "place": "Mada, Burdwan"
+ },
+ {
+  "id": 114,
+  "place": "Maliyāḍā, near Raghunāthapura (Vana-viṣṇupura)"
+ },
+ {
+  "id": 121,
+  "place": "Anwara, Chittagong"
+ },
+ {
+  "id": 154,
+  "place": "Phuliyā"
+ },
+ {
+  "id": 172,
+  "place": "Pānihāṭi"
+ },
+ {
+  "id": 178,
+  "place": "Devavana, Saharanpur (near Hardwar)"
+ },
+ {
+  "id": 181,
+  "place": "Śrīkhaṇḍa"
+ },
+ {
+  "id": 257,
+  "place": "Teliyā (Murshidabad)"
+ },
+ {
+  "id": 270,
+  "place": "Dāṅīhāṭa"
+ },
+ {
+  "id": 303,
+  "place": "Navadvīpa"
+ },
+ {
+  "id": 336,
+  "place": "Viṣṇupura"
+ },
+ {
+  "id": 363,
+  "place": "Gaurāṅgapura, near Khānākula-Kṛṣṇanagara (Hugli)"
+ },
+ {
+  "id": 373,
+  "place": "Gopīvallabhapura"
+ },
+ {
+  "id": 379,
+  "place": "Rohiṇī, near Gopīvallabhapura (Midnapur)"
+ },
+ {
+  "id": 380,
+  "place": "Mirzapur"
+ },
+ {
+  "id": 411,
+  "place": "Orissa"
+ },
+ {
+  "id": 454,
+  "place": "Baḍagāchi, north of Navadvīpa"
+ },
+ {
+  "id": 494,
+  "place": "Calcutta"
+ },
+ {
+  "id": 520,
+  "place": "Gauḍa"
+ },
+ {
+  "id": 536,
+  "place": "Navadvīpa"
+ },
+ {
+  "id": 552,
+  "place": "Jagannātha Purī, Orissa"
+ },
+ {
+  "id": 577,
+  "place": "Navadvīpa (originally from Śrīhaṭṭa)"
+ },
+ {
+  "id": 604,
+  "place": "Benāpura, Burdwan"
+ },
+ {
+  "id": 619,
+  "place": "Mānakara, Burdwan"
+ },
+ {
+  "id": 704,
+  "place": "Vṛndāvana"
+ },
+ {
+  "id": 745,
+  "place": "Kāśī"
+ },
+ {
+  "id": 751,
+  "place": "Ambikā-Kālnā"
+ },
+ {
+  "id": 780,
+  "place": "Pāṅcthupi, Murshidabad"
+ },
+ {
+  "id": 782,
+  "place": "Teṅā-vaidyapura"
+ },
+ {
+  "id": 788,
+  "place": "Dvīpagrāma"
+ },
+ {
+  "id": 791,
+  "place": "Kheturī"
+ },
+ {
+  "id": 816,
+  "place": "Kūrmakṣetra (South India)"
+ },
+ {
+  "id": 852,
+  "place": "Śāntipura"
+ },
+ {
+  "id": 860,
+  "place": "Phuliyā"
+ },
+ {
+  "id": 917,
+  "place": "Jhāmaṭapura"
+ },
+ {
+  "id": 1019,
+  "place": "Navadvīpa"
+ },
+ {
+  "id": 1027,
+  "place": "Maṅgaladihi (Birbhum)"
+ },
+ {
+  "id": 1158,
+  "place": "Sadipura"
+ },
+ {
+  "id": 1178,
+  "place": "Murshidabad"
+ },
+ {
+  "id": 1199,
+  "place": "Māro (Madograma)"
+ },
+ {
+  "id": 1211,
+  "place": "Navadvīpa"
+ },
+ {
+  "id": 1218,
+  "place": "Manbhum"
+ },
+ {
+  "id": 1243,
+  "place": "Saptagrāma (from East Bengal)"
+ },
+ {
+  "id": 1291,
+  "place": "Bāgankolā, near Kāṭwā"
+ },
+ {
+  "id": 1294,
+  "place": "Mewar (Rajasthan)"
+ },
+ {
+  "id": 1313,
+  "place": "Beleṭi"
+ },
+ {
+  "id": 1314,
+  "place": "Cakraśālā, Chittagong"
+ },
+ {
+  "id": 1317,
+  "place": "Budhurī"
+ },
+ {
+  "id": 1338,
+  "place": "Cāṅka, Burdwan"
+ },
+ {
+  "id": 1357,
+  "place": "Jalandi, near Bolpur (Birbhum)"
+ },
+ {
+  "id": 1382,
+  "place": "Belpukur, Navadvīpa"
+ },
+ {
+  "id": 1391,
+  "place": "Śrīhaṭṭa"
+ },
+ {
+  "id": 1395,
+  "place": "Guptipāḍā"
+ },
+ {
+  "id": 1460,
+  "place": "Chittagong"
+ },
+ {
+  "id": 1463,
+  "place": "Vallabhapura, near Maheśa"
+ },
+ {
+  "id": 1473,
+  "place": "Navadvīpa"
+ },
+ {
+  "id": 1482,
+  "place": "Maheśa"
+ },
+ {
+  "id": 1557,
+  "place": "Śrīraṅgam (Śrī Raṅga-kṣetra), South India"
+ },
+ {
+  "id": 1566,
+  "place": "Nṛsiṁhapura (Orissa)"
+ },
+ {
+  "id": 1588,
+  "place": "Kumārahaṭṭa (Hālisahara)"
+ },
+ {
+  "id": 1603,
+  "place": "Vṛndāvana"
+ },
+ {
+  "id": 1606,
+  "place": "Kāśī"
+ },
+ {
+  "id": 1625,
+  "place": "Navadvīpa"
+ },
+ {
+  "id": 1643,
+  "place": "Kulīnagrāma"
+ },
+ {
+  "id": 1647,
+  "place": "Jessore"
+ },
+ {
+  "id": 1663,
+  "place": "Kaiyaḍa, Burdwan"
+ },
+ {
+  "id": 1671,
+  "place": "Kulīnagrāma"
+ },
+ {
+  "id": 1676,
+  "place": "Navadvīpa"
+ },
+ {
+  "id": 1683,
+  "place": "Navadvīpa"
+ },
+ {
+  "id": 1687,
+  "place": "Beleṭi, Chittagong"
+ },
+ {
+  "id": 1699,
+  "place": "Cachar (Assam)"
+ },
+ {
+  "id": 1704,
+  "place": "Māro (Madograma)"
+ },
+ {
+  "id": 1726,
+  "place": "Mithilā"
+ },
+ {
+  "id": 1787,
+  "place": "Belpukur, Navadvīpa"
+ },
+ {
+  "id": 1910,
+  "place": "Pānihāṭi"
+ },
+ {
+  "id": 165,
+  "place": "Cākundi"
+ },
+ {
+  "id": 216,
+  "place": "Maheśa"
+ },
+ {
+  "id": 293,
+  "place": "Cākundi"
+ },
+ {
+  "id": 335,
+  "place": "Kāñcanagaḍiyā"
+ },
+ {
+  "id": 497,
+  "place": "Budhuī-pāḍā"
+ },
+ {
+  "id": 747,
+  "place": "Saidābād"
+ },
+ {
+  "id": 888,
+  "place": "Paścimapāḍā"
+ },
+ {
+  "id": 918,
+  "place": "Jhāmaṭapura; Bālasāgrāma (Rādhānagara)"
+ },
+ {
+  "id": 939,
+  "place": "Śrīkhaṇḍa"
+ },
+ {
+  "id": 1033,
+  "place": "Navadvīpa"
+ },
+ {
+  "id": 1070,
+  "place": "Ambikā-Kālnā"
+ },
+ {
+  "id": 1177,
+  "place": "Kāñcanagaḍiyā"
+ },
+ {
+  "id": 1308,
+  "place": "Śrīkhaṇḍa"
+ },
+ {
+  "id": 1354,
+  "place": "Mālañcapāḍā"
+ },
+ {
+  "id": 1442,
+  "place": "Śāntipura"
+ },
+ {
+  "id": 1475,
+  "place": "Cāṅdapāḍā"
+ },
+ {
+  "id": 2002,
+  "place": "Maheśa"
+ },
+ {
+  "id": 2064,
+  "place": "Kogrāma"
+ }
+]
