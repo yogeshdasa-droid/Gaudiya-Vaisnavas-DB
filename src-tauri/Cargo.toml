@@ -1,6 +1,6 @@
 [package]
 name = "gaudiya-vaisnavas-db"
-version = "0.17.10"
+version = "0.17.11"
 description = "Gaudiya Vaisnavas DB: biografias vaisnavas"
 edition = "2021"
 

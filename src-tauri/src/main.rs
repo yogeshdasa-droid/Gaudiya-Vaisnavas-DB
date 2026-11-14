@@ -573,6 +573,18 @@ async fn set_person_photo(state: State<'_, AppState>, id: i64, path: String) -> 
     store::set_person_photo(&state.conn.lock().unwrap(), id, std::path::Path::new(&path))
 }
 
+/// A picture pasted with Ctrl+V (copied in a browser) as the record's photo (15-11-2026): the bytes go
+/// through a file in the temporary folder, so that it is read like any chosen picture.
+#[tauri::command]
+async fn set_person_photo_bytes(state: State<'_, AppState>, id: i64, data: Vec<u8>, ext: String) -> CmdResult<()> {
+    let ext: String = ext.chars().filter(|c| c.is_ascii_alphanumeric()).take(5).collect();
+    let path = std::env::temp_dir().join(format!("vaisnava-kosa-pasted-{id}.{}", if ext.is_empty() { "png" } else { &ext }));
+    std::fs::write(&path, &data).map_err(err)?;
+    let r = store::set_person_photo(&state.conn.lock().unwrap(), id, &path);
+    let _ = std::fs::remove_file(&path);
+    r
+}
+
 /// dīkṣā / śikṣā disciple or associate of the guru above in the tree.
 #[tauri::command]
 async fn set_tree_kind(state: State<'_, AppState>, id: i64, kind: String) -> CmdResult<()> {
@@ -1390,6 +1402,7 @@ fn main() {
             move_text,
             cut_text,
             set_person_photo,
+            set_person_photo_bytes,
             remove_person_photo,
             create_doc,
             save_section,

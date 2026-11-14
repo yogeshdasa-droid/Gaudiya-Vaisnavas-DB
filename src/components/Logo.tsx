@@ -14,6 +14,37 @@ export function LogoMark() {
 
 export const APP_NAME = "Vaiṣṇava-kośa";
 
+/** The records whose text cover (a printed page) must not stand in for their photo (15-11-2026, Whisper: «Śaṅkarācārya
+ *  trae la foto de una página de libro»): the ✕ on it in the record. Kept in this computer (localStorage). */
+export const coverHidden = {
+  read(): Set<number> {
+    try {
+      return new Set<number>(JSON.parse(localStorage.getItem("bio.coverHidden") ?? "[]"));
+    } catch {
+      return new Set<number>();
+    }
+  },
+  write(s: Set<number>) {
+    try {
+      localStorage.setItem("bio.coverHidden", JSON.stringify([...s]));
+    } catch {
+      /* storage unavailable */
+    }
+  },
+  has(id: number) {
+    return this.read().has(id);
+  },
+  add(id: number) {
+    const s = this.read();
+    s.add(id);
+    this.write(s);
+  },
+  remove(id: number) {
+    const s = this.read();
+    if (s.delete(id)) this.write(s);
+  },
+};
+
 /** One petal pointing up from the centre (50,50), `len` long and `w` wide, turned `deg` degrees. */
 const petal = (len: number, w: number, deg: number, fill: string, key: string) => (
   <path

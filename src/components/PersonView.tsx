@@ -6,7 +6,7 @@ import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
 import { ReaderStyle, SectionView } from "./Reader";
 import { boldPerson, type NameIndex } from "../personLinks";
-import { NoPhoto } from "./Logo";
+import { coverHidden, NoPhoto } from "./Logo";
 import type { Term } from "../fold";
 import { foldName } from "./Sidebar";
 import { placesOfPerson } from "../places";
@@ -369,6 +369,33 @@ export function PersonView(p: Props) {
     return () => window.removeEventListener("click", close);
   }, [tripMenu]);
 
+  // Ctrl+V with a picture copied (in a browser: right click › «Copy image») = the record's photo (15-11-2026)
+  const pasteRef = useRef({ id: p.id, onPhotoChanged: p.onPhotoChanged, onToast: p.onToast, msg: t.photoPasted });
+  pasteRef.current = { id: p.id, onPhotoChanged: p.onPhotoChanged, onToast: p.onToast, msg: t.photoPasted };
+  useEffect(() => {
+    const onPaste = async (e: ClipboardEvent) => {
+      const el = document.activeElement as HTMLElement | null;
+      if (el && (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.isContentEditable)) return;
+      const item = [...(e.clipboardData?.items ?? [])].find((i) => i.kind === "file" && i.type.startsWith("image/"));
+      const file = item?.getAsFile();
+      if (!file) return;
+      e.preventDefault();
+      const r = pasteRef.current;
+      try {
+        const buf = new Uint8Array(await file.arrayBuffer());
+        const ext = (file.type.split("/")[1] ?? "png").replace("jpeg", "jpg");
+        await api.setPersonPhotoBytes(r.id, Array.from(buf), ext);
+        coverHidden.remove(r.id);
+        r.onPhotoChanged();
+        r.onToast(r.msg);
+      } catch (err) {
+        r.onToast(String(err));
+      }
+    };
+    window.addEventListener("paste", onPaste);
+    return () => window.removeEventListener("paste", onPaste);
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     api
@@ -619,7 +646,16 @@ export function PersonView(p: Props) {
 
   if (!person || person.id !== p.id) return <div className="reader" />;
 
-  const cover = person.docs.find((d) => d.hasCover);
+  // (a text's cover stands in for the photo, unless it was taken away: a printed page is not a picture of him)
+  const cover = coverHidden.has(person.id) ? undefined : person.docs.find((d) => d.hasCover);
+  const hideCover = () => {
+    coverHidden.add(person.id);
+    p.onPhotoChanged();
+  };
+  const searchPhoto = () => {
+    const q = person.name.replace(/\([^)]*\)/g, " ").replace(/\s+/g, " ").trim();
+    p.onOpenWeb(`https://www.google.com/search?tbm=isch&q=${encodeURIComponent(q)}`, t.searchPhotoTitle(q));
+  };
   const choosePhoto = async () => {
     try {
       const path = await open({
@@ -938,12 +974,26 @@ export function PersonView(p: Props) {
                       {person.hasPhoto ? t.changePhoto : t.choosePhoto}
                     </span>
                   </button>
-                  {person.hasPhoto && (
+                  {person.hasPhoto ? (
                     <button className="icon-btn cover-remove" title={t.removePhoto} onClick={removePhoto}>
                       <X size={14} />
                     </button>
+                  ) : (
+                    cover && (
+                      <button className="icon-btn cover-remove" title={t.hideCover} onClick={hideCover}>
+                        <X size={14} />
+                      </button>
+                    )
                   )}
                 </div>
+                {!person.hasPhoto && (
+                  <div className="photo-help">
+                    <button className="btn small" onClick={searchPhoto} title={t.searchPhotoHint}>
+                      <Globe size={14} /> {t.searchPhoto}
+                    </button>
+                    <span className="muted small">{t.pastePhotoHint}</span>
+                  </div>
+                )}
                   {hasFacts ? (
                 <dl>
                   {facts

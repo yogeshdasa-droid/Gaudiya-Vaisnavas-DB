@@ -529,6 +529,8 @@ export const api = {
   completeBack: (id: number, other: number) => invoke<SyncChange[]>("complete_back", { id, other }),
   checkData: () => invoke<Issue[]>("check_data"),
   setPersonPhoto: (id: number, path: string) => invoke<void>("set_person_photo", { id, path }),
+  /** a picture pasted with Ctrl+V */
+  setPersonPhotoBytes: (id: number, data: number[], ext: string) => invoke<void>("set_person_photo_bytes", { id, data, ext }),
   removePersonPhoto: (id: number) => invoke<void>("remove_person_photo", { id }),
 
   createDoc: (personId: number | null, title: string, collection: string) =>

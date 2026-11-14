@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **15-11-2026** (versión **0.17.10**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **15-11-2026** (versión **0.17.11**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,18 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.10)
+## 5. Qué hace hoy (v0.17.11)
+
+### Novedades de la 0.17.11 (15-11-2026) — fotos de las fichas
+- **«Buscar foto en internet»** bajo el tilaka de las fichas sin foto: Google Imágenes con su nombre en el navegador de
+  la app (`onOpenWeb`). **Ctrl+V** en la ficha pega una imagen copiada como su foto (comando `set_person_photo_bytes`
+  en main.rs: los bytes pasan por un archivo temporal y `store::set_person_photo`).
+- **✕ sobre la portada** de un texto que hace de foto: «No usar esta página como foto» (`coverHidden` en Logo.tsx,
+  localStorage `bio.coverHidden`; también en Inicio). La ✕ de quitar la foto se ve siempre (antes solo con el ratón
+  encima).
+- Guru Paramparā lateral: sin las etiquetas dīkṣā/śikṣā/pārṣada al final de las filas; van en la tarjeta («Guru ·
+  dīkṣā: …», «+ X (śikṣā)»).
+- (La búsqueda automática de fotos en Wikipedia se probó y no sirve: bloqueos 429 y casi todo homónimos.)
 
 ### Novedades de la 0.17.10 (15-11-2026) — la Guru Paramparā lateral mejorada
 Todo en `PersonList` de `src/components/Sidebar.tsx` (Whisper revisa fichas una tras otra):
@@ -1681,6 +1692,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **15-11-2026 — v0.17.11**: «Buscar foto en internet», pegar foto con Ctrl+V, quitar la portada como foto; árbol sin
+  etiquetas dīkṣā/śikṣā. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.11
 
 - **15-11-2026 — v0.17.10**: Guru Paramparā lateral: chincheta, fotitos, tarjeta al pasar el ratón, flechas, años, «+N»,
   «Mi paramparā» en dorado, «Dónde estoy».

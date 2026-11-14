@@ -1725,6 +1725,11 @@ select {
 }
 .my-line-chip .mlc-label {
   color: var(--muted);
+  white-space: nowrap;
+  flex: none;
+}
+.my-line-chip .mlc-dot {
+  flex: none;
 }
 .my-line-chip .link-btn {
   color: #e2b552;
@@ -1918,6 +1923,16 @@ select {
 .lotus-divider svg {
   width: 34px;
   height: 20px;
+}
+
+/* under the picture of a record without a photo: search one online / paste one (15-11-2026) */
+.photo-help {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 8px 0 4px;
+  text-align: center;
 }
 
 /* a record without a photo yet: the tilaka and the initials on soft maroon (15-11-2026) */
@@ -3029,11 +3044,15 @@ body.dragging-person * {
   background: var(--surface);
   border: 1px solid var(--border-strong);
   box-shadow: var(--shadow-sm);
-  opacity: 0;
-  transition: opacity 0.2s;
+  /* always seen (15-11-2026, Whisper did not find it: it only showed with the mouse over the photo) */
+  opacity: 0.8;
+  transition: opacity 0.2s, color 0.2s;
 }
 .person-cover-wrap:hover .cover-remove {
   opacity: 1;
+}
+.cover-remove:hover {
+  color: #e0323c;
 }
 .person-title {
   min-width: 0;

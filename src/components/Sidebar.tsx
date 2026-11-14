@@ -839,15 +839,7 @@ function PersonList({
           +{folded.toLocaleString(lang)}
         </span>
       )}
-      {inTree && kindOf.get(p.id) && <span className={`tree-kind ${kindOf.get(p.id)}`}>{t.treeKindShort[kindOf.get(p.id)!]}</span>}
-      {inTree && p.links.length > 0 && (
-        <span
-          className="tree-kind siksa"
-          title={t.moreGurusOf(p.links.map((l) => `${persons.find((x) => x.id === l.guru)?.name ?? "?"} (${t.treeKindShort[l.kind]})`).join(", "))}
-        >
-          + {[...new Set(p.links.map((l) => t.treeKindShort[l.kind]))].join(", ")}
-        </span>
-      )}
+      {/* (the relation — dīkṣā, śikṣā, pārṣada… — and the other gurus are in the card now: 15-11-2026, Whisper) */}
       {p.docs > 1 && <span className="count">{p.docs.toLocaleString(lang)}</span>}
     </div>
   );
@@ -1114,7 +1106,17 @@ function PersonList({
           {drag.drop && <div className="drag-where">{dropLabel(drag.drop)}</div>}
         </div>
       )}
-      {card && !drag && cardPerson?.id === card.id && <PersonCard t={t} p={cardPerson} guru={guruName(cardPerson.id)} top={card.top} left={card.left} />}
+      {card && !drag && cardPerson?.id === card.id && (
+        <PersonCard
+          t={t}
+          p={cardPerson}
+          guru={guruName(cardPerson.id)}
+          kind={kindOf.get(cardPerson.id) ? t.treeKindShort[kindOf.get(cardPerson.id)!] : null}
+          more={(persons.find((x) => x.id === cardPerson.id)?.links ?? []).map((l) => `${persons.find((x) => x.id === l.guru)?.name ?? "?"} (${t.treeKindShort[l.kind]})`)}
+          top={card.top}
+          left={card.left}
+        />
+      )}
     </div>
   );
 }
@@ -1129,7 +1131,25 @@ const short = (s: string, n = 70) => {
 };
 
 /** The card beside the list (15-11-2026): photo, name, dates, place, guru and the start of the notes. */
-function PersonCard({ t, p, guru, top, left }: { t: T; p: Person; guru: string | null; top: number; left: number }) {
+function PersonCard({
+  t,
+  p,
+  guru,
+  kind,
+  more,
+  top,
+  left,
+}: {
+  t: T;
+  p: Person;
+  guru: string | null;
+  /** its relation to the guru above it in the tree (dīkṣā, śikṣā, pārṣada…) */
+  kind: string | null;
+  /** its other gurus («Name (śikṣā)») */
+  more: string[];
+  top: number;
+  left: number;
+}) {
   const notes = splitNotes(p.notes)
     .body.replace(/\*\*?([^*]+)\*\*?/g, "$1")
     .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
@@ -1158,9 +1178,11 @@ function PersonCard({ t, p, guru, top, left }: { t: T; p: Person; guru: string |
         )}
         {(guru || p.guru) && (
           <span className="pcard-row">
-            {t.guru}: {guru ?? short(p.guru)}
+            {t.guru}
+            {kind ? ` · ${kind}` : ""}: {guru ?? short(p.guru)}
           </span>
         )}
+        {more.length > 0 && <span className="pcard-row">+ {more.join(", ")}</span>}
         {lead && <p>{lead}</p>}
       </div>
     </div>

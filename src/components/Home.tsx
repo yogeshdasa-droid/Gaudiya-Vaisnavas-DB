@@ -3,7 +3,7 @@ import { BarChart3, Clock, Clock3, Database, MapPin, Network, FileText, HardDriv
 import { Bookmark, fileUrl, hueOf, isFavorite, PersonListItem, Place, SearchResult, Status } from "../api";
 import { Lang, T } from "../i18n";
 import { AnimatedNumber } from "./ui";
-import { LotusDivider, NoPhoto } from "./Logo";
+import { coverHidden, LotusDivider, NoPhoto } from "./Logo";
 import { Calendar } from "./Calendar";
 
 export interface RecentDoc {
@@ -128,7 +128,7 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
                   <span className="fav-photo">
                     {f.hasPhoto ? (
                       <img src={fileUrl("photo", f.id)} alt="" loading="lazy" />
-                    ) : f.coverDoc ? (
+                    ) : f.coverDoc && !coverHidden.has(f.id) ? (
                       <img src={fileUrl("cover", f.coverDoc)} alt="" loading="lazy" />
                     ) : (
                       <NoPhoto name={f.name} />
@@ -153,7 +153,7 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
                   <span className="pc-cover">
                     {person.hasPhoto ? (
                       <img src={fileUrl("photo", person.id)} alt="" loading="lazy" />
-                    ) : person.coverDoc ? (
+                    ) : person.coverDoc && !coverHidden.has(person.id) ? (
                       <img src={fileUrl("cover", person.coverDoc)} alt="" loading="lazy" />
                     ) : (
                       <NoPhoto name={person.name} />
