@@ -108,7 +108,7 @@ const es = {
   ] as [string, string][],
   shortcutsTitle: "Atajos de teclado",
   // home
-  welcome: "Gaudiya Vaisnavas DB",
+  welcome: "Vaiṣṇava-kośa",
   tagline: "Biografías vaiṣṇavas: todo dentro de una sola base de datos",
   statPersons: "fichas",
   statDocs: "textos",
@@ -674,7 +674,7 @@ const es = {
   importHint: "Copia archivos o carpetas (.md, .txt, .pdf, .docx, .doc, .html) dentro de la base de datos",
   dropTitle: "Suelta para importar",
   dropSub: "Archivos .md, .txt, .pdf, .docx, .doc, .html o carpetas",
-  importTitle: "Importar a Gaudiya Vaisnavas DB",
+  importTitle: "Importar a Vaiṣṇava-kośa",
   importSummary: (files: number, dirs: number) =>
     [files ? `${files} ${files === 1 ? "archivo" : "archivos"}` : "", dirs ? `${dirs} ${dirs === 1 ? "carpeta" : "carpetas"}` : ""]
       .filter(Boolean)
@@ -802,7 +802,7 @@ const es = {
   exporting: "Exportando",
   exportPerson: "Exportar la ficha con sus textos (.md)…",
   printPerson: "Imprimir la ficha…",
-  updateAvailable: (v: string) => `Hay una versión nueva de Gaudiya Vaisnavas DB: ${v}`,
+  updateAvailable: (v: string) => `Hay una versión nueva de Vaiṣṇava-kośa: ${v}`,
   updateDownload: "Descargar el instalador",
   updateNotes: "Novedades",
   updateNone: "Tienes la última versión.",
@@ -1199,7 +1199,7 @@ const en: Dict = {
     ["Esc", "Clear search / close"],
   ],
   shortcutsTitle: "Keyboard shortcuts",
-  welcome: "Gaudiya Vaisnavas DB",
+  welcome: "Vaiṣṇava-kośa",
   tagline: "Vaiṣṇava biographies, all inside one database",
   statPersons: "records",
   statDocs: "texts",
@@ -1760,7 +1760,7 @@ const en: Dict = {
   importHint: "Copy files or folders (.md, .txt, .pdf, .docx, .doc, .html) into the database",
   dropTitle: "Drop to import",
   dropSub: ".md, .txt, .pdf, .docx, .doc, .html files or folders",
-  importTitle: "Import into Gaudiya Vaisnavas DB",
+  importTitle: "Import into Vaiṣṇava-kośa",
   importSummary: (files, dirs) =>
     [files ? `${files} ${files === 1 ? "file" : "files"}` : "", dirs ? `${dirs} ${dirs === 1 ? "folder" : "folders"}` : ""]
       .filter(Boolean)
@@ -1884,7 +1884,7 @@ const en: Dict = {
   exporting: "Exporting",
   exportPerson: "Export the record with its texts (.md)…",
   printPerson: "Print the record…",
-  updateAvailable: (v) => `A new version of Gaudiya Vaisnavas DB is out: ${v}`,
+  updateAvailable: (v) => `A new version of Vaiṣṇava-kośa is out: ${v}`,
   updateDownload: "Download the installer",
   updateNotes: "What's new",
   updateNone: "You have the latest version.",

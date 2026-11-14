@@ -549,6 +549,23 @@ pub fn indexed(db_path: &Path, folder: &str) -> usize {
 mod tests {
     use super::*;
 
+    /// Prepares the search index of every library of a database without the app:
+    /// `BIO_DB=<…\biodata.db> cargo test index_all_libraries -- --ignored --nocapture`
+    /// (only reads the database; writes the derived `biodata-biblioteca.db` next to it).
+    #[test]
+    #[ignore]
+    fn index_all_libraries() {
+        let db = PathBuf::from(std::env::var("BIO_DB").expect("BIO_DB"));
+        let conn = Connection::open_with_flags(&db, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY).unwrap();
+        for (id, folder) in all_folders(&conn).unwrap() {
+            let t = std::time::Instant::now();
+            match update_index(&db, &folder) {
+                Ok(s) => println!("#{id} {folder}: {} archivos, {} nuevos, {:?}", s.files, s.changed, t.elapsed()),
+                Err(err) => println!("#{id} {folder}: ERROR {err}"),
+            }
+        }
+    }
+
     #[test]
     fn note_pictures() {
         let dir = std::env::temp_dir().join(format!("lib-notes-{}", std::process::id()));

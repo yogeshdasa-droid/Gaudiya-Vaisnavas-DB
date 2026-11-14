@@ -1,6 +1,7 @@
 import { BarChart3, CalendarDays, Clock3, Flower2, GitFork, HelpCircle, History, Home as HomeIcon, Library as LibIcon, MapPin, Network, Settings as Gear, Star, Users } from "lucide-react";
 import { T } from "../i18n";
 import type { SideTab } from "./Sidebar";
+import { APP_NAME, LogoMark } from "./Logo";
 
 export type RailView = "home" | "calendar" | "tree" | "timeline" | "lineage" | "panorama";
 
@@ -45,8 +46,10 @@ export function Rail({ t, compact, view, sideTab, sideOpen, onView, onSide, onSe
   return (
     <nav className={`rail ${compact ? "compact" : ""}`}>
       <div className="rail-brand">
-        <span className="logo">G</span>
-        <span>Gaudiya Vaisnavas DB</span>
+        <span className="logo mark">
+          <LogoMark />
+        </span>
+        <span>{APP_NAME}</span>
       </div>
       {views.map(([k, I, label]) => item(k, I, label, view === k, () => onView(k)))}
       <hr />

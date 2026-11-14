@@ -597,6 +597,19 @@ select {
   background: var(--accent-grad);
   box-shadow: 0 3px 10px var(--ring), inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
+/* the drawn mark (book and tilaka) fills the box: no colour of its own */
+.logo.mark,
+:root[data-skin="fluent"] .logo.mark {
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  overflow: hidden;
+}
+.logo.mark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
 .searchbox {
   flex: 1;
   display: flex;

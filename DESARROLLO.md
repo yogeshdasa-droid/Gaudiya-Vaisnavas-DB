@@ -2,7 +2,8 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **14-11-2026** (versión **0.17.6**).
+Última actualización: **14-11-2026** (versión **0.17.7**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +188,18 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.6)
+## 5. Qué hace hoy (v0.17.7)
+
+### Novedades de la 0.17.7 (14-11-2026) — nombre nuevo: Vaiṣṇava-kośa
+- **Nombre en pantalla «Vaiṣṇava-kośa»** («tesoro / enciclopedia vaiṣṇava») y **logo nuevo**: libro abierto con el tilaka
+  gauḍīya y la hoja de tulasī (granate, crema, oro). Dibujo en `src/components/Logo.tsx` (`LogoMark`, `APP_NAME`) y en
+  `src-tauri/icons/source.svg` (iconos del programa con `npx tauri icon src-tauri/icons/source.svg -o src-tauri/icons`;
+  borrar luego `android/` e `ios/`). Cambia: título de la ventana, pantalla de carga (`index.html`), barra lateral, i18n
+  (`welcome`, `importTitle`, `updateAvailable`). **NO cambia** (a propósito): `productName` «Gaudiya Vaisnavas DB» (si
+  cambia, Windows ve otro programa y el actualizador se lía), el identifier, la carpeta `Documentos\Gaudiya Vaisnavas DB`,
+  los nombres de las copias, el repositorio.
+- Prueba ignorada `library::tests::index_all_libraries` (`BIO_DB=<bd> cargo test index_all_libraries -- --ignored`):
+  prepara el índice de búsqueda de todas las bibliotecas sin abrir la app (solo lee la BD).
 
 ### Novedades de la 0.17.6 (14-11-2026) — vídeos con imagen; textos y tīrthas desde el mapa
 - **Vídeos de la biblioteca como tarjetas con imagen** (`src/components/VideoThumb.tsx`): un fotograma del propio vídeo
@@ -1630,6 +1642,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **14-11-2026 — v0.17.7**: la app pasa a llamarse **Vaiṣṇava-kośa** en pantalla, con logo nuevo (libro y tilaka).
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.7
 
 - **14-11-2026 — v0.17.6**: vídeos de la biblioteca con imagen; textos de los tīrthas y «Crear tīrtha aquí» en el mapa.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.6

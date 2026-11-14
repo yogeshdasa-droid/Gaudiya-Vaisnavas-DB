@@ -98,6 +98,7 @@ import { Lineage } from "./components/Lineage";
 import { AudioBar, PersonLibrary } from "./components/PersonLibrary";
 import { WebPage } from "./components/WebPage";
 import { Rail } from "./components/Rail";
+import { APP_NAME, LogoMark } from "./components/Logo";
 import { Calendar } from "./components/Calendar";
 import { ask, Kbd, Splitter, ViewGuard } from "./components/ui";
 
@@ -1048,7 +1049,7 @@ export default function App() {
   if (fatal) {
     return (
       <div className="empty-state" style={{ height: "100%", justifyContent: "center" }}>
-        <h2>Gaudiya Vaisnavas DB</h2>
+        <h2>{APP_NAME}</h2>
         <p style={{ whiteSpace: "pre-wrap", maxWidth: 520 }}>{fatal}</p>
       </div>
     );
@@ -1081,10 +1082,10 @@ export default function App() {
           <button className="icon-btn" onClick={toggleSide} title={sideOpen ? t.collapse : t.expand}>
             {sideOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
           </button>
-          <button className="logo" onClick={() => setMain({ kind: "home" })} title={t.home}>
-            G
+          <button className="logo mark" onClick={() => setMain({ kind: "home" })} title={t.home}>
+            <LogoMark />
           </button>
-          <span className="brand-name">Gaudiya Vaisnavas DB</span>
+          <span className="brand-name">{APP_NAME}</span>
           <button className={`icon-btn ${resultsOpen ? "on" : ""}`} onClick={() => setResultsOpen((o) => !o)} title={t.toggleResults}>
             <ListIcon size={18} />
           </button>
