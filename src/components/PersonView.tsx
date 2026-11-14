@@ -5,7 +5,7 @@ import { api, FAVORITES, fileUrl, isNamesake, LifeSpan, MAIN_TEXT, NAMESAKES, Pl
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
 import { ReaderStyle, SectionView } from "./Reader";
-import type { NameIndex } from "../personLinks";
+import { boldPerson, type NameIndex } from "../personLinks";
 import type { Term } from "../fold";
 import { foldName } from "./Sidebar";
 import { placesOfPerson } from "../places";
@@ -236,6 +236,8 @@ function cardTitle(title: string, name: string): string {
 const INLINE_SECTIONS = 4;
 /** Disciples shown before «See all» (12-11-2026, Whisper: «si son más de digamos 6»). */
 const DISC_SHOWN = 6;
+// texts smaller than this in all (bytes, about a page): the notes are shown open
+const NOTES_OPEN_BELOW = 6000;
 
 /** Links in a text (notes of a record or a place):
  *  - [word](<target>) or [word](https://…) → the word, opening the target (made with «Link…» in the editor);
@@ -262,7 +264,71 @@ export function noteLinks(text: string): ({ text: string } | { text: string; tar
 /** «file:///E:/x%20y.pdf» → «E:/x y.pdf» (the opener wants a path). */
 const openTarget = (t: string) => (t.startsWith("file:///") ? decodeURI(t.slice(8)) : t);
 
-export function WebLinks({ text, onError }: { text: string; onError: (msg: string) => void }) {
+/** **bold** and *italic* of a text (notes, place texts), the rest as it is. Exported for the tests. */
+export function noteMarks(text: string): { text: string; mark?: "b" | "i" }[] {
+  const out: { text: string; mark?: "b" | "i" }[] = [];
+  let at = 0;
+  for (const m of text.matchAll(/\*\*([^*\n]+?)\*\*|(?<![\w*])\*([^*\n]+?)\*(?![\w*])/g)) {
+    if (m.index! > at) out.push({ text: text.slice(at, m.index) });
+    out.push(m[1] !== undefined ? { text: m[1], mark: "b" } : { text: m[2], mark: "i" });
+    at = m.index! + m[0].length;
+  }
+  if (at < text.length) out.push({ text: text.slice(at) });
+  return out;
+}
+
+/** A bold piece: each name in it («Vasudhā, Jāhnavā and Vīrabhadra») is a link to its record, when only
+ *  one record can be meant (15-11-2026, Whisper: «que los nombres en negrita se puedan pulsar»). */
+export function BoldNames({ text, names, self, onPerson }: { text: string; names: NameIndex | null; self?: number; onPerson?: (id: number) => void }) {
+  const whole = onPerson ? boldPerson(text, names) : null;
+  const parts = whole !== null || !onPerson ? [text] : text.split(/(,\s*|\s+(?:and|y|&)\s+)/);
+  return (
+    <strong>
+      {parts.map((s, i) => {
+        const id = whole ?? (i % 2 ? null : boldPerson(s, names));
+        return id !== null && id !== self && onPerson ? (
+          <a key={i} href="#" className="person-link" data-person={id} onClick={(e) => (e.preventDefault(), onPerson(id))}>
+            {s}
+          </a>
+        ) : (
+          <span key={i}>{s}</span>
+        );
+      })}
+    </strong>
+  );
+}
+
+export function WebLinks({
+  text,
+  onError,
+  names,
+  self,
+  onPerson,
+}: {
+  text: string;
+  onError: (msg: string) => void;
+  names?: NameIndex | null;
+  self?: number;
+  onPerson?: (id: number) => void;
+}) {
+  return (
+    <>
+      {noteMarks(text).map((m, i) =>
+        m.mark === "b" ? (
+          <BoldNames key={i} text={m.text} names={names ?? null} self={self} onPerson={onPerson} />
+        ) : m.mark === "i" ? (
+          <em key={i}>
+            <PlainLinks text={m.text} onError={onError} />
+          </em>
+        ) : (
+          <PlainLinks key={i} text={m.text} onError={onError} />
+        ),
+      )}
+    </>
+  );
+}
+
+function PlainLinks({ text, onError }: { text: string; onError: (msg: string) => void }) {
   return (
     <>
       {noteLinks(text).map((p, i) =>
@@ -417,8 +483,14 @@ export function PersonView(p: Props) {
   // the notes open with «See notes» above the text; more than DISC_SHOWN disciples open with «See all»
   const [showNotes, setShowNotes] = useState(false);
   const [discOpen, setDiscOpen] = useState(false);
+  // …but a record with no texts, or only short ones, shows its notes open: all of it at once
+  // (14-11-2026, Whisper: «si tienen notas y los textos no son muy largos, que se vea todo del tirón»)
+  const shortRecord =
+    !!person && person.id === p.id && splitNotes(person.notes).body.trim() !== "" && person.docs.reduce((n, d) => n + (d.size ?? 0), 0) < NOTES_OPEN_BELOW;
   useEffect(() => {
-    setShowNotes(false);
+    setShowNotes(shortRecord);
+  }, [p.id, shortRecord]);
+  useEffect(() => {
     setDiscOpen(false);
   }, [p.id]);
   // with several parts (texts joined into one): one part at a time, chosen
@@ -917,7 +989,7 @@ export function PersonView(p: Props) {
                     </button>
                   </h2>
                   <div className="notes">
-                    <WebLinks text={notes.body} onError={p.onToast} />
+                    <WebLinks text={notes.body} onError={p.onToast} names={p.names} self={person.id} onPerson={p.onPerson} />
                   </div>
                 </section>
               )}

@@ -6,7 +6,29 @@ import { foldName } from "./components/Sidebar";
 export interface NameIndex {
   ids: Map<string, number>;
   maxWords: number;
+  /** For the names written in **bold** in the notes (15-11-2026): the name without «Śrī», «Ṭhākura»,
+   *  «(son of …)»… (`exact`), or only its first word (`first`). -1 = more than one record: not linked. */
+  bold: { full: Map<string, number>; exact: Map<string, number>; first: Map<string, number> };
 }
+
+/** The name with its titles but without «Śrī» and «(son of …)»: «Gadādhara Paṇḍita Gosvāmī» is one record even
+ *  where «Gadādhara» is several. */
+const SRI = new Set(["śrī", "śrīla", "śrīmatī", "śrīmān"].map(foldWord));
+const fullKey = (name: string) =>
+  foldName(name.replace(/\([^)]*\)/g, " "))
+    .split(" ")
+    .filter((w) => w && !SRI.has(w))
+    .join(" ");
+
+/** Words of respect that a name in the notes often leaves out. */
+const TITLES = new Set(
+  ["śrī", "śrīla", "śrīmatī", "śrīmān", "ṭhākura", "ṭhākurāṇī", "gosvāmī", "gosāñi", "prabhu", "paṇḍita", "paṇḍit", "mahāśaya", "devī", "mātā", "īśvarī", "ācārya"].map(foldWord),
+);
+export const boldKey = (name: string) =>
+  foldName(name.replace(/\([^)]*\)/g, " "))
+    .split(" ")
+    .filter((w) => w && !TITLES.has(w))
+    .join(" ");
 
 /**
  * Only names of two words or more are linked: single words ("Rupa",
@@ -14,6 +36,14 @@ export interface NameIndex {
  */
 export function buildNameIndex(persons: PersonListItem[]): NameIndex {
   const ids = new Map<string, number>();
+  const full = new Map<string, number>();
+  const exact = new Map<string, number>();
+  const first = new Map<string, number>();
+  const put = (m: Map<string, number>, k: string, id: number) => {
+    if (!k) return;
+    const was = m.get(k);
+    m.set(k, was === undefined || was === id ? id : -1);
+  };
   let maxWords = 0;
   // when two records share a name, the one with more texts wins
   for (const p of [...persons].sort((a, b) => b.docs - a.docs)) {
@@ -24,8 +54,38 @@ export function buildNameIndex(persons: PersonListItem[]): NameIndex {
       ids.set(key, p.id);
       maxWords = Math.max(maxWords, n);
     }
+    for (const name of [p.name, ...p.aka.split(",")]) {
+      put(full, fullKey(name), p.id);
+      // «Vīrabhadra (disciple of Śyāmānanda)» is a namesake: a bare «Vīrabhadra» is never him
+      if (/\(/.test(name)) continue;
+      const k = boldKey(name);
+      put(exact, k, p.id);
+      put(first, k.split(" ")[0], p.id);
+    }
   }
-  return { ids, maxWords: Math.min(maxWords, 7) };
+  return { ids, maxWords: Math.min(maxWords, 7), bold: { full, exact, first } };
+}
+
+/** Names that, alone, are the Lord or a Deity («Jagannātha, Balarāma and Subhadrā»), not a devotee of that name. */
+const ALONE_NOT = new Set(
+  ["jagannātha", "balarāma", "subhadrā", "gopīnātha", "govinda", "madana-mohana", "madana mohana", "rādhā", "kṛṣṇa", "gaura", "gaurāṅga", "nitāi", "caitanya", "rādhākānta", "rādhā-ramaṇa", "rādhā ramaṇa", "gopāla", "nṛsiṁha", "rāma", "lakṣmī", "gaurahari", "mahāprabhu"].map(
+    (w) => foldName(w),
+  ),
+);
+
+/** The record of a name written in bold, if only one record can be meant. */
+export function boldPerson(text: string, index: NameIndex | null): number | null {
+  if (!index) return null;
+  const fk = fullKey(text);
+  const w = fk.includes(" ") ? index.bold.full.get(fk) : undefined;
+  if (w !== undefined && w > 0) return w;
+  const k = boldKey(text);
+  if (!k || ALONE_NOT.has(k)) return null;
+  const e = index.bold.exact.get(k);
+  if (e !== undefined) return e > 0 ? e : null;
+  if (k.includes(" ")) return null;
+  const f = index.bold.first.get(k);
+  return f !== undefined && f > 0 ? f : null;
 }
 
 const WORD = /[\p{L}\p{M}\p{N}'’]+/gu;

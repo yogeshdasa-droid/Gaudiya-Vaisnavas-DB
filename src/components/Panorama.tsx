@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { BarChart3, ChevronRight, FilePlus2, FileText, MapPin, Maximize, Minus, Pencil, Plus } from "lucide-react";
 import { api, EMPTY_PLACE, OverviewPerson, PersonListItem, Place, PlaceText, sortDisciples, Status as LibraryStatus } from "../api";
 import { AboutText, PlaceTextDialog } from "./PlaceView";
+import { buildNameIndex } from "../personLinks";
 import { ask } from "./ui";
 import { StatTiles } from "./Home";
 import { namesPlace, placeKeys, textKeys } from "../places";
@@ -1052,6 +1053,7 @@ function MapPlaceTexts({
     const byId = new Map(persons.map((p) => [p.id, p]));
     return place.people.map((y) => byId.get(y.personId)).filter((p): p is PersonListItem => !!p);
   }, [place, persons]);
+  const allNames = useMemo(() => buildNameIndex(persons), [persons]);
   const save = async (x: PlaceText) => {
     const i = editing?.i ?? null;
     const next = i === null ? [...texts, x] : texts.map((y, j) => (j === i ? x : y));
@@ -1085,7 +1087,7 @@ function MapPlaceTexts({
           </div>
           {open.has(i) && (
             <div className="notes small">
-              <AboutText text={x.body} people={people} onPerson={onPerson} onError={onToast} />
+              <AboutText text={x.body} people={people} onPerson={onPerson} onError={onToast} names={allNames} />
             </div>
           )}
         </div>

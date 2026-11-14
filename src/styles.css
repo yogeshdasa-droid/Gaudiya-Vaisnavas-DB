@@ -1660,12 +1660,18 @@ select {
   color: var(--md-head);
 }
 /* names of other records, linked to their record */
-.reader-body a.person-link {
+.reader-body a.person-link,
+.notes a.person-link {
   text-decoration: underline dotted;
   text-decoration-color: var(--accent);
   text-underline-offset: 3px;
 }
-.reader-body a.person-link:hover {
+.notes a.person-link {
+  color: var(--accent-text);
+  cursor: pointer;
+}
+.reader-body a.person-link:hover,
+.notes a.person-link:hover {
   color: var(--accent-text);
   text-decoration-style: solid;
 }

@@ -4,13 +4,47 @@ import { FilePlus2, FileText, History, ImagePlus, Images, Map as MapIcon, MapPin
 import { api, fileUrl, imageCaption, OverviewPerson, Place, PLACE_ROLES, PersonListItem, PlaceText } from "../api";
 import { Lang, T } from "../i18n";
 import { namesPlace, placeKeys, textKeys } from "../places";
-import { WebLinks } from "./PersonView";
+import { BoldNames, noteMarks, WebLinks } from "./PersonView";
+import { buildNameIndex, type NameIndex } from "../personLinks";
 import { ask, Modal } from "./ui";
 
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /** "What there is": the names of the place's people as links to their records. */
-export function AboutText({ text, people, onPerson, onError }: { text: string; people: PersonListItem[]; onPerson: (id: number) => void; onError: (m: string) => void }) {
+export function AboutText({
+  text,
+  people,
+  onPerson,
+  onError,
+  names,
+}: {
+  text: string;
+  people: PersonListItem[];
+  onPerson: (id: number) => void;
+  onError: (m: string) => void;
+  /** all the records, for the names in **bold** (15-11-2026); without it, only the place's people */
+  names?: NameIndex | null;
+}) {
+  const index = useMemo(() => names ?? buildNameIndex(people), [names, people]);
+  // **bold** names are links by themselves (BoldNames); the plain text links the place's people
+  return (
+    <>
+      {noteMarks(text).map((m, i) =>
+        m.mark === "b" ? (
+          <BoldNames key={i} text={m.text} names={index} onPerson={onPerson} />
+        ) : m.mark === "i" ? (
+          <em key={i}>
+            <PeopleText text={m.text} people={people} onPerson={onPerson} onError={onError} />
+          </em>
+        ) : (
+          <PeopleText key={i} text={m.text} people={people} onPerson={onPerson} onError={onError} />
+        ),
+      )}
+    </>
+  );
+}
+
+function PeopleText({ text, people, onPerson, onError }: { text: string; people: PersonListItem[]; onPerson: (id: number) => void; onError: (m: string) => void }) {
   // each name also without its «Śrī / Śrīla / Śrīmatī» (the text says «Kṛṣṇadāsa Kavirāja Gosvāmī»)
   const forms = people
     .flatMap((p) => [p.name, p.name.replace(/^(Śrīla|Śrīmatī|Śrī)\s+/, "")].map((n) => ({ n, p })))
@@ -120,6 +154,7 @@ export function PlaceView({
   onChanged: () => void;
 }) {
   const [menu, setMenu] = useState(false);
+  const allNames = useMemo(() => buildNameIndex(persons), [persons]);
   const choosePhoto = async () => {
     try {
       const path = await open({ multiple: false, filters: [{ name: t.imageFiles, extensions: ["jpg", "jpeg", "png", "webp", "gif", "bmp", "avif"] }] });
@@ -280,7 +315,7 @@ export function PlaceView({
               <div className="fact wide">
                 <dt>{t.placeAbout}</dt>
                 <dd className="notes">
-                  <AboutText text={place.about} people={place.people.map((x) => byId.get(x.personId)).filter((p): p is PersonListItem => !!p)} onPerson={onPerson} onError={onToast} />
+                  <AboutText text={place.about} people={place.people.map((x) => byId.get(x.personId)).filter((p): p is PersonListItem => !!p)} onPerson={onPerson} onError={onToast} names={allNames} />
                 </dd>
               </div>
             )}
@@ -315,7 +350,7 @@ export function PlaceView({
                   </button>
                 </div>
                 <div className="notes">
-                  <AboutText text={x.body} people={place.people.map((y) => byId.get(y.personId)).filter((p): p is PersonListItem => !!p)} onPerson={onPerson} onError={onToast} />
+                  <AboutText text={x.body} people={place.people.map((y) => byId.get(y.personId)).filter((p): p is PersonListItem => !!p)} onPerson={onPerson} onError={onToast} names={allNames} />
                 </div>
               </div>
             ))}

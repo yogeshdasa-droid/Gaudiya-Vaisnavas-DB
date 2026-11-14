@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **14-11-2026** (versión **0.17.7**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **15-11-2026** (versión **0.17.8**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,23 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.7)
+## 5. Qué hace hoy (v0.17.8)
+
+### Novedades de la 0.17.8 (15-11-2026) — nombres en negrita, notas abiertas, viajes del Bhakti-ratnākara
+- **Nombres en negrita que se pulsan**: en las notas de las fichas y en los textos de los tīrthas, `**bold**` se ve en
+  negrita y `*cursiva*` en cursiva (antes salían los asteriscos); cada nombre en negrita que sea de una sola ficha es un
+  enlace a ella («Vasudhā, Jāhnavā and Vīrabhadra» = tres enlaces). `boldPerson` en `src/personLinks.ts`: primero el
+  nombre entero con títulos (sin «Śrī»/«(…)»), luego sin títulos (Ṭhākura, Gosvāmī, Paṇḍita, Mātā, Īśvarī…), luego la
+  primera palabra; si hay más de una ficha posible, no enlaza. Las fichas con «(…)» en el nombre (homónimos menores)
+  solo enlazan con el nombre completo; «Jagannātha», «Subhadrā», «Gopīnātha»… solos nunca (son el Señor / Deidades,
+  `ALONE_NOT`). `WebLinks`/`BoldNames`/`noteMarks` en `PersonView.tsx`; `AboutText` en `PlaceView.tsx`.
+- **Notas abiertas** en las fichas sin textos o con textos cortos (< 6000 bytes, `NOTES_OPEN_BELOW`): se lee todo del
+  tirón sin pulsar «Ver notas».
+- **Viajes** (`journeys.ts`): Śrīnivāsa y Narottama completados con el Bhakti-ratnākara 3–4 y 8 (etapas y quién los
+  recibió); nuevos «Śrīnivāsa vuelve a Vraja y regresa con Rāmacandra» (BRK 9) y «Jāhnavā: a Kheturī y a Vraja» (BRK
+  10–11).
+- Datos (no código): etiqueta **«Dudas»** en las fichas con dudas pendientes (posibles repetidas, nombres del BRK sin
+  ficha segura), con una línea «**Duda:** …» en sus notas: «Etiquetas: Dudas» en el lateral.
 
 ### Novedades de la 0.17.7 (14-11-2026) — nombre nuevo: Vaiṣṇava-kośa
 - **Nombre en pantalla «Vaiṣṇava-kośa»** («tesoro / enciclopedia vaiṣṇava») y **logo nuevo**: libro abierto con el tilaka
@@ -1642,6 +1658,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **15-11-2026 — v0.17.8**: nombres en negrita que llevan a su ficha (notas y tīrthas), notas abiertas en fichas cortas,
+  viajes nuevos del Bhakti-ratnākara (Śrīnivāsa 2.º viaje, Jāhnavā). Datos: ~160 fichas y ~120 tīrthas con el BRK.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.8
 
 - **14-11-2026 — v0.17.7**: la app pasa a llamarse **Vaiṣṇava-kośa** en pantalla, con logo nuevo (libro y tilaka).
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.7
