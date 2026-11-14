@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **15-11-2026** (versión **0.17.9**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **15-11-2026** (versión **0.17.10**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,21 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.9)
+## 5. Qué hace hoy (v0.17.10)
+
+### Novedades de la 0.17.10 (15-11-2026) — la Guru Paramparā lateral mejorada
+Todo en `PersonList` de `src/components/Sidebar.tsx` (Whisper revisa fichas una tras otra):
+- **Chincheta roja** junto a «Filtrar personas…» (`sidePinned` en App.tsx, `bio.sidePinned`): con ella la lista no se
+  cierra al abrir una ficha.
+- **Fotito redonda** en cada fila (solo foto de verdad; si no, el tilaka de `NoPhoto`).
+- **Tarjeta al dejar el ratón** 450 ms sobre un nombre (`PersonCard`, `.hover-card`): foto, nombre, otros nombres,
+  fechas, lugar, guru, comienzo de las notas (`api.getPerson`, con caché). Sustituye al `title` de la fila.
+- **Flechas** tras un clic en la lista: ↑ ↓ abren la ficha de arriba / abajo, → despliega, ← pliega o sube al guru.
+- **Años** tras el nombre (de `api.timeline()`, como la línea de tiempo), **«+N»** en las ramas plegadas.
+- **«Mi paramparā»**: clic derecho › «Marcar como Mi paramparā» (`bio.myLine`, evento `bio-myline`): la línea desde el
+  primer guru hasta esa ficha en dorado (`.my-line`) y siempre abierta; se quita con la ✕ de su etiqueta.
+- **«Dónde estoy»**: encima del árbol, el camino desde el primer guru hasta la ficha abierta (si es largo: el primero,
+  «…» y los tres últimos), cada paso se pulsa.
 
 ### Novedades de la 0.17.9 (15-11-2026) — lotos y fichas sin foto
 - **Fichas sin foto**: en vez del hueco gris, fondo granate suave con el tilaka dorado del logo y las iniciales del
@@ -1667,6 +1681,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **15-11-2026 — v0.17.10**: Guru Paramparā lateral: chincheta, fotitos, tarjeta al pasar el ratón, flechas, años, «+N»,
+  «Mi paramparā» en dorado, «Dónde estoy».
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.10
 
 - **15-11-2026 — v0.17.9**: imagen estándar (tilaka e iniciales) para las fichas sin foto; adornos de loto.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.9

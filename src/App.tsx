@@ -27,6 +27,7 @@ import {
   ListTree,
   LocateFixed,
   ChevronsUp,
+  Crown,
   ListX,
   Pencil,
   Quote,
@@ -164,6 +165,10 @@ export default function App() {
   const [sideW, setSideW] = usePersisted("sideW", 280);
   const [resW, setResW] = usePersisted("resW", 430);
   const [sideOpen, setSideOpen] = usePersisted("sideOpen", true);
+  // pinned (15-11-2026, Whisper): opening a record does not fold the list away
+  const [sidePinned, setSidePinned] = usePersisted("sidePinned", false);
+  const sidePinnedNow = useRef(sidePinned);
+  sidePinnedNow.current = sidePinned;
   const t = dicts[lang];
 
   const [query, setQuery] = useState("");
@@ -534,7 +539,7 @@ export default function App() {
   sideOpenNow.current = sideOpen;
   const openPerson = useCallback(
     (id: number) => {
-      if (sideOpenNow.current) {
+      if (sideOpenNow.current && !sidePinnedNow.current) {
         sideAutoHid.current = true;
         setSideOpen(false);
       }
@@ -891,6 +896,23 @@ export default function App() {
           ...(ctxEl!.dataset.back
             ? [{ label: t.collapseBack, icon: ChevronsUp, onClick: () => window.dispatchEvent(new CustomEvent("bio:tree-back", { detail: id })) }]
             : []),
+          // «my paramparā» (15-11-2026): the line down to this one in gold in the side tree (Sidebar.tsx)
+          ...(p?.tree
+            ? [
+                {
+                  label: t.myLineSet,
+                  icon: Crown,
+                  onClick: () => {
+                    try {
+                      localStorage.setItem("bio.myLine", String(id));
+                    } catch {
+                      /* storage unavailable */
+                    }
+                    window.dispatchEvent(new Event("bio-myline"));
+                  },
+                },
+              ]
+            : []),
           { label: t.editPerson, icon: Pencil, onClick: withPerson(id, (person) => setDialog({ kind: "person", person })) },
           { label: t.searchInPerson, icon: TextSearch, onClick: withPerson(id, searchInPerson) },
           { label: t.findMentions, icon: Search, onClick: withPerson(id, findMentions) },
@@ -1188,6 +1210,8 @@ export default function App() {
               activePlaceId={main.kind === "place" ? main.id : null}
               onPlace={openPlace}
               onNewPlace={() => setDialog({ kind: "place", place: null })}
+              pinned={sidePinned}
+              onPin={() => setSidePinned((v) => !v)}
               docs={docs}
               activeDir={filters.scope?.dir ?? null}
               activeDocId={target?.docId ?? null}

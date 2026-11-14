@@ -1,7 +1,9 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { BookMarked, ChevronRight, ChevronsDownUp, ChevronsUpDown, Flower2, MapPin, Plus, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
+import { BookMarked, ChevronRight, ChevronsDownUp, ChevronsUpDown, Flower2, MapPin, Pin, PinOff, Plus, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
 import { GAUDA_AREAS, placeZone, VRAJA_AREAS, ZONES } from "../places";
-import { api, Bookmark, DocListItem, hueOf, isDeity, isPoet, Marks, PersonListItem, Place, sortDisciples, TreeKind, TreePlace } from "../api";
+import { api, Bookmark, DocListItem, fileUrl, hueOf, isDeity, isPoet, Marks, Person, PersonListItem, Place, sortDisciples, TreeKind, TreePlace } from "../api";
+import { NoPhoto } from "./Logo";
+import { splitNotes } from "../notesLinks";
 import { foldWord } from "../fold";
 import { arrange, TreeLine } from "./TreeView";
 import { possibleRepeats } from "./Review";
@@ -216,10 +218,14 @@ function PersonList({
   reveal,
   marks,
   onMark,
+  pinned,
+  onPin,
 }: {
   t: T;
   lang: Lang;
   persons: PersonListItem[];
+  pinned: boolean;
+  onPin: () => void;
   marks: Marks;
   onMark: (id: number) => void;
   activeId: number | null;
@@ -370,6 +376,159 @@ function PersonList({
     const poets = out.filter(isPoet).sort((a, b) => foldName(a.name).localeCompare(foldName(b.name)));
     return { kids, parentOf, kindOf, others: out.filter((p) => !isPoet(p)), poets };
   }, [persons, line]);
+
+  // ---- the card of a record when the mouse rests on its row (15-11-2026, Whisper: to go through many
+  // records without opening each one)
+  const [card, setCard] = useState<{ id: number; top: number; left: number } | null>(null);
+  const [cardPerson, setCardPerson] = useState<Person | null>(null);
+  const cardTimer = useRef(0);
+  const cardCache = useRef(new Map<number, Person>());
+  const hoverIn = (e: React.MouseEvent, p: PersonListItem) => {
+    const row = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const side = ((e.currentTarget as HTMLElement).closest(".side-scroll") ?? (e.currentTarget as HTMLElement)).getBoundingClientRect();
+    window.clearTimeout(cardTimer.current);
+    cardTimer.current = window.setTimeout(async () => {
+      if (document.body.classList.contains("dragging-person")) return;
+      setCard({ id: p.id, top: row.top, left: side.right + 10 });
+      const known = cardCache.current.get(p.id);
+      if (known) return setCardPerson(known);
+      try {
+        const got = await api.getPerson(p.id);
+        cardCache.current.set(p.id, got);
+        setCardPerson(got);
+      } catch {
+        /* no card */
+      }
+    }, 450);
+  };
+  const hoverOut = () => {
+    window.clearTimeout(cardTimer.current);
+    setCard(null);
+  };
+  useEffect(() => () => window.clearTimeout(cardTimer.current), []);
+  // ---- 2: the years of each one, faint after the name (from the same reading as the timeline)
+  const [years, setYears] = useState<Map<number, string>>(new Map());
+  useEffect(() => {
+    let off = false;
+    api
+      .timeline()
+      .then((l) => {
+        if (off) return;
+        const m = new Map<number, string>();
+        for (const s of l) if (s.born !== null || s.died !== null) m.set(s.id, `${s.born ?? "?"}–${s.died ?? "?"}`);
+        setYears(m);
+      })
+      .catch(() => {});
+    return () => {
+      off = true;
+    };
+  }, [persons]);
+  // ---- 3: how many are under a folded branch
+  const under = useMemo(() => {
+    const n = new Map<number, number>();
+    const count = (id: number): number => {
+      const known = n.get(id);
+      if (known !== undefined) return known;
+      let c = 0;
+      for (const k of kids.get(id) ?? []) c += 1 + count(k.id);
+      n.set(id, c);
+      return c;
+    };
+    for (const id of parentOf.keys()) count(id);
+    return n;
+  }, [kids, parentOf]);
+  // ---- 5: «my paramparā»: the line from the first guru down to the one chosen (right-click › «Mi paramparā»),
+  // in gold and always open
+  const [myLine, setMyLine] = useState<number | null>(() => {
+    try {
+      return Number(localStorage.getItem("bio.myLine")) || null;
+    } catch {
+      return null;
+    }
+  });
+  useEffect(() => {
+    const on = () => {
+      try {
+        setMyLine(Number(localStorage.getItem("bio.myLine")) || null);
+      } catch {
+        /* storage unavailable */
+      }
+    };
+    window.addEventListener("bio-myline", on);
+    return () => window.removeEventListener("bio-myline", on);
+  }, []);
+  const lineIds = useMemo(() => {
+    const s = new Set<number>();
+    for (let x: number | null | undefined = myLine; x != null && !s.has(x); x = parentOf.get(x)) s.add(x);
+    return s;
+  }, [myLine, parentOf]);
+  useEffect(() => {
+    if (myLine == null) return;
+    for (let x = parentOf.get(myLine); x != null; x = parentOf.get(x)) toggleNode(x, false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [myLine]);
+  // ---- 6: «where am I»: the way from the first guru down to the open record
+  const trail = useMemo(() => {
+    const out: PersonListItem[] = [];
+    const byId = new Map(persons.map((x) => [x.id, x]));
+    for (let x: number | null | undefined = activeId; x != null && out.length < 80; x = parentOf.get(x)) {
+      const p = byId.get(x);
+      if (!p) break;
+      out.unshift(p);
+    }
+    return activeId != null && parentOf.has(activeId) ? out : [];
+  }, [activeId, parentOf, persons]);
+
+  const guruName = (id: number) => {
+    const g = parentOf.get(id);
+    return g != null ? persons.find((x) => x.id === g)?.name ?? null : null;
+  };
+
+  // ---- the arrows (15-11-2026): ↑ ↓ the record above / below (and open it), → unfold, ← fold or go to its guru.
+  // Only after a click in the list, and never while typing.
+  const keysHere = useRef(false);
+  const keyState = useRef({ activeId, kids, parentOf, closed, onPerson, toggleNode });
+  keyState.current = { activeId, kids, parentOf, closed, onPerson, toggleNode };
+  useEffect(() => {
+    const down = (e: MouseEvent) => {
+      keysHere.current = !!listRoot.current?.closest(".side-scroll")?.contains(e.target as globalThis.Node | null);
+    };
+    const key = (e: KeyboardEvent) => {
+      if (!keysHere.current || e.altKey || e.ctrlKey || e.metaKey || !e.key.startsWith("Arrow")) return;
+      const el = document.activeElement as HTMLElement | null;
+      if (el && (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.isContentEditable)) return;
+      const s = keyState.current;
+      e.preventDefault();
+      setCard(null);
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        const rows = [...(listRoot.current?.querySelectorAll<HTMLElement>(".tree-row.person") ?? [])];
+        const i = rows.findIndex((r) => r.classList.contains("active"));
+        const next = rows[i < 0 ? 0 : i + (e.key === "ArrowDown" ? 1 : -1)];
+        if (next) {
+          next.click();
+          next.scrollIntoView({ block: "nearest" });
+        }
+        return;
+      }
+      const id = s.activeId;
+      if (id == null) return;
+      if (e.key === "ArrowRight") {
+        if (s.kids.has(id)) s.toggleNode(id, false);
+      } else if (e.key === "ArrowLeft") {
+        if (s.kids.has(id) && !s.closed.has(id)) s.toggleNode(id, true);
+        else {
+          const up = s.parentOf.get(id);
+          if (up != null) s.onPerson(up);
+        }
+      }
+    };
+    window.addEventListener("mousedown", down, true);
+    window.addEventListener("keydown", key);
+    return () => {
+      window.removeEventListener("mousedown", down, true);
+      window.removeEventListener("keydown", key);
+    };
+  }, []);
 
   // the Vaiṣṇava-maṇḍala (everyone outside the tree) by name: the many
   // Haridāsas, Govindas… together, under the name as written in them
@@ -647,14 +806,14 @@ function PersonList({
     drag?.drop && "target" in drag.drop && drag.drop.kind !== "folder" && drag.drop.target === id ? ` drop-${drag.drop.kind}` : "";
   const folderHot = (parent: number, fk: FolderKind) => drag?.drop?.kind === "folder" && drag.drop.target === parent && drag.drop.fk === fk;
 
-  const personRow = (p: PersonListItem, inTree = false, caret?: React.ReactNode, depth = 0, lines?: React.ReactNode) => (
+  const personRow = (p: PersonListItem, inTree = false, caret?: React.ReactNode, depth = 0, lines?: React.ReactNode, folded = 0) => (
     <div
       data-ctx="person"
       data-id={p.id}
       data-drop={inTree ? "node" : "out"}
       data-like={repeats.get(p.id)?.map((x) => x.id).join(",")}
       data-back={inTree && back !== p.id && parentOf.get(parentOf.get(p.id) ?? -1) != null ? "1" : undefined}
-      className={`tree-row person${activeId === p.id ? " active" : ""}${drag?.id === p.id ? " dragged" : ""}${inTree ? dropClass(p.id) : ""}${marks[p.id] ? ` mark-${marks[p.id]}` : ""}${repeats.has(p.id) ? " repeated" : ""}`}
+      className={`tree-row person${activeId === p.id ? " active" : ""}${drag?.id === p.id ? " dragged" : ""}${inTree ? dropClass(p.id) : ""}${marks[p.id] ? ` mark-${marks[p.id]}` : ""}${repeats.has(p.id) ? " repeated" : ""}${inTree && lineIds.has(p.id) ? " my-line" : ""}`}
       style={inTree ? { paddingLeft: 4 + depth * indent, marginLeft: -shift } : undefined}
       onMouseDown={(e) => startDrag(e, p)}
       onClick={() => {
@@ -663,11 +822,23 @@ function PersonList({
         onPerson(p.id);
       }}
       onDoubleClick={() => onMark(p.id)}
-      title={(p.aka ? `${p.name} · ${p.aka}` : p.name) + (repeats.has(p.id) ? `\n${t.maybeRepeated(repeats.get(p.id)!.map((x) => x.name).join(", "))}` : "")}
+      onMouseEnter={(e) => hoverIn(e, p)}
+      onMouseLeave={hoverOut}
+      title={repeats.has(p.id) ? t.maybeRepeated(repeats.get(p.id)!.map((x) => x.name).join(", ")) : undefined}
     >
       {lines}
       {caret}
+      <span className="row-av">
+        {/* only a real photo: a text's cover (a printed page) is a white blob at this size */}
+        {p.hasPhoto ? <img src={fileUrl("photo", p.id)} alt="" loading="lazy" /> : <NoPhoto name="" small />}
+      </span>
       <span className="name">{p.name}</span>
+      {inTree && years.get(p.id) && <span className="row-years">{years.get(p.id)}</span>}
+      {folded > 0 && (
+        <span className="fold-count" title={t.foldedUnder(folded)}>
+          +{folded.toLocaleString(lang)}
+        </span>
+      )}
       {inTree && kindOf.get(p.id) && <span className={`tree-kind ${kindOf.get(p.id)}`}>{t.treeKindShort[kindOf.get(p.id)!]}</span>}
       {inTree && p.links.length > 0 && (
         <span
@@ -700,6 +871,9 @@ function PersonList({
             <X size={13} />
           </button>
         )}
+        <button className={`icon-btn side-pin${pinned ? " on" : ""}`} title={pinned ? t.sidePinnedHint : t.sidePinHint} onClick={onPin}>
+          {pinned ? <Pin size={15} fill="currentColor" /> : <PinOff size={14} />}
+        </button>
       </div>
       {allTags.length > 0 && (
         <div className="tag-filter">
@@ -752,6 +926,47 @@ function PersonList({
               </button>
               <button className="btn ghost small" title={t.collapseAllHint} onClick={collapseAll}>
                 <ChevronsDownUp size={13} /> {t.collapseAll}
+              </button>
+            </div>
+          )}
+          {/* 6: where am I — the way down to the open record */}
+          {!closedGroups.has("tree") && trail.length > 1 && (
+            <div className="where-am-i" title={t.whereAmIHint}>
+              {(trail.length > 5 ? [trail[0], null, ...trail.slice(-3)] : trail).map((x, i) => (
+                <span key={x ? x.id : `gap${i}`} className="wai-step">
+                  {i > 0 && <ChevronRight size={11} className="wai-sep" />}
+                  {x ? (
+                    <button className={x.id === activeId ? "on" : ""} title={x.name} onClick={() => onPerson(x.id)}>
+                      {shortName(x.name)}
+                    </button>
+                  ) : (
+                    <span className="wai-gap">…</span>
+                  )}
+                </span>
+              ))}
+            </div>
+          )}
+          {/* 5: my paramparā, chosen with the right click */}
+          {!closedGroups.has("tree") && myLine != null && persons.some((x) => x.id === myLine) && (
+            <div className="my-line-chip" title={t.myLineHint}>
+              <span className="mlc-dot" />
+              <span className="mlc-label">{t.myLine}:</span>
+              <button className="link-btn" onClick={() => onPerson(myLine)}>
+                {shortName(persons.find((x) => x.id === myLine)!.name)}
+              </button>
+              <button
+                className="icon-btn"
+                title={t.myLineClear}
+                onClick={() => {
+                  try {
+                    localStorage.removeItem("bio.myLine");
+                  } catch {
+                    /* storage unavailable */
+                  }
+                  setMyLine(null);
+                }}
+              >
+                <X size={12} />
               </button>
             </div>
           )}
@@ -825,6 +1040,7 @@ function PersonList({
                     ),
                     depth,
                     depth > 0 && treeLines(guides, last, kindOf.get(p.id) ?? "diksa", indent),
+                    hasKids && isClosed ? under.get(p.id) ?? 0 : 0,
                   )}
                 </div>
                 );
@@ -898,6 +1114,55 @@ function PersonList({
           {drag.drop && <div className="drag-where">{dropLabel(drag.drop)}</div>}
         </div>
       )}
+      {card && !drag && cardPerson?.id === card.id && <PersonCard t={t} p={cardPerson} guru={guruName(cardPerson.id)} top={card.top} left={card.left} />}
+    </div>
+  );
+}
+
+/** «Śrī Kṛṣṇa Dvaipāyana Vyāsadeva (…)» → «Kṛṣṇa Dvaipāyana Vyāsadeva»: the steps of «where am I». */
+const shortName = (s: string) => s.replace(/\s*\([^)]*\)/g, "").replace(/^(Śrīla|Śrīmatī|Śrī|Lord)\s+/, "").trim();
+
+/** «1287 AD (the record's text)» → «1287 AD»: the card shows the date, not where it comes from. */
+const short = (s: string, n = 70) => {
+  const x = s.replace(/\s*\([^)]*\)/g, "").split(/;\s/)[0].trim();
+  return x.length > n ? x.slice(0, n - 1).trimEnd() + "…" : x;
+};
+
+/** The card beside the list (15-11-2026): photo, name, dates, place, guru and the start of the notes. */
+function PersonCard({ t, p, guru, top, left }: { t: T; p: Person; guru: string | null; top: number; left: number }) {
+  const notes = splitNotes(p.notes)
+    .body.replace(/\*\*?([^*]+)\*\*?/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/\s+/g, " ")
+    .trim();
+  const lead = notes.length > 260 ? notes.slice(0, 259).replace(/\s+\S*$/, "") + "…" : notes;
+  const dates = [p.appearance, p.disappearance].map((d) => short(d, 40));
+  const y = Math.max(8, Math.min(top - 12, window.innerHeight - 330));
+  return (
+    <div className="hover-card" style={{ top: y, left }}>
+      <div className="pcard-photo">
+        {p.hasPhoto ? <img src={`${fileUrl("photo", p.id)}?v=${encodeURIComponent(p.modified)}`} alt="" /> : <NoPhoto name={p.name} />}
+      </div>
+      <div className="pcard-body">
+        <strong>{p.name}</strong>
+        {p.aka && <span className="pcard-aka">{short(p.aka, 80)}</span>}
+        {(dates[0] || dates[1]) && (
+          <span className="pcard-row">
+            {dates[0] || "?"} — {dates[1] || "?"}
+          </span>
+        )}
+        {p.place && (
+          <span className="pcard-row">
+            <MapPin size={11} /> {short(p.place)}
+          </span>
+        )}
+        {(guru || p.guru) && (
+          <span className="pcard-row">
+            {t.guru}: {guru ?? short(p.guru)}
+          </span>
+        )}
+        {lead && <p>{lead}</p>}
+      </div>
     </div>
   );
 }
@@ -1139,6 +1404,9 @@ interface Props {
   activePlaceId: number | null;
   onPlace: (id: number) => void;
   onNewPlace: () => void;
+  /** pinned: opening a record leaves the list open (15-11-2026, Whisper) */
+  pinned: boolean;
+  onPin: () => void;
 }
 
 /** Indent of each level of the Guru Paramparā, in px. */
@@ -1256,6 +1524,8 @@ export function Sidebar(p: Props) {
             reveal={p.reveal}
             marks={p.marks}
             onMark={p.onMark}
+            pinned={p.pinned}
+            onPin={p.onPin}
           />
         )}
 

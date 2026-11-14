@@ -1659,6 +1659,203 @@ select {
 .reader-body.src-view a:hover {
   color: var(--md-head);
 }
+/* the small round picture before each name of the persons list (15-11-2026) */
+.tree-row .row-av {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 6px;
+  display: inline-flex;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.tree-row .row-av img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 20%;
+}
+.tree-row .row-av .no-photo svg {
+  width: 70%;
+}
+/* 2: the years after the name; 3: how many are folded below (15-11-2026) */
+.tree-row .row-years {
+  flex: none;
+  margin-left: 6px;
+  font-size: 10.5px;
+  color: var(--muted);
+  opacity: 0.8;
+  font-variant-numeric: tabular-nums;
+}
+.tree-row .fold-count {
+  flex: none;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 9px;
+  font-size: 10.5px;
+  line-height: 16px;
+  color: var(--accent-text);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+/* 5: my paramparā in gold */
+.tree-row.my-line {
+  box-shadow: inset 3px 0 0 #d9a845;
+  background: linear-gradient(90deg, rgba(217, 168, 69, 0.16), transparent 75%);
+}
+.tree-row.my-line .name {
+  color: #e2b552;
+  font-weight: 600;
+}
+.tree-row.my-line .row-av {
+  box-shadow: 0 0 0 2px #d9a845;
+}
+.my-line-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 8px 6px;
+  font-size: 12px;
+}
+.my-line-chip .mlc-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #d9a845;
+}
+.my-line-chip .mlc-label {
+  color: var(--muted);
+}
+.my-line-chip .link-btn {
+  color: #e2b552;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* 6: where am I */
+.where-am-i {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 0;
+  margin: 2px 8px 6px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+.where-am-i .wai-step {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+.where-am-i button {
+  background: none;
+  border: 0;
+  padding: 1px 3px;
+  color: var(--muted);
+  cursor: pointer;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 4px;
+}
+.where-am-i button:hover {
+  color: var(--text, inherit);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.where-am-i button.on {
+  color: var(--accent-text);
+  font-weight: 600;
+}
+.where-am-i .wai-sep,
+.where-am-i .wai-gap {
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+/* the card of a record beside the list, while the mouse rests on its row */
+.hover-card {
+  position: fixed;
+  z-index: 60;
+  width: 330px;
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--panel-solid);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  animation: hcard-in 0.15s ease-out;
+}
+@keyframes hcard-in {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+}
+.pcard-photo {
+  flex: none;
+  width: 84px;
+  height: 108px;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+}
+.pcard-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 20%;
+}
+.pcard-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12px;
+}
+.pcard-body strong {
+  font-size: 14px;
+  line-height: 1.25;
+}
+.pcard-aka {
+  color: var(--muted);
+  font-style: italic;
+}
+.pcard-row {
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.pcard-body p {
+  margin: 4px 0 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* the pin of the persons list (15-11-2026): red when the list stays open while records are opened */
+.person-filter .side-pin {
+  margin-left: auto;
+  opacity: 0.55;
+}
+.person-filter .side-pin:hover {
+  opacity: 1;
+}
+.person-filter .side-pin.on {
+  color: #e0323c;
+  opacity: 1;
+  transform: rotate(35deg);
+  filter: drop-shadow(1px 2px 1px rgba(0, 0, 0, 0.35));
+}
+
 /* lotus decorations (15-11-2026): faint, over everything but never catching the mouse; off in Ajustes › General */
 .lotus-deco {
   position: fixed;
