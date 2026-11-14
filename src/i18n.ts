@@ -356,6 +356,10 @@ const es = {
   mapInViewHint: "Cambia al mover o acercar el mapa. Pulsa un lugar para ver sus personas.",
   mapClusterHint: (n: number) => `${n} lugares juntos: pulsa para acercarte`,
   mapBack: "Volver a la lista",
+  mapMakePlace: "Crear tīrtha aquí",
+  mapMakePlaceHint: "Este punto aún no tiene página de lugar: crearla para poder ponerle textos, notas e imágenes",
+  mapMakePlaceConfirm: (n: string) => `¿Crear el tīrtha «${n}» en este punto del mapa, con las personas que salen aquí? (Luego se puede editar o borrar desde su página.)`,
+  mapMadePlace: (n: string) => `Tīrtha creado: ${n}`,
   mapEra: "Época:",
   mapEraAll: "Todas",
   mapEras: [
@@ -1441,6 +1445,10 @@ const en: Dict = {
   mapInViewHint: "It changes as the map moves or zooms. Press a place to see its people.",
   mapClusterHint: (n) => `${n} places together: press to come closer`,
   mapBack: "Back to the list",
+  mapMakePlace: "Make a tīrtha here",
+  mapMakePlaceHint: "This point has no place page yet: make one to give it texts, notes and pictures",
+  mapMakePlaceConfirm: (n: string) => `Make the tīrtha «${n}» at this point of the map, with the people shown here? (It can be edited or deleted later from its page.)`,
+  mapMadePlace: (n: string) => `Tīrtha made: ${n}`,
   mapEra: "Age:",
   mapEraAll: "All",
   mapEras: [

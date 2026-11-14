@@ -1369,7 +1369,7 @@ export default function App() {
             <Lineage t={t} lang={lang} persons={persons} onPerson={openPerson} focus={main.focus} onTreePp={(id) => setMain({ kind: "tree", pp: { id, n: Date.now() } })} />
           )}
           {main.kind === "panorama" && (
-            <Panorama t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} places={places} onPlace={openPlace} focus={main.place} journey={main.journey} status={status} />
+            <Panorama t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} places={places} onPlace={openPlace} focus={main.place} journey={main.journey} status={status} onPlacesChanged={() => api.listPlaces().then(setPlaces).catch(fail)} onToast={showToast} />
           )}
           {main.kind === "calendar" && <Calendar t={t} lang={lang} reload={dataTick} onPerson={openPerson} page />}
           {main.kind === "tree" && <TreeView t={t} lang={lang} persons={persons} onPerson={openPerson} marks={marks} onMark={cycleMark} focus={main.focus} ppFocus={main.pp} />}

@@ -10,7 +10,7 @@ import { ask, Modal } from "./ui";
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /** "What there is": the names of the place's people as links to their records. */
-function AboutText({ text, people, onPerson, onError }: { text: string; people: PersonListItem[]; onPerson: (id: number) => void; onError: (m: string) => void }) {
+export function AboutText({ text, people, onPerson, onError }: { text: string; people: PersonListItem[]; onPerson: (id: number) => void; onError: (m: string) => void }) {
   // each name also without its «Śrī / Śrīla / Śrīmatī» (the text says «Kṛṣṇadāsa Kavirāja Gosvāmī»)
   const forms = people
     .flatMap((p) => [p.name, p.name.replace(/^(Śrīla|Śrīmatī|Śrī)\s+/, "")].map((n) => ({ n, p })))
@@ -35,8 +35,9 @@ function AboutText({ text, people, onPerson, onError }: { text: string; people: 
   );
 }
 
-/** Writing or changing one text of a place: a title and the text (Markdown). */
-function PlaceTextDialog({ t, text, onClose, onSave }: { t: T; text: PlaceText | null; onClose: () => void; onSave: (x: PlaceText) => Promise<void> }) {
+/** Writing or changing one text of a place: a title and the text (Markdown). Also opened from the map's side
+ *  panel (Panorama.tsx, `MapPlaceTexts`). */
+export function PlaceTextDialog({ t, text, onClose, onSave }: { t: T; text: PlaceText | null; onClose: () => void; onSave: (x: PlaceText) => Promise<void> }) {
   const [title, setTitle] = useState(text?.title ?? "");
   const [body, setBody] = useState(text?.body ?? "");
   const [busy, setBusy] = useState(false);

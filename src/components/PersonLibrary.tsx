@@ -10,6 +10,7 @@ import { T } from "../i18n";
 import { joinNotes, linkKind, linkLabel, linkOpenTarget, NoteLink, splitNotes } from "../notesLinks";
 import { ask } from "./ui";
 import { ReaderStyle, SectionView } from "./Reader";
+import { VideoThumb } from "./VideoThumb";
 
 const NO_TERMS: never[] = [];
 
@@ -352,6 +353,14 @@ export function PersonLibrary({
   const entries = useMemo(() => (view?.entries ?? []).filter((e) => e.kind !== "subtitle"), [view]);
   const byRel = useMemo(() => new Map(entries.map((e) => [e.rel, e])), [entries]);
   const prefix = useMemo(() => commonPrefix(entries), [entries]);
+  // a picture with the same name as a video, in its folder («charla.jpg» for «charla.mp4»): the video's picture
+  const posters = useMemo(() => {
+    const stem = (rel: string) => rel.replace(/\.[^./]+$/, "").toLowerCase();
+    const imgs = new Map(entries.filter((e) => e.kind === "image").map((e) => [stem(e.rel), libUrl(id, e.rel)]));
+    const out = new Map<string, string>();
+    for (const e of entries) if (e.kind === "video" && imgs.has(stem(e.rel))) out.set(e.rel, imgs.get(stem(e.rel))!);
+    return out;
+  }, [entries, id]);
   const counts = useMemo(() => {
     const c = new Map<Section, number>();
     for (const e of entries) c.set(e.kind, (c.get(e.kind) ?? 0) + 1);
@@ -626,7 +635,7 @@ export function PersonLibrary({
                       {g.dir ? prettyDir(g.dir, base) : t.lib.all} <span className="muted small">({g.items.length})</span>
                     </h2>
                   )}
-                  <div className={`lib-items ${g.items.every((e) => e.kind === "image") ? "images" : covers ? "covers" : ""}`}>
+                  <div className={`lib-items ${g.items.every((e) => e.kind === "image") ? "images" : covers ? "covers" : g.items.some((e) => e.kind === "video") ? "videos" : ""}`}>
                     {items.map((e) => {
                       const tt = title(e);
                       // a book with its cover (Calibre folders): a card with the cover
@@ -638,6 +647,24 @@ export function PersonLibrary({
                             </span>
                             <span className="lib-book-title">{tt.title}</span>
                             <span className="muted small">{size(e.size)}</span>
+                          </button>
+                        );
+                      // a video: a card with a picture of it (a frame, or the picture with its name next to it)
+                      if (e.kind === "video")
+                        return (
+                          <button key={e.rel} className="lib-vcard" onClick={() => openEntry(e)} title={`${tt.title}\n${e.name}`}>
+                            <span className="lib-vcard-pic">
+                              <VideoThumb url={libUrl(id, e.rel)} cacheKey={`${e.rel}|${e.size}`} poster={posters.get(e.rel)} />
+                              <span className="lib-vcard-play">
+                                <Play size={18} />
+                              </span>
+                              {e.subs && <span className="lib-tag lib-vcard-cc">CC</span>}
+                            </span>
+                            <span className="lib-book-title">{tt.title}</span>
+                            <span className="muted small">
+                              {tt.date ? `${tt.date} · ` : ""}
+                              {size(e.size)}
+                            </span>
                           </button>
                         );
                       if (e.kind === "image")

@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **13-11-2026** (versión **0.17.5**).
+Última actualización: **14-11-2026** (versión **0.17.6**).
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
 > «Lee `DESARROLLO.md` y continuamos con Gaudiya Vaisnavas DB: quiero cambiar…».
@@ -187,7 +187,22 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.5)
+## 5. Qué hace hoy (v0.17.6)
+
+### Novedades de la 0.17.6 (14-11-2026) — vídeos con imagen; textos y tīrthas desde el mapa
+- **Vídeos de la biblioteca como tarjetas con imagen** (`src/components/VideoThumb.tsx`): un fotograma del propio vídeo
+  (~10 % de su duración, entre 3 s y 2 min), sacado solo cuando la tarjeta se ve, dos a la vez, y guardado en el
+  IndexedDB `video-thumbs` del WebView (clave ruta + tamaño): la segunda vez sale al instante. Si junto a «x.mp4» hay
+  «x.jpg», se usa esa imagen. PersonLibrary: `.lib-vcard` en la rejilla `.lib-items.videos`. Un .mp4 solo de audio se
+  queda con el icono.
+- **Textos del lugar en el panel del mapa** (Panorama › Mapa, al pulsar un tīrtha): `MapPlaceTexts` — sus textos con
+  título plegable, lápiz y «Añadir texto…» (el mismo `PlaceTextDialog` de PlaceView, ahora exportado con `AboutText`);
+  se guardan en `place_texts`, igual que desde la página del lugar.
+- **«Crear tīrtha aquí»** en los puntos del mapa sin tīrtha (amarillos de `PLACES` y grises de `DISTRICTS`): crea el
+  lugar con ese nombre, su punto y sus personas (papel «other») tras preguntar. `mapPlaces`: un tīrtha con el nombre de un
+  distrito ocupa su punto y se queda sus claves (no sale dos veces); el panel se queda en el lugar nuevo (`madeName`).
+- Carpeta de Whisper movida (14-11): `Documentos\Gaudiya Vaisnavas DB` es ahora una unión de carpeta (junction) a
+  `O:\Gaudiya Vaisnavas DB`; las bibliotecas apuntan ya a `O:\…`. Las copias automáticas siguen pasando por Documentos.
 
 ### Novedades de la 0.17.5 (13-11-2026) — las fotos de las conferencias de Obsidian
 - Whisper copió su bóveda de Obsidian tal cual (fotos en «Lectures\_resources\Pic»). `library::attachment`: la foto de
@@ -1615,6 +1630,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **14-11-2026 — v0.17.6**: vídeos de la biblioteca con imagen; textos de los tīrthas y «Crear tīrtha aquí» en el mapa.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.6
 
 - **13-11-2026 — v0.17.5**: las fotos y los audios de las conferencias de Obsidian («_resources») se ven y se oyen en el lector.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.5

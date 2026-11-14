@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { BarChart3, ChevronRight, MapPin, Maximize, Minus, Plus } from "lucide-react";
-import { api, OverviewPerson, PersonListItem, Place, sortDisciples, Status as LibraryStatus } from "../api";
+import { BarChart3, ChevronRight, FilePlus2, FileText, MapPin, Maximize, Minus, Pencil, Plus } from "lucide-react";
+import { api, EMPTY_PLACE, OverviewPerson, PersonListItem, Place, PlaceText, sortDisciples, Status as LibraryStatus } from "../api";
+import { AboutText, PlaceTextDialog } from "./PlaceView";
+import { ask } from "./ui";
 import { StatTiles } from "./Home";
 import { namesPlace, placeKeys, textKeys } from "../places";
 import { Lang, T } from "../i18n";
@@ -98,6 +100,8 @@ export function Panorama({
   focus,
   journey,
   status,
+  onPlacesChanged,
+  onToast,
 }: {
   t: T;
   lang: Lang;
@@ -106,6 +110,9 @@ export function Panorama({
   onPerson: (id: number) => void;
   places: Place[];
   onPlace: (id: number) => void;
+  /** a place's texts were changed from the map's side panel */
+  onPlacesChanged: () => void;
+  onToast: (m: string) => void;
   /** opened from a place: the map, with every record, at that place */
   focus?: { id: number; n: number };
   /** opened from a record's «See journeys»: the map, with that journey */
@@ -177,7 +184,7 @@ export function Panorama({
               <Status t={t} lang={lang} list={list} onPerson={onPerson} />
             </>
           ) : tab === "map" ? (
-            <PlacesMap t={t} lang={lang} list={list} persons={persons} onPerson={onPerson} places={places} onPlace={onPlace} focus={focus} journeyFocus={journey} />
+            <PlacesMap t={t} lang={lang} list={list} persons={persons} onPerson={onPerson} places={places} onPlace={onPlace} focus={focus} journeyFocus={journey} onPlacesChanged={onPlacesChanged} onToast={onToast} />
           ) : tab === "branches" ? (
             <Branches t={t} lang={lang} persons={persons} onPerson={onPerson} />
           ) : tab === "year" ? (
@@ -393,7 +400,12 @@ function mapPlaces(places: Place[]): MapPlace[] {
     if (same) Object.assign(same, mine);
     else out.push({ ...mine, keys: [] });
   }
-  for (const [name, lat, lon, keys] of DISTRICTS) out.push({ name, lat, lon, keys, placeKeys: [], placeId: null, people: new Set(), district: true });
+  for (const [name, lat, lon, keys] of DISTRICTS) {
+    // a tīrtha made from a grey point («Make a tīrtha here», 14-11-2026) takes its place, and the records naming it
+    const made = out.find((m) => m.placeId !== null && !m.keys.length && m.name === name);
+    if (made) made.keys = keys;
+    else out.push({ name, lat, lon, keys, placeKeys: [], placeId: null, people: new Set(), district: true });
+  }
   return out;
 }
 
@@ -1016,6 +1028,76 @@ function lifeYears(list: OverviewPerson[], persons: PersonListItem[]) {
   return out;
 }
 
+/** The texts of the place picked on the map, under its people (14-11-2026, Whisper: «si clickeo Rāmeśvara… un Add
+ *  text para meter notas»): the same texts as on the place's page (place_texts), read and written here too. */
+function MapPlaceTexts({
+  t,
+  place,
+  persons,
+  onPerson,
+  onChanged,
+  onToast,
+}: {
+  t: T;
+  place: Place;
+  persons: PersonListItem[];
+  onPerson: (id: number) => void;
+  onChanged: () => void;
+  onToast: (m: string) => void;
+}) {
+  const texts = place.texts ?? [];
+  const [open, setOpen] = useState<Set<number>>(new Set());
+  const [editing, setEditing] = useState<{ i: number | null } | null>(null);
+  const people = useMemo(() => {
+    const byId = new Map(persons.map((p) => [p.id, p]));
+    return place.people.map((y) => byId.get(y.personId)).filter((p): p is PersonListItem => !!p);
+  }, [place, persons]);
+  const save = async (x: PlaceText) => {
+    const i = editing?.i ?? null;
+    const next = i === null ? [...texts, x] : texts.map((y, j) => (j === i ? x : y));
+    const { id: _id, modified: _m, hasPhoto: _h, images: _i, ...fields } = place;
+    try {
+      await api.savePlace(place.id, { ...fields, texts: next });
+      setEditing(null);
+      // a new text is shown open
+      if (i === null) setOpen((o) => new Set(o).add(texts.length));
+      onChanged();
+    } catch (e) {
+      onToast(String(e));
+    }
+  };
+  return (
+    <div className="map-place-texts">
+      {texts.length > 0 && (
+        <h3>
+          <FileText size={13} /> {t.placeTexts} <span className="count">{texts.length}</span>
+        </h3>
+      )}
+      {texts.map((x, i) => (
+        <div key={i} className="map-place-text">
+          <div className="map-place-text-head">
+            <button className="link-like grow" onClick={() => setOpen((o) => { const n = new Set(o); n.has(i) ? n.delete(i) : n.add(i); return n; })}>
+              <ChevronRight size={13} className={open.has(i) ? "rot90" : ""} /> {x.title.trim() || t.placeTextUntitled}
+            </button>
+            <button className="icon-btn small" title={t.edit} onClick={() => setEditing({ i })}>
+              <Pencil size={13} />
+            </button>
+          </div>
+          {open.has(i) && (
+            <div className="notes small">
+              <AboutText text={x.body} people={people} onPerson={onPerson} onError={onToast} />
+            </div>
+          )}
+        </div>
+      ))}
+      <button className="btn ghost small" onClick={() => setEditing({ i: null })}>
+        <FilePlus2 size={13} /> {t.placeTextAdd}
+      </button>
+      {editing && <PlaceTextDialog t={t} text={editing.i === null ? null : texts[editing.i]} onClose={() => setEditing(null)} onSave={save} />}
+    </div>
+  );
+}
+
 function PlacesMap({
   t,
   lang,
@@ -1026,6 +1108,8 @@ function PlacesMap({
   onPlace,
   focus,
   journeyFocus,
+  onPlacesChanged,
+  onToast,
 }: {
   t: T;
   lang: Lang;
@@ -1036,9 +1120,19 @@ function PlacesMap({
   onPlace: (id: number) => void;
   focus?: { id: number; n: number };
   journeyFocus?: { id: string; n: number };
+  onPlacesChanged: () => void;
+  onToast: (m: string) => void;
 }) {
   const [picked, setPicked] = useState<number | null>(null);
   const mp = useMemo(() => mapPlaces(places), [places]);
+  // a tīrtha just made from a grey point is a new point: stay on it
+  const madeName = useRef<string | null>(null);
+  useEffect(() => {
+    const n = madeName.current;
+    if (!n) return;
+    const i = mp.findIndex((m) => m.placeId !== null && m.name === n);
+    if (i >= 0) (setPicked(i), (madeName.current = null));
+  }, [mp]);
   // the time over the map: one age, or all of them; «play» goes through them one by one
   const [era, setEra] = useState<number | null>(null);
   const [playing, setPlaying] = useState(false);
@@ -1483,6 +1577,33 @@ function PlacesMap({
                 </button>
               )}
               <Names t={t} people={at.get(picked)!} onPerson={onPerson} />
+              {mp[picked].placeId === null && (
+                // a point of the map with no tīrtha yet: make one here (its name, its point and its people), so that it
+                // can have texts and pictures (14-11-2026, Whisper)
+                <button
+                  className="btn ghost small map-open-place"
+                  title={t.mapMakePlaceHint}
+                  onClick={async () => {
+                    const m = mp[picked];
+                    if (!(await ask(t.mapMakePlaceConfirm(m.name)))) return;
+                    try {
+                      const people = (at.get(picked) ?? []).map((p) => ({ personId: p.id, role: "other" as const }));
+                      await api.savePlace(null, { ...EMPTY_PLACE, name: m.name, lat: m.lat, lon: m.lon, people });
+                      madeName.current = m.name;
+                      onPlacesChanged();
+                      onToast(t.mapMadePlace(m.name));
+                    } catch (e) {
+                      onToast(String(e));
+                    }
+                  }}
+                >
+                  <MapPin size={13} /> {t.mapMakePlace}
+                </button>
+              )}
+              {mp[picked].placeId !== null && (() => {
+                const pl = places.find((x) => x.id === mp[picked].placeId);
+                return pl ? <MapPlaceTexts key={pl.id} t={t} place={pl} persons={persons} onPerson={onPerson} onChanged={onPlacesChanged} onToast={onToast} /> : null;
+              })()}
             </section>
           ) : (
             <>
