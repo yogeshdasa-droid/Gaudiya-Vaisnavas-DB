@@ -1087,6 +1087,15 @@ hacerlo de momento por el tiempo y el uso de Claude; si se hace, por tandas y co
 
 ## 7. Pendientes e ideas
 
+### ▶▶▶ Siguiente (después del 15-11-2026): las vidas de Nandgram Dham
+Descargadas sin conexión las 161 vidas de <https://nandgramdham.org/acharyas/> (paramparā, Pañca-tattva, asociados,
+Gosvāmīs, ācāryas posteriores y recientes; ~885 000 palabras con fuentes) en `O:\Gaudiya Vaisnavas DB\Nandgram Dham\`
+(fuera del repositorio; `LEEME.md` allí): páginas HTML, textos Markdown limpios, `datos.json` (tabla «de un vistazo»),
+imágenes con pie y origen. Scripts en `scripts/datos/nandgram/` (`bajar.mjs`, `convertir.mjs`, `imagenes.mjs`,
+`casar.mjs`). Falta: casar cada vida con su ficha (revisar homónimos a mano), añadirla como texto «Nandgram Dham — …»
+(colección «Nandgram Dham», con la dirección de la fuente), rellenar solo campos vacíos, y proponer sus imágenes como
+foto de las fichas que no tienen. Detalle en CONTINUAR.md.
+
 ### ▶▶▶ Para la próxima sesión (después del 07-11-2026) — LEER CONTINUAR.md
 **Terminados los Textos principales de las 38 fichas del árbol** que no lo tenían (tandas 1–10, scripts `tp*.json`,
 `tp*/`, `tp*-arbol.mjs`, `tp-unir.json`, `tp-separar.json`, `tp9-separar.json`). Quedan para preguntar a Whisper: las
