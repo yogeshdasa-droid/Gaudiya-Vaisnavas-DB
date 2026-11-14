@@ -58,6 +58,10 @@ const es = {
   languageHint: "El idioma de los menús y botones.",
   themeHint: "Claro, oscuro o el mismo que Windows.",
   readerFontHint: "La letra con que se leen los textos.",
+  lotusDeco: "Adornos de loto",
+  lotusDecoHint: "Lotos suaves en las esquinas de la ventana y entre las secciones de Inicio.",
+  lotusOn: "Con lotos",
+  lotusOff: "Sin adornos",
   settingsHints: {
     general: "Aspecto, calendario y base de datos",
     backups: "Copias automáticas y volver a una",
@@ -1150,6 +1154,10 @@ const en: Dict = {
   languageHint: "The language of menus and buttons.",
   themeHint: "Light, dark or the same as Windows.",
   readerFontHint: "The font the texts are read in.",
+  lotusDeco: "Lotus decorations",
+  lotusDecoHint: "Soft lotuses in the corners of the window and between the sections of the home page.",
+  lotusOn: "With lotuses",
+  lotusOff: "Plain",
   settingsHints: {
     general: "Appearance, calendar and database",
     backups: "Automatic copies and going back to one",

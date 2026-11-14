@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **15-11-2026** (versión **0.17.8**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **15-11-2026** (versión **0.17.9**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,16 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.8)
+## 5. Qué hace hoy (v0.17.9)
+
+### Novedades de la 0.17.9 (15-11-2026) — lotos y fichas sin foto
+- **Fichas sin foto**: en vez del hueco gris, fondo granate suave con el tilaka dorado del logo y las iniciales del
+  nombre (sin Śrī, Ṭhākura, Gosvāmī…): `NoPhoto` / `initialsOf` en `src/components/Logo.tsx`; en la ficha, en «Mis fichas
+  favoritas», en «Ficha del día» y (solo el tilaka) en la línea de tiempo.
+- **Adornos de loto** (Whisper, con una imagen de Mahāprabhu ante un loto rosa): `LotusMandala` (tres coronas de
+  pétalos rosas, corazón dorado, rayos) muy tenue en la esquina de arriba a la derecha y abajo a la izquierda, girando
+  muy despacio (`.lotus-deco`, `pointer-events: none`); `LotusDivider` entre las secciones de Inicio. Se quitan en
+  Ajustes › General › «Adornos de loto» (`bio.lotus` en localStorage; clase `lotus` en `<html>`).
 
 ### Novedades de la 0.17.8 (15-11-2026) — nombres en negrita, notas abiertas, viajes del Bhakti-ratnākara
 - **Nombres en negrita que se pulsan**: en las notas de las fichas y en los textos de los tīrthas, `**bold**` se ve en
@@ -1658,6 +1667,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ---
 
 ## 8. Historial
+
+- **15-11-2026 — v0.17.9**: imagen estándar (tilaka e iniciales) para las fichas sin foto; adornos de loto.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.9
 
 - **15-11-2026 — v0.17.8**: nombres en negrita que llevan a su ficha (notas y tīrthas), notas abiertas en fichas cortas,
   viajes nuevos del Bhakti-ratnākara (Śrīnivāsa 2.º viaje, Jāhnavā). Datos: ~160 fichas y ~120 tīrthas con el BRK.

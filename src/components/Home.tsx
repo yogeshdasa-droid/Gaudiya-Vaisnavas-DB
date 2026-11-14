@@ -1,8 +1,9 @@
 import { useMemo } from "react";
-import { BarChart3, Clock, Clock3, Database, MapPin, Network, FileText, HardDrive, Sparkles, Star, Upload, UserRound, Users } from "lucide-react";
+import { BarChart3, Clock, Clock3, Database, MapPin, Network, FileText, HardDrive, Sparkles, Star, Upload, Users } from "lucide-react";
 import { Bookmark, fileUrl, hueOf, isFavorite, PersonListItem, Place, SearchResult, Status } from "../api";
 import { Lang, T } from "../i18n";
 import { AnimatedNumber } from "./ui";
+import { LotusDivider, NoPhoto } from "./Logo";
 import { Calendar } from "./Calendar";
 
 export interface RecentDoc {
@@ -103,6 +104,7 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
             )}
           </div>
         </header>
+        <LotusDivider />
 
         {empty && (
           <div className="empty-state">
@@ -129,7 +131,7 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
                     ) : f.coverDoc ? (
                       <img src={fileUrl("cover", f.coverDoc)} alt="" loading="lazy" />
                     ) : (
-                      <UserRound size={30} />
+                      <NoPhoto name={f.name} />
                     )}
                   </span>
                   <span className="fav-name">{f.name}</span>
@@ -154,7 +156,7 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
                     ) : person.coverDoc ? (
                       <img src={fileUrl("cover", person.coverDoc)} alt="" loading="lazy" />
                     ) : (
-                      <UserRound size={22} />
+                      <NoPhoto name={person.name} />
                     )}
                   </span>
                   <span className="of-day-text">
@@ -182,8 +184,10 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
         )}
 
 
+        <LotusDivider />
         {!empty && <Calendar t={t} lang={lang} reload={reload} onPerson={onPerson} onOpen={onCalendar} />}
 
+        <LotusDivider />
         <div className="home-cols">
           {recent.length > 0 && (
             <section>

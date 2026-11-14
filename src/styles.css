@@ -1659,6 +1659,89 @@ select {
 .reader-body.src-view a:hover {
   color: var(--md-head);
 }
+/* lotus decorations (15-11-2026): faint, over everything but never catching the mouse; off in Ajustes › General */
+.lotus-deco {
+  position: fixed;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0.13;
+}
+.lotus-deco svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.lotus-deco.tr {
+  top: -150px;
+  right: -150px;
+  width: 460px;
+  height: 460px;
+  animation: lotus-turn 240s linear infinite;
+}
+.lotus-deco.bl {
+  bottom: -110px;
+  left: -110px;
+  width: 300px;
+  height: 300px;
+  animation: lotus-turn 300s linear infinite reverse;
+}
+:root[data-theme="light"] .lotus-deco {
+  opacity: 0.16;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .lotus-deco {
+    opacity: 0.16;
+  }
+}
+@keyframes lotus-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lotus-deco {
+    animation: none !important;
+  }
+}
+.lotus-divider {
+  display: none;
+}
+:root.lotus .lotus-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 6px;
+  opacity: 0.85;
+}
+.lotus-divider span {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, #ec8fa5 55%, transparent), transparent);
+}
+.lotus-divider svg {
+  width: 34px;
+  height: 20px;
+}
+
+/* a record without a photo yet: the tilaka and the initials on soft maroon (15-11-2026) */
+.no-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 35%, #8a3442 0%, #6a1f2b 70%, #571923 100%);
+}
+.no-photo svg {
+  width: 72%;
+  max-width: 160px;
+  height: auto;
+  max-height: 88%;
+}
+.no-photo.small svg {
+  width: 80%;
+}
+
 /* names of other records, linked to their record */
 .reader-body a.person-link,
 .notes a.person-link {

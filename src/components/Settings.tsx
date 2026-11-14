@@ -296,6 +296,8 @@ interface Props {
   onLang: (l: Lang) => void;
   onTheme: (t: Theme) => void;
   onReaderStyle: (s: ReaderStyle) => void;
+  lotus: boolean;
+  onLotus: (on: boolean) => void;
   onClose: () => void;
   onToast: (msg: string) => void;
   onChanged: () => void;
@@ -395,6 +397,16 @@ export function Settings(p: Props) {
                         {st === "editor" ? t.editorStyle : st === "serif" ? t.serif : t.sans} · Kṛṣṇa uvāca
                       </button>
                     ))}
+                  </div>
+                </Row>
+                <Row label={t.lotusDeco} hint={t.lotusDecoHint}>
+                  <div className="seg">
+                    <button className={p.lotus ? "on" : ""} onClick={() => p.onLotus(true)}>
+                      {t.lotusOn}
+                    </button>
+                    <button className={!p.lotus ? "on" : ""} onClick={() => p.onLotus(false)}>
+                      {t.lotusOff}
+                    </button>
                   </div>
                 </Row>
               </Card>

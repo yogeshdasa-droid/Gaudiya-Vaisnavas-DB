@@ -6,6 +6,7 @@ import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
 import { ReaderStyle, SectionView } from "./Reader";
 import { boldPerson, type NameIndex } from "../personLinks";
+import { NoPhoto } from "./Logo";
 import type { Term } from "../fold";
 import { foldName } from "./Sidebar";
 import { placesOfPerson } from "../places";
@@ -930,7 +931,7 @@ export function PersonView(p: Props) {
                     ) : cover ? (
                       <img src={fileUrl("cover", cover.id)} alt="" />
                     ) : (
-                      <UserRound size={44} />
+                      <NoPhoto name={person.name} />
                     )}
                     <span className="cover-overlay">
                       <ImagePlus size={20} />

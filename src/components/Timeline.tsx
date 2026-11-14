@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { BookOpen, Clock3, ListTree, ScrollText, UserRound } from "lucide-react";
+import { NoPhoto } from "./Logo";
 import { api, ChronicleEntry, fileUrl, LifeSpan, PersonListItem } from "../api";
 import { Lang, T } from "../i18n";
 import { buildNameIndex, linkNames, NameIndex } from "../personLinks";
@@ -103,7 +104,7 @@ export function Timeline({
                 return (
                   <button key={l.id} className={`tl-row${l.parampara ? " tree" : ""}`} onClick={() => onPerson(l.id)}>
                     <span className="tl-name">
-                      {l.hasPhoto ? <img src={fileUrl("photo", l.id)} alt="" /> : <UserRound size={14} />}
+                      {l.hasPhoto ? <img src={fileUrl("photo", l.id)} alt="" /> : <NoPhoto name="" small />}
                       {l.name}
                     </span>
                     <span className="tl-years">

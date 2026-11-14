@@ -98,7 +98,7 @@ import { Lineage } from "./components/Lineage";
 import { AudioBar, PersonLibrary } from "./components/PersonLibrary";
 import { WebPage } from "./components/WebPage";
 import { Rail } from "./components/Rail";
-import { APP_NAME, LogoMark } from "./components/Logo";
+import { APP_NAME, LogoMark, LotusMandala } from "./components/Logo";
 import { Calendar } from "./components/Calendar";
 import { ask, Kbd, Splitter, ViewGuard } from "./components/ui";
 
@@ -150,6 +150,8 @@ export default function App() {
   const skin = "fluent";
   const [readerStyle, setReaderStyle] = usePersisted<ReaderStyle>("readerStyle", "editor");
   const [fontSize, setFontSize] = usePersisted("fontSize", 18);
+  // the lotus decorations in the corners (15-11-2026); Ajustes › General can turn them off
+  const [lotus, setLotus] = usePersisted("lotus", true);
   const [titlesOnly, setTitlesOnly] = usePersisted("titlesOnly", false);
   // search by meaning (EmbeddingGemma); starts off each time
   const [meaning, setMeaning] = useState(false);
@@ -339,6 +341,9 @@ export default function App() {
     root.dataset.skin = skin;
     root.lang = lang;
   }, [theme, skin, lang]);
+  useEffect(() => {
+    document.documentElement.classList.toggle("lotus", lotus);
+  }, [lotus]);
   const [systemDark, setSystemDark] = useState(() => window.matchMedia("(prefers-color-scheme: dark)").matches);
   useEffect(() => {
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -1156,6 +1161,16 @@ export default function App() {
         </div>
       </header>
 
+      {lotus && (
+        <>
+          <div className="lotus-deco tr" aria-hidden="true">
+            <LotusMandala />
+          </div>
+          <div className="lotus-deco bl" aria-hidden="true">
+            <LotusMandala rays={false} />
+          </div>
+        </>
+      )}
       <main className="panes" style={panesStyle}>
         {sideOpen && (
           <>
@@ -1494,6 +1509,8 @@ export default function App() {
           onLang={setLang}
           onTheme={setTheme}
           onReaderStyle={setReaderStyle}
+          lotus={lotus}
+          onLotus={setLotus}
           onClose={() => setDialog(null)}
           onToast={showToast}
           onChanged={refreshAll}
