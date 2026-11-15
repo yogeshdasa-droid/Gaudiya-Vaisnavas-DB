@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **15-11-2026** (versión **0.17.15**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **15-11-2026** (versión **0.17.16**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,21 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.15)
+## 5. Qué hace hoy (v0.17.16)
+
+### Novedades de la 0.17.16 (15-11-2026) — «Vraja-Nitya-līlā», Inicio con loto y caligrafía, Gaṇoddeśa terminado
+- Apartado nuevo por ficha, colección **«Vraja-Nitya-līlā»** (`api.VRAJA_LILA`): lo que la persona hace y dice en Vraja
+  según el **Gopāla-campū** y el **Ujjvala-nīlamaṇi-kiraṇa** (Whisper: «esos dos mandan sobre todo»). Botón **azul**
+  (`.vraja-btn`, icono Flower2) debajo del morado «Gaṇoddeśa»; solo sale si la ficha tiene ese texto. El lector lo
+  abre como el Gaṇoddeśa, en azul (Reader.tsx `vraja` → clases `gano-view vraja-view`). «Unir sus textos» lo deja fuera.
+  Los textos aún no están: es lo siguiente (repasar las fichas con esos dos libros).
+- **Inicio**: «Vaiṣṇava-kośa» en caligrafía (Great Vibes, dorado) y el loto rosa (`LotusMandala`) en vez del cuadrado
+  amarillo (Home.tsx `hero-lotus`/`hero-title`; la regla con `data-skin="fluent"` hace falta para ganar al estilo Windows 11).
+- Datos (aplicados en la BD de Whisper, no van en la versión): **Gaṇoddeśa terminado** — tandas 5–15
+  (`scripts/datos/ganoddesa/tanda5…15.mjs`, ~200 fichas en total), `corregir.mjs <plan>` (arreglos dentro de un texto
+  Gaṇoddeśa ya escrito; ⚠️ si el texto nuevo contiene el viejo, una 2.ª pasada lo repite). Uniones de Whisper:
+  #936→#439, #1439→#450, #1605→#1610, #1925→#260 (`scripts/datos/unir-*.json`). ⚠️ En `herramientas/rkgd-iast.txt`
+  el Laghu-bhāga empieza en la línea 3020: antes es Bṛhad.
 
 ### Novedades de la 0.17.15 (15-11-2026) — «Gaṇoddeśa» de cada ficha
 - Texto nuevo por ficha, colección **«Gaṇoddeśa»** (`api.GANODDESA`): quién es la persona en la Kṛṣṇa-līlā (gopī, mañjarī,
@@ -1746,6 +1760,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **15-11-2026 — v0.17.16**: apartado «Vraja-Nitya-līlā» (botón azul); Inicio con loto y nombre en caligrafía;
+  Gaṇoddeśa terminado (tandas 5–15) y cuatro uniones. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.16
 - **15-11-2026 — v0.17.15**: texto «Gaṇoddeśa» de cada ficha (botón morado, lector con rosetón y caligrafía); 51
   fichas con su Gaṇoddeśa. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.15
 - **15-11-2026 — v0.17.14**: nombres de las fichas en caligrafía (Ajustes), pie de foto editable en la galería de la

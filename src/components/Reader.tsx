@@ -17,7 +17,7 @@ import {
   Trash2,
   UserRound,
 } from "lucide-react";
-import { ALWAYS_ORIGINAL, api, DocInfo, GANODDESA, fileUrl, SectionText, TocEntry } from "../api";
+import { ALWAYS_ORIGINAL, api, DocInfo, GANODDESA, VRAJA_LILA, fileUrl, SectionText, TocEntry } from "../api";
 import { highlightDom, Term } from "../fold";
 import { formatDate, Lang, T } from "../i18n";
 import { renderMarkdown, renderSource } from "../markdown";
@@ -277,7 +277,9 @@ export function Reader(p: Props) {
 
   const multi = count > 1;
   // the «Gaṇoddeśa» texts are always read with the markdown drawn (no #, **), with an ornament and calligraphy
-  const gano = doc.collection === GANODDESA;
+  // the «Vraja-Nitya-līlā» texts the same way, in blue
+  const vraja = doc.collection === VRAJA_LILA;
+  const gano = doc.collection === GANODDESA || vraja;
   const style: ReaderStyle = gano ? "serif" : readerStyle;
   const isPdf = !!doc.original?.toLowerCase().endsWith(".pdf");
   const editSection = () => {
@@ -290,7 +292,7 @@ export function Reader(p: Props) {
   };
 
   return (
-    <div className={gano ? "reader gano-view" : "reader"}>
+    <div className={vraja ? "reader gano-view vraja-view" : gano ? "reader gano-view" : "reader"}>
       {gano && view === "text" && <Mandala className="gano-mandala" />}
       {view === "text" && <div className="read-progress" style={{ transform: `scaleX(${progress})` }} />}
       <header className="reader-head">

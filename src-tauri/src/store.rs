@@ -1313,7 +1313,7 @@ fn bare(text: &str) -> String {
 /// bin (they can be restored); their bookmarks follow; a cover becomes the
 /// record's picture if it has none. `order`: doc ids in the order the
 /// person put them (dragged in the record): those go first, in that order.
-/// The texts of the «Gaṇoddeśa» collection (who the person is in Kṛṣṇa-līlā) are never joined: they have their own
+/// The texts of the «Gaṇoddeśa» and «Vraja-Nitya-līlā» collections are never joined: they have their own
 /// button in the record.
 pub fn join_person_texts(conn: &mut Connection, only: Option<i64>, order: &[i64], progress: impl Fn(usize, usize)) -> Res<Joined> {
     let mut done = Joined::default();
@@ -1322,7 +1322,7 @@ pub fn join_person_texts(conn: &mut Connection, only: Option<i64>, order: &[i64]
         .prepare(
             "SELECT p.id, p.name FROM persons p
              WHERE (?1 IS NULL OR p.id = ?1)
-               AND (SELECT COUNT(*) FROM docs d WHERE d.person_id = p.id AND d.deleted IS NULL AND d.collection <> 'Gaṇoddeśa') >= 2",
+               AND (SELECT COUNT(*) FROM docs d WHERE d.person_id = p.id AND d.deleted IS NULL AND d.collection NOT IN ('Gaṇoddeśa', 'Vraja-Nitya-līlā')) >= 2",
         )
         .map_err(e)?
         .query_map([only], |r| Ok((r.get(0)?, r.get(1)?)))
@@ -1337,7 +1337,7 @@ pub fn join_person_texts(conn: &mut Connection, only: Option<i64>, order: &[i64]
         // Grantha, then the books
         let docs: Vec<(i64, String, String, String, bool)> = tx
             .prepare(
-                "SELECT id, title, kind, tags, collection = ?2 FROM docs WHERE person_id = ?1 AND deleted IS NULL AND collection <> 'Gaṇoddeśa'
+                "SELECT id, title, kind, tags, collection = ?2 FROM docs WHERE person_id = ?1 AND deleted IS NULL AND collection NOT IN ('Gaṇoddeśa', 'Vraja-Nitya-līlā')
                  ORDER BY collection = ?2 DESC,
                           CASE WHEN kind IN ('md', 'new', 'txt') AND collection <> 'Calibre' THEN 0
                                WHEN kind IN ('doc', 'docx') THEN 1 ELSE 2 END,

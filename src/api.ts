@@ -118,6 +118,9 @@ export const MAIN_TEXT = "Texto principal";
  *  a mañjarī…), from the Gaura-gaṇoddeśa-dīpikā and other books. The record does not list it with its texts: it opens
  *  with its own button. «Unir sus textos» leaves it out (store.rs). */
 export const GANODDESA = "Gaṇoddeśa";
+/** «Vraja-Nitya-līlā» (15-11-2026, Whisper): what the person does and says in Vraja according to the Gopāla-campū and the
+ *  Ujjvala-nīlamaṇi-kiraṇa (the books that rank above all others). Kept apart like Gaṇoddeśa, with a blue button. */
+export const VRAJA_LILA = "Vraja-Nitya-līlā";
 
 export const EMPTY_PERSON: PersonFields = {
   name: "",

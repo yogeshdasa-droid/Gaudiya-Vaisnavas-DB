@@ -71,6 +71,8 @@ const es = {
   titleFontClassic: "Clásica",
   ganoddesa: "Gaṇoddeśa",
   ganoddesaHint: "Quién es en la Kṛṣṇa-līlā: su forma de gopī o mañjarī, según el Gaura-gaṇoddeśa-dīpikā y otros libros",
+  vrajaLila: "Vraja-Nitya-līlā",
+  vrajaLilaHint: "Lo que hace y dice en Vraja, según el Gopāla-campū y el Ujjvala-nīlamaṇi-kiraṇa",
   settingsHints: {
     general: "Aspecto, calendario y base de datos",
     backups: "Copias automáticas y volver a una",
@@ -1193,6 +1195,8 @@ const en: Dict = {
   titleFontClassic: "Classic",
   ganoddesa: "Gaṇoddeśa",
   ganoddesaHint: "Who this person is in Kṛṣṇa-līlā: the form as a gopī or mañjarī, from the Gaura-gaṇoddeśa-dīpikā and other books",
+  vrajaLila: "Vraja-Nitya-līlā",
+  vrajaLilaHint: "What this person does and says in Vraja, from the Gopāla-campū and the Ujjvala-nīlamaṇi-kiraṇa",
   settingsHints: {
     general: "Appearance, calendar and database",
     backups: "Automatic copies and going back to one",

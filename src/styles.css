@@ -7968,3 +7968,76 @@ svg.satellite .map-dot {
 .gano-view .reader-body .sec:first-of-type > h1:first-child {
   display: none;
 }
+
+/* Home: the name in calligraphy and a lotus instead of the yellow square (15-11-2026, Whisper) */
+.hero-icon.hero-lotus,
+:root[data-skin="fluent"] .hero-icon.hero-lotus {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(242, 201, 92, 0.18) 0%, transparent 70%);
+  box-shadow: none;
+  padding: 2px;
+}
+.hero-lotus svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 4px 10px rgba(236, 143, 165, 0.35));
+}
+.hero h1.hero-title,
+:root[data-skin="fluent"] .hero h1.hero-title {
+  font-family: "Great Vibes", var(--font-serif);
+  font-weight: 400;
+  font-size: 50px;
+  letter-spacing: 0;
+  line-height: 1.1;
+  color: #e8b94a;
+}
+:root[data-theme="light"] .hero h1.hero-title {
+  color: #9a6a12;
+}
+
+/* «Vraja-Nitya-līlā» (15-11-2026, Whisper): the pastimes of the person in Vraja from the Gopāla-campū and the
+   Ujjvala-nīlamaṇi-kiraṇa — a blue button under the violet «Gaṇoddeśa», and its texts read like those, in blue */
+.btn.vraja-btn {
+  background: #2f6fb8;
+  border-color: #2f6fb8;
+  color: #fff;
+}
+.btn.vraja-btn:hover {
+  background: #4384cc;
+  border-color: #4384cc;
+  color: #fff;
+}
+.vraja-view .gano-mandala {
+  color: #6f8fb5;
+}
+.reader.vraja-view .reader-head .reader-title h1,
+.vraja-view .reader-body h1,
+.vraja-view .reader-body h2,
+.vraja-view .reader-body h3 {
+  color: #2a5f9e;
+}
+.vraja-view .reader-body blockquote {
+  border-left-color: #7fa6d6;
+}
+:root[data-theme="dark"] .vraja-view .gano-mandala {
+  color: #a9c4e6;
+}
+:root[data-theme="dark"] .reader.vraja-view .reader-head .reader-title h1,
+:root[data-theme="dark"] .vraja-view .reader-body h1,
+:root[data-theme="dark"] .vraja-view .reader-body h2,
+:root[data-theme="dark"] .vraja-view .reader-body h3 {
+  color: #9cc3f0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .vraja-view .gano-mandala {
+    color: #a9c4e6;
+  }
+  :root:not([data-theme="light"]) .reader.vraja-view .reader-head .reader-title h1,
+  :root:not([data-theme="light"]) .vraja-view .reader-body h1,
+  :root:not([data-theme="light"]) .vraja-view .reader-body h2,
+  :root:not([data-theme="light"]) .vraja-view .reader-body h3 {
+    color: #9cc3f0;
+  }
+}

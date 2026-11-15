@@ -3,7 +3,7 @@ import { BarChart3, Clock, Clock3, Database, MapPin, Network, FileText, HardDriv
 import { Bookmark, fileUrl, hueOf, isFavorite, PersonListItem, Place, SearchResult, Status } from "../api";
 import { Lang, T } from "../i18n";
 import { AnimatedNumber } from "./ui";
-import { coverHidden, LotusDivider, NoPhoto } from "./Logo";
+import { coverHidden, LotusDivider, LotusMandala, NoPhoto } from "./Logo";
 import { Calendar } from "./Calendar";
 
 export interface RecentDoc {
@@ -117,11 +117,11 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
     <div className="home">
       <div className="home-inner">
         <header className="hero">
-          <div className="hero-icon">
-            <Users size={26} />
+          <div className="hero-icon hero-lotus">
+            <LotusMandala rays={false} />
           </div>
           <div>
-            <h1>{t.welcome}</h1>
+            <h1 className="hero-title">{t.welcome}</h1>
             <p>{t.tagline}</p>
             {!empty && (
               <div className="hero-actions">

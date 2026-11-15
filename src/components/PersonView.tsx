@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ArrowUp, BookOpen, Library, MapPin, ChevronDown, ChevronLeft, ChevronRight, Star, Combine, FileDown, FilePlus2, Printer, FileText, Folder, GitFork, GitMerge, Globe, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Route, Search, Sparkles, StickyNote, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
-import { api, FAVORITES, fileUrl, GANODDESA, imageCaption, isNamesake, LifeSpan, MAIN_TEXT, NAMESAKES, Place, Person, PersonDoc, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
+import { ArrowUp, BookOpen, Library, MapPin, ChevronDown, ChevronLeft, ChevronRight, Star, Combine, FileDown, FilePlus2, Printer, FileText, Folder, GitFork, GitMerge, Flower2, Globe, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Route, Search, Sparkles, StickyNote, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
+import { api, FAVORITES, fileUrl, GANODDESA, VRAJA_LILA, imageCaption, isNamesake, LifeSpan, MAIN_TEXT, NAMESAKES, Place, Person, PersonDoc, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
 import { ReaderStyle, SectionView } from "./Reader";
@@ -361,9 +361,12 @@ export function PersonView(p: Props) {
   const [person, setPersonRaw] = useState<Person | null>(null);
   // the «Gaṇoddeśa» text (who the person is in Kṛṣṇa-līlā) is kept apart: it opens with its own button
   const [ganoddesa, setGanoddesa] = useState<PersonDoc | null>(null);
+  // and the «Vraja-Nitya-līlā» text (Gopāla-campū, Ujjvala-nīlamaṇi-kiraṇa), with the blue button
+  const [vrajaLila, setVrajaLila] = useState<PersonDoc | null>(null);
   const setPerson = (r: Person) => {
     setGanoddesa(r.docs.find((d) => d.collection === GANODDESA) ?? null);
-    setPersonRaw({ ...r, docs: r.docs.filter((d) => d.collection !== GANODDESA) });
+    setVrajaLila(r.docs.find((d) => d.collection === VRAJA_LILA) ?? null);
+    setPersonRaw({ ...r, docs: r.docs.filter((d) => d.collection !== GANODDESA && d.collection !== VRAJA_LILA) });
   };
   const [menu, setMenu] = useState(false);
   const [zoom, setZoom] = useState<number | null>(null);
@@ -1021,11 +1024,16 @@ export function PersonView(p: Props) {
           <div className="ency-body">
             <aside className="infobox">
               {/* above the picture: the record's pictures and its library */}
-              {(person.images.length > 0 || p.hasLibrary || ganoddesa) && (
+              {(person.images.length > 0 || p.hasLibrary || ganoddesa || vrajaLila) && (
                 <div className="infobox-tools">
                   {ganoddesa && (
                     <button className="btn small gano-btn" onClick={() => p.onOpenDoc(ganoddesa.id)} title={t.ganoddesaHint}>
                       <Sparkles size={15} /> {t.ganoddesa}
+                    </button>
+                  )}
+                  {vrajaLila && (
+                    <button className="btn small vraja-btn" onClick={() => p.onOpenDoc(vrajaLila.id)} title={t.vrajaLilaHint}>
+                      <Flower2 size={15} /> {t.vrajaLila}
                     </button>
                   )}
                   {person.images.length > 0 && (
