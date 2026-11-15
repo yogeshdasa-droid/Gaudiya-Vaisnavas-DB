@@ -64,6 +64,11 @@ const es = {
   lotusDecoHint: "Lotos suaves en las esquinas de la ventana y entre las secciones de Inicio.",
   lotusOn: "Con lotos",
   lotusOff: "Sin adornos",
+  titleFont: "Nombre de las fichas",
+  titleFontHint: "La letra del nombre grande, arriba de cada ficha.",
+  titleFontNormal: "Normal",
+  titleFontScript: "Caligrafía",
+  titleFontClassic: "Clásica",
   settingsHints: {
     general: "Aspecto, calendario y base de datos",
     backups: "Copias automáticas y volver a una",
@@ -1179,6 +1184,11 @@ const en: Dict = {
   lotusDecoHint: "Soft lotuses in the corners of the window and between the sections of the home page.",
   lotusOn: "With lotuses",
   lotusOff: "Plain",
+  titleFont: "Record names",
+  titleFontHint: "The font of the big name at the top of each record.",
+  titleFontNormal: "Normal",
+  titleFontScript: "Calligraphy",
+  titleFontClassic: "Classic",
   settingsHints: {
     general: "Appearance, calendar and database",
     backups: "Automatic copies and going back to one",

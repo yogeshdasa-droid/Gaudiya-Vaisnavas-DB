@@ -601,6 +601,7 @@ export const api = {
   exportPerson: (id: number, path: string) => invoke<void>("export_person", { id, path }),
   addPersonImages: (id: number, paths: string[]) => invoke<number>("add_person_images", { id, paths }),
   removePersonImage: (imageId: number) => invoke<void>("remove_person_image", { imageId }),
+  renamePersonImage: (imageId: number, name: string) => invoke<void>("rename_person_image", { imageId, name }),
   imageAsPhoto: (imageId: number) => invoke<void>("image_as_photo", { imageId }),
   reviewDocs: () => invoke<{ empty: ReviewDoc[]; oddTitles: ReviewDoc[] }>("review_docs"),
   markDistinct: (ids: number[]) => invoke<void>("mark_distinct", { ids }),

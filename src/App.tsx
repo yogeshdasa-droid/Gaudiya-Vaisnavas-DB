@@ -88,6 +88,7 @@ import { PlaceView } from "./components/PlaceView";
 import { Home, RecentDoc } from "./components/Home";
 import { EMPTY_FILTERS, Filters, hasFilter, Results } from "./components/Results";
 import { Reader, ReaderStyle, ReaderTarget } from "./components/Reader";
+import type { TitleFont } from "./components/Settings";
 import { PersonView } from "./components/PersonView";
 import { DuplicatesDialog } from "./components/Review";
 import { Timeline } from "./components/Timeline";
@@ -153,6 +154,8 @@ export default function App() {
   const [fontSize, setFontSize] = usePersisted("fontSize", 18);
   // the lotus decorations in the corners (15-11-2026); Ajustes › General can turn them off
   const [lotus, setLotus] = usePersisted("lotus", true);
+  // the font of the record names (15-11-2026): normal, calligraphy (Great Vibes) or classic (Cormorant Garamond italic)
+  const [titleFont, setTitleFont] = usePersisted<TitleFont>("titleFont", "normal");
   const [titlesOnly, setTitlesOnly] = usePersisted("titlesOnly", false);
   // search by meaning (EmbeddingGemma); starts off each time
   const [meaning, setMeaning] = useState(false);
@@ -349,6 +352,9 @@ export default function App() {
   useEffect(() => {
     document.documentElement.classList.toggle("lotus", lotus);
   }, [lotus]);
+  useEffect(() => {
+    document.documentElement.dataset.titleFont = titleFont;
+  }, [titleFont]);
   const [systemDark, setSystemDark] = useState(() => window.matchMedia("(prefers-color-scheme: dark)").matches);
   useEffect(() => {
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -1537,6 +1543,8 @@ export default function App() {
           onReaderStyle={setReaderStyle}
           lotus={lotus}
           onLotus={setLotus}
+          titleFont={titleFont}
+          onTitleFont={setTitleFont}
           onClose={() => setDialog(null)}
           onToast={showToast}
           onChanged={refreshAll}

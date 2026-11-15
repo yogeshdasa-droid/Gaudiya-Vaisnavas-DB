@@ -1489,6 +1489,12 @@ pub fn remove_person_image(conn: &Connection, image_id: i64) -> Res<()> {
     Ok(())
 }
 
+/// Changes the caption of a gallery picture of a record.
+pub fn rename_person_image(conn: &Connection, image_id: i64, name: &str) -> Res<()> {
+    conn.execute("UPDATE person_images SET name = ?2 WHERE id = ?1", params![image_id, name.trim()]).map_err(e)?;
+    Ok(())
+}
+
 /// Makes a gallery picture the record's main one (the old main one goes to the gallery).
 pub fn image_as_photo(conn: &mut Connection, image_id: i64) -> Res<()> {
     let tx = conn.transaction().map_err(e)?;

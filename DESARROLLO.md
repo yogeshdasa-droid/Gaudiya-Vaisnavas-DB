@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **15-11-2026** (versión **0.17.13**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **15-11-2026** (versión **0.17.14**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,18 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.13)
+## 5. Qué hace hoy (v0.17.14)
+
+### Novedades de la 0.17.14 (15-11-2026) — nombres en caligrafía, pie de foto en la ficha
+- **Ajustes › General › «Nombre de las fichas»**: Normal / Caligrafía (**Great Vibes**) / Clásica (**Cormorant
+  Garamond** cursiva). Las dos letras van dentro de la app (`src/assets/fonts/`, licencia OFL) y tienen todas las letras
+  IAST (casi ninguna caligráfica tiene ṇ ṣ ṛ ṭ: comprobado con fontkit). localStorage `bio.titleFont` → `<html
+  data-title-font>`; el nombre va en `<span class="person-name">` dentro del h1 (CSS al final de styles.css).
+- **Pie de foto editable en la galería de la ficha** (lápiz, como en los tīrthas): comando `rename_person_image`.
+  El `useState` del pie va arriba en PersonView, antes del `return` temprano (si no: «Rendered more hooks»).
+- Datos (scripts, se aplican aparte): `scripts/datos/nandgram/notas1-10.json` (155 fichas, un párrafo «Nandgram Dham:
+  …» con lo nuevo) y `candrasekhara.mjs` (la vida «Chandrashekhara Acharya» es Candraśekhara Vaidya de Kāśī, no #166).
+
 
 ### Novedades de la 0.17.13 (15-11-2026) — favoritas ordenadas, botón rosa
 - **Favoritas de Inicio**: por generación en la Guru Paramparā (nº de gurus por encima en `tree.parent`; las de fuera
@@ -1722,6 +1733,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **15-11-2026 — v0.17.14**: nombres de las fichas en caligrafía (Ajustes), pie de foto editable en la galería de la
+  ficha. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.14
 - **15-11-2026 — v0.17.13**: favoritas por generación y arrastrables; botón «Imágenes» rosa. Release:
   https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.13
 - **15-11-2026 — v0.17.12**: Nandgram Dham en las fichas; galería con pies y flechas, sin saltar arriba; «Volver» en

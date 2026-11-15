@@ -7809,3 +7809,49 @@ svg.satellite .map-dot {
 .fav-card.dragging {
   opacity: 0.4;
 }
+
+/* ================================================================ record names in calligraphy (15-11-2026)
+   Ajustes › General › «Nombre de las fichas»: <html data-title-font="normal|script|classic">.
+   Both fonts are inside the app (offline) and have every IAST letter (ṇ ṣ ṛ ṭ ḍ ḥ ṃ ś ā ī ū); licence OFL. */
+@font-face {
+  font-family: "Great Vibes";
+  src: url("./assets/fonts/GreatVibes-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("./assets/fonts/CormorantGaramond-Italic.ttf") format("truetype");
+  font-weight: 300 700;
+  font-style: italic;
+  font-display: swap;
+}
+:root[data-title-font="script"] .person-view .person-name,
+.title-font-opt.script {
+  font-family: "Great Vibes", var(--font-serif), cursive;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0;
+}
+:root[data-title-font="script"] .person-view .person-name {
+  font-size: 1.55em;
+  line-height: 1.15;
+}
+:root[data-title-font="classic"] .person-view .person-name,
+.title-font-opt.classic {
+  font-family: "Cormorant Garamond", var(--font-serif), serif;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+:root[data-title-font="classic"] .person-view .person-name {
+  font-size: 1.22em;
+  line-height: 1.15;
+}
+.title-font-opt.script {
+  font-size: 1.35em;
+}
+.title-font-opt.classic {
+  font-size: 1.15em;
+}

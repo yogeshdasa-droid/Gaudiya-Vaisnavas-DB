@@ -361,6 +361,8 @@ export function PersonView(p: Props) {
   const [person, setPerson] = useState<Person | null>(null);
   const [menu, setMenu] = useState(false);
   const [zoom, setZoom] = useState<number | null>(null);
+  // the caption being written ({ id, name }), as in the tīrthas
+  const [cap, setCap] = useState<{ id: number; name: string } | null>(null);
   // «See journeys» (12-11-2026, Whisper): in place of «Paramparā…», which went into the «…» menu
   const trips = useMemo(() => journeysOf(p.id), [p.id]);
   const [tripMenu, setTripMenu] = useState(false);
@@ -835,6 +837,12 @@ export function PersonView(p: Props) {
       .then(() => api.getPerson(p.id))
       .then((r) => (setPerson(r), p.onListsChanged?.()))
       .catch((e) => p.onToast(String(e)));
+  const saveCap = () => {
+    if (!cap) return;
+    const c = cap;
+    setCap(null);
+    imageAction(() => api.renamePersonImage(c.id, c.name))();
+  };
 
   return (
     <div className="reader person-view">
@@ -853,7 +861,7 @@ export function PersonView(p: Props) {
                 </button>
               )}
               <h1>
-                {person.name}{" "}
+                <span className="person-name">{person.name}</span>{" "}
                 <span className="record-number" title={t.recordNumberHint}>
                   #{person.id}
                 </span>
@@ -1429,12 +1437,27 @@ export function PersonView(p: Props) {
                   <a href={fileUrl("image", id)} target="_blank" rel="noreferrer" onClick={(e) => (e.preventDefault(), setZoom(id))}>
                     <img src={fileUrl("image", id)} alt="" loading="lazy" />
                   </a>
-                  {imageCaption(person.imageNames?.[i] ?? "") && (
-                    <div className="gallery-cap" title={imageCaption(person.imageNames[i])}>
-                      {imageCaption(person.imageNames[i])}
-                    </div>
+                  {cap?.id === id ? (
+                    <input
+                      className="gallery-cap-edit"
+                      autoFocus
+                      value={cap.name}
+                      placeholder={t.imageCaptionHint}
+                      onChange={(e) => setCap({ id, name: e.target.value })}
+                      onBlur={saveCap}
+                      onKeyDown={(e) => (e.key === "Enter" ? saveCap() : e.key === "Escape" && setCap(null))}
+                    />
+                  ) : (
+                    imageCaption(person.imageNames?.[i] ?? "") && (
+                      <div className="gallery-cap" title={imageCaption(person.imageNames[i])}>
+                        {imageCaption(person.imageNames[i])}
+                      </div>
+                    )
                   )}
                   <figcaption>
+                    <button className="icon-btn" title={t.imageCaptionEdit} onClick={() => setCap({ id, name: imageCaption(person.imageNames?.[i] ?? "") })}>
+                      <Pencil size={14} />
+                    </button>
                     <button className="icon-btn" title={t.useAsMain} onClick={imageAction(() => api.imageAsPhoto(id))}>
                       <UserRound size={14} />
                     </button>

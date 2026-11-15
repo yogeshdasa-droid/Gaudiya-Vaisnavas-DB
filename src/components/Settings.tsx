@@ -26,6 +26,9 @@ import { Lang, T } from "../i18n";
 import { ask, Kbd, Modal } from "./ui";
 import type { ReaderStyle } from "./Reader";
 
+/** the font of the record names: system, calligraphy (Great Vibes) or classic (Cormorant Garamond italic) */
+export type TitleFont = "normal" | "script" | "classic";
+
 export type Theme = "system" | "light" | "dark";
 export type SettingsTab = "general" | "backups" | "review" | "fill" | "replace" | "meaning" | "sources" | "trash" | "help";
 
@@ -298,6 +301,8 @@ interface Props {
   onReaderStyle: (s: ReaderStyle) => void;
   lotus: boolean;
   onLotus: (on: boolean) => void;
+  titleFont: TitleFont;
+  onTitleFont: (f: TitleFont) => void;
   onClose: () => void;
   onToast: (msg: string) => void;
   onChanged: () => void;
@@ -407,6 +412,15 @@ export function Settings(p: Props) {
                     <button className={!p.lotus ? "on" : ""} onClick={() => p.onLotus(false)}>
                       {t.lotusOff}
                     </button>
+                  </div>
+                </Row>
+                <Row label={t.titleFont} hint={t.titleFontHint}>
+                  <div className="seg">
+                    {(["normal", "script", "classic"] as TitleFont[]).map((f) => (
+                      <button key={f} className={`title-font-opt ${f}` + (p.titleFont === f ? " on" : "")} onClick={() => p.onTitleFont(f)}>
+                        {f === "normal" ? t.titleFontNormal : f === "script" ? t.titleFontScript : t.titleFontClassic}
+                      </button>
+                    ))}
                   </div>
                 </Row>
               </Card>

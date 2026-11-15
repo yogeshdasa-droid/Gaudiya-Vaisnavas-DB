@@ -959,6 +959,11 @@ async fn remove_person_image(state: State<'_, AppState>, image_id: i64) -> CmdRe
 }
 
 #[tauri::command]
+async fn rename_person_image(state: State<'_, AppState>, image_id: i64, name: String) -> CmdResult<()> {
+    store::rename_person_image(&state.conn.lock().unwrap(), image_id, &name)
+}
+
+#[tauri::command]
 async fn image_as_photo(state: State<'_, AppState>, image_id: i64) -> CmdResult<()> {
     store::image_as_photo(&mut state.conn.lock().unwrap(), image_id)
 }
@@ -1454,6 +1459,7 @@ fn main() {
             list_tags,
             add_person_images,
             remove_person_image,
+            rename_person_image,
             image_as_photo,
             review_docs,
             mark_distinct,
