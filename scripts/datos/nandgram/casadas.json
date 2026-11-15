@@ -1,0 +1,807 @@
+[
+ {
+  "slug": "abhirama-gopala-thakura",
+  "title": "Srila Abhirama Gopala Thakura",
+  "id": 6
+ },
+ {
+  "slug": "advaita-acharya",
+  "title": "Sri Advaita Acharya",
+  "id": 15
+ },
+ {
+  "slug": "akshobhya-tirtha",
+  "title": "Sri Akshobhya Tirtha",
+  "id": 1896
+ },
+ {
+  "slug": "anupama-mallika",
+  "title": "Sri Anupama Mallika",
+  "id": 56
+ },
+ {
+  "slug": "baladeva-vidyabhusana",
+  "title": "Srila Baladeva Vidyabhusana",
+  "id": 73
+ },
+ {
+  "slug": "basudev-vipra",
+  "title": "Basudeva Vipra",
+  "id": 1656
+ },
+ {
+  "slug": "bhagavan-acharya",
+  "title": "Bhagavan Acharya",
+  "id": 96
+ },
+ {
+  "slug": "bhagavan-pandita",
+  "title": "Bhagavan Pandita",
+  "id": 102
+ },
+ {
+  "slug": "bhaktisiddhanta-sarasvati-thakura",
+  "title": "Srila Bhaktisiddhanta Sarasvati Thakura",
+  "id": 124
+ },
+ {
+  "slug": "bhaktivinoda-thakura",
+  "title": "Srila Bhaktivinoda Thakura",
+  "id": 128
+ },
+ {
+  "slug": "bhugarbha-goswami",
+  "title": "Srila Bhugarbha Goswami",
+  "id": 150
+ },
+ {
+  "slug": "bijali-khan",
+  "title": "Bijali Khan",
+  "id": 1085
+ },
+ {
+  "slug": "bilvamangala-thakura",
+  "title": "Srila Bilvamangala Thakura",
+  "id": 156
+ },
+ {
+  "slug": "brahmanya-tirtha",
+  "title": "Sri Brahmanya Tirtha",
+  "id": 1904
+ },
+ {
+  "slug": "buddhimanta-khan",
+  "title": "Buddhimanta Khan",
+  "id": 1755
+ },
+ {
+  "slug": "chaitanya-mahaprabhu",
+  "title": "Sri Chaitanya Mahaprabhu",
+  "id": 164
+ },
+ {
+  "slug": "chandrashekhara-acharya",
+  "title": "Srila Chandrashekhara Acharya",
+  "id": 166
+ },
+ {
+  "slug": "damodara-pandit",
+  "title": "Sri Damodara Pandit",
+  "id": 177
+ },
+ {
+  "slug": "dayanidhi",
+  "title": "Sri Dayanidhi",
+  "id": 1899
+ },
+ {
+  "slug": "devakinandana-dasa-thakur",
+  "title": "Srila Devakinandana Dasa Thakur",
+  "id": 202
+ },
+ {
+  "slug": "devananda-pandit",
+  "title": "Sri Devananda Pandit",
+  "id": 203
+ },
+ {
+  "slug": "dhananjaya-pandit",
+  "title": "Srila Dhananjaya Pandit",
+  "id": 1814
+ },
+ {
+  "slug": "gadadhara-dasa-goswami",
+  "title": "Sri Gadadhara Dasa Goswami",
+  "id": 1815
+ },
+ {
+  "slug": "gadadhara-pandit",
+  "title": "Sri Gadadhara Pandit",
+  "id": 274
+ },
+ {
+  "slug": "ganga-dasa-pandit",
+  "title": "Srila Ganga Dasa Pandit",
+  "id": 289
+ },
+ {
+  "slug": "ganga-narayana-chakravarti",
+  "title": "Sri Ganga Narayana Chakravarti",
+  "id": 301
+ },
+ {
+  "slug": "gangamata-goswamini",
+  "title": "Srila Gangamata Goswamini",
+  "id": 298
+ },
+ {
+  "slug": "gaura-kishora-dasa-babaji",
+  "title": "Srila Gaura Kishora Dasa Babaji",
+  "id": 1819
+ },
+ {
+  "slug": "gauridasa-pandit",
+  "title": "Srila Gauridasa Pandit",
+  "id": 325
+ },
+ {
+  "slug": "gopala-bhatta-goswami",
+  "title": "Sri Gopala Bhatta Goswami",
+  "id": 343
+ },
+ {
+  "slug": "gopala-guru-goswami",
+  "title": "Sri Gopala Guru Goswami",
+  "id": 344
+ },
+ {
+  "slug": "gopinath-pattanayaka",
+  "title": "Gopinatha Pattanayaka",
+  "id": 385
+ },
+ {
+  "slug": "govinda-dasa-kaviraja",
+  "title": "Srila Govinda Dasa Kaviraja",
+  "id": 1960
+ },
+ {
+  "slug": "govinda-datta",
+  "title": "Srila Govinda Datta",
+  "id": 410
+ },
+ {
+  "slug": "govinda-ghosh",
+  "title": "Srila Govinda Ghosh",
+  "id": 413
+ },
+ {
+  "slug": "haridasa-thakura",
+  "title": "Srila Haridasa Thakura",
+  "id": 475
+ },
+ {
+  "slug": "hemalata-thakurani",
+  "title": "Hemalata Thakurani",
+  "id": 497
+ },
+ {
+  "slug": "hridaya-chaitanya",
+  "title": "Srila Hridaya Chaitanya",
+  "id": 504
+ },
+ {
+  "slug": "ishan-thakur",
+  "title": "Srila Ishan Thakur",
+  "id": 1824
+ },
+ {
+  "slug": "isvara-puri",
+  "title": "Srila Ishvara Puri",
+  "id": 516
+ },
+ {
+  "slug": "jagadananda-pandit",
+  "title": "Srila Jagadananda Pandita",
+  "id": 524
+ },
+ {
+  "slug": "jagadisha-pandit",
+  "title": "Srila Jagadisha Pandit",
+  "id": 534
+ },
+ {
+  "slug": "jagannatha-dasa-babaji",
+  "title": "Srila Jagannatha Dasa Babaji",
+  "id": 1828
+ },
+ {
+  "slug": "jagannatha-tirtha",
+  "title": "Srila Jagannatha Tirtha",
+  "id": 569
+ },
+ {
+  "slug": "jahnava-mata",
+  "title": "Srila Jahnava Mata",
+  "id": 574
+ },
+ {
+  "slug": "jayadeva-goswami",
+  "title": "Srila Jayadeva Goswami",
+  "id": 598
+ },
+ {
+  "slug": "jayadharma",
+  "title": "Srila Vijayadhvaja Tirtha",
+  "id": 1902
+ },
+ {
+  "slug": "jayatirtha",
+  "title": "Sri Jayatirtha",
+  "id": 1897
+ },
+ {
+  "slug": "jiva-goswami",
+  "title": "Srila Jiva Goswami",
+  "id": 618
+ },
+ {
+  "slug": "jnanasindhu",
+  "title": "Sri Jnanasindhu",
+  "id": 1898
+ },
+ {
+  "slug": "kali-das",
+  "title": "Kali Das",
+  "id": 636
+ },
+ {
+  "slug": "kaliya-krishna-dasa",
+  "title": "Kaliya Krishna Dasa",
+  "id": 639
+ },
+ {
+  "slug": "kamalakara-pippalai",
+  "title": "Srila Kamalakara Pippalai",
+  "id": 657
+ },
+ {
+  "slug": "kashishvara-pandit",
+  "title": "Kashishvara Pandit",
+  "id": 1832
+ },
+ {
+  "slug": "kavi-karnapura-goswami",
+  "title": "Srila Kavi Karnapura Goswami",
+  "id": 706
+ },
+ {
+  "slug": "kholavecha-shridhara",
+  "title": "Sri Kholavecha Shridhara",
+  "id": 1833
+ },
+ {
+  "slug": "krishna",
+  "title": "Lord Sri Krishna",
+  "id": 1889
+ },
+ {
+  "slug": "krishnadasa-kaviraja-goswami",
+  "title": "Srila Krishnadasa Kaviraja Goswami",
+  "id": 759
+ },
+ {
+  "slug": "kurma-vipra",
+  "title": "Sri Kurma Vipra",
+  "id": 816
+ },
+ {
+  "slug": "lakshmipati-tirtha",
+  "title": "Sri Lakshmipati Tirtha",
+  "id": 1906
+ },
+ {
+  "slug": "lochana-dasa-thakura",
+  "title": "Srila Lochana Dasa Thakura",
+  "id": 1845
+ },
+ {
+  "slug": "lokanatha-goswami",
+  "title": "Srila Lokanatha Gosvami",
+  "id": 844
+ },
+ {
+  "slug": "lord-brahma",
+  "title": "Lord Brahma",
+  "id": 1890
+ },
+ {
+  "slug": "madhava-ghosh",
+  "title": "Srila Madhava Ghosh",
+  "id": 861
+ },
+ {
+  "slug": "madhava-tirtha",
+  "title": "Sri Madhava Tirtha",
+  "id": 1895
+ },
+ {
+  "slug": "madhavendra-puri",
+  "title": "Srila Madhavendra Puri",
+  "id": 868
+ },
+ {
+  "slug": "madhavi-devi",
+  "title": "Srimati Madhavi Devi",
+  "id": 869
+ },
+ {
+  "slug": "madhu-pandit-goswami",
+  "title": "Sri Madhu Pandit Goswami",
+  "id": 874
+ },
+ {
+  "slug": "madhusudana-vachaspati",
+  "title": "Srila Madhusudana Vachaspati",
+  "id": 1675
+ },
+ {
+  "slug": "madhvacharya",
+  "title": "Srila Madhvacharya",
+  "id": 1892
+ },
+ {
+  "slug": "mahesh-pandit",
+  "title": "Srila Mahesh Pandit",
+  "id": 894
+ },
+ {
+  "slug": "minaketana-rama-dasa",
+  "title": "Srila Minaketana Rama Dasa",
+  "id": 918
+ },
+ {
+  "slug": "mukunda-datta",
+  "title": "Srila Mukunda Datta",
+  "id": 931
+ },
+ {
+  "slug": "murari-gupta",
+  "title": "Srila Murari Gupta",
+  "id": 950
+ },
+ {
+  "slug": "murari-mahiti",
+  "title": "Murari Mahiti",
+  "id": 951
+ },
+ {
+  "slug": "nandana-acharya",
+  "title": "Sri Nandana Acharya",
+  "id": 970
+ },
+ {
+  "slug": "narada-muni",
+  "title": "Narada Muni",
+  "id": 975
+ },
+ {
+  "slug": "narahari-chakravarti-thakura",
+  "title": "Srila Narahari Chakravarti Thakura",
+  "id": 977
+ },
+ {
+  "slug": "narahari-sarkar-thakura",
+  "title": "Srila Narahari Sarkar Thakura",
+  "id": 980
+ },
+ {
+  "slug": "narahari-tirtha",
+  "title": "Sri Narahari Tirtha",
+  "id": 1894
+ },
+ {
+  "slug": "narayana-bhatta-goswami",
+  "title": "Srila Narayana Bhatta Goswami",
+  "id": 989
+ },
+ {
+  "slug": "narayana-pandita",
+  "title": "Srila Narayana Pandita",
+  "id": 1919
+ },
+ {
+  "slug": "narottama-dasa-thakura",
+  "title": "Srila Narottama Dasa Thakura",
+  "id": 1010
+ },
+ {
+  "slug": "nityananda-prabhu",
+  "title": "Sri Nityananda Prabhu",
+  "id": 1851
+ },
+ {
+  "slug": "padmanabha-tirtha",
+  "title": "Padmanabha Tirtha",
+  "id": 1893
+ },
+ {
+  "slug": "paramananda-puri",
+  "title": "Srila Paramananda Puri",
+  "id": 1075
+ },
+ {
+  "slug": "parameshvara-dasa-thakura",
+  "title": "Parameshvara Dasa Thakura",
+  "id": 1080
+ },
+ {
+  "slug": "parameshvara-modaka",
+  "title": "Parameshvara Modaka",
+  "id": 2008
+ },
+ {
+  "slug": "prabodhananda-saraswati",
+  "title": "Srila Prabodhananda Saraswati",
+  "id": 1095
+ },
+ {
+  "slug": "pradyumna-brahmachari",
+  "title": "Pradyumna Brahmachari",
+  "id": 1060
+ },
+ {
+  "slug": "pradyumna-mishra",
+  "title": "Srila Pradyumna Mishra",
+  "id": 1099
+ },
+ {
+  "slug": "prataparudra",
+  "title": "Maharaja Prataparudra",
+  "id": 278
+ },
+ {
+  "slug": "pundarika-vidyanidhi",
+  "title": "Srila Pundarika Vidyanidhi",
+  "id": 1119
+ },
+ {
+  "slug": "purandara-acharya",
+  "title": "Srila Purandara Acharya",
+  "id": 1121
+ },
+ {
+  "slug": "purushottama-dasa-thakura",
+  "title": "Srila Purushottama Dasa Thakura",
+  "id": 1139
+ },
+ {
+  "slug": "purushottama-tirtha",
+  "title": "Sri Purushottama Tirtha",
+  "id": 1903
+ },
+ {
+  "slug": "raghava-goswami-of-govardhana",
+  "title": "Srila Raghava Pandita Goswami",
+  "id": 1186
+ },
+ {
+  "slug": "raghava-pandit",
+  "title": "Srila Raghava Pandit",
+  "id": 1856
+ },
+ {
+  "slug": "raghunandana-thakura",
+  "title": "Srila Raghunandana Thakura",
+  "id": 1200
+ },
+ {
+  "slug": "raghunatha-bhatta-goswami",
+  "title": "Srila Raghunatha Bhatta Goswami",
+  "id": 1202
+ },
+ {
+  "slug": "raghunatha-dasa-goswami",
+  "title": "Srila Raghunatha Dasa Goswami",
+  "id": 1206
+ },
+ {
+  "slug": "raghupati-upadhyaya",
+  "title": "Srila Raghupati Upadhyaya",
+  "id": 1216
+ },
+ {
+  "slug": "rajendra-tirtha",
+  "title": "Sri Rajendra Tirtha",
+  "id": 1901
+ },
+ {
+  "slug": "ramachandra-kaviraja",
+  "title": "Srila Ramachandra Kaviraja",
+  "id": 1244
+ },
+ {
+  "slug": "ramachandra-puri",
+  "title": "Srila Ramachandra Puri",
+  "id": 1247
+ },
+ {
+  "slug": "ramadasa-brahmana",
+  "title": "Ramadasa Brahmana",
+  "id": 1257
+ },
+ {
+  "slug": "ramadasa-vipra",
+  "title": "Ramadasa Vipra",
+  "id": 1255
+ },
+ {
+  "slug": "ramadasa-vishvasa",
+  "title": "Ramadasa Vishvasa",
+  "id": 1256
+ },
+ {
+  "slug": "ramananda-raya",
+  "title": "Srila Ramananda Raya",
+  "id": 1283
+ },
+ {
+  "slug": "ranga-puri",
+  "title": "Sri Ranga Puri",
+  "id": 1295
+ },
+ {
+  "slug": "rasikananda-prabhu",
+  "title": "Srila Rasikananda Prabhu",
+  "id": 1908
+ },
+ {
+  "slug": "rupa-goswami",
+  "title": "Srila Rupa Gosvami",
+  "id": 1325
+ },
+ {
+  "slug": "sachi-devi",
+  "title": "Srimati Sachi Devi",
+  "id": 1336
+ },
+ {
+  "slug": "sadashiva-kaviraja",
+  "title": "Srila Sadashiva Kaviraja",
+  "id": 1342
+ },
+ {
+  "slug": "sadashiva-pandit",
+  "title": "Srila Sadashiva Pandit",
+  "id": 1343
+ },
+ {
+  "slug": "sanatana-goswami",
+  "title": "Srila Sanatana Gosvami",
+  "id": 1353
+ },
+ {
+  "slug": "sanoriya-vipra",
+  "title": "The Sanoriya Vipra",
+  "id": 1373
+ },
+ {
+  "slug": "santosha-datta",
+  "title": "Santosha Datta",
+  "id": 1375
+ },
+ {
+  "slug": "sarvabhauma-bhattacharya",
+  "title": "Srila Sarvabhauma Bhattacharya",
+  "id": 1381
+ },
+ {
+  "slug": "satyaraja-khan",
+  "title": "Satyaraja Khan",
+  "id": 1398
+ },
+ {
+  "slug": "ser-khan",
+  "title": "Ser Khan",
+  "id": 1402
+ },
+ {
+  "slug": "shankara-pandita",
+  "title": "Sri Shankara Pandita",
+  "id": 1365
+ },
+ {
+  "slug": "shankararanya",
+  "title": "Sri Vishvarupa (Shankararanya)",
+  "id": 1725
+ },
+ {
+  "slug": "sharanga-thakura",
+  "title": "Sri Sharanga Thakura",
+  "id": 1378
+ },
+ {
+  "slug": "shikhi-mahiti",
+  "title": "Shikhi Mahiti",
+  "id": 1410
+ },
+ {
+  "slug": "shivananda-sena",
+  "title": "Srila Shivananda Sena",
+  "id": 1427
+ },
+ {
+  "slug": "shrikanta",
+  "title": "Srila Shrikanta Sena",
+  "id": 1443
+ },
+ {
+  "slug": "shriman-pandita",
+  "title": "Shriman Pandita",
+  "id": 1450
+ },
+ {
+  "slug": "shrinatha-pandita",
+  "title": "Srila Shrinatha Pandita",
+  "id": 1459
+ },
+ {
+  "slug": "shrinivasa-acharya",
+  "title": "Srila Srinivasa Acharya",
+  "id": 1466
+ },
+ {
+  "slug": "shubhananda-dvija",
+  "title": "Sri Shubhananda Dvija",
+  "id": 1472
+ },
+ {
+  "slug": "shuklambara-brahmachari",
+  "title": "Shuklambara Brahmachari",
+  "id": 1488
+ },
+ {
+  "slug": "shyamananda-pandit",
+  "title": "Srila Shyamananda Pandit",
+  "id": 1535
+ },
+ {
+  "slug": "sita-thakurani",
+  "title": "Srimati Sita Thakurani",
+  "id": 1417
+ },
+ {
+  "slug": "sridhara-swami",
+  "title": "Srila Sridhara Swami",
+  "id": 1995
+ },
+ {
+  "slug": "srila-prabhupada",
+  "title": "Srila Prabhupada",
+  "id": 125
+ },
+ {
+  "slug": "srivasa-thakura",
+  "title": "Sri Srivasa Thakura",
+  "id": 1468
+ },
+ {
+  "slug": "subuddhi-raya",
+  "title": "Sri Subuddhi Raya",
+  "id": 1475
+ },
+ {
+  "slug": "sulochana",
+  "title": "Sri Sulochana",
+  "id": 1491
+ },
+ {
+  "slug": "sundarananda-thakura",
+  "title": "Sundarananda Thakura",
+  "id": 1496
+ },
+ {
+  "slug": "svarupa-damodara-goswami",
+  "title": "Srila Svarupa Damodara Goswami",
+  "id": 1513
+ },
+ {
+  "slug": "tapana-mishra",
+  "title": "Srila Tapana Mishra",
+  "id": 1546
+ },
+ {
+  "slug": "uddharana-datta-thakura",
+  "title": "Srila Uddharana Datta Thakura",
+  "id": 1567
+ },
+ {
+  "slug": "uddhava-dasa",
+  "title": "Srila Uddhava Dasa",
+  "id": 1568
+ },
+ {
+  "slug": "vakresvara-pandit",
+  "title": "Sri Vakresvara Pandita",
+  "id": 1598
+ },
+ {
+  "slug": "vamsi-dasa-babaji",
+  "title": "Srila Vamsi Dasa Babaji Maharaj",
+  "id": 1617
+ },
+ {
+  "slug": "vamsivadananda-thakura",
+  "title": "Srila Vamsivadana Thakura",
+  "id": 1623
+ },
+ {
+  "slug": "vanamali-acharya",
+  "title": "Vanamali Acharya",
+  "id": 1625
+ },
+ {
+  "slug": "vanamali-vipra",
+  "title": "Vanamali Vipra",
+  "id": 1630
+ },
+ {
+  "slug": "vasudeva-datta-thakura",
+  "title": "Srila Vasudeva Datta Thakura",
+  "id": 1652
+ },
+ {
+  "slug": "vasudeva-ghosh",
+  "title": "Srila Vasudeva Ghosh",
+  "id": 1654
+ },
+ {
+  "slug": "venkata-bhatta",
+  "title": "Srila Venkata Bhatta",
+  "id": 1664
+ },
+ {
+  "slug": "vidyanidhi",
+  "title": "Sri Vidyanidhi",
+  "id": 1900
+ },
+ {
+  "slug": "viracandra-prabhu",
+  "title": "Srila Viracandra Prabhu",
+  "id": 1880
+ },
+ {
+  "slug": "vishnupriya-devi",
+  "title": "Srimati Vishnupriya Devi",
+  "id": 1715
+ },
+ {
+  "slug": "vishvanatha-chakravarti-thakura",
+  "title": "Srila Vishvanatha Chakravarti Thakura",
+  "id": 1723
+ },
+ {
+  "slug": "vrindavana-dasa-thakura",
+  "title": "Srila Vrindavana Dasa Thakura",
+  "id": 1740
+ },
+ {
+  "slug": "vyasa-tirtha",
+  "title": "Sri Vyasa Tirtha",
+  "id": 1905
+ },
+ {
+  "slug": "vyasadeva",
+  "title": "Srila Vyasadeva",
+  "id": 1891
+ },
+ {
+  "slug": "yadavacharya-goswami",
+  "title": "Srila Yadavacharya Goswami",
+  "id": 1762
+ },
+ {
+  "slug": "yadunandana-acharya",
+  "title": "Sri Yadunandana Acharya",
+  "id": 1769
+ }
+]

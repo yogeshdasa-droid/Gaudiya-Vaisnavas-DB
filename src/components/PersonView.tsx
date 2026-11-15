@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { ArrowUp, BookOpen, Library, MapPin, ChevronDown, ChevronLeft, ChevronRight, Star, Combine, FileDown, FilePlus2, Printer, FileText, Folder, GitFork, GitMerge, Globe, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Route, Search, StickyNote, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
-import { api, FAVORITES, fileUrl, isNamesake, LifeSpan, MAIN_TEXT, NAMESAKES, Place, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
+import { api, FAVORITES, fileUrl, imageCaption, isNamesake, LifeSpan, MAIN_TEXT, NAMESAKES, Place, Person, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
 import { ReaderStyle, SectionView } from "./Reader";
@@ -57,6 +57,8 @@ interface Props {
   /** open Panorama › Map with one of the record's journeys (journeys.ts) */
   onShowJourney: (id: string) => void;
   onPhotoChanged: () => void;
+  /** the lists (side list, thumbnails) read again, without reloading this record */
+  onListsChanged?: () => void;
   onToast: (msg: string) => void;
   /** some records were called different people: the lists that mark repeated ones are read again */
   onDistinct: () => void;
@@ -483,8 +485,36 @@ export function PersonView(p: Props) {
       p.onToast(String(e));
     }
   };
+  // the order of the texts, dragged by hand (kept in this computer); «join» follows it
+  const [docOrder, setDocOrder] = useState<number[]>([]);
+  const [dragDoc, setDragDoc] = useState<number | null>(null);
+  useEffect(() => {
+    try {
+      setDocOrder(JSON.parse(localStorage.getItem(`docOrder:${p.id}`) ?? "[]"));
+    } catch {
+      setDocOrder([]);
+    }
+  }, [p.id]);
+  const orderedDocs = person
+    ? [...person.docs].sort((a, b) => {
+        const ia = docOrder.indexOf(a.id), ib = docOrder.indexOf(b.id);
+        return (ia < 0 ? Infinity : ia) - (ib < 0 ? Infinity : ib);
+      })
+    : [];
+  const dropDoc = (onto: number) => {
+    if (dragDoc === null || dragDoc === onto) return;
+    const ids = orderedDocs.map((d) => d.id).filter((x) => x !== dragDoc);
+    ids.splice(ids.indexOf(onto), 0, dragDoc);
+    setDocOrder(ids);
+    try {
+      localStorage.setItem(`docOrder:${p.id}`, JSON.stringify(ids));
+    } catch {
+      /* not kept: the order still works now */
+    }
+  };
   const joinMe = async () => {
-    if (person && (await ask(t.joinOneConfirm(person.name)))) api.joinTexts(person.id).catch((e) => p.onToast(String(e)));
+    if (person && (await ask(t.joinOneConfirm(person.name))))
+      api.joinTexts(person.id, orderedDocs.map((d) => d.id)).catch((e) => p.onToast(String(e)));
   };
   const notSame = async (which: PersonListItem[] = similar) => {
     if (!person) return;
@@ -644,6 +674,22 @@ export function PersonView(p: Props) {
     }
   };
 
+  // the enlarged picture: ← → go through the gallery, Esc closes
+  const zoomIx = zoom === null || !person ? -1 : person.images.indexOf(zoom);
+  const zoomGo = (d: number) => {
+    if (!person || zoomIx < 0 || !person.images.length) return;
+    setZoom(person.images[(zoomIx + d + person.images.length) % person.images.length]);
+  };
+  useEffect(() => {
+    if (zoom === null) return;
+    const key = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") (e.preventDefault(), zoomGo(1));
+      else if (e.key === "ArrowLeft") (e.preventDefault(), zoomGo(-1));
+      else if (e.key === "Escape") setZoom(null);
+    };
+    window.addEventListener("keydown", key);
+    return () => window.removeEventListener("keydown", key);
+  });
   if (!person || person.id !== p.id) return <div className="reader" />;
 
   // (a text's cover stands in for the photo, unless it was taken away: a printed page is not a picture of him)
@@ -783,7 +829,12 @@ export function PersonView(p: Props) {
       p.onToast(String(e));
     }
   };
-  const imageAction = (f: () => Promise<unknown>) => () => f().then(p.onPhotoChanged, (e) => p.onToast(String(e)));
+  // the gallery changes in place: the record is read again here (not reloaded: the page would jump to the top)
+  const imageAction = (f: () => Promise<unknown>) => () =>
+    f()
+      .then(() => api.getPerson(p.id))
+      .then((r) => (setPerson(r), p.onListsChanged?.()))
+      .catch((e) => p.onToast(String(e)));
 
   return (
     <div className="reader person-view">
@@ -836,14 +887,9 @@ export function PersonView(p: Props) {
                     <StickyNote size={15} /> {showNotes ? t.hideNotes : t.seeNotes}
                   </button>
                 )}
-                <button className="btn small" onClick={() => p.onEdit(person)}>
-                  <Pencil size={15} /> {t.editPerson}
+                <button className="btn small" onClick={() => p.onSearchIn(person)} title={t.searchInPerson}>
+                  <TextSearch size={15} /> {t.searchInPersonShort}
                 </button>
-                {p.hasLibrary && (
-                  <button className="btn small lib-btn" onClick={() => p.onLibrary(person)} title={t.lib.buttonHint}>
-                    <Library size={15} /> {t.lib.button}
-                  </button>
-                )}
                 <button className="btn ghost small" onClick={() => p.onFindMentions(person)} title={t.findMentions}>
                   <Search size={15} /> {t.findMentionsShort}
                 </button>
@@ -904,8 +950,8 @@ export function PersonView(p: Props) {
                       <button onClick={() => (setMenu(false), p.onLibrary(person))} title={t.lib.buttonHint}>
                         <Library size={15} /> {t.lib.menu}
                       </button>
-                      <button onClick={() => (setMenu(false), p.onSearchIn(person))}>
-                        <TextSearch size={15} /> {t.searchInPerson}
+                      <button onClick={() => (setMenu(false), p.onEdit(person))}>
+                        <Pencil size={15} /> {t.editPerson}
                       </button>
                       <button onClick={() => (setMenu(false), p.onAddText(person))}>
                         <FilePlus2 size={15} /> {t.addText}
@@ -960,6 +1006,25 @@ export function PersonView(p: Props) {
 
           <div className="ency-body">
             <aside className="infobox">
+              {/* above the picture: the record's pictures and its library */}
+              {(person.images.length > 0 || p.hasLibrary) && (
+                <div className="infobox-tools">
+                  {person.images.length > 0 && (
+                    <button
+                      className="btn ghost small"
+                      title={t.goToGallery}
+                      onClick={() => document.getElementById("person-gallery")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                    >
+                      <Images size={15} /> {t.gallery} <span className="pill">{person.images.length}</span>
+                    </button>
+                  )}
+                  {p.hasLibrary && (
+                    <button className="btn small lib-btn" onClick={() => p.onLibrary(person)} title={t.lib.buttonHint}>
+                      <Library size={15} /> {t.lib.button}
+                    </button>
+                  )}
+                </div>
+              )}
                 <div className="person-cover-wrap">
                   <button className="person-cover" title={t.choosePhoto} onClick={choosePhoto}>
                     {person.hasPhoto ? (
@@ -1246,14 +1311,20 @@ export function PersonView(p: Props) {
             </h2>
             {person.docs.length === 0 && <p className="muted small">{t.noTexts}</p>}
             <div className="text-cards">
-              {person.docs.map((d, i) => (
+              {orderedDocs.map((d, i) => (
                 <button
                   key={d.id}
                   data-ctx="doc"
                   data-id={d.id}
-                  className="text-card"
+                  className={`text-card ${dragDoc === d.id ? "dragging" : ""}`}
                   style={{ animationDelay: `${Math.min(i, 12) * 30}ms` }}
                   onClick={() => p.onOpenDoc(d.id)}
+                  draggable={orderedDocs.length > 1}
+                  title={orderedDocs.length > 1 ? t.dragTextHint : undefined}
+                  onDragStart={(e) => (setDragDoc(d.id), (e.dataTransfer.effectAllowed = "move"))}
+                  onDragEnd={() => setDragDoc(null)}
+                  onDragOver={(e) => dragDoc !== null && e.preventDefault()}
+                  onDrop={(e) => (e.preventDefault(), dropDoc(d.id), setDragDoc(null))}
                 >
                   {d.hasCover ? <img src={fileUrl("cover", d.id)} alt="" loading="lazy" /> : <FileText size={22} />}
                   <span className="tc-title">{d.title}</span>
@@ -1348,16 +1419,21 @@ export function PersonView(p: Props) {
             </section>
           )}
 
-          <section>
+          <section id="person-gallery">
             <h2>
               <Images size={14} /> {t.gallery} {person.images.length > 0 && <span className="pill">{person.images.length}</span>}
             </h2>
             <div className="gallery">
-              {person.images.map((id) => (
+              {person.images.map((id, i) => (
                 <figure key={id}>
                   <a href={fileUrl("image", id)} target="_blank" rel="noreferrer" onClick={(e) => (e.preventDefault(), setZoom(id))}>
                     <img src={fileUrl("image", id)} alt="" loading="lazy" />
                   </a>
+                  {imageCaption(person.imageNames?.[i] ?? "") && (
+                    <div className="gallery-cap" title={imageCaption(person.imageNames[i])}>
+                      {imageCaption(person.imageNames[i])}
+                    </div>
+                  )}
                   <figcaption>
                     <button className="icon-btn" title={t.useAsMain} onClick={imageAction(() => api.imageAsPhoto(id))}>
                       <UserRound size={14} />
@@ -1418,7 +1494,21 @@ export function PersonView(p: Props) {
       </div>
       {zoom !== null && (
         <div className="zoom" onClick={() => setZoom(null)}>
+          {zoomIx >= 0 && person.images.length > 1 && (
+            <>
+              <button className="zoom-nav prev" title="←" onClick={(e) => (e.stopPropagation(), zoomGo(-1))}>
+                <ChevronLeft size={34} />
+              </button>
+              <button className="zoom-nav next" title="→" onClick={(e) => (e.stopPropagation(), zoomGo(1))}>
+                <ChevronRight size={34} />
+              </button>
+            </>
+          )}
           <img src={fileUrl("image", zoom)} alt="" />
+          <div className="zoom-cap">
+            {zoomIx >= 0 && person.images.length > 1 && <span className="zoom-count">{zoomIx + 1} / {person.images.length}</span>}
+            {imageCaption(person.imageNames?.[zoomIx] ?? "")}
+          </div>
         </div>
       )}
     </div>

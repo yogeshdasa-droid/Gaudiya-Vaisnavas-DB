@@ -223,7 +223,7 @@ async fn slim_library(app: AppHandle, what: store::Slim) -> CmdResult<()> {
 /// One text per record (all records, or only `person_id`), in the
 /// background; for all of them a copy of the database is made first.
 #[tauri::command]
-async fn join_texts(app: AppHandle, person_id: Option<i64>) -> CmdResult<()> {
+async fn join_texts(app: AppHandle, person_id: Option<i64>, order: Option<Vec<i64>>) -> CmdResult<()> {
     let copies = backup::copies_dir(&app.state::<AppState>().db_path);
     background(&app, move |conn, app| {
         let mut backup_path = String::new();
@@ -235,7 +235,7 @@ async fn join_texts(app: AppHandle, person_id: Option<i64>) -> CmdResult<()> {
             backup::copy_to(conn, &target)?;
             backup_path = target.to_string_lossy().to_string();
         }
-        let mut done = store::join_person_texts(conn, person_id, |done, total| {
+        let mut done = store::join_person_texts(conn, person_id, order.as_deref().unwrap_or(&[]), |done, total| {
             let _ = app.emit("import-progress", import::Progress { phase: "join", done, total });
         })?;
         done.backup = backup_path;

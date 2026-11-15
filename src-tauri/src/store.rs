@@ -1311,8 +1311,9 @@ fn bare(text: &str) -> String {
 /// from one to the next). PDFs become plain text; a text whose words are
 /// already in another part is left out. The former texts go to the recycle
 /// bin (they can be restored); their bookmarks follow; a cover becomes the
-/// record's picture if it has none.
-pub fn join_person_texts(conn: &mut Connection, only: Option<i64>, progress: impl Fn(usize, usize)) -> Res<Joined> {
+/// record's picture if it has none. `order`: doc ids in the order the
+/// person put them (dragged in the record): those go first, in that order.
+pub fn join_person_texts(conn: &mut Connection, only: Option<i64>, order: &[i64], progress: impl Fn(usize, usize)) -> Res<Joined> {
     let mut done = Joined::default();
     let tx = conn.transaction().map_err(e)?;
     let persons: Vec<(i64, String)> = tx
@@ -1345,6 +1346,9 @@ pub fn join_person_texts(conn: &mut Connection, only: Option<i64>, progress: imp
             .map_err(e)?
             .collect::<Result<_, _>>()
             .map_err(e)?;
+        let mut docs = docs;
+        // the order chosen by hand wins (stable: the rest keep theirs, after)
+        docs.sort_by_key(|d| order.iter().position(|&o| o == d.0).unwrap_or(usize::MAX));
         let mut sections: Vec<Section> = Vec::new();
         let mut kept: Vec<String> = Vec::new();
         // (former text, ordinal where its part starts)

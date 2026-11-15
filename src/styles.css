@@ -7731,3 +7731,57 @@ svg.satellite .map-dot {
   white-space: pre-wrap;
   line-height: 1.5;
 }
+
+/* «Volver» at the top of a text: back to the record (or wherever it was opened from) */
+.reader-back {
+  margin-bottom: 8px;
+  padding: 3px 10px;
+  font-size: 13px;
+}
+/* the texts of a record can be dragged into another order (the order used to join them) */
+.text-card[draggable="true"] {
+  cursor: grab;
+}
+.text-card.dragging {
+  opacity: 0.4;
+}
+
+/* the enlarged picture of a record: arrows to go through the gallery */
+.zoom-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 51;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  cursor: pointer;
+}
+.zoom-nav:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+.zoom-nav.prev {
+  left: 24px;
+}
+.zoom-nav.next {
+  right: 24px;
+}
+.zoom-count {
+  margin-right: 10px;
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+}
+
+/* «Imágenes» and «Biblioteca» above the record's picture */
+.infobox-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}

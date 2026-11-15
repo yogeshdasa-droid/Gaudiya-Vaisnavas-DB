@@ -697,6 +697,8 @@ pub struct Person {
     pub has_photo: bool,
     /// gallery pictures (ids served at /image/<id>)
     pub images: Vec<i64>,
+    /// their names, in the same order (the caption, or the file name)
+    pub image_names: Vec<String>,
     /// the lunar days read from the appearance / disappearance fields
     pub appearance_day: Option<String>,
     pub disappearance_day: Option<String>,
@@ -747,14 +749,15 @@ pub fn get_person(conn: &Connection, id: i64) -> rusqlite::Result<Person> {
         })?
         .collect::<Result<_, _>>()?;
     let has_photo = conn.query_row("SELECT EXISTS(SELECT 1 FROM person_photos WHERE person_id = ?1)", [id], |r| r.get(0))?;
-    let images = conn
-        .prepare("SELECT id FROM person_images WHERE person_id = ?1 ORDER BY id")?
-        .query_map([id], |r| r.get(0))?
+    let pics: Vec<(i64, String)> = conn
+        .prepare("SELECT id, name FROM person_images WHERE person_id = ?1 ORDER BY id")?
+        .query_map([id], |r| Ok((r.get(0)?, r.get(1)?)))?
         .collect::<Result<_, _>>()?;
+    let (images, image_names) = pics.into_iter().unzip();
     let lunar = |text: &str| crate::calendar::parse_day(text).map(crate::calendar::label);
     let appearance_day = lunar(&fields.appearance);
     let disappearance_day = lunar(&fields.disappearance);
-    Ok(Person { id, fields, created, modified, has_photo, images, appearance_day, disappearance_day, docs })
+    Ok(Person { id, fields, created, modified, has_photo, images, image_names, appearance_day, disappearance_day, docs })
 }
 
 /// A gallery picture of a record (served at /image/<id>).

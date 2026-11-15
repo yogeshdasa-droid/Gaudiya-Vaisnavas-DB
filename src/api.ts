@@ -309,6 +309,8 @@ export interface Person extends PersonFields {
   hasPhoto: boolean;
   /** gallery pictures (served at /image/<id>) */
   images: number[];
+  /** their names, same order (caption or file name: show with imageCaption) */
+  imageNames: string[];
   /** lunar days read from the appearance / disappearance fields */
   appearanceDay: string | null;
   disappearanceDay: string | null;
@@ -628,7 +630,7 @@ export const api = {
   replaceApply: (spec: ReplaceSpec) => invoke<void>("replace_apply", { spec }),
   slimLibrary: (what: Slim) => invoke<void>("slim_library", { what }),
   /** one text per record: all records (null) or one */
-  joinTexts: (personId: number | null) => invoke<void>("join_texts", { personId }),
+  joinTexts: (personId: number | null, order: number[] | null = null) => invoke<void>("join_texts", { personId, order }),
   diacriticSuggestions: () => invoke<DiacriticSuggestion[]>("diacritic_suggestions"),
   semanticStatus: () => invoke<SemanticStatus>("semantic_status"),
   semanticIndex: () => invoke<void>("semantic_index"),

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
+  ArrowLeft,
   FileImage,
   ChevronDown,
   ChevronLeft,
@@ -44,6 +45,8 @@ interface Props {
   onFontSize: (n: number) => void;
   onOpenDoc: (docId: number, ordinal: number) => void;
   onPerson: (id: number) => void;
+  /** back to where the text was opened from (the record, the results…) */
+  onBack?: () => void;
   onLoaded: (doc: DocInfo) => void;
   /** the section being read (to come back to it with "Back") */
   onSection: (docId: number, ordinal: number) => void;
@@ -287,6 +290,11 @@ export function Reader(p: Props) {
       {view === "text" && <div className="read-progress" style={{ transform: `scaleX(${progress})` }} />}
       <header className="reader-head">
         <div className="reader-title">
+          {p.onBack && (
+            <button className="btn reader-back" onClick={p.onBack} title={t.goBack}>
+              <ArrowLeft size={15} /> {t.backToRecord}
+            </button>
+          )}
           <div className="meta">
             <CollectionChip name={doc.collection} />
             {doc.person && doc.personId && (

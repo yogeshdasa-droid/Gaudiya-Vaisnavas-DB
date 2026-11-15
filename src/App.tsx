@@ -1270,6 +1270,7 @@ export default function App() {
             onFontSize={setFontSize}
             onOpenDoc={openDoc}
             onPerson={openPerson}
+            onBack={backStack.current.length ? () => travel("back") : undefined}
             onLoaded={onDocLoaded}
             onSection={(docId, ord) => readingOrd.current.set(docId, ord)}
             onSearchInDoc={(doc) => {
@@ -1320,6 +1321,7 @@ export default function App() {
               reloadPerson();
               refreshAll();
             }}
+            onListsChanged={refreshAll}
             onToast={showToast}
             onDistinct={() => api.listPersons().then(setPersons, () => {})}
             readerStyle={readerStyle}
