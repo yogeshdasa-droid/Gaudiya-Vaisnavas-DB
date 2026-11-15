@@ -1011,7 +1011,7 @@ export function PersonView(p: Props) {
                 <div className="infobox-tools">
                   {person.images.length > 0 && (
                     <button
-                      className="btn ghost small"
+                      className="btn small gallery-btn"
                       title={t.goToGallery}
                       onClick={() => document.getElementById("person-gallery")?.scrollIntoView({ behavior: "smooth", block: "start" })}
                     >

@@ -975,6 +975,7 @@ const es = {
   joinOne: "Unir sus textos en uno solo",
   joinOneHint: "Un solo texto con partes, que se pasan con las flechas (como en Mādhavendra Purī), en el orden de las tarjetas: la primera va primero. Los textos repetidos se quitan.",
   dragTextHint: "Arrastra para cambiar el orden: al unir los textos, el primero va primero",
+  dragFavHint: "(arrastra para cambiar el orden)",
   backToRecord: "Volver",
   joinOneConfirm: (n: string) => `¿Unir todos los textos de «${n}» en uno solo? Los textos anteriores van a la Papelera (se pueden recuperar).`,
   joinDone: (p: number, d: number, r: number) =>
@@ -2074,6 +2075,7 @@ const en: Dict = {
   joinOne: "Join its texts into one",
   joinOneHint: "A single text with parts, turned with the arrows (as in Mādhavendra Purī), in the order of the cards: the first one goes first. Repeated texts are left out.",
   dragTextHint: "Drag to change the order: when the texts are joined, the first one goes first",
+  dragFavHint: "(drag to change the order)",
   backToRecord: "Back",
   joinOneConfirm: (n) => `Join all the texts of “${n}” into one? The former texts go to the Recycle bin (they can be restored).`,
   joinDone: (p, d, r) =>

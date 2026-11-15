@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **15-11-2026** (versión **0.17.12**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **15-11-2026** (versión **0.17.13**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,13 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.12)
+## 5. Qué hace hoy (v0.17.13)
+
+### Novedades de la 0.17.13 (15-11-2026) — favoritas ordenadas, botón rosa
+- **Favoritas de Inicio**: por generación en la Guru Paramparā (nº de gurus por encima en `tree.parent`; las de fuera
+  del árbol al final; luego por nombre) y **arrastrables** a gusto (localStorage `favOrder`, Home.tsx). 15 fichas
+  añadidas a «Favoritas» (Mahāprabhu… Prabhupāda), ahora 20.
+- Botón «Imágenes» de la ficha en **rosa** (`.gallery-btn`), como el naranja de «Biblioteca».
 
 ### Novedades de la 0.17.12 (15-11-2026) — galería de la ficha, «Volver», orden de los textos
 - **Nandgram Dham** (datos, no código): las 161 vidas de nandgramdham.org/acharyas en sus fichas — un texto «Nandgram
@@ -1716,6 +1722,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **15-11-2026 — v0.17.13**: favoritas por generación y arrastrables; botón «Imágenes» rosa. Release:
+  https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.13
 - **15-11-2026 — v0.17.12**: Nandgram Dham en las fichas; galería con pies y flechas, sin saltar arriba; «Volver» en
   los textos; ordenar textos arrastrando. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.12
 - **15-11-2026 — v0.17.11**: «Buscar foto en internet», pegar foto con Ctrl+V, quitar la portada como foto; árbol sin

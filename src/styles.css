@@ -7785,3 +7785,27 @@ svg.satellite .map-dot {
   justify-content: flex-end;
   margin-bottom: 8px;
 }
+
+/* «Imágenes» above the record's photo: pink, as full as the orange «Biblioteca» */
+.btn.gallery-btn {
+  background: #d6457e;
+  border-color: #d6457e;
+  color: #fff;
+}
+.btn.gallery-btn:hover {
+  background: #e25c92;
+  border-color: #e25c92;
+  color: #fff;
+}
+.btn.gallery-btn .pill {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+/* the favourites on the home page can be dragged into another order */
+.fav-card[draggable="true"] {
+  cursor: grab;
+}
+.fav-card.dragging {
+  opacity: 0.4;
+}

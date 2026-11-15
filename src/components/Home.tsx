@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { BarChart3, Clock, Clock3, Database, MapPin, Network, FileText, HardDrive, Sparkles, Star, Upload, Users } from "lucide-react";
 import { Bookmark, fileUrl, hueOf, isFavorite, PersonListItem, Place, SearchResult, Status } from "../api";
 import { Lang, T } from "../i18n";
@@ -74,7 +74,41 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
   const person = useMemo(() => ofTheDay([...persons].filter((p) => p.tree).sort((a, b) => a.id - b.id)), [persons]);
   const place = useMemo(() => ofTheDay([...places].filter((p) => p.about.trim()).sort((a, b) => a.id - b.id)), [places]);
   // the records marked with the star, to reach them at once
-  const favorites = useMemo(() => persons.filter(isFavorite).sort((a, b) => a.name.localeCompare(b.name)), [persons]);
+  // first in the order dragged by hand (kept in this computer), the rest by generation in the Guru Paramparā
+  // (how many gurus above: Mahāprabhu before the Gosvāmīs… Prabhupāda last), then by name
+  const [favOrder, setFavOrder] = useState<number[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem("favOrder") ?? "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [dragFav, setDragFav] = useState<number | null>(null);
+  const favorites = useMemo(() => {
+    const byId = new Map(persons.map((p) => [p.id, p]));
+    const depth = (p: PersonListItem) => {
+      let n = 0;
+      for (let q = p.tree?.parent ?? null; q !== null && n < 200; q = byId.get(q)?.tree?.parent ?? null) n++;
+      return p.tree ? n : 1e6;
+    };
+    const hand = (id: number) => (favOrder.includes(id) ? favOrder.indexOf(id) : 1e9);
+    return persons
+      .filter(isFavorite)
+      .map((p) => ({ p, d: depth(p) }))
+      .sort((a, b) => hand(a.p.id) - hand(b.p.id) || a.d - b.d || a.p.name.localeCompare(b.p.name))
+      .map((x) => x.p);
+  }, [persons, favOrder]);
+  const dropFav = (onto: number) => {
+    if (dragFav === null || dragFav === onto) return;
+    const ids = favorites.map((f) => f.id).filter((x) => x !== dragFav);
+    ids.splice(ids.indexOf(onto), 0, dragFav);
+    setFavOrder(ids);
+    try {
+      localStorage.setItem("favOrder", JSON.stringify(ids));
+    } catch {
+      /* not kept: the order still works now */
+    }
+  };
   const firstLine = (s: string) => {
     const one = s.split("\n")[0].trim();
     return one.length > 220 ? one.slice(0, 220).replace(/\s+\S*$/, "") + "…" : one;
@@ -124,7 +158,19 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
             </h2>
             <div className="fav-grid">
               {favorites.map((f) => (
-                <button key={f.id} className="fav-card" data-ctx="person" data-id={f.id} onClick={() => onPerson(f.id)} title={f.aka ? `${f.name}\n${f.aka}` : f.name}>
+                <button
+                  key={f.id}
+                  className={`fav-card ${dragFav === f.id ? "dragging" : ""}`}
+                  data-ctx="person"
+                  data-id={f.id}
+                  onClick={() => onPerson(f.id)}
+                  title={(f.aka ? `${f.name}\n${f.aka}` : f.name) + "\n" + t.dragFavHint}
+                  draggable
+                  onDragStart={(e) => (setDragFav(f.id), (e.dataTransfer.effectAllowed = "move"))}
+                  onDragEnd={() => setDragFav(null)}
+                  onDragOver={(e) => dragFav !== null && e.preventDefault()}
+                  onDrop={(e) => (e.preventDefault(), dropFav(f.id), setDragFav(null))}
+                >
                   <span className="fav-photo">
                     {f.hasPhoto ? (
                       <img src={fileUrl("photo", f.id)} alt="" loading="lazy" />
