@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **15-11-2026** (versión **0.17.14**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **15-11-2026** (versión **0.17.15**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,20 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.14)
+## 5. Qué hace hoy (v0.17.15)
+
+### Novedades de la 0.17.15 (15-11-2026) — «Gaṇoddeśa» de cada ficha
+- Texto nuevo por ficha, colección **«Gaṇoddeśa»** (`api.GANODDESA`): quién es la persona en la Kṛṣṇa-līlā (gopī, mañjarī,
+  sakhā…), según los libros de `Desktop\BIOGRAPHYS\Info`, que **mandan** sobre cualquier otro dato (Gaura-gaṇoddeśa-dīpikā,
+  Rādhā-Kṛṣṇa-gaṇoddeśa-dīpikā, Mañjarī-svarūpa-nirūpaṇa…). La ficha no lo pone entre sus textos: botón morado
+  **«Gaṇoddeśa»** (`.gano-btn`) encima de «Imágenes»; «Unir sus textos» lo deja fuera (store.rs `join_person_texts`).
+- El lector abre esos textos siempre con el Markdown dibujado (Reader.tsx `gano`, estilo serif forzado), con un
+  **rosetón propio** de fondo (`components/Mandala.tsx`, SVG dibujado por código, medio fuera por la izquierda, muy
+  tenue en claro y oscuro), título en Great Vibes y encabezados en Cormorant cursiva con ❦ (CSS al final de styles.css).
+- Datos (scripts, se aplican aparte con la app en el puerto 9334): `scripts/datos/ganoddesa/` — `aplicar.mjs <plan>`
+  crea el texto si no hay y quita/cambia en las notas las frases «In Kṛṣṇa-līlā…»; planes `prueba1.json`, `tanda2-4.mjs`
+  (→ .json), `decisiones.mjs` (respuestas de Whisper); `herramientas/` (textos de los libros: NO van a GitHub) con
+  `ver.mjs` y `buscar.mjs`. Unión #217 → #216 Dhruvānanda (`scripts/datos/unir-dhruvananda.json`).
 
 ### Novedades de la 0.17.14 (15-11-2026) — nombres en caligrafía, pie de foto en la ficha
 - **Ajustes › General › «Nombre de las fichas»**: Normal / Caligrafía (**Great Vibes**) / Clásica (**Cormorant
@@ -1733,6 +1746,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **15-11-2026 — v0.17.15**: texto «Gaṇoddeśa» de cada ficha (botón morado, lector con rosetón y caligrafía); 51
+  fichas con su Gaṇoddeśa. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.15
 - **15-11-2026 — v0.17.14**: nombres de las fichas en caligrafía (Ajustes), pie de foto editable en la galería de la
   ficha. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.14
 - **15-11-2026 — v0.17.13**: favoritas por generación y arrastrables; botón «Imágenes» rosa. Release:

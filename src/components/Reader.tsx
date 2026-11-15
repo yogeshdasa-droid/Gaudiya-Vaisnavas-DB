@@ -17,12 +17,13 @@ import {
   Trash2,
   UserRound,
 } from "lucide-react";
-import { ALWAYS_ORIGINAL, api, DocInfo, fileUrl, SectionText, TocEntry } from "../api";
+import { ALWAYS_ORIGINAL, api, DocInfo, GANODDESA, fileUrl, SectionText, TocEntry } from "../api";
 import { highlightDom, Term } from "../fold";
 import { formatDate, Lang, T } from "../i18n";
 import { renderMarkdown, renderSource } from "../markdown";
 import { linkNames, NameIndex } from "../personLinks";
 import { CollectionChip } from "./ui";
+import { Mandala } from "./Mandala";
 
 /** "editor" shows the markdown as written (monospace, coloured signs). */
 export type ReaderStyle = "editor" | "serif" | "sans";
@@ -275,6 +276,9 @@ export function Reader(p: Props) {
   if (!doc) return <div className="reader" />;
 
   const multi = count > 1;
+  // the «Gaṇoddeśa» texts are always read with the markdown drawn (no #, **), with an ornament and calligraphy
+  const gano = doc.collection === GANODDESA;
+  const style: ReaderStyle = gano ? "serif" : readerStyle;
   const isPdf = !!doc.original?.toLowerCase().endsWith(".pdf");
   const editSection = () => {
     const s = sections.find((x) => x.ordinal === currentOrd) ?? sections[0];
@@ -286,7 +290,8 @@ export function Reader(p: Props) {
   };
 
   return (
-    <div className="reader">
+    <div className={gano ? "reader gano-view" : "reader"}>
+      {gano && view === "text" && <Mandala className="gano-mandala" />}
       {view === "text" && <div className="read-progress" style={{ transform: `scaleX(${progress})` }} />}
       <header className="reader-head">
         <div className="reader-title">
@@ -428,11 +433,11 @@ export function Reader(p: Props) {
         <iframe className="pdf-frame" src={fileUrl("original", doc.id)} title={doc.original ?? doc.title} />
       ) : (
         <div className="reader-scroll" data-ctx="reader" ref={scrollRef} onScroll={onScroll}>
-          <div className={`reader-body ${readerStyle === "editor" ? "src-view" : readerStyle}`} style={{ fontSize }} ref={bodyRef} onClick={onBodyClick}>
+          <div className={`reader-body ${style === "editor" ? "src-view" : style}`} style={{ fontSize }} ref={bodyRef} onClick={onBodyClick}>
             {doc.size < 50 && <p className="muted no-text">{doc.original ? t.noTextHint : ""}</p>}
             {lo > 0 && <div className="more-hint">• • •</div>}
             {sections.map((s) => (
-              <SectionView key={s.id} s={s} terms={terms} multi={multi} source={readerStyle === "editor"} names={p.names} self={doc.personId} />
+              <SectionView key={s.id} s={s} terms={terms} multi={multi} source={style === "editor"} names={p.names} self={doc.personId} />
             ))}
             {hi < count - 1 && <div className="more-hint">• • •</div>}
           </div>

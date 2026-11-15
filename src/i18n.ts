@@ -69,6 +69,8 @@ const es = {
   titleFontNormal: "Normal",
   titleFontScript: "Caligrafía",
   titleFontClassic: "Clásica",
+  ganoddesa: "Gaṇoddeśa",
+  ganoddesaHint: "Quién es en la Kṛṣṇa-līlā: su forma de gopī o mañjarī, según el Gaura-gaṇoddeśa-dīpikā y otros libros",
   settingsHints: {
     general: "Aspecto, calendario y base de datos",
     backups: "Copias automáticas y volver a una",
@@ -1189,6 +1191,8 @@ const en: Dict = {
   titleFontNormal: "Normal",
   titleFontScript: "Calligraphy",
   titleFontClassic: "Classic",
+  ganoddesa: "Gaṇoddeśa",
+  ganoddesaHint: "Who this person is in Kṛṣṇa-līlā: the form as a gopī or mañjarī, from the Gaura-gaṇoddeśa-dīpikā and other books",
   settingsHints: {
     general: "Appearance, calendar and database",
     backups: "Automatic copies and going back to one",

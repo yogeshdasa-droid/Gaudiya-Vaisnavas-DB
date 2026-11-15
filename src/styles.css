@@ -7855,3 +7855,116 @@ svg.satellite .map-dot {
 .title-font-opt.classic {
   font-size: 1.15em;
 }
+
+/* «Gaṇoddeśa» above the record's photo (15-11-2026): who the person is in Kṛṣṇa-līlā; violet, beside the pink
+   «Imágenes» and the orange «Biblioteca» */
+.btn.gano-btn {
+  background: #7b4fc9;
+  border-color: #7b4fc9;
+  color: #fff;
+}
+.btn.gano-btn:hover {
+  background: #8f66d8;
+  border-color: #8f66d8;
+  color: #fff;
+}
+
+/* ================================================================ the «Gaṇoddeśa» texts (15-11-2026)
+   Always with the markdown drawn (no #, **), a faint rosette of our own (Mandala.tsx) coming in from the left — half
+   of it outside — and the title and headings in calligraphy. */
+.reader.gano-view {
+  overflow: hidden;
+  isolation: isolate;
+}
+.gano-mandala {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  width: min(92vh, 900px);
+  height: min(92vh, 900px);
+  left: calc(min(92vh, 900px) / -2);
+  top: 50%;
+  transform: translateY(-46%);
+  color: #8a7a9c;
+  opacity: 0.16;
+}
+:root[data-theme="dark"] .gano-mandala {
+  color: #b8a6d6;
+  opacity: 0.09;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .gano-mandala {
+    color: #b8a6d6;
+    opacity: 0.09;
+  }
+}
+.gano-view .reader-head {
+  background: transparent;
+  text-align: center;
+}
+.reader.gano-view .reader-head .reader-title h1 {
+  font-family: "Great Vibes", var(--font-serif), cursive;
+  font-weight: 400;
+  font-size: 46px;
+  line-height: 1.15;
+  letter-spacing: 0;
+  margin-top: 10px;
+  color: #6a45b0;
+}
+:root[data-theme="dark"] .gano-view .reader-title h1 {
+  color: #c4aef0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .gano-view .reader-title h1 {
+    color: #c4aef0;
+  }
+}
+.gano-view .reader-title .meta {
+  justify-content: center;
+}
+.gano-view .reader-body h1,
+.gano-view .reader-body h2,
+.gano-view .reader-body h3 {
+  font-family: "Cormorant Garamond", var(--font-serif), serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.55em;
+  letter-spacing: 0;
+  text-align: center;
+  color: #6a45b0;
+  border: 0;
+}
+.gano-view .reader-body h2::after,
+.gano-view .reader-body h3::after {
+  content: "❦";
+  display: block;
+  font-style: normal;
+  font-size: 0.55em;
+  opacity: 0.55;
+  margin-top: 2px;
+}
+:root[data-theme="dark"] .gano-view .reader-body h1,
+:root[data-theme="dark"] .gano-view .reader-body h2,
+:root[data-theme="dark"] .gano-view .reader-body h3 {
+  color: #c4aef0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .gano-view .reader-body h1,
+  :root:not([data-theme="light"]) .gano-view .reader-body h2,
+  :root:not([data-theme="light"]) .gano-view .reader-body h3 {
+    color: #c4aef0;
+  }
+}
+.gano-view .reader-body blockquote {
+  background: transparent;
+  border-left-color: #a58bd6;
+  font-style: italic;
+}
+/* the text without its card, so the ornament shows through; its own «# title» is already the big one above */
+.reader.gano-view .reader-scroll > .reader-body.serif {
+  background: transparent;
+  border-color: transparent;
+}
+.gano-view .reader-body .sec:first-of-type > h1:first-child {
+  display: none;
+}

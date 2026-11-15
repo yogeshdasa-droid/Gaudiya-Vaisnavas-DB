@@ -114,6 +114,11 @@ export interface PersonFields {
  *  (the record shows it, and the others under «Otras versiones»). */
 export const MAIN_TEXT = "Texto principal";
 
+/** The collection of a record's «Gaṇoddeśa» text (15-11-2026): who the person is in Kṛṣṇa-līlā (his form as a gopī,
+ *  a mañjarī…), from the Gaura-gaṇoddeśa-dīpikā and other books. The record does not list it with its texts: it opens
+ *  with its own button. «Unir sus textos» leaves it out (store.rs). */
+export const GANODDESA = "Gaṇoddeśa";
+
 export const EMPTY_PERSON: PersonFields = {
   name: "",
   aka: "",

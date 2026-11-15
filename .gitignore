@@ -12,3 +12,6 @@ CLAUDE.md
 
 # private signing key of the updater: never in git
 *.key
+
+# texts of the Gaṇoddeśa books (copyright): local only
+scripts/datos/ganoddesa/herramientas/
