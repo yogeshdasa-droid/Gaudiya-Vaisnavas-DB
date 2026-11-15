@@ -195,7 +195,15 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
   según el **Gopāla-campū** y el **Ujjvala-nīlamaṇi-kiraṇa** (Whisper: «esos dos mandan sobre todo»). Botón **azul**
   (`.vraja-btn`, icono Flower2) debajo del morado «Gaṇoddeśa»; solo sale si la ficha tiene ese texto. El lector lo
   abre como el Gaṇoddeśa, en azul (Reader.tsx `vraja` → clases `gano-view vraja-view`). «Unir sus textos» lo deja fuera.
-  Los textos aún no están: es lo siguiente (repasar las fichas con esos dos libros).
+  **Textos escritos (15-11-2026, aplicados en la BD de Whisper; copia antes: «… antes de Vraja-Nitya-lila 2026-11-15.db»):
+  149 fichas**, tandas `scripts/datos/ganoddesa/vraja1…11.mjs` → `.json`, aplicadas con `aplicar-vraja.mjs <plan> [puerto]
+  [--dry]` (= aplicar.mjs con la colección «Vraja-Nitya-līlā»; 2.ª pasada = nada). Bloques comunes en `comun.mjs`
+  (clases de sakhīs, mensajeras, pastorcillos, sirvientes — se sacan de los json ya escritos: generar en orden 1→11).
+  Whisper: textos largos, «más info mejor»; si los libros no nombran a la persona, **lo general** de su clase, dicho
+  claramente. Herramienta `herramientas/gc.mjs <1|2|u> <regex>` (capítulo y verso del Gopāla-campū Pūrva/Uttara, página
+  del Ujjvala = `herramientas/unk-iast.txt`; no va a GitHub). Al final del Ujjvala está el Svapna-vilāsāmṛtāṣṭaka (para
+  Mahāprabhu). Sin apartado a propósito (~52: siddhis, nidhis, Jāyanteyas, Rāma-līlā, semidioses…): lista en CONTINUAR.md.
+  Diferencias anotadas en los textos (manda el Ujjvala): vestido de Citrā azul y de Tuṅgavidyā blanco; Śaibyā *mṛdvī*.
 - **Inicio**: «Vaiṣṇava-kośa» en caligrafía (Great Vibes, dorado) y el loto rosa (`LotusMandala`) en vez del cuadrado
   amarillo (Home.tsx `hero-lotus`/`hero-title`; la regla con `data-skin="fluent"` hace falta para ganar al estilo Windows 11).
 - Datos (aplicados en la BD de Whisper, no van en la versión): **Gaṇoddeśa terminado** — tandas 5–15
@@ -1760,6 +1768,7 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **15-11-2026 — datos**: textos «Vraja-Nitya-līlā» de 149 fichas (Gopāla-campū + Ujjvala-nīlamaṇi-kiraṇa), en la BD de Whisper.
 - **15-11-2026 — v0.17.16**: apartado «Vraja-Nitya-līlā» (botón azul); Inicio con loto y nombre en caligrafía;
   Gaṇoddeśa terminado (tandas 5–15) y cuatro uniones. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.16
 - **15-11-2026 — v0.17.15**: texto «Gaṇoddeśa» de cada ficha (botón morado, lector con rosetón y caligrafía); 51
