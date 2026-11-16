@@ -349,7 +349,7 @@ function VList({ t, root, sel, jump, onSel, onRef, recordsOf, refLabel }: ViewPr
     const recs = v.spouse ? [] : recordsOf(v);
     return (
       <div key={v.key} className="vl-item">
-        <div className={`vl-row${v.spouse ? " spouse" : ""}${sel === v ? " on" : ""}`} data-k={v.key} style={{ paddingLeft: depth * 18 }}>
+        <div className={`vl-row${v.spouse ? " spouse" : ""}${sel === v ? " on" : ""}${recs.length ? " rec" : ""}${v.ref ? " ref" : ""}`} data-k={v.key} style={{ paddingLeft: depth * 18 }}>
           {v.children.length ? (
             <button
               className="icon-btn vl-fold"
@@ -395,6 +395,9 @@ function VList({ t, root, sel, jump, onSel, onRef, recordsOf, refLabel }: ViewPr
         <button className="btn ghost" onClick={() => setClosed(new Set(keys.filter((k) => k !== root.key)))}>
           <ChevronsDownUp size={14} /> {t.vamsaCollapse}
         </button>
+        <span className="small vamsa-legend">
+          <span className="vamsa-legend-rec">●</span> {t.vamsaLegendRec} · <span className="vamsa-legend-ref">→</span> {t.vamsaLegendRef}
+        </span>
       </div>
       {row(root, 0)}
     </div>
@@ -402,7 +405,7 @@ function VList({ t, root, sel, jump, onSel, onRef, recordsOf, refLabel }: ViewPr
 }
 
 // ---- the drawing, like «Linaje»
-function VDraw({ t, root, sel, jump, onSel, onRef, refLabel }: ViewProps) {
+function VDraw({ t, root, sel, jump, onSel, onRef, refLabel, recordsOf }: ViewProps) {
   const graph = useMemo(() => {
     const g = new dagre.graphlib.Graph();
     g.setGraph({ rankdir: "TB", nodesep: 14, ranksep: 46, marginx: 10, marginy: 10 });
@@ -518,28 +521,39 @@ function VDraw({ t, root, sel, jump, onSel, onRef, refLabel }: ViewProps) {
           <Maximize size={15} /> {t.treeFit}
         </button>
         <span className="muted small">{t.vamsaClickHint}</span>
+        <span className="small vamsa-legend">
+          <span className="vamsa-legend-rec">●</span> {t.vamsaLegendRec} · <span className="vamsa-legend-ref">→</span> {t.vamsaLegendRef}
+        </span>
       </div>
       <div className="tree-canvas" ref={canvas} onMouseDown={pan}>
         <svg width={graph.width * zoom} height={graph.height * zoom} viewBox={`-10 -10 ${graph.width} ${graph.height}`}>
           {graph.lines.map((l) => (
             <path key={l.key} className={`tree-link${l.spouse ? " vamsa-marriage" : ""}`} d={l.d} />
           ))}
-          {graph.nodes.map(({ v, x, y }) => (
-            <g
-              key={v.key}
-              className={`tree-node lin-node${v.spouse ? " vamsa-spouse" : ""}${v === sel ? " lit-self" : ""}${v.ref ? " vamsa-ref" : ""}`}
-              transform={`translate(${x},${y})`}
-              onClick={(e) => e.detail === 1 && onSel(v)}
-              onDoubleClick={() => v.ref && onRef(v.ref)}
-            >
-              <title>{`${v.spouse ? "═ " : ""}${v.name}${v.note ? `\n${v.note}` : ""}${v.ref ? `\n→ ${refLabel(v.ref)}` : ""}`}</title>
-              <rect width={W} height={H} rx={6} />
-              <text x={10} y={21}>
-                {short(`${v.spouse ? "═ " : ""}${v.name}`, 24)}
-                {v.ref ? " →" : ""}
-              </text>
-            </g>
-          ))}
+          {graph.nodes.map(({ v, x, y }) => {
+            const recs = v.spouse ? [] : recordsOf(v);
+            return (
+              <g
+                key={v.key}
+                className={`tree-node lin-node${v.spouse ? " vamsa-spouse" : ""}${v === sel ? " lit-self" : ""}${v.ref ? " vamsa-ref" : ""}${recs.length ? " vamsa-rec" : ""}`}
+                transform={`translate(${x},${y})`}
+                onClick={(e) => e.detail === 1 && onSel(v)}
+                onDoubleClick={() => v.ref && onRef(v.ref)}
+              >
+                <title>{`${v.spouse ? "═ " : ""}${v.name}${v.note ? `\n${v.note}` : ""}${v.ref ? `\n→ ${refLabel(v.ref)}` : ""}${recs.length ? `\n${t.vamsaRecords}: ${recs.map((p) => p.name).join(", ")}` : ""}`}</title>
+                <rect width={W} height={H} rx={6} />
+                {recs.length > 0 && <circle className="vamsa-rec-dot" cx={W - 10} cy={10} r={4} />}
+                <text x={10} y={v.ref ? 16 : 21}>
+                  {short(`${v.spouse ? "═ " : ""}${v.name}`, 23)}
+                </text>
+                {v.ref && (
+                  <text className="vamsa-ref-sub" x={10} y={29}>
+                    {short(`→ ${refLabel(v.ref)}`, 28)}
+                  </text>
+                )}
+              </g>
+            );
+          })}
         </svg>
       </div>
     </div>

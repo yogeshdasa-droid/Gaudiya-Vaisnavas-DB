@@ -8369,3 +8369,64 @@ svg.satellite .map-dot {
 .vamsa-verse .link-btn {
   font-weight: 600;
 }
+/* Vaṁśa: a name with a record (pink) and a name that goes on in another tree (blue) — Whisper, 16-11-2026 */
+:root {
+  --vamsa-rec: #c9607c;
+  --vamsa-ref: #2f6fb3;
+}
+:root[data-theme="dark"] {
+  --vamsa-rec: #f3a9b9;
+  --vamsa-ref: #7fb2f0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --vamsa-rec: #f3a9b9;
+    --vamsa-ref: #7fb2f0;
+  }
+}
+.vl-row.rec .vl-name {
+  color: var(--vamsa-rec);
+  font-weight: 600;
+}
+.vl-row.ref .vl-name,
+.vl-row.ref .link-btn {
+  color: var(--vamsa-ref);
+}
+.vamsa-rec rect {
+  stroke: var(--vamsa-rec);
+  stroke-width: 2;
+}
+.vamsa-rec text {
+  fill: var(--vamsa-rec);
+  font-weight: 600;
+}
+.vamsa-rec-dot {
+  fill: var(--vamsa-rec);
+}
+.vamsa-ref rect {
+  stroke: var(--vamsa-ref);
+  stroke-width: 2;
+}
+.tree-node text.vamsa-ref-sub {
+  fill: var(--vamsa-ref);
+  font-size: 10.5px;
+}
+.vamsa-legend {
+  margin-left: auto;
+  align-self: center;
+  color: var(--muted);
+}
+.vamsa-legend-rec {
+  color: var(--vamsa-rec);
+}
+.vamsa-legend-ref {
+  color: var(--vamsa-ref);
+  font-weight: 700;
+}
+.vl-bar {
+  flex-wrap: wrap;
+  align-items: center;
+}
+.vl-bar .btn {
+  white-space: nowrap;
+}

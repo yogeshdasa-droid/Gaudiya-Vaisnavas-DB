@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **16-11-2026** (versión **0.18.1**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **16-11-2026** (versión **0.18.2**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,15 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.18.1)
+## 5. Qué hace hoy (v0.18.2)
+
+### Novedades de la 0.18.2 (16-11-2026) — el Śrīmad-Bhāgavatam en «Vaṁśa»
+- Los 12 cantos del Śrīmad-Bhāgavatam (Prabhupāda) en «Libros» (#4466–#4477), con «## Chapter N: título», resumen y
+  «### SB c.ch.v» por verso (`scripts/datos/sb/`: parse.mjs, to-md.mjs; libros-sb.json).
+- Vaṁśa: panel «En el Śrīmad-Bhāgavatam» con los versos que nombran a cada uno junto a un pariente del árbol
+  (`src/data/vamsa-sb.json`, solo referencias, de `sb/match.mjs`; el texto se lee de «Libros»); clic → el canto.
+- Vaṁśa: en rosa (con punto) los nombres que tienen ficha; en azul, con «→ árbol», los que siguen en otro árbol; leyenda.
+- Libros con OCR: Vraja-rīti-cintāmaṇi (#4464) y Vraja-bhāṣā Grantha-traya (#4465), `libros-texto.mjs`.
 
 ### Novedades de la 0.18.1 (16-11-2026) — iconos «Pétalo», esposos en «Linaje», portada de los PDF sueltos
 - Iconos del menú «B · Pétalo» (Whisper eligió B de tres): detrás de cada icono una hoja en forma de pétalo rosa suave,
@@ -1819,6 +1827,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **16-11-2026 — v0.18.2**: el Śrīmad-Bhāgavatam en «Libros» y en «Vaṁśa» (versos de cada nombre); nombres con ficha en rosa, «→ otro árbol» en azul.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.2
 - **16-11-2026 — v0.18.1**: iconos «Pétalo»; esposos en «Linaje»; portada automática de los PDF sueltos en la Biblioteca; líneas de Vaṁśa visibles; las ocho sakhīs.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.1
 - **16-11-2026 — v0.18.0**: «Vaṁśa» (genealogías de los Purāṇas: lista y dibujo); Kāśīśvara #699; #2188/#2189 en el árbol.
