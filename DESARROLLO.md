@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **16-11-2026** (versión **0.17.19**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **16-11-2026** (versión **0.18.0**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,18 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.19)
+## 5. Qué hace hoy (v0.18.0)
+
+### Novedades de la 0.18.0 (16-11-2026) — «Vaṁśa», las genealogías de los Purāṇas
+- Apartado nuevo del menú, bajo «Calendario» (`components/Vamsa.tsx`, datos `src/data/vamsa.json`: el
+  puranic_genealogy.json de Whisper, Puranic Encyclopaedia de Vettam Mani, apéndice «Genealogy», págs. 901–922; 33
+  árboles, ~1.200 nombres). NO son fichas: son nombres. Pestañas «Lista» (plegable) y «Dibujo» (dagre, zoom, arrastrar);
+  un matrimonio es un nodo «═ esposa» con los hijos de ese matrimonio; flechas a otros árboles (códigos del libro: K,
+  A6, E…); buscador en todos los árboles; panel con su línea y las «Fichas con este nombre» (solo coincidencia de
+  nombre). Plan de Whisper: con el Śrīmad-Bhāgavatam, sacar quién es quién y dar ficha (con su historia) a quien la
+  tenga, unida a su sitio en el árbol. `tsconfig`: `resolveJsonModule`.
+- Datos: Kāśīśvara del Caitanya-bhāgavata en #699 (`cb/cb26`); #2188 Mukunda Sañjaya y #2189 Chand Kazi bajo Mahāprabhu
+  como asociados.
 
 ### Novedades de la 0.17.19 (16-11-2026) — las familias de Vraja en el desplegable de «Linaje»
 - Dos paramparās nuevas (grupo «family», `paramparas.ts`): «Vraja: familia de Nanda (Kṛṣṇa)» desde Devamīḍha #2190 y
@@ -1795,6 +1806,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **16-11-2026 — v0.18.0**: «Vaṁśa» (genealogías de los Purāṇas: lista y dibujo); Kāśīśvara #699; #2188/#2189 en el árbol.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.0
 - **16-11-2026 — v0.17.19**: las familias de Vraja (Nanda; Vṛṣabhānu) en el desplegable de «Linaje», parejas juntas.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.19
 - **16-11-2026 — v0.17.18**: la familia en «Linaje» (casilla «Familia»); datos: Rāsa-pañcādhyāyī y familia de Vraja.
