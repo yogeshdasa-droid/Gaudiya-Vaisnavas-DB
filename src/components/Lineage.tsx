@@ -48,8 +48,9 @@ function store(key: string, v: string) {
   }
 }
 
-/** All the guru → disciple relations of the data (place in the tree and other gurus), without family. */
-function relations(persons: PersonListItem[]): Rel[] {
+/** All the guru → disciple relations of the data (place in the tree and other gurus); with `family`, also the family
+ *  lines (relative above → person below; 16-11-2026, for the family of Vraja, which is outside the tree). */
+function relations(persons: PersonListItem[], family = false): Rel[] {
   const ids = new Set(persons.map((p) => p.id));
   const out: Rel[] = [];
   for (const p of persons) {
@@ -57,6 +58,10 @@ function relations(persons: PersonListItem[]): Rel[] {
       out.push({ from: p.tree.parent, to: p.id, kind: p.tree.kind, note: p.tree.note, disputed: p.tree.disputed });
     for (const l of p.links)
       if (ids.has(l.guru) && !(p.tree && p.tree.parent === l.guru)) out.push({ from: l.guru, to: p.id, kind: l.kind, note: l.note, disputed: l.disputed });
+    if (family)
+      for (const f of p.family)
+        if (ids.has(f.relative) && !out.some((r) => r.from === f.relative && r.to === p.id))
+          out.push({ from: f.relative, to: p.id, kind: "family", note: f.note, disputed: f.disputed });
   }
   return out;
 }
@@ -132,6 +137,16 @@ export function Lineage({
   const setLine = (l: LineageLine) => (setLineState(l), store("bio.lineageLine", l));
   const [showNotes, setShowNotesState] = useState(() => stored("bio.lineageNotes", 1, 0, 1) === 1);
   const setShowNotes = (b: boolean) => (setShowNotesState(b), store("bio.lineageNotes", b ? "1" : "0"));
+  // family lines (16-11-2026): by choice, and always for a record outside the tree with no gurus (the family of Vraja)
+  const [showFamily, setShowFamilyState] = useState(() => stored("bio.lineageFamily", 0, 0, 1) === 1);
+  const setShowFamily = (b: boolean) => (setShowFamilyState(b), store("bio.lineageFamily", b ? "1" : "0"));
+  const centerP = center !== null ? byId.get(center) : undefined;
+  const autoFamily =
+    !!centerP &&
+    !centerP.tree &&
+    centerP.links.length === 0 &&
+    (centerP.family.length > 0 || persons.some((p) => p.family.some((f) => f.relative === centerP.id)));
+  const withFamily = showFamily || autoFamily;
 
   // ---- the search box: the records whose name or other names have all the words typed
   const [query, setQuery] = useState("");
@@ -181,7 +196,7 @@ export function Lineage({
       edges = m.edges;
     } else {
     if (center === null || !byId.has(center)) return null;
-    const rels = relations(persons).filter((r) => keep(r, line));
+    const rels = relations(persons, withFamily).filter((r) => keep(r, line));
     for (const r of rels) {
       gurusOf.set(r.to, [...(gurusOf.get(r.to) ?? []), r]);
       discOf.set(r.from, [...(discOf.get(r.from) ?? []), r]);
@@ -223,7 +238,8 @@ export function Lineage({
     }
     // the notes and doubts, numbered for the margin
     const notes: { n: number; rel: Rel }[] = [];
-    for (const r of edges) if (r.note || r.disputed) notes.push({ n: notes.length + 1, rel: r });
+    // a family line's note is just its word («son», «daughter»): written on the line, not a numbered note (16-11-2026)
+    for (const r of edges) if ((r.note && r.kind !== "family") || r.disputed) notes.push({ n: notes.length + 1, rel: r });
     const noteOf = new Map(notes.map((x) => [`${x.rel.from}-${x.rel.to}`, x.n]));
 
     // the relation each person is drawn with (to a guru drawn above it)
@@ -324,7 +340,7 @@ export function Lineage({
     const moreUp = !pp && [...gen.entries()].some(([id, gg]) => gg === -up && (gurusOf.get(id) ?? []).some((r) => !gen.has(r.from)));
     const moreDown = !pp && [...gen.entries()].some(([id, gg]) => gg === down && (discOf.get(id) ?? []).some((r) => !gen.has(r.to)));
     return { nodes, lists, noteOf, lines, notes, rows: [...rows.entries()].sort((a, b) => a[0] - b[0]), width, height, cut, relOf, moreUp, moreDown, count: gen.size };
-  }, [center, persons, byId, up, down, line, pp, ppSteps]);
+  }, [center, persons, byId, up, down, line, pp, ppSteps, withFamily]);
 
   // ---- zoom and moving around (as in the Paramparā Tree)
   const canvas = useRef<HTMLDivElement>(null);
@@ -495,6 +511,11 @@ export function Lineage({
               <label className="lin-check" title={t.lineageNotesHint}>
                 <input type="checkbox" checked={showNotes} onChange={(e) => setShowNotes(e.target.checked)} /> {t.lineageNotes}
               </label>
+              {!pp && (
+                <label className="lin-check" title={t.lineageFamilyHint}>
+                  <input type="checkbox" checked={withFamily} disabled={autoFamily} onChange={(e) => setShowFamily(e.target.checked)} /> {t.lineageFamily}
+                </label>
+              )}
             </div>
             <div className="tree-zoom">
               <button className="icon-btn" title={t.treeZoomOut} onClick={() => setZoom(zoom / 1.25)}>
@@ -570,6 +591,14 @@ export function Lineage({
                           </text>
                         )}
                       </g>
+                    ))}
+                  {/* family lines: their word («son», «daughter»…) on the line, without a number */}
+                  {graph.lines
+                    .filter((l) => !l.n && l.rel.kind === "family" && l.rel.note)
+                    .map((l) => (
+                      <text key={`f${l.key}`} className="tree-word family" x={l.mx} y={l.my + 3.5} textAnchor="middle">
+                        {short(l.rel.note, 24)}
+                      </text>
                     ))}
                   {/* disciples with no disciples, one under the other in a box */}
                   {graph.lists.map((l) => (
