@@ -1,0 +1,79 @@
+// node cb14.mjs → cb14.json   (16-11-2026) — tanda 14.
+import fs from "node:fs";
+import { SRC } from "./comun.mjs";
+
+const T = {};
+const add = (id, name, body, refs) => (T[id] = [name, body + `\n\n## Sources\n\n${SRC} ${refs}`]);
+
+add(1513, "Śrī Svarūpa Dāmodara Gosvāmī", `## In short
+
+In the *Caitanya-bhāgavata* Svarūpa Dāmodara appears in the Lord's last pastimes in Nīlācala: the expert singer at whose voice the Lord danced, and with Paramānanda Purī one of «the arms of Lord Caitanya».
+
+## In the book
+
+- «In the Antya-khaṇḍa the two great authorities, Svarūpa Dāmodara and Paramānanda Purī, reside with the Lord» (Ādi 1.161).
+- **Joining the Lord** (Antya 3.179–181): «After a few days Svarūpa Dāmodara also joined the Lord there and enjoyed pastimes with the Lord day and night. Svarūpa Dāmodara was expert in the art of music. On hearing his voice, the Lord would begin dancing. Svarūpa Dāmodara and Paramānanda Purī were two of the principal associates in the Lord's final pastimes.»
+- **The Lord's arm** (Antya 10.42–50): «The Lord had similar affection for Svarūpa Dāmodara as He had for Paramānanda Purī. Dāmodara Svarūpa was expert in the art of melodious singing… Svarūpa Dāmodara remained incognito as he wandered around the city so that no one could recognize him», inducing the Lord to dance with kīrtana «as nicely as Nārada Muni sings». «Paramānanda Purī was always engaged in meditation, and Śrī Svarūpa was always engaged in chanting the Hare Kṛṣṇa *mahā-mantra*. In this way these two sannyāsīs were like the arms of Lord Caitanya. Day and night, Gauracandra enjoyed performing kīrtana with Svarūpa Dāmodara.»
+- **Invocations**: «All glories to the life and wealth of Svarūpa Dāmodara!» (Madhya 6.4, 11.2; Antya 7.3).
+- Among those who received the devotees of Bengal (Antya 8.56–61).`, "Ādi 1.161; Madhya 6.4, 11.2; Antya 3.179–181; 7.3; 8.56–61; 10.42–50.");
+
+add(1856, "Śrī Rāghava Paṇḍita", `## In short
+
+Rāghava Paṇḍita of Pāṇihāṭi, «in whose house Lord Caitanya secretly performed many pastimes»: the Lord ate his *śāka* and told him that Nityānanda is not different from Himself; at his house Nityānanda was bathed in *abhiṣeka* and asked him for a garland of *kadamba* flowers out of season.
+
+## The Lord at Pāṇihāṭi (Antya 5.75–109)
+
+After some days at Śrīvāsa's house the Lord went to Rāghava's house in Pāṇihāṭi and appeared before him while he was worshipping Kṛṣṇa. Rāghava fell to offer obeisances and wept, holding the Lord's feet; the Lord embraced him: «After coming to Rāghava's house and seeing Rāghava, I have forgotten all My troubles. I have obtained the same satisfaction at Rāghava's house as one gets by taking bath in the Gaṅgā… Go and quickly cook for Kṛṣṇa.» «How wonderful is Rāghava's cooking! I have never eaten *śāka* like this before» — Rāghava knew the Lord was fond of *śāka* and had cooked many kinds.
+
+In a solitary place the Lord told him: «O Rāghava, I have something confidential to tell you. Nityānanda is nondifferent from Me… There is no difference between Myself and Nityānanda. Everyone in your house will come to know this. From Nityānanda you will easily obtain that which is rarely attained by the best of the mystic yogīs… Therefore you should very carefully serve Nityānanda, knowing Him to be the Supreme Lord Himself.» And to Makaradhvaja Kara: «You should serve Śrī Rāghavānanda» (5.100–108).
+
+## Nityānanda at his house (Antya 5.251–292)
+
+When Nityānanda came with His associates «He first went to Rāghava Paṇḍita's house». After dancing to the singing of the Ghoṣa brothers, He sat on the Deity's throne and asked for *abhiṣeka*: «Rāghava Paṇḍita and the Lord's other associates immediately began to perform *abhiṣeka*» with thousands of pots of scented Gaṅgā water; they dressed Him, and «as Lord Nityānanda sat on the throne, Śrī Rāghavānanda held an umbrella over His head».
+
+> «Listen, Rāghava Paṇḍita! Quickly bring Me a garland of *kadamba* flowers. I am very fond of *kadamba* flowers. In fact I always reside in a *kadamba* forest.»
+
+Rāghava answered that it was not the season for *kadamba* flowers (5.279). — «Go home and look carefully.» Rāghava went in and saw «that the lime tree was filled with the most amazing blooming *kadamba* flowers»; he fainted with joy, then made a garland and brought it. Soon after, everyone smelled the fragrance of *damanaka* flowers, and Nityānanda revealed its secret (5.288–292).
+
+## To Purī
+
+«The magnanimous Rāghava Paṇḍita, in whose house Lord Caitanya secretly performed many pastimes, also came» (Antya 8.32).`, "Antya 5.75–109, 5.251–292; 8.32.");
+
+add(1427, "Śrī Śivānanda Sena", `## In short
+
+Śivānanda Sena, at the head of the devotees who came to see the Lord, and who brought them and their families to Purī.
+
+## In the book
+
+- At Śrīvāsa's house after the Lord's sannyāsa: «At that moment Vāsudeva Datta and various other associates headed by Śivānanda Sena arrived there» (Antya 5.18).
+- Going to Purī for the Ratha-yātrā: «Mukunda Datta, Lord Kṛṣṇa's singer, also came. Śivānanda Sena and others brought their families along» (Antya 8.15).`, "Antya 5.18; 8.15.");
+
+add(1598, "Śrī Vakreśvara Paṇḍita", `## In short
+
+Vakreśvara Paṇḍita, the great dancer: «When Vakreśvara dances, Kṛṣṇa dances.» By serving him, Devānanda Paṇḍita received the Lord's mercy.
+
+## In the book
+
+- «All glories to the heart and soul of Vakreśvara and Kāśīśvara!» (Madhya 1.6); «the abode of Vakreśvara's and Puṇḍarīka's love» (9.4); «the benefactor of Vakreśvara Paṇḍita» (Antya 7.4).
+- Among those who knew the Lord's pastimes (Madhya 13.239–240); in the kīrtanas; weeping at the Lord's departure (23.450).
+- **With Devānanda** (Antya 3.468–496): «Vakreśvara Paṇḍita was a dear associate of Lord Caitanya. Simply by remembering him, the entire universe becomes sanctified. Whenever Vakreśvara Paṇḍita began to dance, by the mercy of Lord Caitanya all the ecstatic transformations of love… manifested.» Bound by Devānanda's affection he stayed in his āśrama; «as long as Vakreśvara Paṇḍita danced, Devānanda Paṇḍita would guard him with a stick in hand», catch him when he fell, and smear the dust of his body on his own. The Lord then told Devānanda:
+
+> «You are able to see Me because you served Vakreśvara Paṇḍita. Vakreśvara Paṇḍita possesses the full potencies of the Supreme Lord. Anyone who serves him attains Kṛṣṇa. Kṛṣṇa personally resides in the heart of Vakreśvara Paṇḍita. When Vakreśvara dances, Kṛṣṇa dances. Any place that is associated with Vakreśvara Paṇḍita is equal to all the holy places and is as good as Vaikuṇṭha.» (3.493–496)
+
+- **To Purī**: «Vakreśvara Paṇḍita, who danced while the Lord performed kīrtana, happily came along» (Antya 8.11).`, "Madhya 1.6, 9.4, 13.239–240, 23.209, 23.450; Antya 3.468–496; 7.4; 8.11, 8.125–126.");
+
+add(524, "Jagadānanda Paṇḍita (Jagadānanda-Caitanya-Sakhā)", `## In short
+
+Jagadānanda Paṇḍita, whose «life and soul» was the Lord; he went with Him to Purī after His sannyāsa, cooked for Him on the way, and left the Lord's *daṇḍa* with Nityānanda — who broke it.
+
+## In the book
+
+- Invocations: «All glories to the Lord, who is most dear to Jagadānanda!» (Madhya 1.6); «the life and soul of Śrī Jagadānanda» (7.3, 8.2, 9.4, 24.3; Antya 7.2).
+- Born in Navadvīpa before the Lord (Ādi 2.31: «Śrī Jagadānanda Paṇḍita Gosvāmī»).
+- **To Purī with the Lord** (Antya 2.35, 2.162): «The Lord was accompanied by Nityānanda, Gadādhara, Mukunda, Govinda, Jagadānanda, and Brahmānanda»; «Jagadānanda cooked with great satisfaction, and the Lord then ate in the company of the devotees».
+- **The broken *daṇḍa*** (Antya 2.193–225): Nityānanda fell behind with Jagadānanda; Jagadānanda went to beg alms and left the Lord's *daṇḍa* in His care. Nityānanda spoke to the *daṇḍa* and broke it in three. Returning, Jagadānanda asked, astonished, «Who broke the *daṇḍa*?» — «He who held it. The Lord broke His own *daṇḍa*.» Jagadānanda took the pieces to the Lord, who asked: «Did you have a fight with someone on the way?» — «Nityānanda broke it…» Nityānanda: «I broke only a piece of bamboo.» — «All the demigods reside in the *daṇḍa*, and You call it a piece of bamboo!»
+- Weeping when the Lord left Navadvīpa (Madhya 23.451); with the devotees in Purī (Antya 8.56–61).`, "Ādi 2.31; Madhya 1.6, 7.3, 8.2, 9.4, 23.451, 24.3; Antya 2.35, 2.162, 2.193–225; 7.2; 8.56–61.");
+
+const plan = Object.entries(T).map(([id, [name, text]]) => ({ id: +id, name, text }));
+fs.writeFileSync(new URL("./cb14.json", import.meta.url), JSON.stringify(plan, null, 1));
+console.log(plan.length + " entradas");

@@ -23,6 +23,7 @@ const expr = `(async () => { try {
     for (const d of docs) for (const s of await inv("get_sections", { docId: d.id, from: 0, to: 100000 })) all.push({ d, s });
     const out = [];
     for (const [a, b] of g.replace) {
+      if (b.includes(a) && all.some((x) => x.s.text.includes(b))) { out.push("ya hecha"); continue; } // 16-11-2026: no repetir
       const hits = all.filter((x) => x.s.text.includes(a));
       if (!hits.length) { out.push("no está: " + a.slice(0, 40)); continue; }
       for (const { d, s } of hits) {

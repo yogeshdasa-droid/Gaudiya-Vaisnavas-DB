@@ -1777,6 +1777,10 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **16-11-2026 — datos**: textos «In the Caitanya-bhāgavata — <nombre>» (colección «Caitanya-bhāgavata», con el
+  Gauḍīya-bhāṣya de Bhaktisiddhānta) en 129 fichas + 2 nuevas (#2188 Mukunda Sañjaya, #2189 Chand Kazi), tandas
+  `scripts/datos/cb/cb1…cb25.mjs` → `.json`, aplicadas con `cb/aplicar-cb.mjs` (2.ª pasada = nada); #1513 Svarūpa:
+  Lalitā → Viśākhā en el Texto principal. `corregir.mjs` ya no repite un cambio cuyo texto nuevo contiene al viejo.
 - **16-11-2026 — v0.17.17**: botones de la ficha en 2×2; armonía de colores «B · Oro»; 5 libros de Info en «Libros».
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.17
 - **15-11-2026 — datos**: textos «Vraja-Nitya-līlā» de 149 fichas (Gopāla-campū + Ujjvala-nīlamaṇi-kiraṇa), en la BD de Whisper.

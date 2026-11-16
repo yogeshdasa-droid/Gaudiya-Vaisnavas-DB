@@ -1,0 +1,68 @@
+// node cb18.mjs → cb18.json   (16-11-2026) — tanda 18: los padres del Señor.
+import fs from "node:fs";
+import { SRC } from "./comun.mjs";
+
+const T = {};
+const add = (id, name, body, refs) => (T[id] = [name, body + `\n\n## Sources\n\n${SRC} ${refs}`]);
+
+add(559, "Jagannātha Miśra (Purandara)", `## In short
+
+Jagannātha Miśra «Purandara», the Lord's father, «just like Vasudeva», who after losing his daughters received Viśvarūpa and Nimāi as sons; he dreamt of Nimāi as a sannyāsī dancing in kīrtana and soon after left this world.
+
+## His qualities (Ādi 1.92; 2.136–142)
+
+«Śrī Jagannātha Miśra lived in Navadvīpa. He was just like Vasudeva, and he was expert in following his prescribed duties.» «All the good qualities of Kaśyapa, Daśaratha, Vasudeva, and Nanda Mahārāja were found in the person of Jagannātha Miśra» (2.138). «After all her daughters expired, the most fortunate Viśvarūpa appeared as her son… His mother and father were jubilant on seeing Him» (2.140–141).
+
+## His friends (Ādi 6.26–27)
+
+Jagadīśa and Hiraṇya, who gave the child Nimāi their Ekādaśī offering, «were great Vaiṣṇavas and dearest friends of Jagannātha Miśra» — «the heart and soul of Jagannātha Miśra». He was also a friend of Ratnagarbha Ācārya, «being born in the same village» (Madhya 1.296).
+
+## Nimāi's studies (Ādi 8)
+
+He took Nimāi to Gaṅgādāsa Paṇḍita, who stood up and embraced him (8.28–31). Watching his son bathe in the Gaṅgā, worship Viṣṇu, water tulasī and study alone, «Jagannātha Miśra was jubilant within, and out of parental affection he continually prayed to Kṛṣṇa so that his son would not face any obstacles» (chapter summary).
+
+## Viśvarūpa (Ādi 7; Madhya 22)
+
+When Viśvarūpa left to take sannyāsa, «Śacī and Jagannātha» were grief-stricken (Ādi 7.74). The *bhāṣya*'s summary of Madhya 22 tells that once, when Viśvarūpa's answer at an assembly of Bhaṭṭācāryas disturbed him, Jagannātha Miśra slapped his son on the way home — and Viśvarūpa went back and astonished the assembly with his explanations.
+
+## The dream and his disappearance (Ādi 8 — chapter summary)
+
+«One day Jagannātha Miśra dreamt that Nimāi was dressed as a wonderful sannyāsī and engaged in continual laughing, dancing, and crying while chanting the names of Kṛṣṇa surrounded by the devotees headed by Advaita Ācārya. He saw Nimāi sit on Viṣṇu's *siṁhāsana* and place His feet on everyone's head», the demigods chanting «Jaya Śacīnandana!», Nimāi dancing in the streets of Navadvīpa followed by millions, and going to Nīlācala with His devotees. He became convinced that Nimāi would leave home. The chapter ends with «the disappearance of Jagannātha Miśra».
+
+## Later
+
+Gaṅgādāsa reminded the Lord: «Your father is Jagannātha Miśra Purandara» (Madhya 1.273). The book often calls the Lord «the son of Jagannātha Miśra» (*jaya jaya jagannātha-miśrera nandana*, Madhya 13.252).`, "Ādi 1.92; 2.136–142; 6.26–27; 7.74; 8 (with the bhāṣya's summary), 8.28–31; Madhya 1.273, 1.296; 13.252; 22 (chapter summary).");
+
+add(1336, "Śrī Śacī Devī", `## In short
+
+Śacī-devī, the Lord's mother, daughter of Nīlāmbara Cakravartī: «nondifferent from Mother Yaśodā», she lost her daughters, her husband and her elder son Viśvarūpa to sannyāsa, saw her sons' divine forms, was freed by the Lord from her offense to Advaita, and is called by Dāmodara Paṇḍita «the embodiment of devotional service to Viṣṇu».
+
+## Mother of Viśvarūpa and Nimāi (Ādi 2–8)
+
+«After all her daughters expired, the most fortunate Viśvarūpa appeared as her son» (Ādi 2.140). She cooked for the guest brāhmaṇa (Ādi 5); lamented Nimāi's demand for the Ekādaśī offering (Ādi 6.24); saw her elder son leave to take sannyāsa (Ādi 7.74), and her husband pass away (Ādi 8).
+
+## The daughters-in-law (Ādi 10; 14; 15)
+
+Seeing Lakṣmīpriyā's arrival fill her house with opulence, she thought: «This girl is a plenary portion of Lakṣmī-devī» (Ādi 10.124); Lakṣmīpriyā served her more than tulasī (Ādi 14.43–44); after Lakṣmī's departure she chose Viṣṇupriyā, whom she met at the Gaṅgā, and sent Kāśīnātha Paṇḍita to Sanātana Miśra (Ādi 15.44–53).
+
+## Visions (Madhya 2; 8)
+
+Śrīvāsa assured her that her son's state after Gayā was not a nervous disease but the highest devotion (Madhya 2, chapter summary). Serving lunch to Gaura and Nitāi, she saw them as two naked five-year-old boys, one whitish, one blackish, with four arms, and her daughter-in-law on her son's chest; she fainted and wept (Madhya 8.62–72). At the drama she asked Mālinī, «Is that Śrīvāsa Paṇḍita?», and fell unconscious in ecstasy (Madhya 18.63–66).
+
+## Her offense to Advaita (Madhya 22 — chapter summary)
+
+When the Lord, on Viṣṇu's throne in Śrīvāsa's house, was asked to give *prema* to His mother, He refused: she had offended a Vaiṣṇava — once, when her younger son too began to spend His time with Advaita, she had said that Advaita had made one son a sannyāsī and was now giving the same advice to the other. No one but the offended Vaiṣṇava can forgive such an offense. The devotees went to Advaita, who, embarrassed, began to glorify Śacī; taking the opportunity, she put the dust of His feet on her head and was overwhelmed with ecstasy — and the Lord declared her eligible for *prema-bhakti*.
+
+## The Lord's departure (Madhya 28)
+
+The Lord told Nityānanda she was one of the five to be informed of His sannyāsa. He had her cook a preparation of the bottle-gourd given by Śrīdhara and milk; she sat at the door the night He left; He consoled her and left after taking the dust of her feet; she remained stunned (chapter summary).
+
+## Afterwards
+
+- At Śāntipura (Antya 4, chapter summary): brought by Advaita in a palanquin, «nondifferent from Mother Yaśodā», she came with Gaṅgādāsa and Murāri; the Lord circumambulated her and praised her as Devakī, Yaśodā, Devahūti, Pṛśni, Kauśalyā and Aditi; she cooked for the Lord with full satisfaction, and directed the cooking of the Vaiṣṇavas' wives at Mādhavendra Purī's festival.
+- Īśāna served her all his life (Madhya 8.73–74); Dāmodara Paṇḍita visited her from Purī (Antya 8.37).
+- **«Mother Śacī is devotional service»** (Antya 9.93–106): asked whether His mother had devotion to Viṣṇu, Dāmodara Paṇḍita answered: «It is by Your mother's mercy that You have devotion for Viṣṇu… It is Mother Śacī who is addressed as devotional service to Viṣṇu… If even someone who considers the word *āi* an ordinary word utters this word… he is freed from all distress.» The Lord: «Whatever asset of devotion to Viṣṇu I have is by My mother's mercy.»`, "Ādi 2.140; 5; 6.24; 7.74; 8; 10.117–126; 14.43–44; 15.44–53; Madhya 2 (chapter summary); 8.62–74; 18.63–66; 22 and 28 (chapter summaries); Antya 4 (chapter summary); 8.37; 9.93–106.");
+
+const plan = Object.entries(T).map(([id, [name, text]]) => ({ id: +id, name, text }));
+fs.writeFileSync(new URL("./cb18.json", import.meta.url), JSON.stringify(plan, null, 1));
+console.log(plan.length + " entradas");

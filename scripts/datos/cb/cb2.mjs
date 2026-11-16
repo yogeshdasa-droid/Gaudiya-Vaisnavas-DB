@@ -1,0 +1,186 @@
+// node cb2.mjs → cb2.json   (16-11-2026) — tanda 2 del Caitanya-bhāgavata (las bodas del Señor; Śuklāmbara).
+import fs from "node:fs";
+export const SRC = "*Śrī Caitanya-bhāgavata* of Vṛndāvana dāsa Ṭhākura, with the *Gauḍīya-bhāṣya* of Śrīla Bhaktisiddhānta Sarasvatī (English ed. Bhūmipati dāsa / Puṇḍarīka Vidyānidhi dāsa, 2003).";
+
+const sanatana = `## In short
+
+Sanātana Miśra, the «Rāja-paṇḍita» of Navadvīpa, father of Śrī Viṣṇupriyā, the Lord's second wife. The *Caitanya-bhāgavata* describes him at length in the marriage (Ādi 15).
+
+## His qualities (Ādi 15.40–43)
+
+> padavī «rāja-paṇḍita» sarvatra vikhyāta
+
+«In Navadvīpa there resided one most fortunate and compassionate devotee named Śrī Sanātana Miśra. He was simple-hearted, magnanimous, expert in entertaining guests, and always engaged in welfare activities. Moreover, he was truthful, he controlled his senses, he had a good birth, and he was famous as the Rāja-paṇḍita. Sanātana Miśra hailed from a well-to-do family, so he easily maintained many other people.»
+
+The *bhāṣya*: he did not know duplicity — he was a great Vaiṣṇava, «famous throughout Navadvīpa as the Rāja-paṇḍita».
+
+## Viṣṇupriyā (Ādi 15.44–50)
+
+«Sanātana Miśra's daughter had all auspicious characteristics. She was like the personification of Lakṣmī.» From childhood she bathed in the Gaṅgā two or three times a day and served only her father, her mother and Lord Viṣṇu; she met Śacī-mātā at the bathing ghāṭa and offered her obeisances, and Śacī wished her for her son. «Sanātana Miśra and his relatives also desired that she be married to the Lord.»
+
+## The proposal (Ādi 15.51–66)
+
+Śacī sent Kāśīnātha Paṇḍita to him. Sanātana Miśra received him with respect, heard the proposal and consulted his wife and relatives — «What is the need for further discussion? You should immediately arrange the marriage.» He answered: «O brāhmaṇa, I will certainly give my daughter in marriage to Viśvambhara Paṇḍita. If my family is fortunate, then my daughter will be married to Him.»
+
+## The wedding (Ādi 15.101–197)
+
+He came with the articles for the *adhivāsa* (15.101). At dusk the procession reached his house; he came out, took the groom down from the palanquin, embraced Him, «and as Sanātana Miśra showered the groom with flowers, he forgot himself in happiness» (15.161–165). Following the Vedic rules he offered *pādya*, *arghya* and *ācamanīya*, chanted the mantras and «with a desire to please Lord Viṣṇu, Sanātana Miśra then offered his daughter into the sacred hands of the Lord» (15.186–188); then the fire sacrifice. «Vaikuṇṭha manifested in the house of Sanātana Miśra» (15.192) — the good fortune, says the book, of his previous service to Viṣṇu (15.196).
+
+## The Rāja-paṇḍita family (Madhya 13.254, bhāṣya)
+
+«Jaya rāja-paṇḍita-duhitā-prāṇeśvara» — «All glories to the beloved Lord of the Rāja-paṇḍita's daughter!» The *bhāṣya*: Śrī Sanātana Miśra was born in the family of the Rāja-paṇḍitas — the title of poets headed by Jayadeva, author of the *Gīta-govinda*; Lakṣmī, appearing as the daughter of that family, came to serve the Lord in His pastimes of separation.
+
+## Sources
+
+${SRC} Ādi 1.110 (bhāṣya); 15.40–66, 15.101–106, 15.161–197; Madhya 13.254.`;
+
+const nilambara = `## In short
+
+Nīlāmbara Cakravartī, father of Śacī-devī and maternal grandfather of the Lord, a learned astrologer: he cast the newborn Nimāi's horoscope and foretold His greatness.
+
+## The horoscope (Ādi 3.9–13)
+
+«The father of Śacī-devī and great brāhmaṇa, Nīlāmbara Cakravartī, noted wonderful planetary arrangements in each house of the child's horoscope.» Studying each *lagna* he «foretold the highest fruits and was struck with wonder by seeing the Lord's beauty» (3.10). There was a prophecy that a great personality would be born in a brāhmaṇa family of Bengal and become king; Nīlāmbara thought that perhaps this boy would one day be king of Bengal (3.11). «Nīlāmbara Cakravartī was a learned teacher of the science of astrology» (*mahā-jyotir-vit*), and explained the horoscope to those present (3.12–13).
+
+The *bhāṣya* (3.9): he formerly lived at **Magdobā, in the district of Faridpur** (present-day Bangladesh); most learned brāhmaṇas of that time knew some astrology.
+
+## Other mentions
+
+- At the name-giving ceremony, «all the learned persons headed by Nīlāmbara Cakravartī» came (Ādi 4.42).
+- The *bhāṣya* (Ādi 1.159): Vāsudeva Sārvabhauma was a godbrother (fellow student) of the Lord's grandfather Nīlāmbara Cakravartī.
+- «Your maternal grandfather is Nīlāmbara Cakravartī, and Your father is Jagannātha Miśra Purandara» (Madhya 1.273); «He is the son of Nīlāmbara Cakravartī's daughter» (Madhya 2.24).
+
+## Sources
+
+${SRC} Ādi 1.159 (bhāṣya); 3.9–13; 4.42; Madhya 1.273, 2.24.`;
+
+const buddhi = `## In short
+
+Buddhimanta Khān, the Lord's rich neighbour in Navadvīpa, who bore all the expenses of His marriage with Viṣṇupriyā and later supplied the costumes for His drama.
+
+## A rich man of Navadvīpa (Ādi 12.72)
+
+With Mukunda Sañjaya he came to the Lord's house. The *bhāṣya*: «Both Buddhimanta Khān and Mukunda Sañjaya of Navadvīpa were respectable, rich, and prosperous in all regards» — such men kept medicines and doctors in their houses, on whom the poor depended.
+
+## The wedding with Viṣṇupriyā (Ādi 15.69–72, 137, 145, 220)
+
+> prathame balila buddhimanta mahāśaya
+> «mora bhāra e vivāhe yata lāge vyaya»
+
+«Buddhimanta Khān was the first to speak. “I will bear the entire expenditure of this marriage.”» When Mukunda Sañjaya protested, he answered: «This marriage will not be like a brāhmaṇa's marriage, which is generally very simple. I will make such arrangements for the marriage of Nimāi Paṇḍita that He will appear like a prince in the eyes of the people.» He brought «an exquisite palanquin» (15.137); the procession was led by his infantry (15.145); afterwards «the Lord mercifully embraced Buddhimanta Khān, who felt such ecstasy that it is beyond all description» (15.220).
+
+The *bhāṣya* (15.69): «Buddhimanta Khān was the Lord's neighbor and a staunch, rich, devoted brāhmaṇa follower of the Lord»; it quotes *Caitanya-caritāmṛta* Ādi 10.74 (the thirty-sixth branch, «always prepared to carry out the Lord's orders»).
+
+## The costumes for the drama (Madhya 18.7–16)
+
+«The Lord called Sadāśiva and Buddhimanta Khān and told them, “Arrange for some costumes.”» — «O Buddhimanta, go quickly and arrange the costumes so that I may dance.» They went home in unlimited ecstasy, and Buddhimanta Khān brought the costumes before the Lord.
+
+## Later
+
+He was at the kīrtanas in Śrīvāsa's house (Madhya 8.112–116) and with the devotees after the deliverance of Jagāi and Mādhāi (Madhya 13.336–339). He came to Purī for the Ratha-yātrā: «Buddhimanta Khān, who from the time of his birth carried out the order of Lord Caitanya, also came» (Antya 8.30).
+
+## Sources
+
+${SRC} Ādi 12.72; 15.69–72, 15.137, 15.145, 15.220; Madhya 8.112–116, 13.336–339, 18.7–16; Antya 8.30.`;
+
+const kasinatha = `## In short
+
+Kāśīnātha Paṇḍita, the matchmaker (*ghaṭaka*) of Navadvīpa whom Śacī-mātā sent to Sanātana Miśra to propose the marriage of Viśvambhara with Viṣṇupriyā.
+
+## Śacī sends him (Ādi 15.51–53)
+
+«One day Śacī was inspired to call Kāśīnātha Paṇḍita to her home… “Go tell Sanātana Miśra that if he desires he may give his daughter to my son.”» He left at once for the Rāja-paṇḍita's house, chanting the names of Durgā and Kṛṣṇa.
+
+The *bhāṣya* (15.51): «Kāśīnātha Paṇḍita, the matchmaker resident of Navadvīpa, was a crest jewel amongst brāhmaṇas.» In Kṛṣṇa's pastimes he was **Kulaka**, the brāhmaṇa whom Satrājit sent to Kṛṣṇa to arrange His marriage with Satyabhāmā (*Gaura-gaṇoddeśa-dīpikā* 50).
+
+## The proposal (Ādi 15.54–66)
+
+Sanātana Miśra received him with respect. Kāśīnātha said: «Please give your daughter's hand in marriage to Viśvambhara Paṇḍita. I feel it is a perfect match… Viṣṇupriyā and Nimāi Paṇḍita are as suitable a match as Kṛṣṇa and Rukmiṇī were.» Sanātana Miśra consulted his family and accepted; «feeling satisfied, Kāśīnātha Miśra returned to mother Śacī and told her everything» (15.66).
+
+## Sources
+
+${SRC} Ādi 15.51–66.`;
+
+const vanamali = `## In short
+
+Vanamālī Ācārya, the brāhmaṇa matchmaker (*ghaṭaka*) of Navadvīpa who arranged the Lord's first marriage, with Lakṣmīpriyā, daughter of Vallabhācārya.
+
+## The proposal (Ādi 10.52–64)
+
+«By the Lord's will, that very day a brāhmaṇa named Vanamālī went to the house of mother Śacī.» He asked why she was not arranging her son's marriage, and proposed the daughter of Vallabhācārya, «whose beauty, qualities, and temperament are as good as Lakṣmī». Śacī answered: «My son is fatherless. Leave Him alone to study for some time.» He left disappointed — and on the way met Nimāi, who embraced him. Hearing what had happened, the Lord smiled, went home and asked His mother: «Why didn't you respect the brāhmaṇa's proposal?» The next day Śacī called Vanamālī back and gave her consent.
+
+The *bhāṣya* (10.54) quotes the *Gaura-gaṇoddeśa-dīpikā* (49): «The matchmaker Śrī Viśvāmitra, who arranged the marriage of Śrī Rāmacandra and who was the brāhmaṇa messenger that Rukmiṇī sent to Keśava, has now appeared as Vanamālī Ācārya.»
+
+## With Vallabhācārya (Ādi 10.66–78)
+
+Vallabhācārya received him with great respect. Vanamālī said: «The son of Jagannātha Miśra, Śrī Viśvambhara, is highly learned and an ocean of good qualities. This great personality is the proper match for your daughter.» Vallabha accepted with joy — only, he was poor: «I can offer only five *haritakī* fruits along with my daughter.» Vanamālī completed the formalities and told Śacī to choose an auspicious day.
+
+## In the kīrtanas
+
+«Vanamālī» is named among the associates at the nightly kīrtanas in Śrīvāsa's house (Madhya 8.112–116).
+
+## Sources
+
+${SRC} Ādi 10.52–78; Madhya 8.112–116.`;
+
+const vanamaliP = `## In short
+
+Vanamālī Paṇḍita, «who saw a golden club and plow in the Lord's hands», came to Purī with the devotees of Bengal.
+
+## To Purī for the Ratha-yātrā (Antya 8.27)
+
+> calilena vanamālī paṇḍita maṅgala
+> ye dekhila suvarṇera śrī-hala-muṣala
+
+«The auspicious Vanamālī Paṇḍita also came. He saw a golden club and plow in the Lord's hands.»
+
+(The club and plow are the weapons of Balarāma; the *Caitanya-caritāmṛta*, Ādi 10.77, tells the same of Vanamālī Paṇḍita.)
+
+## Sources
+
+${SRC} Antya 8.27.`;
+
+const sukla = `## In short
+
+Śuklāmbara Brahmacārī, a poor *naiṣṭhika* brahmacārī of Navadvīpa who begged rice from door to door, offered it to Kṛṣṇa and lived on the remnants. The Lord first revealed His love for Kṛṣṇa in his house, ate the raw rice from his begging bag, and ate at his house the rice he cooked «without touching».
+
+## Before the Lord (Ādi 2.31, 2.118–119)
+
+He is among the devotees born in Navadvīpa before the Lord (Ādi 2.31), and among those to whom Advaita said: «Listen, Śrīvāsa, Gaṅgādāsa, and Śuklāmbara! I will make Kṛṣṇa descend for all to see» (Ādi 2.118–119).
+
+## The Lord's first meeting after Gayā (Madhya 1.40–108)
+
+Back from Gayā, the Lord asked the devotees: «Meet tomorrow at Śuklāmbara's house, where I will submit My sorrows to you in seclusion» (1.50). Śrīmān Paṇḍita, Sadāśiva, Murāri and Śuklāmbara gathered in his house on the bank of the Gaṅgā; Gadādhara hid inside. «The sounds of chanting and crying in ecstatic love combined to fill the house of Śuklāmbara with love of God» (1.94). When the Lord asked, «Who is inside the room?», Śuklāmbara answered, «Your Gadādhara is inside» (1.96).
+
+## The rice from his begging bag (Madhya 16.109–145)
+
+«He would take a bag on his shoulder and go beg alms from house to house in Navadvīpa. He would cry while chanting the names of Kṛṣṇa day and night.» People thought him a beggar; «after begging during the day, the brāhmaṇa offered whatever he received to Kṛṣṇa and accepted His remnants» — like the poor brāhmaṇa Śrīdāmā (Sudāmā), Kṛṣṇa's friend (16.117, *bhāṣya*).
+
+One day, as he danced with his bag on his shoulder, the Lord called him: «Come! Come! You are My poor servant birth after birth. You give Me everything and remain a beggar… Did you forget that I forcibly ate your broken rice in Dvārakā? Kamalā, the goddess of fortune, caught hold of My hand.» He took a handful of uncooked rice from the bag and ate it. — «O Lord, You have ruined me! This rice is full of broken particles!» — «I eat your broken rice, and I turn My face away from the nectar offered by nondevotees.»
+
+> prabhu bale, — śuna śuklāmbara brahmacārī!
+> tomāra hṛdaye āmi sarvadā vihārī
+
+«Listen, Śuklāmbara Brahmacārī! I constantly enjoy pastimes in your heart. When you eat, I eat. When you walk about for begging, that is My walking… I now give you *prema-bhakti*.» (16.134–137) All the Vaiṣṇavas chanted «Jaya! Jaya!»
+
+The *bhāṣya* (16.113, 16.140–145): the poverty of devotees who dress as beggars cannot be understood by the proud; by eating his begged rice without considering rules of offering, the Lord showed that devotion is the life of all rules.
+
+## Rice cooked without touching (Madhya 26.1–30)
+
+Shortly before His sannyāsa the Lord asked him: «I have a strong desire to eat your rice. Do not fear.» Śuklāmbara, afraid, asked the devotees; they told him: «If you still feel fearful, then don't touch the food while you cook.» He bathed, boiled scented water and put in rice and the core of a banana stem «without touching them» (*ālagoche*), and sang «Jaya Kṛṣṇa, Govinda, Gopāla, Vanamālī!» Lakṣmī glanced at the rice and it became like nectar. The Lord came with Nityānanda and others, offered it to Viṣṇu and ate: «Since birth I have never tasted such palatable rice as this.»
+
+## Sources
+
+${SRC} Ādi 1.134; 2.31, 2.118–119; Madhya 1.40–108; 8.112–116; 13.336–339; 16.109–145; 26.1–30.`;
+
+const plan = [
+  { id: 1354, name: "Sanātana Miśra", text: sanatana },
+  { id: 1032, name: "Nīlāmbara Cakravartī", text: nilambara },
+  { id: 1755, name: "Vuddhimanta Khan", text: buddhi },
+  { id: 692, name: "Kāśīnātha Paṇḍita (of Navadvīpa)", text: kasinatha },
+  { id: 1625, name: "Vanamālī Ācārya", text: vanamali },
+  { id: 1630, name: "Vanamālī Vipra (Paṇḍita)", text: vanamaliP },
+  { id: 1488, name: "Śuklāmbara Brahmacārī", text: sukla },
+];
+fs.writeFileSync(new URL("./cb2.json", import.meta.url), JSON.stringify(plan, null, 1));
+console.log(plan.length + " entradas");
