@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **16-11-2026** (versión **0.18.2**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **16-11-2026** (versión **0.18.3**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,12 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.18.2)
+## 5. Qué hace hoy (v0.18.3)
+
+### Novedades de la 0.18.3 (16-11-2026) — Vaṁśa: «Volver» y «Viene de»
+- Vaṁśa: botón «Volver» (pila `back`: al saltar a otro árbol por una flecha, por la búsqueda o con el desplegable;
+  vuelve al nombre desde el que se saltó) y línea «Viene de: Mahāviṣṇu › Brahmā › Aṅgiras (árbol)» (`cameFrom`: los
+  nombres de otros árboles cuya flecha lleva a este; cada nombre se puede pulsar).
 
 ### Novedades de la 0.18.2 (16-11-2026) — el Śrīmad-Bhāgavatam en «Vaṁśa»
 - Los 12 cantos del Śrīmad-Bhāgavatam (Prabhupāda) en «Libros» (#4466–#4477), con «## Chapter N: título», resumen y
@@ -1827,6 +1832,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **16-11-2026 — v0.18.3**: Vaṁśa con «Volver» y «Viene de».
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.3
 - **16-11-2026 — v0.18.2**: el Śrīmad-Bhāgavatam en «Libros» y en «Vaṁśa» (versos de cada nombre); nombres con ficha en rosa, «→ otro árbol» en azul.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.2
 - **16-11-2026 — v0.18.1**: iconos «Pétalo»; esposos en «Linaje»; portada automática de los PDF sueltos en la Biblioteca; líneas de Vaṁśa visibles; las ocho sakhīs.

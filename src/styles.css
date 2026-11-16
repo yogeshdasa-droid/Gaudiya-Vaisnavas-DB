@@ -8430,3 +8430,14 @@ svg.satellite .map-dot {
 .vl-bar .btn {
   white-space: nowrap;
 }
+/* Vaṁśa: «Back» and «Comes from: Mahāviṣṇu › Brahmā › Aṅgiras» */
+.vamsa-from {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  margin-top: 8px;
+}
+.vamsa-crumbs .link-btn {
+  color: var(--vamsa-ref);
+}

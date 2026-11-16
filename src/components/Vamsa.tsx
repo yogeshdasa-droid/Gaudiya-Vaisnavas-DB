@@ -5,7 +5,7 @@
 // Whisper's explorer) and a drawing like «Linaje».
 import { useEffect, useMemo, useRef, useState } from "react";
 import dagre from "@dagrejs/dagre";
-import { ArrowRight, ChevronDown, ChevronRight, ChevronsDownUp, ChevronsUpDown, Maximize, Search, Trees, UserRound, X, ZoomIn, ZoomOut } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown, ChevronRight, ChevronsDownUp, ChevronsUpDown, Maximize, Search, Trees, UserRound, X, ZoomIn, ZoomOut } from "lucide-react";
 import { api, type PersonListItem } from "../api";
 import { Lang, T } from "../i18n";
 import { foldName } from "./Sidebar";
@@ -190,16 +190,38 @@ export function Vamsa({ t, persons, onPerson, onOpenDoc }: Props) {
   const recordsOf = (v: VNode) => recordIndex.get(bare(v.name)) ?? [];
 
   const [jump, setJump] = useState(0); // a name picked from the search or a link: show it
-  const pick = (v: VNode, c: Chart) => {
+  // where one came from, to go back (Whisper, 16-11-2026: «a way to go back one level»)
+  const [back, setBack] = useState<{ chart: string; sel: VNode | null }[]>([]);
+  const pick = (v: VNode, c: Chart, remember = true, from: VNode | null = sel) => {
+    if (remember && c.key !== chart.key) setBack((b) => [...b.slice(-30), { chart: chart.key, sel: from }]);
     setChartKey(c.key);
     setSel(v);
     setJump((n) => n + 1);
   };
-  const goRef = (ref: string) => {
+  const goRef = (ref: string, from?: VNode) => {
     const k = byRef.get(ref);
     const c = charts.find((x) => x.key === k);
-    if (c) pick(c.root, c);
+    if (c) pick(c.root, c, true, from ?? sel);
   };
+  const goBack = () => {
+    const last = back[back.length - 1];
+    if (!last) return;
+    setBack((b) => b.slice(0, -1));
+    const c = charts.find((x) => x.key === last.chart);
+    if (c) pick(last.sel ?? c.root, c, false);
+  };
+  // the trees this one hangs from: the names elsewhere whose arrow leads here («Aṅgiras» in Mahāviṣṇu & Brahmā)
+  const cameFrom = useMemo(() => {
+    const m = new Map<string, { chart: Chart; v: VNode }[]>();
+    const walk = (v: VNode, c: Chart) => {
+      const to = v.ref ? byRef.get(v.ref) : undefined;
+      if (to && to !== c.key) m.set(to, [...(m.get(to) ?? []), { chart: c, v }]);
+      v.children.forEach((x) => walk(x, c));
+    };
+    charts.forEach((c) => walk(c.root, c));
+    return m;
+  }, [charts, byRef]);
+  const from = cameFrom.get(chart.key) ?? [];
   const refLabel = (ref: string) => charts.find((c) => c.key === byRef.get(ref))?.title.replace(/^\([^)]*\)\s*/, "") ?? ref;
   const line = (v: VNode) => {
     const out: VNode[] = [];
@@ -219,7 +241,7 @@ export function Vamsa({ t, persons, onPerson, onOpenDoc }: Props) {
             <div className="lin-pp">
               <label>
                 <span>{t.vamsaChart}</span>
-                <select value={chart.key} onChange={(e) => (setChartKey(e.target.value), setSel(null))}>
+                <select value={chart.key} onChange={(e) => (setBack((b) => [...b.slice(-30), { chart: chart.key, sel }]), setChartKey(e.target.value), setSel(null))}>
                   {charts.map((c) => (
                     <option key={c.key} value={c.key}>
                       {c.title} · {t.vamsaPeople(c.count)}
@@ -237,6 +259,29 @@ export function Vamsa({ t, persons, onPerson, onOpenDoc }: Props) {
               </div>
               <span className="muted small">{t.vamsaPage(chart.page)}</span>
             </div>
+            {(back.length > 0 || from.length > 0) && (
+              <div className="vamsa-from small">
+                {back.length > 0 && (
+                  <button className="btn ghost small" onClick={goBack} title={charts.find((c) => c.key === back[back.length - 1].chart)?.title}>
+                    <ArrowLeft size={14} /> {t.vamsaBack}
+                  </button>
+                )}
+                {from.map(({ chart: c, v }) => (
+                  <span key={c.key + v.key} className="vamsa-crumbs">
+                    <span className="muted">{t.vamsaFrom}</span>{" "}
+                    {line(v).map((p, i) => (
+                      <span key={p.key}>
+                        {i > 0 && <span className="muted"> › </span>}
+                        <button className="link-btn" onClick={() => pick(p, c)}>
+                          {p.spouse ? `═ ${p.name}` : p.name}
+                        </button>
+                      </span>
+                    ))}
+                    <span className="muted"> ({c.title})</span>
+                  </span>
+                ))}
+              </div>
+            )}
             <div className="vamsa-search">
               <Search size={15} />
               <input value={query} placeholder={t.vamsaSearch} onChange={(e) => setQuery(e.target.value)} />
@@ -276,7 +321,7 @@ export function Vamsa({ t, persons, onPerson, onOpenDoc }: Props) {
                   {sel.spouse && <p className="muted small">{t.vamsaSpouse}</p>}
                   {sel.note && <p className="small">{sel.note}</p>}
                   {sel.ref && byRef.has(sel.ref) && (
-                    <button className="btn ghost" onClick={() => goRef(sel.ref!)}>
+                    <button className="btn ghost" onClick={() => goRef(sel.ref!, sel)}>
                       <ArrowRight size={14} /> {t.vamsaGoTo(charts.find((c) => c.key === byRef.get(sel.ref!))?.title ?? sel.ref)}
                     </button>
                   )}
@@ -319,7 +364,7 @@ interface ViewProps {
   sel: VNode | null;
   jump: number;
   onSel: (v: VNode) => void;
-  onRef: (ref: string) => void;
+  onRef: (ref: string, from?: VNode) => void;
   recordsOf: (v: VNode) => PersonListItem[];
   refLabel: (ref: string) => string;
 }
@@ -377,7 +422,7 @@ function VList({ t, root, sel, jump, onSel, onRef, recordsOf, refLabel }: ViewPr
             </span>
           )}
           {v.ref && (
-            <button className="link-btn small" onClick={() => onRef(v.ref!)}>
+            <button className="link-btn small" onClick={() => onRef(v.ref!, v)}>
               <ArrowRight size={12} /> {refLabel(v.ref)}
             </button>
           )}
@@ -538,7 +583,7 @@ function VDraw({ t, root, sel, jump, onSel, onRef, refLabel, recordsOf }: ViewPr
                 className={`tree-node lin-node${v.spouse ? " vamsa-spouse" : ""}${v === sel ? " lit-self" : ""}${v.ref ? " vamsa-ref" : ""}${recs.length ? " vamsa-rec" : ""}`}
                 transform={`translate(${x},${y})`}
                 onClick={(e) => e.detail === 1 && onSel(v)}
-                onDoubleClick={() => v.ref && onRef(v.ref)}
+                onDoubleClick={() => v.ref && onRef(v.ref, v)}
               >
                 <title>{`${v.spouse ? "═ " : ""}${v.name}${v.note ? `\n${v.note}` : ""}${v.ref ? `\n→ ${refLabel(v.ref)}` : ""}${recs.length ? `\n${t.vamsaRecords}: ${recs.map((p) => p.name).join(", ")}` : ""}`}</title>
                 <rect width={W} height={H} rx={6} />
