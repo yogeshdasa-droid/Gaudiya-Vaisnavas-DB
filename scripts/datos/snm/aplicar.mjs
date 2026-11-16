@@ -4,7 +4,7 @@
 // «Lectures of Śrīla Nārāyaṇa Gosvāmī Mahārāja»), añade `notes` al final de las notas si aún no están, y cambia los campos
 // de `set` (Whisper, 16-11-2026: las conferencias son 100% fiables — «corregirlo directamente»). 2.ª pasada = nada.
 export const COLL = "Lectures of Śrīla Nārāyaṇa Gosvāmī Mahārāja";
-export const SRC = "Lectures of Śrīla Bhaktivedānta Nārāyaṇa Gosvāmī Mahārāja (Info collection; in «Libros» as «Lectures of Śrīla Bhaktivedānta Nārāyaṇa Gosvāmī Mahārāja — <year>»)";
+export const SRC = "Lectures of Śrīla Bhaktivedānta Nārāyaṇa Gosvāmī Mahārāja (Info collection; in the side panel under «Lectures Gurudeva», by year, each lecture titled with its date)";
 export async function aplicar(F) {
   const args = process.argv.slice(2);
   const dry = args.includes("--dry");

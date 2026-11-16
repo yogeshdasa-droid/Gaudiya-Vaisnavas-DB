@@ -1085,19 +1085,45 @@ function PersonList({
               {/* these start folded: the key is stored when opened */}
               {groupHead(`col:${name}`, name, ds.length, undefined, undefined, closedGroups.has(`col:${name}`))}
               {closedGroups.has(`col:${name}`) &&
-                ds.map((d) => (
-                  <div
-                    key={d.id}
-                    data-ctx="doc"
-                    data-id={d.id}
-                    className={`tree-row doc${activeDocId === d.id ? " active" : ""}`}
-                    onClick={() => onDoc(d.id)}
-                    title={d.title}
-                  >
-                    <FileText size={14} />
-                    <span className="name">{d.title}</span>
-                  </div>
-                ))}
+                (() => {
+                  // a collection with subfolders («Lectures Gurudeva/1999»…): its own texts first, then one folded
+                  // head per subfolder (Whisper, 16-11-2026)
+                  const docRow = (d: DocListItem, indent = false) => (
+                    <div
+                      key={d.id}
+                      data-ctx="doc"
+                      data-id={d.id}
+                      className={`tree-row doc${activeDocId === d.id ? " active" : ""}`}
+                      style={indent ? { paddingLeft: 30 } : undefined}
+                      onClick={() => onDoc(d.id)}
+                      title={d.title}
+                    >
+                      <FileText size={14} />
+                      <span className="name">{d.title}</span>
+                    </div>
+                  );
+                  const subs = new Map<string, DocListItem[]>();
+                  const own: DocListItem[] = [];
+                  for (const d of ds) {
+                    const sub = d.dir.split("/").slice(1).join("/");
+                    if (sub) subs.set(sub, [...(subs.get(sub) ?? []), d]);
+                    else own.push(d);
+                  }
+                  if (!subs.size) return ds.map((d) => docRow(d));
+                  return (
+                    <>
+                      {own.map((d) => docRow(d))}
+                      {[...subs]
+                        .sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }))
+                        .map(([sub, sd]) => (
+                          <div key={sub} style={{ paddingLeft: 14 }}>
+                            {groupHead(`col:${name}/${sub}`, sub, sd.length, undefined, undefined, closedGroups.has(`col:${name}/${sub}`))}
+                            {closedGroups.has(`col:${name}/${sub}`) && sd.map((d) => docRow(d, true))}
+                          </div>
+                        ))}
+                    </>
+                  );
+                })()}
             </div>
           ))}
           {/* the poets at the very bottom (Whisper, 16-11-2026) */}
