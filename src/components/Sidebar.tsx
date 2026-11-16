@@ -1072,14 +1072,6 @@ function PersonList({
               })}
             </div>
           )}
-          {poets.length > 0 && groupHead("poets", t.poets, poets.length, undefined, t.poetsHint)}
-          {poets.length > 0 && !closedGroups.has("poets") && (
-            <div>
-              {poets.map((p) => (
-                <div key={p.id}>{personRow(p)}</div>
-              ))}
-            </div>
-          )}
           {sb.length > 0 && groupHead("sb", t.sbGroup, sb.length, undefined, t.sbGroupHint)}
           {sb.length > 0 && !closedGroups.has("sb") && (
             <div>
@@ -1108,6 +1100,15 @@ function PersonList({
                 ))}
             </div>
           ))}
+          {/* the poets at the very bottom (Whisper, 16-11-2026) */}
+          {poets.length > 0 && groupHead("poets", t.poets, poets.length, undefined, t.poetsHint)}
+          {poets.length > 0 && !closedGroups.has("poets") && (
+            <div>
+              {poets.map((p) => (
+                <div key={p.id}>{personRow(p)}</div>
+              ))}
+            </div>
+          )}
         </>
       )}
       {drag && (

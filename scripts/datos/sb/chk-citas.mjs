@@ -4,7 +4,7 @@ const [file, sbp] = process.argv.slice(2);
 const sb = JSON.parse(fs.readFileSync(sbp, "utf8"));
 const src = fs.readFileSync(file, "utf8");
 // mayúsculas y aclaraciones entre corchetes no cuentan
-const norm = (s) => s.replace(/\[[^\]]*\]/g, " ").replace(/\s+/g, " ").replace(/ ([,.;:])/g, "$1").trim().toLowerCase();
+const norm = (s) => s.replace(/\[[^\]]*\]/g, " ").replace(/\s+/g, " ").replace(/ ([,.;:!?])/g, "$1").trim().toLowerCase();
 let bad = 0, ok = 0;
 // «quote» … (c.ch.v[–w]) — the ref is the first parenthesis after the quote
 const rx = /«([^«»]+)»([^«]*?)\((\d+)\.(\d+)\.(\d+)(?:[–-](\d+))?\)/g;

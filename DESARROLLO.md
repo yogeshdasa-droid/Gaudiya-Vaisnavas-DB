@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **16-11-2026** (versión **0.18.5**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **16-11-2026** (versión **0.18.6**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,14 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.18.5)
+## 5. Qué hace hoy (v0.18.6)
+
+### Novedades de la 0.18.6 (16-11-2026) — el Bhāgavatam completo en fichas
+- Fase 4 terminada: 75 fichas #2287–#2361 en «Bhāgavata-maṇḍala» (tandas `sb/fichas1.mjs`…`fichas14.mjs`, con `sb/comun-sb.mjs`;
+  citas comprobadas con `sb/chk-citas.mjs`), cada una con el texto «In the Śrīmad-Bhāgavatam — <nombre>»; además ese texto en
+  #2192 Vasudeva, #2197 Nanda, #2202 Yaśodā, #2203 Rohiṇī, #975 Nārada, #1891 Vyāsadeva. `vamsa-records.json`: 63 nombres de
+  Vaṁśa unidos a su ficha («Ver en Vaṁśa»). Homónimos gauḍīyas: nombre con aclaración y «no son la misma persona».
+- Lateral: «Poets» al final, debajo de las colecciones (Sidebar.tsx).
 
 ### Novedades de la 0.18.5 (16-11-2026) — el «Bhāgavata-maṇḍala»
 - Apartado lateral **«Bhāgavata-maṇḍala»** (etiqueta fija `BHAGAVATAM` / `isBhagavatam` en api.ts, grupo `sb` en el
@@ -1847,6 +1854,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **16-11-2026 — v0.18.6**: 75 fichas del Bhāgavatam unidas a Vaṁśa; «Poets» al final del lateral.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.6
 - **16-11-2026 — v0.18.5**: apartado «Bhāgavata-maṇḍala» en el lateral; «Ver en Vaṁśa» en la ficha; 13 fichas del Bhāgavatam unidas a Vaṁśa.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.5
 - **16-11-2026 — v0.18.4**: la Bhagavad-gītā en «Libros» y en los versos de «Vaṁśa»; el verso abierto, resaltado; «Volver» amarillo abajo; Vaṁśa recuerda el nombre.
