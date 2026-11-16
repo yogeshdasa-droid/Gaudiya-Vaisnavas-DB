@@ -7,6 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import dagre from "@dagrejs/dagre";
 import { ArrowLeft, ArrowRight, ChevronDown, ChevronRight, ChevronsDownUp, ChevronsUpDown, Maximize, Search, Trees, UserRound, X, ZoomIn, ZoomOut } from "lucide-react";
 import { api, type PersonListItem } from "../api";
+import type { Term } from "../fold";
 import { Lang, T } from "../i18n";
 import { foldName } from "./Sidebar";
 import raw from "../data/vamsa.json";
@@ -59,6 +60,9 @@ async function verseOf(ref: string): Promise<Verse | null | undefined> {
     );
   return (await cantos.get(c)!).get(ref) ?? null;
 }
+
+// what «Vaṁśa» showed, kept while the app is open: coming back from a verse finds the same tree and name
+let memo: { chart: string; key: string; back: { chart: string; sel: VNode | null }[] } | null = null;
 
 // ---- the data, made even: a marriage is a node («═ spouse») between a person and the children of that marriage
 export interface VNode {
@@ -150,7 +154,7 @@ interface Props {
   lang: Lang;
   persons: PersonListItem[];
   onPerson: (id: number) => void;
-  onOpenDoc: (docId: number, ordinal: number) => void;
+  onOpenDoc: (docId: number, ordinal: number, terms?: Term[]) => void;
 }
 
 export function Vamsa({ t, persons, onPerson, onOpenDoc }: Props) {
@@ -163,7 +167,16 @@ export function Vamsa({ t, persons, onPerson, onOpenDoc }: Props) {
   const [tab, setTabState] = useState<"list" | "draw">(() => (get("bio.vamsaTab") === "draw" ? "draw" : "list"));
   const setTab = (v: "list" | "draw") => (setTabState(v), put("bio.vamsaTab", v));
   const chart = charts.find((c) => c.key === chartKey) ?? charts[0];
-  const [sel, setSel] = useState<VNode | null>(null);
+  const [sel, setSel] = useState<VNode | null>(() => {
+    if (!memo || memo.chart !== chart.key) return null;
+    let found: VNode | null = null;
+    const walk = (v: VNode) => {
+      if (!found && keyOf(chart.key, v) === memo!.key) found = v;
+      v.children.forEach(walk);
+    };
+    walk(chart.root);
+    return found;
+  });
   const [query, setQuery] = useState("");
 
   // every name of every chart, for the search
@@ -195,7 +208,10 @@ export function Vamsa({ t, persons, onPerson, onOpenDoc }: Props) {
 
   const [jump, setJump] = useState(0); // a name picked from the search or a link: show it
   // where one came from, to go back (Whisper, 16-11-2026: «a way to go back one level»)
-  const [back, setBack] = useState<{ chart: string; sel: VNode | null }[]>([]);
+  const [back, setBack] = useState<{ chart: string; sel: VNode | null }[]>(() => memo?.back ?? []);
+  useEffect(() => {
+    memo = { chart: chart.key, key: sel ? keyOf(chart.key, sel) : "", back };
+  }, [chart.key, sel, back]);
   const pick = (v: VNode, c: Chart, remember = true, from: VNode | null = sel) => {
     if (remember && c.key !== chart.key) setBack((b) => [...b.slice(-30), { chart: chart.key, sel: from }]);
     setChartKey(c.key);
@@ -610,7 +626,7 @@ function VDraw({ t, root, sel, jump, onSel, onRef, refLabel, recordsOf }: ViewPr
 }
 
 // ---- the verses of the Bhāgavatam of one name
-function SbVerses({ t, refs, onOpenDoc }: { t: T; refs: string[]; onOpenDoc: (docId: number, ordinal: number) => void }) {
+function SbVerses({ t, refs, onOpenDoc }: { t: T; refs: string[]; onOpenDoc: (docId: number, ordinal: number, terms?: Term[]) => void }) {
   const [all, setAll] = useState(false);
   const shown = all ? refs : refs.slice(0, 6);
   const [verses, setVerses] = useState<Map<string, Verse | null | undefined>>(new Map());
@@ -641,7 +657,7 @@ function SbVerses({ t, refs, onOpenDoc }: { t: T; refs: string[]; onOpenDoc: (do
             const v = verses.get(r);
             return (
               <div key={r} className="vamsa-verse small">
-                <button className="link-btn" disabled={!v} onClick={() => v && onOpenDoc(v.docId, v.ordinal)}>
+                <button className="link-btn" disabled={!v} onClick={() => v && onOpenDoc(v.docId, v.ordinal, [{ words: (r.startsWith("BG ") ? r : `SB ${r}`).toLowerCase().split(/[^a-z0-9]+/).filter(Boolean), prefix: false }])}>
                   {r.startsWith("BG ") ? r : `SB ${r}`}
                 </button>{" "}
                 {v === undefined && !verses.has(r) ? <span className="muted">{t.vamsaSbLoading}</span> : v === undefined ? <span className="muted">{t.vamsaSbMissing}</span> : v === null ? "" : short(v.text)}

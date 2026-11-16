@@ -295,6 +295,12 @@ export function Reader(p: Props) {
     <div className={vraja ? "reader gano-view vraja-view" : gano ? "reader gano-view" : "reader"}>
       {gano && view === "text" && <Mandala className="gano-mandala" />}
       {view === "text" && <div className="read-progress" style={{ transform: `scaleX(${progress})` }} />}
+      {/* the same «Back», always in sight at the bottom (Whisper, 16-11-2026: back to «Vaṁśa» after reading a verse) */}
+      {p.onBack && (
+        <button className="btn reader-back-float" onClick={p.onBack} title={t.goBack}>
+          <ArrowLeft size={16} /> {t.backToRecord}
+        </button>
+      )}
       <header className="reader-head">
         <div className="reader-title">
           {p.onBack && (

@@ -82,6 +82,7 @@ import {
 } from "./api";
 import { dicts, Lang } from "./i18n";
 import { buildNameIndex } from "./personLinks";
+import type { Term } from "./fold";
 import { checkUpdate, installUpdate, Update } from "./update";
 import { EditDialog, GuruDialog, LinkNameDialog, MoveTextDialog, NameSpot, RelateDialog, ImportDialog, MergeDialog, PersonDialog, PlaceDialog, TrashDialog, VersionsDialog } from "./components/Dialogs";
 import { PlaceView } from "./components/PlaceView";
@@ -535,8 +536,9 @@ export default function App() {
     [hits, query, result, remember],
   );
 
-  const openDoc = useCallback((docId: number, ordinal = 0) => {
-    setMain({ kind: "doc", target: { docId, ordinal, terms: [], nonce: Date.now() } });
+  // `terms`: words to light and go to (a verse opened from «Vaṁśa»: «SB 1.9.13»)
+  const openDoc = useCallback((docId: number, ordinal = 0, terms: Term[] = []) => {
+    setMain({ kind: "doc", target: { docId, ordinal, terms, nonce: Date.now() } });
   }, []);
   // In a record the list on the left is not needed (Whisper): opening one folds the
   // side panel away, and it comes back when the record is left — unless it was opened
