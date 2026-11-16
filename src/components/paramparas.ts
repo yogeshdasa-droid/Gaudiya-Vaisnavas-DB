@@ -24,6 +24,8 @@ export interface Parampara {
   down: number;
   /** also follow the family lines (son, wife, descendant…) below the last step */
   family?: boolean;
+  /** also show the parents of the people shown (wives, mothers…), one row above their child: the families of Vraja */
+  parents?: boolean;
 }
 
 // Kṛṣṇa → … → Bhaktisiddhānta, as Bhaktivinoda Ṭhākura gave it and as it is printed in the Bhagavad-gītā As It Is
@@ -165,6 +167,34 @@ export const PARAMPARAS: Parampara[] = [
     down: 3,
     family: true,
   },
+  {
+    id: "vraja-nanda",
+    group: "family",
+    title: { es: "Vraja: familia de Nanda (Kṛṣṇa)", en: "Vraja: Nanda's family (Kṛṣṇa)" },
+    about: {
+      es: "La familia de Kṛṣṇa en Vraja: de Devamīḍha, rey Yadu de Mathurā, a Śūra y Vasudeva por un lado y a Parjanya y sus cinco hijos (Nanda…) por otro, con Yaśodā, Rohiṇī, Balarāma y Kṛṣṇa (Gopāla-campū; Rādhā-Kṛṣṇa-gaṇoddeśa-dīpikā).",
+      en: "Kṛṣṇa's family in Vraja: from Devamīḍha, Yadu king of Mathurā, to Śūra and Vasudeva on one side and to Parjanya and his five sons (Nanda…) on the other, with Yaśodā, Rohiṇī, Balarāma and Kṛṣṇa (Gopāla-campū; Rādhā-Kṛṣṇa-gaṇoddeśa-dīpikā).",
+    },
+    source: "Gopāla-campū; Rādhā-Kṛṣṇa-gaṇoddeśa-dīpikā",
+    steps: [{ id: 2190 }],
+    down: 3,
+    family: true,
+    parents: true,
+  },
+  {
+    id: "vraja-vrsabhanu",
+    group: "family",
+    title: { es: "Vraja: familia de Vṛṣabhānu (Rādhā)", en: "Vraja: Vṛṣabhānu's family (Rādhā)" },
+    about: {
+      es: "La familia de Śrī Rādhā: sus abuelos Mahībhānu y Sukhadā, Indu y Mukharā; sus padres Vṛṣabhānu y Kīrtidā; Śrīdāmā, Rādhā y Anaṅga-mañjarī (Rādhā-Kṛṣṇa-gaṇoddeśa-dīpikā).",
+      en: "Śrī Rādhā's family: her grandparents Mahībhānu and Sukhadā, Indu and Mukharā; her parents Vṛṣabhānu and Kīrtidā; Śrīdāmā, Rādhā and Anaṅga-mañjarī (Rādhā-Kṛṣṇa-gaṇoddeśa-dīpikā).",
+    },
+    source: "Rādhā-Kṛṣṇa-gaṇoddeśa-dīpikā",
+    steps: [{ id: 2206 }],
+    down: 2,
+    family: true,
+    parents: true,
+  },
 ];
 
 export const paramparaById = (id: string | null) => PARAMPARAS.find((p) => p.id === id) ?? null;
@@ -241,6 +271,20 @@ export function paramparaMembers(pp: Parampara, persons: PersonListItem[], down:
       frontier = next;
     }
   }
+  // the parents of those shown (a wife, a mother…), one row above their child, and theirs in turn
+  if (pp.parents)
+    for (let changed = true; changed && !cut; ) {
+      changed = false;
+      for (const r of rels) {
+        if (r.kind !== "family" || gen.has(r.from) || !gen.has(r.to)) continue;
+        if (gen.size >= max) {
+          cut = true;
+          break;
+        }
+        gen.set(r.from, Math.max(1, gen.get(r.to)! - 1));
+        changed = true;
+      }
+    }
   // the lines between the people shown: the chain's own, and the data's among the rest
   const inChain = new Set(chain.map((r) => `${r.from}-${r.to}`));
   const chainIds = new Set(steps.flatMap((s) => [s.id, ...(s.with ?? [])]));

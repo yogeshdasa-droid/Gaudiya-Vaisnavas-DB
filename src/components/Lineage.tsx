@@ -295,6 +295,30 @@ export function Lineage({
       const n = g.node(key) as { x: number; y: number };
       return { key, guru, items, gen: gen.get(items[0])!, x: n.x - W / 2, y: n.y - h / 2, h };
     });
+    // a couple (two on the same row with a child in common by family lines) side by side: the wife next to her husband
+    {
+      const kids = new Map<number, Set<number>>();
+      for (const r of edges) if (r.kind === "family") kids.set(r.from, new Set([...(kids.get(r.from) ?? []), r.to]));
+      const byRow = new Map<number, typeof nodes>();
+      for (const n of nodes) byRow.set(Math.round(n.y), [...(byRow.get(Math.round(n.y)) ?? []), n]);
+      for (const row of byRow.values()) {
+        const sorted = [...row].sort((a, b) => a.x - b.x);
+        const mates = (a: number, b: number) => [...(kids.get(a) ?? [])].some((k) => kids.get(b)?.has(k));
+        if (!sorted.some((a, i) => sorted.some((b, j) => j > i && mates(a.id, b.id)))) continue;
+        const placed: typeof nodes = [];
+        const isMate = new Set<number>();
+        for (const n of sorted) {
+          if (placed.includes(n)) continue;
+          placed.push(n);
+          for (const m of sorted) if (!placed.includes(m) && mates(n.id, m.id)) (placed.push(m), isMate.add(m.id));
+        }
+        const slots = sorted.map((n) => n.x);
+        placed.forEach((n, i) => {
+          const prev = placed[i - 1];
+          n.x = !prev ? slots[0] : isMate.has(n.id) ? prev.x + W + 16 : Math.max(slots[i], prev.x + W + 16);
+        });
+      }
+    }
     const minX = Math.min(...nodes.map((n) => n.x), ...lists.map((l) => l.x));
     const minY = Math.min(...nodes.map((n) => n.y), ...lists.map((l) => l.y));
     for (const n of [...nodes, ...lists]) {
