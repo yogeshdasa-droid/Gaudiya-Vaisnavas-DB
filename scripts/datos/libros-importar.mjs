@@ -5,7 +5,7 @@ import fs from "node:fs";
 const [, , file, port = "9333"] = process.argv;
 const plan = JSON.parse(fs.readFileSync(file, "utf8"));
 const list = await (await fetch(`http://127.0.0.1:${port}/json`)).json();
-const ws = new WebSocket(list.find((p) => p.type === "page").webSocketDebuggerUrl);
+const ws = new WebSocket((list.find((p) => p.type === "page" && /tauri.localhost|localhost:1421/.test(p.url)) ?? list.find((p) => p.type === "page")).webSocketDebuggerUrl);
 await new Promise((r) => (ws.onopen = r));
 const expr = `(async () => { try {
   const inv = window.__TAURI_INTERNALS__.invoke;
