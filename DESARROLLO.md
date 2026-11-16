@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **16-11-2026** (versión **0.18.3**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **16-11-2026** (versión **0.18.4**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,11 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.18.3)
+## 5. Qué hace hoy (v0.18.4)
+
+### Novedades de la 0.18.4 (16-11-2026) — la Bhagavad-gītā en «Vaṁśa»
+- La Bhagavad-gītā As It Is en «Libros» (#4478; `sb/parse-bg.mjs` → bg.json, `to-md-bg.mjs`, `libros-bg.json`;
+  «### BG ch.v»). `sb/match.mjs` busca también en ella (refs «BG 1.20»); Vamsa.tsx `verseOf` la lee como «canto» 0.
 
 ### Novedades de la 0.18.3 (16-11-2026) — Vaṁśa: «Volver» y «Viene de»
 - Vaṁśa: botón «Volver» (pila `back`: al saltar a otro árbol por una flecha, por la búsqueda o con el desplegable;
@@ -1832,6 +1836,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **16-11-2026 — v0.18.4**: la Bhagavad-gītā en «Libros» y en los versos de «Vaṁśa».
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.4
 - **16-11-2026 — v0.18.3**: Vaṁśa con «Volver» y «Viene de».
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.3
 - **16-11-2026 — v0.18.2**: el Śrīmad-Bhāgavatam en «Libros» y en «Vaṁśa» (versos de cada nombre); nombres con ficha en rosa, «→ otro árbol» en azul.

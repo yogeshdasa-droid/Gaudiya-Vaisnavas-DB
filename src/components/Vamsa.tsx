@@ -30,13 +30,17 @@ const sbDocs = () =>
   (cantoDocs ??= api.listDocs().then((ds) => {
     const m = new Map<number, number>();
     for (const d of ds) {
+      if (d.dir !== "Libros") continue;
       const x = d.title.match(/^Śrīmad-Bhāgavatam — Canto (\d+):/);
-      if (x && d.dir === "Libros") m.set(+x[1], d.id);
+      if (x) m.set(+x[1], d.id);
+      // the Bhagavad-gītā as «canto» 0, its verses «BG 1.8» (16-11-2026)
+      else if (/^Bhagavad-gītā As It Is/.test(d.title)) m.set(0, d.id);
     }
     return m;
   }));
 async function verseOf(ref: string): Promise<Verse | null | undefined> {
-  const c = parseInt(ref);
+  const bg = ref.startsWith("BG ");
+  const c = bg ? 0 : parseInt(ref);
   const id = (await sbDocs()).get(c);
   if (id === undefined) return undefined;
   if (!cantos.has(c))
@@ -45,10 +49,10 @@ async function verseOf(ref: string): Promise<Verse | null | undefined> {
       api.getDoc(id).then((d) => api.getSections(id, 0, d.doc.sections)).then((secs) => {
         const m = new Map<string, Verse>();
         for (const s of secs)
-          for (const part of s.text.split(/^### SB /m).slice(1)) {
+          for (const part of s.text.split(bg ? /^### BG /m : /^### SB /m).slice(1)) {
             const nl = part.indexOf("\n");
             const body = part.slice(nl + 1).split(/^\*Purport\.\*|^## /m)[0].trim();
-            m.set(part.slice(0, nl).trim(), { text: body, docId: id, ordinal: s.ordinal });
+            m.set((bg ? "BG " : "") + part.slice(0, nl).trim(), { text: body, docId: id, ordinal: s.ordinal });
           }
         return m;
       }),
@@ -638,7 +642,7 @@ function SbVerses({ t, refs, onOpenDoc }: { t: T; refs: string[]; onOpenDoc: (do
             return (
               <div key={r} className="vamsa-verse small">
                 <button className="link-btn" disabled={!v} onClick={() => v && onOpenDoc(v.docId, v.ordinal)}>
-                  SB {r}
+                  {r.startsWith("BG ") ? r : `SB ${r}`}
                 </button>{" "}
                 {v === undefined && !verses.has(r) ? <span className="muted">{t.vamsaSbLoading}</span> : v === undefined ? <span className="muted">{t.vamsaSbMissing}</span> : v === null ? "" : short(v.text)}
               </div>

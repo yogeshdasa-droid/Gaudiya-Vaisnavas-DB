@@ -6,6 +6,8 @@
 import fs from "node:fs";
 const raw = JSON.parse(fs.readFileSync(new URL("../../../src/data/vamsa.json", import.meta.url), "utf8"));
 const sb = JSON.parse(fs.readFileSync(new URL("./sb.json", import.meta.url), "utf8"));
+// and the Bhagavad-gītā (bg.json, parse-bg.mjs): its verses with refs «BG 1.8», as a «canto» of its own
+for (const v of JSON.parse(fs.readFileSync(new URL("./bg.json", import.meta.url), "utf8"))) sb.push({ ...v, ref: "BG " + v.ref, canto: "BG" });
 
 const fold = (s) =>
   s
