@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **16-11-2026** (versión **0.17.17**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **16-11-2026** (versión **0.17.18**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,15 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.17)
+## 5. Qué hace hoy (v0.17.18)
+
+### Novedades de la 0.17.18 (16-11-2026) — la familia en «Linaje»
+- «Linaje» (Lineage.tsx) dibuja también las líneas de familia (person_links kind 'family'): casilla «Familia»
+  (localStorage `bio.lineageFamily`), siempre activa si la ficha está fuera del árbol y tiene familia (la familia de
+  Vraja); la palabra de la línea («son», «daughter») va escrita en la línea, sin número ni nota en el margen.
+- Datos (16-11-2026): textos del Caitanya-bhāgavata (129 fichas), Rāsa-pañcādhyāyī (9 + Śrīdhara Svāmī) y la familia de
+  Vraja: 25 fichas nuevas #2190–#2214 unidas por líneas de familia y el texto «The family of Vraja» en Lord Kṛṣṇa #1889
+  (`scripts/datos/cb/`, `scripts/datos/ganoddesa/rasa1.mjs`, `rasa2.mjs`, `vraja-familia.mjs`).
 
 ### Novedades de la 0.17.17 (16-11-2026) — botones 2×2 y armonía «B · Oro»
 - Botones de color de la ficha (encima de la foto) en cuadrícula 2×2: «Gaṇoddeśa» | «Vraja-Nitya-līlā» arriba,
@@ -1777,6 +1785,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **16-11-2026 — v0.17.18**: la familia en «Linaje» (casilla «Familia»); datos: Rāsa-pañcādhyāyī y familia de Vraja.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.18
 - **16-11-2026 — datos**: textos «In the Caitanya-bhāgavata — <nombre>» (colección «Caitanya-bhāgavata», con el
   Gauḍīya-bhāṣya de Bhaktisiddhānta) en 129 fichas + 2 nuevas (#2188 Mukunda Sañjaya, #2189 Chand Kazi), tandas
   `scripts/datos/cb/cb1…cb25.mjs` → `.json`, aplicadas con `cb/aplicar-cb.mjs` (2.ª pasada = nada); #1513 Svarūpa:
