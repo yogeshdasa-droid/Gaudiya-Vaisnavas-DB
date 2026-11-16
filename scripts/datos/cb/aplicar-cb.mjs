@@ -39,9 +39,10 @@ const expr = `(async () => { try {
     const p = await inv("get_person", { id });
     if (p.name !== g.name) { log.push(id + ": se llama «" + p.name + "», no «" + g.name + "» — saltada"); continue; }
     const out = [];
-    if (g.text && !p.docs.some((d) => d.collection === COLL)) {
+    const coll = g.coll || COLL; // 16-11-2026: otra colección/título si el plan lo dice (p. ej. «Rāsa-pañcādhyāyī»)
+    if (g.text && !p.docs.some((d) => d.collection === coll)) {
       if (!dry) {
-        const doc = await inv("create_doc", { personId: id, title: "In the Caitanya-bhāgavata — " + g.name, collection: COLL });
+        const doc = await inv("create_doc", { personId: id, title: g.title || "In the Caitanya-bhāgavata — " + g.name, collection: coll });
         await inv("save_section", { docId: doc, ordinal: 0, text: g.text });
       }
       out.push("texto");

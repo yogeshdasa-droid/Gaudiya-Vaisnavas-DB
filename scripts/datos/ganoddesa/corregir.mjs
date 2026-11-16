@@ -17,7 +17,7 @@ const expr = `(async () => { try {
   for (const g of plan) {
     const p = await inv("get_person", { id: g.id });
     if (p.name !== g.name) { log.push(g.id + ": se llama «" + p.name + "» — saltada"); continue; }
-    const docs = g.all ? p.docs : p.docs.filter((d) => d.collection === "Gaṇoddeśa");
+    const docs = g.coll ? p.docs.filter((d) => d.collection === g.coll) : g.all ? p.docs : p.docs.filter((d) => d.collection === "Gaṇoddeśa");
     if (!docs.length) { log.push(g.id + ": sin texto Gaṇoddeśa"); continue; }
     const all = [];
     for (const d of docs) for (const s of await inv("get_sections", { docId: d.id, from: 0, to: 100000 })) all.push({ d, s });
