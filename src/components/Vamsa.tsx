@@ -6,10 +6,55 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import dagre from "@dagrejs/dagre";
 import { ArrowRight, ChevronDown, ChevronRight, ChevronsDownUp, ChevronsUpDown, Maximize, Search, Trees, UserRound, X, ZoomIn, ZoomOut } from "lucide-react";
-import type { PersonListItem } from "../api";
+import { api, type PersonListItem } from "../api";
 import { Lang, T } from "../i18n";
 import { foldName } from "./Sidebar";
 import raw from "../data/vamsa.json";
+// the verses of the Śrīmad-Bhāgavatam that name each one with a relative of the tree (scripts/datos/sb/match.mjs): only
+// the references; the text is read from the cantos in «Libros», not kept in the code
+import sbRefsRaw from "../data/vamsa-sb.json";
+const sbRefs = sbRefsRaw as Record<string, string[]>;
+
+/** The key of a name for vamsa-sb.json: «<chart>|<names from the root, «=» before a wife or husband>». */
+const keyOf = (chart: string, v: VNode) => {
+  const names: string[] = [];
+  for (let p: VNode | undefined = v; p; p = p.parent) names.unshift((p.spouse ? "=" : "") + p.name);
+  return chart + "|" + names.join(">");
+};
+
+// ---- the Bhāgavatam in «Libros»: each canto read once, its verses by «SB c.ch.v»
+type Verse = { text: string; docId: number; ordinal: number };
+let cantoDocs: Promise<Map<number, number>> | null = null;
+const cantos = new Map<number, Promise<Map<string, Verse>>>();
+const sbDocs = () =>
+  (cantoDocs ??= api.listDocs().then((ds) => {
+    const m = new Map<number, number>();
+    for (const d of ds) {
+      const x = d.title.match(/^Śrīmad-Bhāgavatam — Canto (\d+):/);
+      if (x && d.dir === "Libros") m.set(+x[1], d.id);
+    }
+    return m;
+  }));
+async function verseOf(ref: string): Promise<Verse | null | undefined> {
+  const c = parseInt(ref);
+  const id = (await sbDocs()).get(c);
+  if (id === undefined) return undefined;
+  if (!cantos.has(c))
+    cantos.set(
+      c,
+      api.getDoc(id).then((d) => api.getSections(id, 0, d.doc.sections)).then((secs) => {
+        const m = new Map<string, Verse>();
+        for (const s of secs)
+          for (const part of s.text.split(/^### SB /m).slice(1)) {
+            const nl = part.indexOf("\n");
+            const body = part.slice(nl + 1).split(/^\*Purport\.\*|^## /m)[0].trim();
+            m.set(part.slice(0, nl).trim(), { text: body, docId: id, ordinal: s.ordinal });
+          }
+        return m;
+      }),
+    );
+  return (await cantos.get(c)!).get(ref) ?? null;
+}
 
 // ---- the data, made even: a marriage is a node («═ spouse») between a person and the children of that marriage
 export interface VNode {
@@ -101,9 +146,10 @@ interface Props {
   lang: Lang;
   persons: PersonListItem[];
   onPerson: (id: number) => void;
+  onOpenDoc: (docId: number, ordinal: number) => void;
 }
 
-export function Vamsa({ t, persons, onPerson }: Props) {
+export function Vamsa({ t, persons, onPerson, onOpenDoc }: Props) {
   const { charts, byRef } = useMemo(build, []);
   const [chartKey, setChartKeyState] = useState(() => {
     const k = get("bio.vamsaChart");
@@ -245,6 +291,7 @@ export function Vamsa({ t, persons, onPerson }: Props) {
                     ))}
                   </ol>
                   {sel.children.length > 0 && <p className="muted small">{t.vamsaChildren(sel.children.filter((c) => !c.spouse).length + sel.children.filter((c) => c.spouse).reduce((s, m) => s + m.children.length, 0))}</p>}
+                  <SbVerses key={sel.key} t={t} refs={sel.spouse ? sbRefs[keyOf(chart.key, sel)] ?? [] : sbRefs[keyOf(chart.key, sel)] ?? []} onOpenDoc={onOpenDoc} />
                   <div className="vamsa-sub">{t.vamsaRecords}</div>
                   {recordsOf(sel).length === 0 ? (
                     <p className="muted small">{t.vamsaNoRecords}</p>
@@ -496,5 +543,55 @@ function VDraw({ t, root, sel, jump, onSel, onRef, refLabel }: ViewProps) {
         </svg>
       </div>
     </div>
+  );
+}
+
+// ---- the verses of the Bhāgavatam of one name
+function SbVerses({ t, refs, onOpenDoc }: { t: T; refs: string[]; onOpenDoc: (docId: number, ordinal: number) => void }) {
+  const [all, setAll] = useState(false);
+  const shown = all ? refs : refs.slice(0, 6);
+  const [verses, setVerses] = useState<Map<string, Verse | null | undefined>>(new Map());
+  useEffect(() => {
+    let live = true;
+    (async () => {
+      for (const r of shown) {
+        if (verses.has(r)) continue;
+        const v = await verseOf(r).catch(() => null);
+        if (!live) return;
+        setVerses((m) => new Map(m).set(r, v));
+      }
+    })();
+    return () => {
+      live = false;
+    };
+  }, [shown.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
+  const short = (s: string) => (s.length > 320 ? s.slice(0, 319) + "…" : s);
+  return (
+    <>
+      <div className="vamsa-sub">{t.vamsaSb}</div>
+      {refs.length === 0 ? (
+        <p className="muted small">{t.vamsaSbNone}</p>
+      ) : (
+        <>
+          <p className="muted small">{t.vamsaSbHint}</p>
+          {shown.map((r) => {
+            const v = verses.get(r);
+            return (
+              <div key={r} className="vamsa-verse small">
+                <button className="link-btn" disabled={!v} onClick={() => v && onOpenDoc(v.docId, v.ordinal)}>
+                  SB {r}
+                </button>{" "}
+                {v === undefined && !verses.has(r) ? <span className="muted">{t.vamsaSbLoading}</span> : v === undefined ? <span className="muted">{t.vamsaSbMissing}</span> : v === null ? "" : short(v.text)}
+              </div>
+            );
+          })}
+          {!all && refs.length > shown.length && (
+            <button className="btn ghost small" onClick={() => setAll(true)}>
+              {t.vamsaSbMore(refs.length)}
+            </button>
+          )}
+        </>
+      )}
+    </>
   );
 }

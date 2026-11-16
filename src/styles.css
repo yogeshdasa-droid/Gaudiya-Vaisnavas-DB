@@ -8361,3 +8361,11 @@ svg.satellite .map-dot {
   stroke-dasharray: none;
   stroke-width: 1.6;
 }
+/* Vaṁśa: the verses of the Bhāgavatam of a name */
+.vamsa-verse {
+  margin: 0 0 8px;
+  line-height: 1.45;
+}
+.vamsa-verse .link-btn {
+  font-weight: 600;
+}

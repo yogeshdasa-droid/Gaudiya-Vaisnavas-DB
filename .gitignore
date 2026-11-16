@@ -15,3 +15,6 @@ CLAUDE.md
 
 # texts of the Gaṇoddeśa books (copyright): local only
 scripts/datos/ganoddesa/herramientas/
+scripts/datos/sb/sb.json
+scripts/datos/sb/*-out.json
+scripts/datos/sb/sb-summaries.json
