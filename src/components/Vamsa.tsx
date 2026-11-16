@@ -15,6 +15,21 @@ import raw from "../data/vamsa.json";
 // the references; the text is read from the cantos in «Libros», not kept in the code
 import sbRefsRaw from "../data/vamsa-sb.json";
 const sbRefs = sbRefsRaw as Record<string, string[]>;
+// which record is which name (scripts/datos/sb/fichas*.mjs): «<chart>|<names>» → record id
+import recMapRaw from "../data/vamsa-records.json";
+const recMap = recMapRaw as Record<string, number>;
+/** The names of «Vaṁśa» of a record, for «See in Vaṁśa» in its page. */
+export const vamsaKeysOf = (id: number) => Object.keys(recMap).filter((k) => recMap[k] === id);
+/** Open «Vaṁśa» at this name (the next time it is shown). */
+export const showInVamsa = (key: string) => {
+  const chart = key.split("|")[0];
+  memo = { chart, key, back: [] };
+  try {
+    localStorage.setItem("bio.vamsaChart", chart);
+  } catch {
+    /* no storage */
+  }
+};
 
 /** The key of a name for vamsa-sb.json: «<chart>|<names from the root, «=» before a wife or husband>». */
 const keyOf = (chart: string, v: VNode) => {
@@ -204,7 +219,12 @@ export function Vamsa({ t, persons, onPerson, onOpenDoc }: Props) {
     }
     return m;
   }, [persons]);
-  const recordsOf = (v: VNode) => recordIndex.get(bare(v.name)) ?? [];
+  // its own record first (vamsa-records.json), then the others called the same
+  const recordsOf = (v: VNode) => {
+    const own = persons.find((p) => p.id === recMap[keyOf(chart.key, v)]);
+    const same = recordIndex.get(bare(v.name)) ?? [];
+    return own ? [own, ...same.filter((p) => p.id !== own.id)] : same;
+  };
 
   const [jump, setJump] = useState(0); // a name picked from the search or a link: show it
   // where one came from, to go back (Whisper, 16-11-2026: «a way to go back one level»)

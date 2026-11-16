@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ArrowUp, BookOpen, Library, MapPin, ChevronDown, ChevronLeft, ChevronRight, Star, Combine, FileDown, FilePlus2, Printer, FileText, Folder, GitFork, GitMerge, Flower2, Globe, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Route, Search, Sparkles, StickyNote, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
+import { ArrowUp, Trees, BookOpen, Library, MapPin, ChevronDown, ChevronLeft, ChevronRight, Star, Combine, FileDown, FilePlus2, Printer, FileText, Folder, GitFork, GitMerge, Flower2, Globe, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Route, Search, Sparkles, StickyNote, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
 import { api, FAVORITES, fileUrl, GANODDESA, VRAJA_LILA, imageCaption, isNamesake, LifeSpan, MAIN_TEXT, NAMESAKES, Place, Person, PersonDoc, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
 import { ReaderStyle, SectionView } from "./Reader";
 import { boldPerson, type NameIndex } from "../personLinks";
 import { coverHidden, NoPhoto } from "./Logo";
+import { vamsaKeysOf } from "./Vamsa";
 import type { Term } from "../fold";
 import { foldName } from "./Sidebar";
 import { placesOfPerson } from "../places";
@@ -54,6 +55,8 @@ interface Props {
   onShowInTree: (p: Person) => void;
   /** «Ver linaje»: its gurus and disciples in the Lineage view */
   onShowLineage: (p: Person) => void;
+  /** «See in Vaṁśa»: its place in the genealogies of the Purāṇas (records of the Bhāgavata-maṇḍala) */
+  onShowVamsa: (key: string) => void;
   /** open Panorama › Map with one of the record's journeys (journeys.ts) */
   onShowJourney: (id: string) => void;
   onPhotoChanged: () => void;
@@ -921,6 +924,11 @@ export function PersonView(p: Props) {
                 {me && (
                   <button className="btn ghost small" onClick={() => p.onShowLineage(person)} title={t.showLineageHint}>
                     <GitFork size={15} /> {t.showLineage}
+                  </button>
+                )}
+                {vamsaKeysOf(person.id).length > 0 && (
+                  <button className="btn ghost small" onClick={() => p.onShowVamsa(vamsaKeysOf(person.id)[0])} title={t.showVamsaHint}>
+                    <Trees size={15} /> {t.showVamsa}
                   </button>
                 )}
                 {trips.length > 0 && (

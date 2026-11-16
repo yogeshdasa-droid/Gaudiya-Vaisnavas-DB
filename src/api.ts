@@ -232,6 +232,11 @@ export function isFavorite(p: PersonListItem): boolean {
 /** The label of the "Poets" group:Vaiṣṇava poets (padakartās) with no clear guru.
  *  Outside the tree they are shown in their own group, not in the Vaiṣṇava-maṇḍala. */
 export const POETS = "Poetas";
+/** the people of the Śrīmad-Bhāgavatam (16-11-2026, Whisper: «en otra paramparā aparte, no mezclarlos»): a group of their own */
+export const BHAGAVATAM = "Bhāgavata-maṇḍala";
+export function isBhagavatam(p: PersonListItem): boolean {
+  return p.tags.split(",").some((x) => x.trim().toLowerCase() === BHAGAVATAM.toLowerCase());
+}
 
 export function isPoet(p: PersonListItem): boolean {
   return p.tags.split(",").some((x) => x.trim().toLowerCase() === POETS.toLowerCase());

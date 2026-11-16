@@ -101,7 +101,7 @@ import { Lineage } from "./components/Lineage";
 import { AudioBar, PersonLibrary } from "./components/PersonLibrary";
 import { WebPage } from "./components/WebPage";
 import { Rail } from "./components/Rail";
-import { Vamsa } from "./components/Vamsa";
+import { showInVamsa, Vamsa } from "./components/Vamsa";
 import { APP_NAME, LogoMark, LotusMandala } from "./components/Logo";
 import { Calendar } from "./components/Calendar";
 import { ask, Kbd, Splitter, ViewGuard } from "./components/ui";
@@ -1323,6 +1323,7 @@ export default function App() {
             onReveal={(person) => revealIn("person", person.id)}
             onShowInTree={(person) => setMain({ kind: "tree", focus: { id: person.id, n: Date.now() } })}
             onShowLineage={(person) => setMain({ kind: "lineage", focus: { id: person.id, n: Date.now() } })}
+            onShowVamsa={(key) => (showInVamsa(key), setMain({ kind: "vamsa" }))}
             onShowJourney={(id) => setMain({ kind: "panorama", journey: { id, n: Date.now() } })}
             onPhotoChanged={() => {
               reloadPerson();

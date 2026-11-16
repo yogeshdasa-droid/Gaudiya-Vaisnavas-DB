@@ -1,7 +1,7 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { BookMarked, ChevronRight, ChevronsDownUp, ChevronsUpDown, Flower2, MapPin, Pin, PinOff, Plus, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
 import { GAUDA_AREAS, placeZone, VRAJA_AREAS, ZONES } from "../places";
-import { api, Bookmark, DocListItem, fileUrl, hueOf, isDeity, isPoet, Marks, Person, PersonListItem, Place, sortDisciples, TreeKind, TreePlace } from "../api";
+import { api, Bookmark, DocListItem, fileUrl, hueOf, isBhagavatam, isDeity, isPoet, Marks, Person, PersonListItem, Place, sortDisciples, TreeKind, TreePlace } from "../api";
 import { NoPhoto } from "./Logo";
 import { splitNotes } from "../notesLinks";
 import { foldWord } from "../fold";
@@ -348,7 +348,7 @@ function PersonList({
 
   // the Guru Paramparā: the disciples of each record, in their order
   // (in a line view each one goes under its guru of that line, as in the drawn tree)
-  const { kids, parentOf, kindOf, others, poets } = useMemo(() => {
+  const { kids, parentOf, kindOf, others, poets, sb } = useMemo(() => {
     const ids = new Set(persons.filter((p) => p.tree).map((p) => p.id));
     const kids = new Map<number | null, PersonListItem[]>();
     const parentOf = new Map<number, number | null>();
@@ -374,7 +374,9 @@ function PersonList({
     const out = persons.filter((p) => !p.tree && !isDeity(p));
     // the poets with no clear guru have a group of their own, out of the Vaiṣṇava-maṇḍala
     const poets = out.filter(isPoet).sort((a, b) => foldName(a.name).localeCompare(foldName(b.name)));
-    return { kids, parentOf, kindOf, others: out.filter((p) => !isPoet(p)), poets };
+    // the people of the Śrīmad-Bhāgavatam, a group of their own too
+    const sb = out.filter((p) => isBhagavatam(p) && !isPoet(p)).sort((a, b) => foldName(a.name).localeCompare(foldName(b.name)));
+    return { kids, parentOf, kindOf, others: out.filter((p) => !isPoet(p) && !isBhagavatam(p)), poets, sb };
   }, [persons, line]);
 
   // ---- the card of a record when the mouse rests on its row (15-11-2026, Whisper: to go through many
@@ -1074,6 +1076,14 @@ function PersonList({
           {poets.length > 0 && !closedGroups.has("poets") && (
             <div>
               {poets.map((p) => (
+                <div key={p.id}>{personRow(p)}</div>
+              ))}
+            </div>
+          )}
+          {sb.length > 0 && groupHead("sb", t.sbGroup, sb.length, undefined, t.sbGroupHint)}
+          {sb.length > 0 && !closedGroups.has("sb") && (
+            <div>
+              {sb.map((p) => (
                 <div key={p.id}>{personRow(p)}</div>
               ))}
             </div>
