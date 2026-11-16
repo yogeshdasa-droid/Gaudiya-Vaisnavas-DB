@@ -1,9 +1,9 @@
-import { BarChart3, CalendarDays, Clock3, Flower2, GitFork, HelpCircle, History, Home as HomeIcon, Library as LibIcon, MapPin, Network, Settings as Gear, Star, Users } from "lucide-react";
+import { BarChart3, CalendarDays, Clock3, Flower2, GitFork, HelpCircle, History, Home as HomeIcon, Library as LibIcon, MapPin, Network, Settings as Gear, Star, Trees, Users } from "lucide-react";
 import { T } from "../i18n";
 import type { SideTab } from "./Sidebar";
 import { APP_NAME, LogoMark } from "./Logo";
 
-export type RailView = "home" | "calendar" | "tree" | "timeline" | "lineage" | "panorama";
+export type RailView = "home" | "calendar" | "tree" | "timeline" | "lineage" | "panorama" | "vamsa";
 
 interface Props {
   t: T;
@@ -24,6 +24,7 @@ export function Rail({ t, compact, view, sideTab, sideOpen, onView, onSide, onSe
   const views: [RailView, typeof Gear, string][] = [
     ["home", HomeIcon, t.home],
     ["calendar", CalendarDays, t.calendarShort],
+    ["vamsa", Trees, t.vamsa],
     ["tree", Network, t.paramparaTree],
     ["timeline", Clock3, t.timeline],
     ["lineage", GitFork, t.lineage],

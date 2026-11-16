@@ -8133,3 +8133,156 @@ svg.satellite .map-dot {
 .tree-list .tree-node.mark-green rect.tree-list-row {
   fill: var(--mark-green-bg);
 }
+
+/* «Vaṁśa» (16-11-2026): the genealogies of the Purāṇas */
+.vamsa .lin-pp {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.vamsa-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 560px;
+  margin-top: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.vamsa-search input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+}
+.vamsa-hits {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  max-height: 340px;
+  overflow: auto;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+.vamsa-hits button {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  align-items: baseline;
+  padding: 5px 8px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.vamsa-hits button:hover {
+  background: var(--sunken);
+}
+.vamsa-draw {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.vamsa .lin-body {
+  margin-top: 10px;
+}
+.vamsa .lin-body .tree-canvas {
+  max-height: 72vh;
+}
+.vamsa .tree-canvas.vl {
+  cursor: default;
+  font-size: 13.5px;
+}
+.vl-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.vl-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  border-radius: 5px;
+}
+.vl-row.on {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.vl-fold {
+  display: inline-flex;
+  width: 20px;
+  justify-content: center;
+}
+.vl-name {
+  padding: 1px 4px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.vl-name:hover {
+  text-decoration: underline;
+}
+.vl-row.spouse .vl-name {
+  color: var(--muted);
+  font-style: italic;
+}
+.vl-rec {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 5px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+  font-size: 11px;
+}
+.vamsa-spouse rect {
+  stroke-dasharray: 4 3;
+  opacity: 0.85;
+}
+.vamsa-spouse text {
+  font-style: italic;
+}
+.tree-link.vamsa-marriage {
+  stroke-dasharray: 2 3;
+}
+.vamsa-ref rect {
+  stroke-width: 2;
+}
+.vamsa-sub {
+  margin: 12px 0 4px;
+  font-weight: 600;
+  font-size: 12.5px;
+}
+.vamsa-line {
+  margin: 0;
+  padding-left: 22px;
+}
+.vamsa-line li.on button {
+  font-weight: 700;
+}
+.vamsa-rec {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.vamsa-src {
+  margin-top: 14px;
+}
