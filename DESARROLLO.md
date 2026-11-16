@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **16-11-2026** (versión **0.18.4**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **16-11-2026** (versión **0.18.5**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,14 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.18.4)
+## 5. Qué hace hoy (v0.18.5)
+
+### Novedades de la 0.18.5 (16-11-2026) — el «Bhāgavata-maṇḍala»
+- Apartado lateral **«Bhāgavata-maṇḍala»** (etiqueta fija `BHAGAVATAM` / `isBhagavatam` en api.ts, grupo `sb` en el
+  Sidebar): las fichas de quien tiene historia propia en el Śrīmad-Bhāgavatam, aparte de la Guru Paramparā.
+- Botón **«Ver en Vaṁśa»** en la ficha (`vamsaKeysOf` / `showInVamsa` en Vamsa.tsx); en Vaṁśa la ficha propia sale primero.
+- `src/data/vamsa-records.json`: qué ficha es qué nombre de Vaṁśa (lo escriben las tandas `sb/fichasN.mjs`, con
+  `sb/comun-sb.mjs`; citas comprobadas con `sb/chk-citas.mjs`). Tandas 1–2 aplicadas: #2287–#2299 (13 fichas).
 
 ### Novedades de la 0.18.4 (16-11-2026) — la Bhagavad-gītā en «Vaṁśa»; ir al verso y volver
 - Un verso abierto desde Vaṁśa salta a su encabezado y lo resalta (`openDoc(docId, ordinal, terms)`: la frase «sb 1 9 13»).
@@ -1840,6 +1847,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **16-11-2026 — v0.18.5**: apartado «Bhāgavata-maṇḍala» en el lateral; «Ver en Vaṁśa» en la ficha; 13 fichas del Bhāgavatam unidas a Vaṁśa.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.5
 - **16-11-2026 — v0.18.4**: la Bhagavad-gītā en «Libros» y en los versos de «Vaṁśa»; el verso abierto, resaltado; «Volver» amarillo abajo; Vaṁśa recuerda el nombre.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.4
 - **16-11-2026 — v0.18.3**: Vaṁśa con «Volver» y «Viene de».
