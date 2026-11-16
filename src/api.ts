@@ -206,6 +206,10 @@ export interface TreeLinkItem {
   note: string;
   disputed: boolean;
 }
+/** A family line between husband and wife (16-11-2026): its word is «wife», «husband» or «spouse» — the record with
+ *  the line is the wife (or husband) of `relative`. Every other family line goes from a parent to a son or daughter. */
+export const isSpouse = (note: string) => /^(wife|husband|spouse)([^a-z]|$)/i.test(note.trim());
+
 /** As the backend sends a record of the list: the family lines among the links. */
 type RawPersonListItem = Omit<PersonListItem, "links" | "family"> & { links: (Omit<TreeLinkItem, "kind"> & { kind: TreeKind | "family" })[] };
 

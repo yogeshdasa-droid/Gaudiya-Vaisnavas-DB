@@ -3,7 +3,7 @@
 // the data has them (the tree, the other gurus and, for the families, the family lines). A step can have companions
 // named with it in the lists («Rūpa (Svarūpa, Sanātana)»). The chain is the one the lists give: where the data has
 // no line between two steps, the chain draws one anyway (śikṣā, «in the list»), as the books do.
-import type { PersonListItem, TreeKind } from "../api";
+import { isSpouse, type PersonListItem, type TreeKind } from "../api";
 
 export type RelKind = TreeKind | "family";
 
@@ -199,6 +199,8 @@ export const PARAMPARAS: Parampara[] = [
 
 export const paramparaById = (id: string | null) => PARAMPARAS.find((p) => p.id === id) ?? null;
 
+const wedLine = (r: { kind: string; note: string }) => r.kind === "family" && isSpouse(r.note);
+
 /** A guru → disciple line, from the data (place in the tree, other gurus, family) or from the list. */
 export interface PRel {
   from: number;
@@ -251,7 +253,7 @@ export function paramparaMembers(pp: Parampara, persons: PersonListItem[], down:
   let cut = false;
   if (last !== undefined) {
     const discOf = new Map<number, PRel[]>();
-    for (const r of rels) discOf.set(r.from, [...(discOf.get(r.from) ?? []), r]);
+    for (const r of rels) if (!wedLine(r)) discOf.set(r.from, [...(discOf.get(r.from) ?? []), r]);
     let frontier = [last];
     for (let g = 1; g <= down && frontier.length && !cut; g++) {
       const next: number[] = [];
@@ -275,11 +277,27 @@ export function paramparaMembers(pp: Parampara, persons: PersonListItem[], down:
   // — and their other children (a wife's brothers and sisters: Yaśodā's, Kīrtidā's), on their child's row
   if (pp.parents) {
     const added = new Set<number>();
+    // husband and wife on the same row
+    const spousesIn = () => {
+      for (let changed = true; changed && !cut; ) {
+        changed = false;
+        for (const r of rels) {
+          if (!wedLine(r) || gen.has(r.from) === gen.has(r.to)) continue;
+          if (gen.size >= max) {
+            cut = true;
+            break;
+          }
+          if (gen.has(r.from)) gen.set(r.to, gen.get(r.from)!);
+          else gen.set(r.from, gen.get(r.to)!);
+          changed = true;
+        }
+      }
+    };
     const parentsIn = () => {
       for (let changed = true; changed && !cut; ) {
         changed = false;
         for (const r of rels) {
-          if (r.kind !== "family" || gen.has(r.from) || !gen.has(r.to)) continue;
+          if (r.kind !== "family" || wedLine(r) || gen.has(r.from) || !gen.has(r.to)) continue;
           if (gen.size >= max) {
             cut = true;
             break;
@@ -290,12 +308,17 @@ export function paramparaMembers(pp: Parampara, persons: PersonListItem[], down:
         }
       }
     };
+    spousesIn();
     parentsIn();
+    spousesIn();
     for (const r of rels) {
-      if (cut || r.kind !== "family" || !added.has(r.from) || gen.has(r.to)) continue;
+      if (cut || r.kind !== "family" || wedLine(r) || !added.has(r.from) || gen.has(r.to)) continue;
       if (gen.size >= max) cut = true;
       else gen.set(r.to, gen.get(r.from)! + 1);
     }
+    parentsIn();
+    spousesIn();
+    // the parents of the husbands brought in last (Rājanya, father of Cāṭu and Vāṭuka)
     parentsIn();
   }
   // the lines between the people shown: the chain's own, and the data's among the rest

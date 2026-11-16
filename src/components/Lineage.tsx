@@ -5,7 +5,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import dagre from "@dagrejs/dagre";
 import { GitFork, Maximize, Network, Search, UserRound, X, ZoomIn, ZoomOut } from "lucide-react";
-import { lineOfKind, PersonListItem } from "../api";
+import { isSpouse, lineOfKind, PersonListItem } from "../api";
 import { paramparaById, paramparaMembers, PARAMPARAS, RelKind } from "./paramparas";
 import { Lang, T } from "../i18n";
 import { foldName } from "./Sidebar";
@@ -197,7 +197,8 @@ export function Lineage({
     } else {
     if (center === null || !byId.has(center)) return null;
     const rels = relations(persons, withFamily).filter((r) => keep(r, line));
-    for (const r of rels) {
+    // husband and wife are on the same row, not one above the other
+    for (const r of rels.filter((r) => !(r.kind === "family" && isSpouse(r.note)))) {
       gurusOf.set(r.to, [...(gurusOf.get(r.to) ?? []), r]);
       discOf.set(r.from, [...(discOf.get(r.from) ?? []), r]);
     }
@@ -232,6 +233,16 @@ export function Lineage({
         if (cut) break;
       }
       frontier = next;
+    }
+    // the husbands and wives of those drawn, on their row
+    for (let changed = true; changed; ) {
+      changed = false;
+      for (const r of rels)
+        if (r.kind === "family" && isSpouse(r.note) && gen.has(r.from) !== gen.has(r.to) && gen.size < MAX_NODES) {
+          if (gen.has(r.from)) gen.set(r.to, gen.get(r.from)!);
+          else gen.set(r.from, gen.get(r.to)!);
+          changed = true;
+        }
     }
     // the lines between the people drawn (also a second guru of someone, if he is drawn)
     edges = rels.filter((r) => gen.has(r.from) && gen.has(r.to) && r.from !== r.to);
@@ -295,15 +306,35 @@ export function Lineage({
       const n = g.node(key) as { x: number; y: number };
       return { key, guru, items, gen: gen.get(items[0])!, x: n.x - W / 2, y: n.y - h / 2, h };
     });
+    // with husbands and wives (no line above or below between them, so dagre may put one on another row): each one on
+    // the row of its generation, and no two boxes of a row on one another
+    if (edges.some((r) => r.kind === "family" && isSpouse(r.note))) {
+      const all = [...nodes, ...lists];
+      const gens = [...new Set(all.map((n) => n.gen))].sort((a, b) => a - b);
+      const top = new Map<number, number>();
+      let y = 0;
+      for (const g0 of gens) {
+        top.set(g0, y);
+        y += Math.max(H, ...lists.filter((l) => l.gen === g0).map((l) => l.h)) + 64;
+      }
+      for (const n of all) n.y = top.get(n.gen)!;
+      for (const g0 of gens) {
+        const row = all.filter((n) => n.gen === g0).sort((a, b) => a.x - b.x);
+        for (let i = 1; i < row.length; i++) row[i].x = Math.max(row[i].x, row[i - 1].x + W + 16);
+      }
+    }
     // a couple (two on the same row with a child in common by family lines) side by side: the wife next to her husband
     {
       const kids = new Map<number, Set<number>>();
-      for (const r of edges) if (r.kind === "family") kids.set(r.from, new Set([...(kids.get(r.from) ?? []), r.to]));
+      const wed = new Set<string>();
+      for (const r of edges)
+        if (r.kind === "family" && isSpouse(r.note)) wed.add(`${r.from}-${r.to}`).add(`${r.to}-${r.from}`);
+        else if (r.kind === "family") kids.set(r.from, new Set([...(kids.get(r.from) ?? []), r.to]));
       const byRow = new Map<number, typeof nodes>();
       for (const n of nodes) byRow.set(Math.round(n.y), [...(byRow.get(Math.round(n.y)) ?? []), n]);
       for (const row of byRow.values()) {
         const sorted = [...row].sort((a, b) => a.x - b.x);
-        const mates = (a: number, b: number) => [...(kids.get(a) ?? [])].some((k) => kids.get(b)?.has(k));
+        const mates = (a: number, b: number) => wed.has(`${a}-${b}`) || [...(kids.get(a) ?? [])].some((k) => kids.get(b)?.has(k));
         if (!sorted.some((a, i) => sorted.some((b, j) => j > i && mates(a.id, b.id)))) continue;
         const placed: typeof nodes = [];
         const isMate = new Set<number>();
@@ -315,7 +346,7 @@ export function Lineage({
         const slots = sorted.map((n) => n.x);
         placed.forEach((n, i) => {
           const prev = placed[i - 1];
-          n.x = !prev ? slots[0] : isMate.has(n.id) ? prev.x + W + 16 : Math.max(slots[i], prev.x + W + 16);
+          n.x = !prev ? slots[0] : isMate.has(n.id) ? prev.x + W + 28 : Math.max(slots[i], prev.x + W + 16);
         });
       }
     }
@@ -340,10 +371,23 @@ export function Lineage({
       const side = Math.max(a.x, b.x) + W + 40;
       return { d: `M${a.x + W},${y1} C${side},${y1} ${side},${y2} ${b.x + W},${y2}`, mx: side - 10, my: (y1 + y2) / 2 };
     };
+    // husband and wife: a double line «═» between the two boxes, side by side
+    const wedPath = (a: { x: number; y: number; h: number }, b: { x: number; y: number; h: number }) => {
+      const [l, r] = a.x <= b.x ? [a, b] : [b, a];
+      if (Math.abs(l.y - r.y) > 4) return path(a, b);
+      const y = l.y + H / 2;
+      const [x1, x2] = [l.x + W, r.x];
+      return { d: `M${x1},${y - 2} L${x2},${y - 2} M${x1},${y + 2} L${x2},${y + 2}`, mx: (x1 + x2) / 2, my: y };
+    };
     const lines = [
       ...edges
         .filter((r) => !listOf.has(r.to))
-        .map((r) => ({ key: `${r.from}-${r.to}`, rel: r, ...path(at.get(r.from)!, at.get(r.to)!), n: noteOf.get(`${r.from}-${r.to}`) })),
+        .map((r) => ({
+          key: `${r.from}-${r.to}`,
+          rel: r,
+          ...(r.kind === "family" && isSpouse(r.note) ? wedPath(at.get(r.from)!, at.get(r.to)!) : path(at.get(r.from)!, at.get(r.to)!)),
+          n: noteOf.get(`${r.from}-${r.to}`),
+        })),
       // one line to each list box, of the kind most of its people have
       ...lists.map((box) => {
         const gu = box.guru;
@@ -593,7 +637,7 @@ export function Lineage({
                   {graph.lines.map((l) => (
                     <path
                       key={l.key}
-                      className={`tree-link ${l.rel.kind}${l.rel.disputed ? " disputed" : ""}${l.rel.list ? " pp-list" : ""}${hot !== null && hot === l.n ? " strong" : ""}`}
+                      className={`tree-link ${l.rel.kind}${l.rel.kind === "family" && isSpouse(l.rel.note) ? " wed" : ""}${l.rel.disputed ? " disputed" : ""}${l.rel.list ? " pp-list" : ""}${hot !== null && hot === l.n ? " strong" : ""}`}
                       d={l.d}
                     >
                       <title>{`${byId.get(l.rel.from)?.name} → ${byId.get(l.rel.to)?.name} · ${l.rel.list ? t.lineagePpListLine : kindName(l.rel.kind)}${l.rel.disputed ? ` · ${t.treeDisputed}` : ""}${l.rel.note ? `\n${l.rel.note}` : ""}`}</title>
@@ -618,7 +662,7 @@ export function Lineage({
                     ))}
                   {/* family lines: their word («son», «daughter»…) on the line, without a number */}
                   {graph.lines
-                    .filter((l) => !l.n && l.rel.kind === "family" && l.rel.note)
+                    .filter((l) => !l.n && l.rel.kind === "family" && l.rel.note && !isSpouse(l.rel.note))
                     .map((l) => (
                       <text key={`f${l.key}`} className="tree-word family" x={l.mx} y={l.my + 3.5} textAnchor="middle">
                         {short(l.rel.note, 24)}

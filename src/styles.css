@@ -8311,3 +8311,53 @@ svg.satellite .map-dot {
   stroke-width: 1.4;
   stroke: color-mix(in srgb, var(--accent) 65%, transparent);
 }
+
+/* ================================================================ the menu icons «B · Pétalo» (16-11-2026, Whisper
+   chose B of three, the colours of the lotus of the Home page): behind each icon a petal-shaped leaf of soft pink, the
+   line of the icon in rose with a golden filling; the open one, a full pink petal with a light icon. */
+:root {
+  --petal-line: #c9607c;
+  --petal-fill: rgba(217, 168, 69, 0.4);
+  --petal-bg: linear-gradient(135deg, rgba(243, 169, 185, 0.32), rgba(236, 143, 165, 0.12));
+  --petal-edge: rgba(201, 96, 124, 0.35);
+  --petal-on-bg: linear-gradient(135deg, #f3a9b9, #e07f98);
+}
+:root[data-theme="dark"] {
+  --petal-line: #ec8fa5;
+  --petal-fill: rgba(242, 201, 92, 0.35);
+  --petal-bg: linear-gradient(135deg, rgba(248, 199, 208, 0.28), rgba(236, 143, 165, 0.1));
+  --petal-edge: rgba(236, 143, 165, 0.35);
+  --petal-on-bg: linear-gradient(135deg, #f3a9b9, #ec8fa5);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --petal-line: #ec8fa5;
+    --petal-fill: rgba(242, 201, 92, 0.35);
+    --petal-bg: linear-gradient(135deg, rgba(248, 199, 208, 0.28), rgba(236, 143, 165, 0.1));
+    --petal-edge: rgba(236, 143, 165, 0.35);
+    --petal-on-bg: linear-gradient(135deg, #f3a9b9, #ec8fa5);
+  }
+}
+.rail button svg {
+  box-sizing: content-box;
+  padding: 6px;
+  border-radius: 60% 8% 60% 8%;
+  color: var(--petal-line);
+  fill: var(--petal-fill);
+  background: var(--petal-bg);
+  box-shadow: 0 0 0 1px var(--petal-edge) inset;
+}
+.rail button.on svg {
+  color: #fff;
+  fill: rgba(255, 243, 196, 0.55);
+  background: var(--petal-on-bg);
+}
+.rail button {
+  gap: 10px;
+}
+/* «Linaje»: husband and wife, a double line «═» between the two boxes (16-11-2026) */
+.tree-link.family.wed {
+  stroke: #ec8fa5;
+  stroke-dasharray: none;
+  stroke-width: 1.6;
+}

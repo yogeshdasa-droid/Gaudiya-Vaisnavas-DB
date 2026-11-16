@@ -190,7 +190,13 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ## 5. Qué hace hoy (v0.18.1)
 
-### Novedades de la 0.18.1 (16-11-2026) — portada de los PDF sueltos
+### Novedades de la 0.18.1 (16-11-2026) — iconos «Pétalo», esposos en «Linaje», portada de los PDF sueltos
+- Iconos del menú «B · Pétalo» (Whisper eligió B de tres): detrás de cada icono una hoja en forma de pétalo rosa suave,
+  trazo rosa con relleno dorado; el abierto, pétalo rosa lleno (bloque al final de styles.css, variables `--petal-*`).
+- Líneas de esposo/esposa: una línea de familia con la palabra «wife» / «husband» / «spouse» (`isSpouse` en api.ts; en
+  la ficha de la esposa, relative = el esposo). «Linaje» y las paramparās de familia ponen a los dos en la misma fila,
+  juntos, con una línea doble rosa «═» (`wedPath`, clase `.wed`); con esposos, cada uno va a la fila de su generación.
+  Datos: `ganoddesa/vraja-esposos.mjs` (27 fichas nuevas #2260–#2286 y 68 líneas: parejas de Vraja y esposos de las sakhīs).
 - Biblioteca de la ficha: un PDF sin «cover.jpg» en su carpeta sale como libro con su 1.ª página de portada
   (`components/PdfThumb.tsx`, pdf.js `pdfjs-dist` 4.10.38 cargado solo cuando hace falta; lee el PDF a trozos por
   «Range»; la imagen se guarda en IndexedDB «pdf-thumbs», como VideoThumb). `src/vite-env.d.ts` declara «*?url».
@@ -1813,7 +1819,7 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
-- **16-11-2026 — v0.18.1**: portada automática de los PDF sueltos en la Biblioteca; líneas de Vaṁśa visibles; las ocho sakhīs.
+- **16-11-2026 — v0.18.1**: iconos «Pétalo»; esposos en «Linaje»; portada automática de los PDF sueltos en la Biblioteca; líneas de Vaṁśa visibles; las ocho sakhīs.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.1
 - **16-11-2026 — v0.18.0**: «Vaṁśa» (genealogías de los Purāṇas: lista y dibujo); Kāśīśvara #699; #2188/#2189 en el árbol.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.0
