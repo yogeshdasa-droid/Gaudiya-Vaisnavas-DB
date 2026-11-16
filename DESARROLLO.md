@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **16-11-2026** (versión **0.17.18**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **16-11-2026** (versión **0.17.19**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,17 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.18)
+## 5. Qué hace hoy (v0.17.19)
+
+### Novedades de la 0.17.19 (16-11-2026) — las familias de Vraja en el desplegable de «Linaje»
+- Dos paramparās nuevas (grupo «family», `paramparas.ts`): «Vraja: familia de Nanda (Kṛṣṇa)» desde Devamīḍha #2190 y
+  «Vraja: familia de Vṛṣabhānu (Rādhā)» desde Mahībhānu #2206. Opción nueva `parents: true`: salen también los padres
+  de los que se ven (esposas, madres), una fila por encima de su hijo, y los otros hijos de esos padres (los hermanos
+  de Yaśodā, de Kīrtidā) en la fila de su hijo.
+- «Linaje»: después de colocar el dibujo, dos personas de la misma fila con un hijo en común (líneas de familia) se
+  ponen una al lado de la otra (Parjanya y Varīyasī, Nanda y Yaśodā…).
+- Datos: 23 fichas nuevas de la familia de Vraja #2215–#2237 (hermanas de Nanda, Tuṅgī y sus hijos, hermanos de Yaśodā,
+  Vṛka-gopa, Jaṭilā, Abhimanyu, Durmada, Kuṭilā, tíos y tías de Śrī Rādhā), `scripts/datos/ganoddesa/vraja-familia2.mjs`.
 
 ### Novedades de la 0.17.18 (16-11-2026) — la familia en «Linaje»
 - «Linaje» (Lineage.tsx) dibuja también las líneas de familia (person_links kind 'family'): casilla «Familia»
@@ -1785,6 +1795,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **16-11-2026 — v0.17.19**: las familias de Vraja (Nanda; Vṛṣabhānu) en el desplegable de «Linaje», parejas juntas.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.19
 - **16-11-2026 — v0.17.18**: la familia en «Linaje» (casilla «Familia»); datos: Rāsa-pañcādhyāyī y familia de Vraja.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.18
 - **16-11-2026 — datos**: textos «In the Caitanya-bhāgavata — <nombre>» (colección «Caitanya-bhāgavata», con el

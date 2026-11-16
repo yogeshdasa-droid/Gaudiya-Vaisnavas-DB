@@ -272,19 +272,32 @@ export function paramparaMembers(pp: Parampara, persons: PersonListItem[], down:
     }
   }
   // the parents of those shown (a wife, a mother…), one row above their child, and theirs in turn
-  if (pp.parents)
-    for (let changed = true; changed && !cut; ) {
-      changed = false;
-      for (const r of rels) {
-        if (r.kind !== "family" || gen.has(r.from) || !gen.has(r.to)) continue;
-        if (gen.size >= max) {
-          cut = true;
-          break;
+  // — and their other children (a wife's brothers and sisters: Yaśodā's, Kīrtidā's), on their child's row
+  if (pp.parents) {
+    const added = new Set<number>();
+    const parentsIn = () => {
+      for (let changed = true; changed && !cut; ) {
+        changed = false;
+        for (const r of rels) {
+          if (r.kind !== "family" || gen.has(r.from) || !gen.has(r.to)) continue;
+          if (gen.size >= max) {
+            cut = true;
+            break;
+          }
+          gen.set(r.from, Math.max(1, gen.get(r.to)! - 1));
+          added.add(r.from);
+          changed = true;
         }
-        gen.set(r.from, Math.max(1, gen.get(r.to)! - 1));
-        changed = true;
       }
+    };
+    parentsIn();
+    for (const r of rels) {
+      if (cut || r.kind !== "family" || !added.has(r.from) || gen.has(r.to)) continue;
+      if (gen.size >= max) cut = true;
+      else gen.set(r.to, gen.get(r.from)! + 1);
     }
+    parentsIn();
+  }
   // the lines between the people shown: the chain's own, and the data's among the rest
   const inChain = new Set(chain.map((r) => `${r.from}-${r.to}`));
   const chainIds = new Set(steps.flatMap((s) => [s.id, ...(s.with ?? [])]));
