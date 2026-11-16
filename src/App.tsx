@@ -1191,11 +1191,9 @@ export default function App() {
 
       {lotus && (
         <>
+          {/* only the top one since 16-11-2026 (Whisper: the lotus of adornment in one place) */}
           <div className="lotus-deco tr" aria-hidden="true">
             <LotusMandala />
-          </div>
-          <div className="lotus-deco bl" aria-hidden="true">
-            <LotusMandala rays={false} />
           </div>
         </>
       )}

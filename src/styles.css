@@ -7780,10 +7780,28 @@ svg.satellite .map-dot {
 /* «Imágenes» and «Biblioteca» above the record's picture */
 .infobox-tools {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 6px;
-  justify-content: flex-end;
   margin-bottom: 8px;
+}
+/* two buttons side by side, the same width; one alone takes the whole row */
+.infobox-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 6px;
+}
+.infobox-row > .btn {
+  justify-content: center;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+.infobox-row > .btn svg {
+  flex-shrink: 0;
 }
 
 /* «Imágenes» above the record's photo: pink, as full as the orange «Biblioteca» */
@@ -8040,4 +8058,78 @@ svg.satellite .map-dot {
   :root:not([data-theme="light"]) .vraja-view .reader-body h3 {
     color: #9cc3f0;
   }
+}
+
+/* ================================================================ harmony of the three columns (16-11-2026, Whisper
+   chose «B · Oro»): the menu, the tree column and the record on one ground, thin rosy lines between them, the menu
+   icons in gold with a soft fill (the open one in lotus pink), the green mark of the tree in a soft sage. */
+:root {
+  --lotus-line: rgba(201, 96, 124, 0.22);
+  --icon-gold: #b07d1a;
+  --icon-gold-fill: rgba(176, 125, 26, 0.12);
+  --icon-on: #c9607c;
+  --icon-on-fill: rgba(201, 96, 124, 0.18);
+  --mark-green-bg: rgba(120, 165, 105, 0.24);
+  --mark-green-text: inherit;
+  --mark-green-edge: #6f9a5e;
+  --infobox-bg: #fbf8f8;
+}
+:root[data-theme="dark"] {
+  --lotus-line: rgba(236, 143, 165, 0.16);
+  --icon-gold: #d9a845;
+  --icon-gold-fill: rgba(217, 168, 69, 0.14);
+  --icon-on: #f3a9b9;
+  --icon-on-fill: rgba(243, 169, 185, 0.25);
+  --mark-green-bg: rgba(150, 185, 135, 0.2);
+  --mark-green-text: #e3eedd;
+  --mark-green-edge: #9fbf8f;
+  --infobox-bg: #262326;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --lotus-line: rgba(236, 143, 165, 0.16);
+    --icon-gold: #d9a845;
+    --icon-gold-fill: rgba(217, 168, 69, 0.14);
+    --icon-on: #f3a9b9;
+    --icon-on-fill: rgba(243, 169, 185, 0.25);
+    --mark-green-bg: rgba(150, 185, 135, 0.2);
+    --mark-green-text: #e3eedd;
+    --mark-green-edge: #9fbf8f;
+    --infobox-bg: #262326;
+  }
+}
+:root[data-skin="fluent"] .rail,
+:root[data-skin="fluent"] .sidebar,
+.rail,
+.sidebar {
+  background: var(--bg);
+  border-right: 1px solid var(--lotus-line);
+}
+.rail hr {
+  border-top-color: var(--lotus-line);
+}
+.rail button svg {
+  color: var(--icon-gold);
+  fill: var(--icon-gold-fill);
+  stroke-width: 1.6;
+}
+.rail button.on svg {
+  color: var(--icon-on);
+  fill: var(--icon-on-fill);
+}
+.rail button.on {
+  background: var(--icon-gold-fill);
+}
+.person-view .ency .infobox {
+  background: var(--infobox-bg);
+  border-color: var(--lotus-line);
+}
+.tree-row.mark-green .name {
+  background: var(--mark-green-bg);
+  color: var(--mark-green-text);
+  box-shadow: inset 2px 0 0 var(--mark-green-edge);
+}
+.tree-node.mark-green rect,
+.tree-list .tree-node.mark-green rect.tree-list-row {
+  fill: var(--mark-green-bg);
 }

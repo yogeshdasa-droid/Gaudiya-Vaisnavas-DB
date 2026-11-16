@@ -1,6 +1,6 @@
 // node corregir.mjs <plan.json> [puerto] [--dry]   (15-11-2026) — fixes inside a record's Gaṇoddeśa text, already written.
 // ⚠️ A `new` that contains its `old` is applied again on a second run: make such fixes one-off (or check first).
-// Plan: [{ id, name, replace: [[old, new], ..] }]. Looks in each section of the record's text of collection «Gaṇoddeśa»;
+// Plan: [{ id, name, all?, replace: [[old, new], ..] }]. With `all: true` it looks in ALL the record's texts (16-11-2026). Looks in each section of the record's text of collection «Gaṇoddeśa»;
 // each `old` found is replaced (save_section keeps the old version in its history). A second run finds nothing.
 import fs from "node:fs";
 const args = process.argv.slice(2);
@@ -17,17 +17,19 @@ const expr = `(async () => { try {
   for (const g of plan) {
     const p = await inv("get_person", { id: g.id });
     if (p.name !== g.name) { log.push(g.id + ": se llama «" + p.name + "» — saltada"); continue; }
-    const d = p.docs.find((d) => d.collection === "Gaṇoddeśa");
-    if (!d) { log.push(g.id + ": sin texto Gaṇoddeśa"); continue; }
-    const { toc } = await inv("get_doc", { id: d.id });
-    const secs = await inv("get_sections", { docId: d.id, from: 0, to: 100000 });
+    const docs = g.all ? p.docs : p.docs.filter((d) => d.collection === "Gaṇoddeśa");
+    if (!docs.length) { log.push(g.id + ": sin texto Gaṇoddeśa"); continue; }
+    const all = [];
+    for (const d of docs) for (const s of await inv("get_sections", { docId: d.id, from: 0, to: 100000 })) all.push({ d, s });
     const out = [];
     for (const [a, b] of g.replace) {
-      const s = secs.find((s) => s.text.includes(a));
-      if (!s) { out.push("no está: " + a.slice(0, 40)); continue; }
-      s.text = s.text.split(a).join(b);
-      if (!${dry}) await inv("save_section", { docId: d.id, ordinal: s.ordinal, text: s.text });
-      out.push("cambiada");
+      const hits = all.filter((x) => x.s.text.includes(a));
+      if (!hits.length) { out.push("no está: " + a.slice(0, 40)); continue; }
+      for (const { d, s } of hits) {
+        s.text = s.text.split(a).join(b);
+        if (!${dry}) await inv("save_section", { docId: d.id, ordinal: s.ordinal, text: s.text });
+        out.push("cambiada (" + (d.title || "").slice(0, 30) + ")");
+      }
     }
     log.push(g.id + " " + g.name + ": " + out.join(", "));
   }

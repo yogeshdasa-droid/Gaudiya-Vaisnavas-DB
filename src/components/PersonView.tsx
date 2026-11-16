@@ -1026,6 +1026,9 @@ export function PersonView(p: Props) {
               {/* above the picture: the record's pictures and its library */}
               {(person.images.length > 0 || p.hasLibrary || ganoddesa || vrajaLila) && (
                 <div className="infobox-tools">
+                  {/* 2×2 (16-11-2026, Whisper): Gaṇoddeśa | Vraja-Nitya-līlā above, Imágenes | Biblioteca below */}
+                  {(ganoddesa || vrajaLila) && (
+                    <div className="infobox-row">
                   {ganoddesa && (
                     <button className="btn small gano-btn" onClick={() => p.onOpenDoc(ganoddesa.id)} title={t.ganoddesaHint}>
                       <Sparkles size={15} /> {t.ganoddesa}
@@ -1036,6 +1039,10 @@ export function PersonView(p: Props) {
                       <Flower2 size={15} /> {t.vrajaLila}
                     </button>
                   )}
+                    </div>
+                  )}
+                  {(person.images.length > 0 || p.hasLibrary) && (
+                    <div className="infobox-row">
                   {person.images.length > 0 && (
                     <button
                       className="btn small gallery-btn"
@@ -1049,6 +1056,8 @@ export function PersonView(p: Props) {
                     <button className="btn small lib-btn" onClick={() => p.onLibrary(person)} title={t.lib.buttonHint}>
                       <Library size={15} /> {t.lib.button}
                     </button>
+                  )}
+                    </div>
                   )}
                 </div>
               )}

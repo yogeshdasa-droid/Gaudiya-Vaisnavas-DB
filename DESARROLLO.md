@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **15-11-2026** (versión **0.17.16**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **16-11-2026** (versión **0.17.17**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,16 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.17.16)
+## 5. Qué hace hoy (v0.17.17)
+
+### Novedades de la 0.17.17 (16-11-2026) — botones 2×2 y armonía «B · Oro»
+- Botones de color de la ficha (encima de la foto) en cuadrícula 2×2: «Gaṇoddeśa» | «Vraja-Nitya-līlā» arriba,
+  «Imágenes» | «Biblioteca» abajo; uno solo ocupa la fila (PersonView.tsx `.infobox-row`).
+- Armonía «B · Oro» (Whisper la eligió entre tres): menú lateral, columna del árbol y ficha con el mismo fondo, líneas
+  rosadas finas, iconos dorados con relleno suave, marca verde del árbol en salvia, recuadro de la foto con borde
+  rosado (variables `--lotus-line`, `--icon-gold`, `--mark-green-*`, `--infobox-bg` al final de styles.css). El loto de
+  adorno queda solo arriba a la derecha (fuera el de abajo a la izquierda, App.tsx).
+- Datos (16-11-2026): 5 libros de Info en «Libros» (Gopāla-campū Pūrva/Uttara, Rāsa-pañcādhyāyī, Caitanya-bhāgavata 1 y 2).
 
 ### Novedades de la 0.17.16 (15-11-2026) — «Vraja-Nitya-līlā», Inicio con loto y caligrafía, Gaṇoddeśa terminado
 - Apartado nuevo por ficha, colección **«Vraja-Nitya-līlā»** (`api.VRAJA_LILA`): lo que la persona hace y dice en Vraja
@@ -1768,6 +1777,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **16-11-2026 — v0.17.17**: botones de la ficha en 2×2; armonía de colores «B · Oro»; 5 libros de Info en «Libros».
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.17
 - **15-11-2026 — datos**: textos «Vraja-Nitya-līlā» de 149 fichas (Gopāla-campū + Ujjvala-nīlamaṇi-kiraṇa), en la BD de Whisper.
 - **15-11-2026 — v0.17.16**: apartado «Vraja-Nitya-līlā» (botón azul); Inicio con loto y nombre en caligrafía;
   Gaṇoddeśa terminado (tandas 5–15) y cuatro uniones. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.17.16
