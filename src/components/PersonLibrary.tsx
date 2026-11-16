@@ -10,6 +10,7 @@ import { T } from "../i18n";
 import { joinNotes, linkKind, linkLabel, linkOpenTarget, NoteLink, splitNotes } from "../notesLinks";
 import { ask } from "./ui";
 import { ReaderStyle, SectionView } from "./Reader";
+import { PdfThumb } from "./PdfThumb";
 import { VideoThumb } from "./VideoThumb";
 
 const NO_TERMS: never[] = [];
@@ -306,6 +307,8 @@ function prettyDir(dir: string, base: string): string {
 
 const size = (n: number) => (n > 1e9 ? `${(n / 1e9).toFixed(1)} GB` : n > 1e6 ? `${Math.round(n / 1e6)} MB` : `${Math.max(1, Math.round(n / 1e3))} KB`);
 const clock = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+
+const isPdf = (e: LibEntry) => !e.cover && /\.pdf$/i.test(e.name);
 
 export function PersonLibrary({
   t,
@@ -623,7 +626,7 @@ export function PersonLibrary({
 
               {groups.map((g) => {
                 const key = g.dir + g.items[0].rel;
-                const covers = g.items.filter((e) => e.cover).length * 2 >= g.items.length;
+                const covers = g.items.filter((e) => e.cover || isPdf(e)).length * 2 >= g.items.length;
                 // «All» without a filter: the first few of each folder, so that the next folders are seen at once
                 const max = 12;
                 const cut = section === "all" && !flt && !opened.has(key) && g.items.length > max + 3;
@@ -644,6 +647,18 @@ export function PersonLibrary({
                           <button key={e.rel} className="lib-book" onClick={() => openEntry(e)} title={`${tt.title}\n${e.name}`}>
                             <span className="lib-book-cover">
                               <img src={libUrl(id, e.cover)} alt="" loading="lazy" />
+                            </span>
+                            <span className="lib-book-title">{tt.title}</span>
+                            <span className="muted small">{size(e.size)}</span>
+                          </button>
+                        );
+                      // a PDF with no cover.jpg: its first page as the cover (16-11-2026)
+                      if (isPdf(e))
+                        return (
+                          <button key={e.rel} className="lib-book" onClick={() => openEntry(e)} title={`${tt.title}
+${e.name}`}>
+                            <span className="lib-book-cover">
+                              <PdfThumb url={libUrl(id, e.rel)} cacheKey={`${id}|${e.rel}|${e.size}`} />
                             </span>
                             <span className="lib-book-title">{tt.title}</span>
                             <span className="muted small">{size(e.size)}</span>

@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **16-11-2026** (versión **0.18.0**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **16-11-2026** (versión **0.18.1**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,14 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.18.0)
+## 5. Qué hace hoy (v0.18.1)
+
+### Novedades de la 0.18.1 (16-11-2026) — portada de los PDF sueltos
+- Biblioteca de la ficha: un PDF sin «cover.jpg» en su carpeta sale como libro con su 1.ª página de portada
+  (`components/PdfThumb.tsx`, pdf.js `pdfjs-dist` 4.10.38 cargado solo cuando hace falta; lee el PDF a trozos por
+  «Range»; la imagen se guarda en IndexedDB «pdf-thumbs», como VideoThumb). `src/vite-env.d.ts` declara «*?url».
+- Vaṁśa: las líneas del dibujo con grosor fijo en pantalla (`vector-effect: non-scaling-stroke`) y color dorado.
+- Datos: las ocho sakhīs y sus padres (22 fichas #2238–#2259, `ganoddesa/vraja-sakhis.mjs`).
 
 ### Novedades de la 0.18.0 (16-11-2026) — «Vaṁśa», las genealogías de los Purāṇas
 - Apartado nuevo del menú, bajo «Calendario» (`components/Vamsa.tsx`, datos `src/data/vamsa.json`: el
@@ -1806,6 +1813,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **16-11-2026 — v0.18.1**: portada automática de los PDF sueltos en la Biblioteca; líneas de Vaṁśa visibles; las ocho sakhīs.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.1
 - **16-11-2026 — v0.18.0**: «Vaṁśa» (genealogías de los Purāṇas: lista y dibujo); Kāśīśvara #699; #2188/#2189 en el árbol.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.0
 - **16-11-2026 — v0.17.19**: las familias de Vraja (Nanda; Vṛṣabhānu) en el desplegable de «Linaje», parejas juntas.
