@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **17-11-2026** (versión **0.19.0**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **17-11-2026** (versión **0.20.0**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,24 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.19.0)
+## 5. Qué hace hoy (v0.20.0)
+
+### Novedades de la 0.20.0 (17-11-2026) — Bhakta Bandhav Anthology
+- Apartado nuevo **«Anthology»** (botón al final de la barra, `components/Anthology.tsx`): los 77 volúmenes de la
+  *Bhakta Bandhav Anthology* (charlas de Śrīla Gurudeva, 1996–2003), 919 charlas. Rejilla de portadas; buscar palabras
+  dentro de las charlas (la búsqueda normal, limitada a la colección «Anthology»), filtrar por año, lugar y tema (en los
+  títulos). Cada volumen es un libro (colección y carpeta «Anthology»), un capítulo por charla con encabezado
+  «título · lugar · 6 May 1996» (lo lee `parseLecture`). Se leen sobre el pergamino; menú «…» › «Abrir el PDF» abre el
+  PDF original, que se queda en su carpeta (`O:\Gaudiya Vaisnavas DB\Biblioteca\Sri Srimad Bhaktivedanta Narayana\Anthology`,
+  campo `source`); en la BD solo va el texto y la portada.
+- Comando nuevo `put_book` (`store::put_book`): escribe un libro entero de una vez; el mismo `source` otra vez lo
+  reemplaza (no duplica).
+- Datos: `scripts/datos/anthology/extraer/` (`volume.mjs` + `decode.mjs` con pdfjs-dist: lee cada PDF, guarda las
+  páginas descifradas en `cache/`, encuentra las charlas por sus líneas de fecha centradas — formatos A–D en
+  `volume.mjs` —; `all.mjs` hace los 77 y compara con el índice de cada libro; `cmp.mjs`/`find.mjs`/`look.mjs` para
+  revisar) → `anthology/cargar.mjs <carpeta> [puerto]` (corrige letras mal leídas y quita las páginas finales de
+  «Centers and Contacts»). Cuadran 612 de las 613 charlas de los índices legibles. Libros #5658–#5734; copia «antes de
+  Anthology 2026-11-17». Sin fecha («Unknown date», Vol. 35) → unida a la anterior.
 
 ### Novedades de la 0.19.0 (17-11-2026) — la barra nueva
 - `Rail.tsx`: el nombre «Vaiṣṇava-kośa» lleva a Inicio (ya no hay botón Inicio); `Group` = un botón que despliega varios
@@ -1886,6 +1903,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **17-11-2026 — v0.20.0**: apartado «Anthology» (Bhakta Bandhav Anthology: 77 volúmenes, 919 charlas; buscar por
+  palabras, año, lugar y tema). Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.0
 - **17-11-2026 — v0.19.0**: la barra nueva (grupos desplegables, el nombre lleva a Inicio, opción «Arriba» en Ajustes).
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.19.0
 - **17-11-2026 — v0.18.9**: «Libros» y «Lectures Gurudeva» en la barra izquierda; las charlas sobre un pergamino.

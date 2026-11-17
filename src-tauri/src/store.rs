@@ -237,6 +237,76 @@ pub fn create_doc(conn: &mut Connection, person_id: Option<i64>, title: &str, co
     Ok(id)
 }
 
+/// A whole book written at once, one section per chapter, with its cover (Whisper, 17-11-2026: the
+/// Bhakta Bandhav Anthology — only the text: the big PDF stays in its folder, `source`). The same `source`
+/// again replaces that book's title, date, chapters and cover, so doing it twice changes nothing.
+pub fn put_book(
+    conn: &mut Connection,
+    collection: &str,
+    dir: &str,
+    title: &str,
+    date: Option<&str>,
+    source: &str,
+    sections: Vec<Section>,
+    cover: Option<&str>,
+) -> Res<i64> {
+    if title.trim().is_empty() || source.trim().is_empty() || sections.is_empty() {
+        return Err("Faltan el título, el origen o los capítulos".into());
+    }
+    let cover = match cover {
+        Some(p) if !p.is_empty() => {
+            let b = std::fs::read(p).map_err(|x| format!("{p}: {x}"))?;
+            let name = std::path::Path::new(p).file_name().map(|s| s.to_string_lossy().into_owned()).unwrap_or_default();
+            Some((name.clone(), crate::extract::mime_of(&name).to_string(), b))
+        }
+        _ => None,
+    };
+    let tx = conn.transaction().map_err(e)?;
+    let old: Option<i64> = tx
+        .query_row("SELECT id FROM docs WHERE source = ?1 AND deleted IS NULL ORDER BY id LIMIT 1", [source], |r| r.get(0))
+        .optional()
+        .map_err(e)?;
+    let id = match old {
+        Some(id) => {
+            tx.execute(
+                "UPDATE docs SET collection = ?1, dir = ?2, title = ?3, stem = ?4, date = ?5 WHERE id = ?6",
+                params![collection, dir, title, title.to_lowercase(), date, id],
+            )
+            .map_err(e)?;
+            write_sections(&tx, id, &sections).map_err(e)?;
+            if let Some((name, mime, data)) = &cover {
+                tx.execute("DELETE FROM files WHERE doc_id = ?1 AND role = 'cover'", [id]).map_err(e)?;
+                tx.execute(
+                    "INSERT INTO files(doc_id, role, name, mime, data) VALUES(?1, 'cover', ?2, ?3, ?4)",
+                    params![id, name, mime, data],
+                )
+                .map_err(e)?;
+            }
+            fts_doc(&tx, id).map_err(e)?;
+            id
+        }
+        None => insert_doc(
+            &tx,
+            &NewDoc {
+                person_id: None,
+                collection: collection.into(),
+                dir: dir.into(),
+                title: title.into(),
+                date: date.map(|s| s.to_string()),
+                tags: String::new(),
+                kind: "md".into(),
+                source: source.into(),
+                hash: String::new(),
+                sections,
+                files: cover.map(|(n, m, d)| vec![("cover".to_string(), n, m, d)]).unwrap_or_default(),
+            },
+        )
+        .map_err(e)?,
+    };
+    tx.commit().map_err(e)?;
+    Ok(id)
+}
+
 /// Replaces the text of one section. Large new text is split again so the
 /// reader and the results keep pointing at small pieces.
 pub fn save_section(conn: &mut Connection, doc_id: i64, ordinal: i64, new_text: &str) -> Res<()> {

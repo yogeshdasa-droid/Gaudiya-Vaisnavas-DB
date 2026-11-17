@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { BarChart3, BookOpen, CalendarDays, ChevronDown, Clock3, Flower2, GitFork, History, Library as LibIcon, MapPin, Mic, Network, Settings as Gear, Star, Trees, Users } from "lucide-react";
+import { BarChart3, BookCopy, BookOpen, CalendarDays, ChevronDown, Clock3, Flower2, GitFork, History, Library as LibIcon, MapPin, Mic, Network, Settings as Gear, Star, Trees, Users } from "lucide-react";
 import { T } from "../i18n";
 import type { SideTab } from "./Sidebar";
 import { APP_NAME, LogoMark } from "./Logo";
 
-export type RailView = "home" | "calendar" | "tree" | "timeline" | "lineage" | "panorama" | "vamsa";
+export type RailView = "home" | "calendar" | "tree" | "timeline" | "lineage" | "panorama" | "vamsa" | "anthology";
 
 interface Props {
   t: T;
@@ -93,7 +93,10 @@ export function Rail({ t, compact, view, sideTab, sideOpen, onView, onSide }: Pr
       <Group compact={compact} items={[s("library", LibIcon, t.library), s("books", BookOpen, t.books)]} />
       {one(s("bookmarks", Star, t.bookmarks))}
       {one(s("history", History, t.history))}
-      <div className="rail-end">{one(s("lectures", Mic, t.lecturesGurudeva))}</div>
+      <div className="rail-end">
+        {one(s("lectures", Mic, t.lecturesGurudeva))}
+        {one(v("anthology", BookCopy, t.anthology))}
+      </div>
     </nav>
   );
 }

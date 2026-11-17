@@ -102,6 +102,7 @@ import { AudioBar, PersonLibrary } from "./components/PersonLibrary";
 import { WebPage } from "./components/WebPage";
 import { Rail } from "./components/Rail";
 import { showInVamsa, Vamsa } from "./components/Vamsa";
+import { Anthology } from "./components/Anthology";
 import { APP_NAME, LogoMark, LotusMandala } from "./components/Logo";
 import { Calendar } from "./components/Calendar";
 import { ask, Kbd, Splitter, ViewGuard } from "./components/ui";
@@ -129,7 +130,7 @@ function usePersisted<T>(key: string, fallback: T) {
 }
 
 /** panorama.place: open on the map at that place (`n` tells two requests apart) */
-type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number }; journey?: { id: string; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "vamsa" } | { kind: "tree"; focus?: { id: number; n: number }; pp?: { id: string; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number } | { kind: "library"; id: number } | { kind: "web"; url: string; title: string };
+type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number }; journey?: { id: string; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "vamsa" } | { kind: "anthology" } | { kind: "tree"; focus?: { id: number; n: number }; pp?: { id: string; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number } | { kind: "library"; id: number } | { kind: "web"; url: string; title: string };
 
 type Dialog =
   | { kind: "settings"; tab: SettingsTab }
@@ -1423,6 +1424,7 @@ export default function App() {
             <Panorama t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} places={places} onPlace={openPlace} focus={main.place} journey={main.journey} status={status} onPlacesChanged={() => api.listPlaces().then(setPlaces).catch(fail)} onToast={showToast} />
           )}
           {main.kind === "vamsa" && <Vamsa t={t} lang={lang} persons={persons} onPerson={openPerson} onOpenDoc={openDoc} />}
+          {main.kind === "anthology" && <Anthology t={t} lang={lang} docs={docs} onOpenDoc={openDoc} />}
           {main.kind === "calendar" && <Calendar t={t} lang={lang} reload={dataTick} onPerson={openPerson} page />}
           {main.kind === "tree" && <TreeView t={t} lang={lang} persons={persons} onPerson={openPerson} marks={marks} onMark={cycleMark} focus={main.focus} ppFocus={main.pp} />}
         </ViewGuard>

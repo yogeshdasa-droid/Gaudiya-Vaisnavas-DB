@@ -690,6 +690,30 @@ async fn create_doc(state: State<'_, AppState>, person_id: Option<i64>, title: S
     store::create_doc(&mut state.conn.lock().unwrap(), person_id, &title, &collection)
 }
 
+/// One chapter of a book written with `put_book`.
+#[derive(serde::Deserialize)]
+struct BookSection {
+    heading: Option<String>,
+    text: String,
+}
+
+/// A whole book at once, one section per chapter, with its cover (Whisper, 17-11-2026: the Anthology).
+#[tauri::command]
+#[allow(clippy::too_many_arguments)]
+async fn put_book(
+    state: State<'_, AppState>,
+    collection: String,
+    dir: String,
+    title: String,
+    date: Option<String>,
+    source: String,
+    sections: Vec<BookSection>,
+    cover: Option<String>,
+) -> CmdResult<i64> {
+    let sections = sections.into_iter().map(|s| text::Section { heading: s.heading, text: s.text }).collect();
+    store::put_book(&mut state.conn.lock().unwrap(), &collection, &dir, &title, date.as_deref(), &source, sections, cover.as_deref())
+}
+
 #[tauri::command]
 async fn save_section(state: State<'_, AppState>, doc_id: i64, ordinal: i64, text: String) -> CmdResult<()> {
     store::save_section(&mut state.conn.lock().unwrap(), doc_id, ordinal, &text)
@@ -1410,6 +1434,7 @@ fn main() {
             set_person_photo_bytes,
             remove_person_photo,
             create_doc,
+            put_book,
             save_section,
             update_doc,
             set_doc_tag,

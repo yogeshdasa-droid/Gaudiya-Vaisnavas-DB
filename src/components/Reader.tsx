@@ -281,7 +281,10 @@ export function Reader(p: Props) {
   const vraja = doc.collection === VRAJA_LILA;
   const gano = doc.collection === GANODDESA || vraja;
   // Gurudeva's lectures, on a parchment scroll (Whisper, 17-11-2026: a test)
-  const scroll = doc.dir.split("/")[0] === "Lectures Gurudeva";
+  // (and the Bhakta Bandhav Anthology, 17-11-2026)
+  const scroll = ["Lectures Gurudeva", "Anthology"].includes(doc.dir.split("/")[0]);
+  // a book kept as text whose big PDF stayed in its folder (the Anthology): open that PDF
+  const outsidePdf = !doc.original && /.pdf$/i.test(doc.source ?? "") ? doc.source : null;
   const style: ReaderStyle = gano || scroll ? "serif" : readerStyle;
   const isPdf = !!doc.original?.toLowerCase().endsWith(".pdf");
   const editSection = () => {
@@ -399,6 +402,11 @@ export function Reader(p: Props) {
                       </button>
                     )}
                   </>
+                )}
+                {outsidePdf && (
+                  <button onClick={guard(() => api.openExternal(outsidePdf))}>
+                    <ExternalLink size={15} /> {t.openPdf}
+                  </button>
                 )}
                 <button onClick={() => (setMenu(false), p.onExport(doc))}>
                   <FileDown size={15} /> {t.exportText}

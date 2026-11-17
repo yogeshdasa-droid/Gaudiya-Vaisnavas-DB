@@ -8731,3 +8731,165 @@ svg.satellite .map-dot {
 .rail-brand:hover {
   background: var(--hover);
 }
+
+/* ================================================================ the Bhakta Bandhav Anthology (17-11-2026) */
+.anthology {
+  height: 100%;
+  overflow: auto;
+  padding: 26px 34px 60px;
+}
+.anth-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  color: var(--accent-text);
+}
+.anth-head h1 {
+  margin: 0;
+  font-family: "Great Vibes", var(--font-serif), cursive;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.1;
+  color: #c79a4a;
+}
+:root[data-theme="dark"] .anth-head h1 {
+  color: #e2c48c;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .anth-head h1 {
+    color: #e2c48c;
+  }
+}
+.anth-head p {
+  margin: 2px 0 0;
+}
+.anth-filters {
+  position: sticky;
+  top: -26px;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 0 14px;
+  background: var(--bg);
+}
+.anth-filters label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-2);
+}
+.anth-filters input,
+.anth-filters select {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+}
+.anth-filters select option {
+  background: var(--panel);
+}
+.anth-search {
+  flex: 1 1 280px;
+}
+.anth-search input {
+  width: 100%;
+}
+.anth-topic input {
+  width: 190px;
+}
+.anth-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 18px;
+}
+.anth-book {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  text-align: center;
+}
+.anth-book img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.anth-book:hover img {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
+}
+.anth-vol {
+  margin-top: 4px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--accent-text);
+}
+.anth-sub {
+  font-size: 13px;
+  color: var(--text-2);
+}
+.anth-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 980px;
+}
+.anth-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.anth-row:hover {
+  background: var(--hover);
+  border-color: var(--border);
+}
+.anth-row img {
+  flex-shrink: 0;
+  width: 42px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 3px;
+}
+.anth-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.anth-row-title {
+  font-weight: 600;
+  font-size: 15px;
+}
+.anth-row-meta {
+  font-size: 13px;
+  color: var(--accent-text);
+}
+.anth-row-snip {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.45;
+}
