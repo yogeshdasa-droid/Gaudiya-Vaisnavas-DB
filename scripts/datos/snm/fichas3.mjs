@@ -1,0 +1,37 @@
+// node fichas3.mjs [puerto] [--dry]   (17-11-2026) — conferencias de SNM, tanda 3: Śrīla Bhaktisiddhānta Sarasvatī (#124).
+// Citas comprobadas con chk.mjs (fecha de la charla entre paréntesis).
+import { aplicar, SRC } from "./aplicar.mjs";
+
+const F = [
+  {
+    id: 124,
+    name: "Śrīla Bhakti Siddhānta Sarasvatī",
+    notes:
+      "From the lectures of Śrīla Nārāyaṇa Gosvāmī Mahārāja: born in Jagannātha Purī with natural marks of tilaka and kaṇṭhī-mālā; named Vimala Prasāda as the mercy of Vimalā-devī; at his anna-prāśana, during the Ratha-yātrā, Lord Jagannātha's garland fell on his head; at five he received harināma and the mantra of Kūrmadeva from his father; he refused the chair kept for him by Āśutoṣa Mukherjee at Calcutta University; he was tutor to the son of the king of Kāśimbāzār and studied that king's library; his father gave him the land of Māyāpura; his dīkṣā-guru was Gaura-kiśora dāsa Bābājī and his śikṣā- and bhajana-guru Bhaktivinoda Ṭhākura; he accepted sannyāsa-veśa by himself after Gaura-kiśora's departure; he sent Bon Mahārāja, Bhakti Sāraṅga Mahārāja and Bhakti Pradīpa Tīrtha Mahārāja to England; as an associate of Rādhā-Kṛṣṇa he is Nayana-mañjarī; Śrīla Keśava Gosvāmī stopped his cremation in Calcutta and gave him samādhi at Māyāpura (see the text «In the lectures…»).",
+    text: `## In short
+
+Śrīla Nārāyaṇa Gosvāmī Mahārāja spoke of Śrīla Bhaktisiddhānta Sarasvatī Ṭhākura Prabhupāda as the second «jewel» given by Bhaktivinoda Ṭhākura — the first being Mahāprabhu's birthplace. He was born in Jagannātha Purī with natural tilaka and kaṇṭhī-mālā on his body, and named Vimala Prasāda, the mercy of Vimalā-devī; at his first grains, during the Ratha-yātrā, Jagannātha's garland fell on his head. At five his father gave him harināma and the mantra of Kūrmadeva, and he carried his father's books on his head. As a boy he was given the title «Siddhānta Sarasvatī» for astrology, refused the chair Āśutoṣa Mukherjee kept for him at Calcutta University — «I have not come to this world to count the stars» — taught the prince of Kāśimbāzār until the boy became renounced, and then served the Deities in a hut at Māyāpura on land his father gave him. His dīkṣā-guru was Gaura-kiśora dāsa Bābājī, but his bhajana-guru and «everything» was Bhaktivinoda Ṭhākura; after Gaura-kiśora's departure he accepted the sannyāsa dress by himself. He never compromised with sahajiyās or māyāvādīs, gave sannyāsa to the best young men of Bengal, founded maṭhas on the nine islands, and sent disciples to England. His inner identity is Nayana-mañjarī. Before leaving in Calcutta he told his disciples to serve Rādhā-Kṛṣṇa under the shelter of āśraya-tattva and not to quarrel; Śrīla Keśava Gosvāmī stopped his cremation and gave him samādhi at Māyāpura.
+
+## In the lectures
+
+- **Birth** — «He was born with many symptoms of a great soul, such as natural tilaka marks on his body and the impressions of kanti-mala on his neck» (Germany, 2003-02-21). «He has taken birth in Jagannatha Puri, and also I have prayed to Vimala devi, the consort of Lord Jagannatha. He has come by Her mercy. The Thakura thus gave his boy the name Vimala Prasada» (2003-02-21).
+- **Jagannātha's garland** — at his anna-prāśana the Ratha-yātrā carts «had stopped in front of Srila Bhaktivinoda Thakuras house for three days» (2003-02-21); «at that time the flower garland from the neck of Lord Jagannatha dropped on the babys head» (2003-02-21).
+- **Childhood** — «when he became a boy of five years, Srila Bhaktivinoda Thakura himself gave him harinama and the arcana mantra for the worship of Lord Kurmadeva» (2003-02-21). «He was always with Srila Bhaktivinoda Thakura, carrying his fathers Sri Bhakti-rasamrta-sindhu, Sri Ujjvala-nilamani, Sri Caitanya-caritamrta and other books on his own head» (2003-02-21).
+- **«Siddhānta Sarasvatī»** — «At that time the governor of Bengal and all Bengal astrologers and high class of cultured learned persons gave him the title 'Siddhanta Sarasvati.' This title was only for astrology, however, not for bhakti» (Singapore, 2001-01-13).
+- **Calcutta University** — Āśutoṣa Mukherjee «reserved a seat for Srila Bhaktisiddhanta Sarasvati Thakura» (2003-02-21). «I have not come to this world to count the stars in the universe. I have not come to count the sands on the ocean beaches of the world» (2003-02-21).
+- **Kāśimbāzār** — he taught the king's son, and «being taught by Srila Saravati Thakura, that prince became detached from worldly enjoyment» (2003-02-21); «the king had a very big library, and Srila Sarasvati Thakura Pabhupada studied the thousands of books there» (2003-02-21).
+- **Māyāpura** — his father «purchased land in Mayapura, beginning from Jagannatha Bhavan (the house of Sri Sacinandana), the Yogapitha, Candrasekara Bhavan and beyond. He gave the entire area to Srila Bhaktisiddhanta Sarasvati Thakura» (2003-02-21). In Purī, when he gave the classes in his father's absence, «The babajis became upset and stopped coming» (Hawaii, 2007-02-06).
+- **His gurus** — «Srila Bhaktivinoda Thakura was his bhagavat guru, his bhajan guru, hissravan guru, everything. Srila Gaura kisora das babaji was his mantra guru, diksa guru» (1998-01-02). «This is also the way Srila Bhaktisiddhanta Sarasvati Thakura accepted sannyasa-vesa after the disappearance of Srila Gaurakisora dasa Babaji, from whom he had received the diksa-mantra» (France, 1998-04-28).
+- **Never compromised** — «He never compromised with sahajijas, sakhibhekhis, mayavadis, or anyone. Even when he was alone - with the whole world one side and he on the other, he would never compromise with anyone» (2001-01-13).
+- **His mission** — «He began to establish the Navadvipa-dhama parikrama and Kartika parikrama» (2003-02-21); «After that, he established temples (mathas) on the nine islands» (2007-02-06). Before Bhaktivedānta Svāmī, «he ordered his three disciples, Sripad Bhaktihrdaya Van Maharaja, Bhaktisaranga Gosvami Maharaja, and Bhaktipradipa Tirtha Maharaja, to go to England» (2001-01-13).
+- **Nayana-mañjarī** — «As Mahaprabhus associate he is Bhaktisiddhanta Sarasvati Gosvami, and as the associate of Radha-Krsna he is Nayana-manjari» (2007-02-06).
+- **His last instructions** — «most of my time was spent in cutting the 'jungles' of mayavada, sahajiya-vada, sakhi-bheki and all other non-devotional ideas» (Vṛndāvana, 1991, 1992-12-13). «You should do bhajana of Srimati Radhika and Krsna under the guidance of asraya-tattva, that is, guru-tattva» (2007-02-06). «Don't criticize anyone. This is my advice. You should all combine together and preach my mission» (2007-02-06).
+- **His samādhi** — when it was proposed to cremate him in Calcutta, «Our Guru-Maharaja opposed this and said, "I request you not to take him. We will take the transcendental body of our Prabhupada to Mayapura, where he used to do his bhajana» (1992-12-13). «Guru Maharaja personally gave him samadhi at that time, and the samadhi we see now was given by my Guru Maharaja» (2007-02-06).
+
+## Sources
+
+${SRC}: «Srila Bhaktisiddhanta Sarasvati Thakura» (disappearance day, Vṛndāvana, 1991; listed under 1992-12-13); «How to Come Out of Maya» (1998-01-02); «True Sannyasa versus Sahajiya Babas» (France, 28 April 1998); «Appearance Day of Srila Bhaktisiddhanta Sarasvati Gosvami Thakura» (Singapore, 13 February 2001; listed under 2001-01-13); «The Appearance Day of Srila Bhaktisiddhanta Sarasvati Thakura Prabhupada» (Germany, 21 February 2003); «A Very Auspicious Day» (Hawaii, 6 February 2007).`,
+  },
+];
+
+await aplicar(F);
