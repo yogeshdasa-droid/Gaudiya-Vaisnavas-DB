@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Archive, BarChart3, BookCopy, CalendarDays, ChevronDown, Clock3, Flower2, GitFork, History, Landmark, ListTree, MapPin, Mic, Network, Settings as Gear, Star, Trees, Users } from "lucide-react";
+import { Archive, BarChart3, BookCopy, CalendarDays, ChevronDown, Clock3, Flower2, GitFork, History, Landmark, ListTree, MapPin, Mic, Minus, Network, Settings as Gear, Star, Trees, Users } from "lucide-react";
 import { T } from "../i18n";
 import type { SideTab } from "./Sidebar";
 import { APP_NAME, LogoMark } from "./Logo";
@@ -16,6 +16,63 @@ interface Props {
   onView: (v: RailView) => void;
   /** the open panel again closes it */
   onSide: (tab: SideTab) => void;
+  /** where each button goes (Ajustes › Barra de botones) */
+  layout: RailLayout;
+}
+
+/** The bar's buttons can be moved (Whisper, 17-11-2026, Ajustes › General › «Botones de la barra»): each one on the bar,
+ *  at its end, inside «Árboles» or «Dhāma», or hidden; the order inside each place too. The two groups and the line
+ *  are entries as well (on the bar, at the end or hidden). The Library icon always stays at the very end. */
+export type RailPlace = "bar" | "end" | "trees" | "dhama" | "hidden";
+export type RailLayout = { order: string[]; place: Record<string, RailPlace> };
+export const RAIL_GROUPS = ["g:trees", "g:dhama"] as const;
+export const RAIL_DEFAULT: RailLayout = {
+  order: ["calendar", "persons", "g:trees", "tree", "timeline", "lineage", "vamsa", "panorama", "g:dhama", "places", "deities", "sep", "bookmarks", "history", "lectures", "anthology"],
+  place: {
+    calendar: "bar", persons: "bar", "g:trees": "bar", tree: "trees", timeline: "trees", lineage: "trees", vamsa: "trees", panorama: "trees",
+    "g:dhama": "bar", places: "dhama", deities: "dhama", sep: "bar", bookmarks: "bar", history: "bar", lectures: "end", anthology: "end",
+  },
+};
+/** a saved layout with the buttons added later in their default place (and unknown ones dropped) */
+export function railLayout(saved: Partial<RailLayout> | null | undefined): RailLayout {
+  const known = new Set(RAIL_DEFAULT.order);
+  const order = (saved?.order ?? []).filter((k, i, a) => known.has(k) && a.indexOf(k) === i);
+  RAIL_DEFAULT.order.forEach((k, i) => {
+    if (order.includes(k)) return;
+    // after the default neighbour before it
+    const prev = RAIL_DEFAULT.order.slice(0, i).reverse().find((p) => order.includes(p));
+    order.splice(prev ? order.indexOf(prev) + 1 : 0, 0, k);
+  });
+  const place: Record<string, RailPlace> = {};
+  const isGroup = (k: string) => k.startsWith("g:") || k === "sep";
+  for (const k of order) {
+    const p = saved?.place?.[k];
+    // a group (or the line) cannot go inside a group
+    place[k] = p && (!isGroup(k) || p === "bar" || p === "end" || p === "hidden") ? p : RAIL_DEFAULT.place[k];
+  }
+  return { order, place };
+}
+type Entry = { icon: typeof Gear; label: string; view?: RailView; side?: SideTab };
+/** every button of the bar: its icon, its name and what it opens */
+export function railEntries(t: T): Record<string, Entry> {
+  return {
+    calendar: { icon: CalendarDays, label: t.calendarShort, view: "calendar" },
+    persons: { icon: Users, label: t.vaisnavas, side: "persons" },
+    "g:trees": { icon: ListTree, label: t.groupTrees },
+    tree: { icon: Network, label: t.paramparaTree, view: "tree" },
+    timeline: { icon: Clock3, label: t.timeline, view: "timeline" },
+    lineage: { icon: GitFork, label: t.lineage, view: "lineage" },
+    vamsa: { icon: Trees, label: t.vamsa, view: "vamsa" },
+    panorama: { icon: BarChart3, label: t.panorama, view: "panorama" },
+    "g:dhama": { icon: Landmark, label: t.groupDhama },
+    places: { icon: MapPin, label: t.tirthas, side: "places" },
+    deities: { icon: Flower2, label: t.deities, side: "deities" },
+    sep: { icon: Minus, label: t.railSep },
+    bookmarks: { icon: Star, label: t.bookmarks, side: "bookmarks" },
+    history: { icon: History, label: t.history, side: "history" },
+    lectures: { icon: Mic, label: t.lecturesGurudeva, side: "lectures" },
+    anthology: { icon: BookCopy, label: t.anthology, view: "anthology" },
+  };
 }
 
 type Item = { key: string; icon: typeof Gear; label: string; on: boolean; click: () => void };
@@ -58,16 +115,33 @@ function Group({ items, compact, label, icon }: { items: Item[]; compact: boolea
   );
 }
 
+
 /** The Windows 11 style's bar: big icons with their names, like K-Desktop (on the left, or in one row on top). */
-export function Rail({ t, compact, view, sideTab, sideOpen, onView, onSide }: Props) {
-  const v = (k: RailView, icon: typeof Gear, label: string): Item => ({ key: k, icon, label, on: view === k, click: () => onView(k) });
-  const s = (k: SideTab, icon: typeof Gear, label: string): Item => ({ key: k, icon, label, on: sideOpen && sideTab === k, click: () => onSide(k) });
+export function Rail({ t, compact, view, sideTab, sideOpen, onView, onSide, layout }: Props) {
+  const E = railEntries(t);
+  const item = (k: string): Item => {
+    const e = E[k];
+    if (e.view) { const v = e.view; return { key: k, icon: e.icon, label: e.label, on: view === v, click: () => onView(v) }; }
+    const sd = e.side!;
+    return { key: k, icon: e.icon, label: e.label, on: sideOpen && sideTab === sd, click: () => onSide(sd) };
+  };
   const one = (i: Item) => (
     <button key={i.key} className={i.on ? "on" : ""} onClick={i.click} title={compact ? i.label : undefined}>
       <i.icon size={20} />
       <span>{i.label}</span>
     </button>
   );
+  const inside = (g: RailPlace) => layout.order.filter((k) => layout.place[k] === g).map(item);
+  const render = (k: string) => {
+    if (k === "sep") return <hr key={k} />;
+    if (k === "g:trees" || k === "g:dhama") {
+      const items = inside(k === "g:trees" ? "trees" : "dhama");
+      if (!items.length) return null;
+      return <Group key={k} compact={compact} label={E[k].label} icon={E[k].icon} items={items} />;
+    }
+    return one(item(k));
+  };
+  const zone = (z: RailPlace) => layout.order.filter((k) => layout.place[k] === z).map(render);
   return (
     <nav className={`rail ${compact ? "compact" : ""}`}>
       {/* the name takes to the Home page: no «Home» button (Whisper, 17-11-2026) */}
@@ -77,27 +151,9 @@ export function Rail({ t, compact, view, sideTab, sideOpen, onView, onSide }: Pr
         </span>
         <span>{APP_NAME}</span>
       </div>
-      {one(v("calendar", CalendarDays, t.calendarShort))}
-      {one(s("persons", Users, t.vaisnavas))}
-      <Group
-        compact={compact}
-        label={t.groupTrees}
-        icon={ListTree}
-        items={[
-          v("tree", Network, t.paramparaTree),
-          v("timeline", Clock3, t.timeline),
-          v("lineage", GitFork, t.lineage),
-          v("vamsa", Trees, t.vamsa),
-          v("panorama", BarChart3, t.panorama),
-        ]}
-      />
-      <Group compact={compact} label={t.groupDhama} icon={Landmark} items={[s("places", MapPin, t.tirthas), s("deities", Flower2, t.deities)]} />
-      <hr />
-      {one(s("bookmarks", Star, t.bookmarks))}
-      {one(s("history", History, t.history))}
+      {zone("bar")}
       <div className="rail-end">
-        {one(s("lectures", Mic, t.lecturesGurudeva))}
-        {one(v("anthology", BookCopy, t.anthology))}
+        {zone("end")}
         {/* the Library: only a small icon at the end, out of the way (Whisper, 17-11-2026: «like a ZIP logo»); all the
             folders are in it — Books, Lectures Gurudeva, Anthology… */}
         <button className={`rail-icon${sideOpen && sideTab === "library" ? " on" : ""}`} onClick={() => onSide("library")} title={t.library} aria-label={t.library}>

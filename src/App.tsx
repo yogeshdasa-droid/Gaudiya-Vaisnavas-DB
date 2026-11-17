@@ -100,7 +100,7 @@ import { Reveal, SideTab, Sidebar } from "./components/Sidebar";
 import { Lineage } from "./components/Lineage";
 import { AudioBar, PersonLibrary } from "./components/PersonLibrary";
 import { WebPage } from "./components/WebPage";
-import { Rail } from "./components/Rail";
+import { Rail, railLayout, RailLayout } from "./components/Rail";
 import { showInVamsa, Vamsa } from "./components/Vamsa";
 import { Anthology } from "./components/Anthology";
 import { APP_NAME, LogoMark, LotusMandala } from "./components/Logo";
@@ -161,6 +161,8 @@ export default function App() {
   const [titleFont, setTitleFont] = usePersisted<TitleFont>("titleFont", "normal");
   // the bar of buttons on the left or in one row on top (Whisper, 17-11-2026)
   const [barTop, setBarTop] = usePersisted<boolean>("barTop", false);
+  const [railSaved, setRailSaved] = usePersisted<RailLayout | null>("railLayout", null);
+  const railLay = useMemo(() => railLayout(railSaved), [railSaved]);
   const [titlesOnly, setTitlesOnly] = usePersisted("titlesOnly", false);
   // search by meaning (EmbeddingGemma); starts off each time
   const [meaning, setMeaning] = useState(false);
@@ -1111,6 +1113,7 @@ export default function App() {
           view={main.kind}
           sideTab={sideTab}
           sideOpen={sideOpen}
+          layout={railLay}
           onView={(kind) => setMain({ kind })}
           onSide={(tab) => {
             sideAutoHid.current = false;
@@ -1557,6 +1560,8 @@ export default function App() {
           onTitleFont={setTitleFont}
           barTop={barTop}
           onBarTop={setBarTop}
+          railLayout={railLay}
+          onRailLayout={setRailSaved}
           onClose={() => setDialog(null)}
           onToast={showToast}
           onChanged={refreshAll}

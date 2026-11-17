@@ -11,7 +11,8 @@ const port = args.find((a) => /^\d+$/.test(a)) || "9334";
 const dry = args.includes("--dry");
 const only = (args.find((a) => a.startsWith("--solo=")) || "").slice(7).split(",").filter(Boolean).map(Number);
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const long = (iso) => `${+iso.slice(8, 10)} ${MONTHS[+iso.slice(5, 7) - 1]} ${iso.slice(0, 4)}`;
+// a lecture without a known day (vols. 35 and 44) has only its year: «Unknown date, 1999»
+const long = (iso) => (iso.length === 4 ? `Unknown date, ${iso}` : `${+iso.slice(8, 10)} ${MONTHS[+iso.slice(5, 7) - 1]} ${iso.slice(0, 4)}`);
 
 // letters the PDF fonts give wrongly (checked against each book's own contents page, 17-11-2026)
 const FIX = [

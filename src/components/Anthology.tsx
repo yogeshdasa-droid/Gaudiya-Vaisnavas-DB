@@ -25,14 +25,18 @@ interface Vol {
 }
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-/** «title · place · 6 May 1996» → its parts, the date as 1996-05-06 (the introduction has none). */
+/** «title · place · 6 May 1996» → its parts, the date as 1996-05-06 (the introduction has none). A lecture whose day
+ *  the book does not know (vols. 35 and 44, 17-11-2026): «title · place · Unknown date, 1999» → the date is «1999». */
 export function parseLecture(heading: string | null): { title: string; place: string; date: string } | null {
+  const u = heading?.match(/^(.*) · (.*) · Unknown date, (\d{4})$/);
+  if (u) return { title: u[1], place: u[2], date: u[3] };
   const m = heading?.match(/^(.*) · (.*) · (\d{1,2}) ([A-Z][a-z]+) (\d{4})$/);
   const mi = m ? MONTHS.indexOf(m[4]) : -1;
   return m && mi >= 0 ? { title: m[1], place: m[2], date: `${m[5]}-${String(mi + 1).padStart(2, "0")}-${m[3].padStart(2, "0")}` } : null;
 }
 
 export function formatLecDate(iso: string, lang: Lang): string {
+  if (/^\d{4}$/.test(iso)) return lang === "es" ? `${iso} (sin fecha exacta)` : `${iso} (date unknown)`;
   const d = new Date(iso + "T12:00:00");
   return isNaN(+d) ? iso : d.toLocaleDateString(lang, { day: "numeric", month: "long", year: "numeric" });
 }

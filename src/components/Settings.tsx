@@ -2,6 +2,8 @@ import { ReactNode, useEffect, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import {
   ArchiveRestore,
+  ArrowDown,
+  ArrowUp,
   CalendarDays,
   Database,
   FileDown,
@@ -25,6 +27,7 @@ import { getVersion } from "@tauri-apps/api/app";
 import { Lang, T } from "../i18n";
 import { ask, Kbd, Modal } from "./ui";
 import type { ReaderStyle } from "./Reader";
+import { RAIL_DEFAULT, railEntries, RailLayout, RailPlace } from "./Rail";
 
 /** the font of the record names: system, calligraphy (Great Vibes) or classic (Cormorant Garamond italic) */
 export type TitleFont = "normal" | "script" | "classic";
@@ -150,6 +153,78 @@ function Row({ label, hint, children }: { label: string; hint?: string; children
       </div>
       <div className="set-control">{children}</div>
     </div>
+  );
+}
+
+/** Ajustes › «Botones de la barra» (Whisper, 17-11-2026): where each button of the bar goes, and in what order. The
+ *  rows are shown place by place (bar, inside each group, end, hidden); the arrows move a button among its neighbours. */
+function RailButtons({ t, layout, onLayout }: { t: T; layout: RailLayout; onLayout: (l: RailLayout) => void }) {
+  const E = railEntries(t);
+  const groupOf: Record<string, RailPlace> = { "g:trees": "trees", "g:dhama": "dhama" };
+  const isGroup = (k: string) => k in groupOf || k === "sep";
+  const sibs = (k: string) => layout.order.filter((x) => layout.place[x] === layout.place[k]);
+  const move = (k: string, d: -1 | 1) => {
+    const sb = sibs(k);
+    const other = sb[sb.indexOf(k) + d];
+    if (!other) return;
+    const order = [...layout.order];
+    const a = order.indexOf(k), b = order.indexOf(other);
+    [order[a], order[b]] = [order[b], order[a]];
+    onLayout({ ...layout, order });
+  };
+  const setPlace = (k: string, p: RailPlace) => {
+    // to the end of its new place
+    const order = layout.order.filter((x) => x !== k);
+    const last = order.map((x, i) => [x, i] as const).filter(([x]) => layout.place[x] === p).pop();
+    order.splice(last ? last[1] + 1 : order.length, 0, k);
+    onLayout({ order, place: { ...layout.place, [k]: p } });
+  };
+  const row = (k: string, depth: number) => {
+    const e = E[k];
+    const sb = sibs(k);
+    const places: RailPlace[] = isGroup(k) ? ["bar", "end", "hidden"] : ["bar", "end", "trees", "dhama", "hidden"];
+    return (
+      <div key={k} className={"rail-set-row" + (layout.place[k] === "hidden" ? " off" : "") + (isGroup(k) ? " grp" : "")} style={{ paddingLeft: 6 + depth * 26 }}>
+        <e.icon size={17} />
+        <span className="rail-set-name">{e.label}</span>
+        <button className="icon-btn" disabled={sb[0] === k} onClick={() => move(k, -1)} title={t.railUp}>
+          <ArrowUp size={15} />
+        </button>
+        <button className="icon-btn" disabled={sb[sb.length - 1] === k} onClick={() => move(k, 1)} title={t.railDown}>
+          <ArrowDown size={15} />
+        </button>
+        <select value={layout.place[k]} onChange={(ev) => setPlace(k, ev.target.value as RailPlace)}>
+          {places.map((p) => (
+            <option key={p} value={p}>
+              {t.railPlace[p]}
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  };
+  const zone = (z: RailPlace) =>
+    layout.order
+      .filter((k) => layout.place[k] === z)
+      .flatMap((k) => [row(k, 0), ...(groupOf[k] ? layout.order.filter((x) => layout.place[x] === groupOf[k]).map((x) => row(x, 1)) : [])]);
+  // a button inside a hidden group: shown under it, still in that group
+  return (
+    <Card title={t.railButtons}>
+      <p className="muted small">{t.railButtonsHint}</p>
+      <div className="rail-set">
+        {zone("bar")}
+        <div className="rail-set-head">{t.railPlace.end}</div>
+        {zone("end")}
+        <div className="rail-set-head">{t.railPlace.hidden}</div>
+        {zone("hidden")}
+      </div>
+      <div className="btn-row">
+        <button className="btn ghost" onClick={() => onLayout(RAIL_DEFAULT)}>
+          <Undo2 size={15} /> {t.railReset}
+        </button>
+        <span className="muted small">{t.railLibraryNote}</span>
+      </div>
+    </Card>
   );
 }
 
@@ -305,6 +380,8 @@ interface Props {
   onTitleFont: (f: TitleFont) => void;
   barTop: boolean;
   onBarTop: (on: boolean) => void;
+  railLayout: RailLayout;
+  onRailLayout: (l: RailLayout) => void;
   onClose: () => void;
   onToast: (msg: string) => void;
   onChanged: () => void;
@@ -436,6 +513,7 @@ export function Settings(p: Props) {
                   </div>
                 </Row>
               </Card>
+              <RailButtons t={t} layout={p.railLayout} onLayout={p.onRailLayout} />
               <CalendarSettings t={t} onToast={p.onToast} onChanged={p.onChanged} />
               <Card title={t.database}>
                 {status && (

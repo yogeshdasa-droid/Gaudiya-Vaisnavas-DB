@@ -8991,3 +8991,51 @@ svg.satellite .map-dot {
 .rail button.rail-icon span {
   display: none;
 }
+
+/* Ajustes › «Botones de la barra» (17-11-2026) */
+.rail-set {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 8px 0 10px;
+}
+.rail-set-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+.rail-set-row:hover {
+  background: var(--hover);
+}
+.rail-set-row > svg {
+  flex-shrink: 0;
+  color: var(--accent-text);
+}
+.rail-set-row.grp .rail-set-name {
+  font-weight: 600;
+}
+.rail-set-row.off {
+  opacity: 0.55;
+}
+.rail-set-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rail-set-row select {
+  width: 150px;
+}
+.rail-set-head {
+  margin: 10px 0 2px;
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}

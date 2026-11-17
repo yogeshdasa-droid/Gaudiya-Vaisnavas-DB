@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **17-11-2026** (versión **0.20.1**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **17-11-2026** (versión **0.20.2**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,19 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.1)
+## 5. Qué hace hoy (v0.20.2)
+
+### Novedades de la 0.20.2 (17-11-2026) — botones de la barra a gusto; Anthology con versos y 926 charlas
+- Ajustes › General › **«Botones de la barra»** (`RailButtons` en `Settings.tsx`): cada botón en la barra, al final,
+  dentro de «Árboles» o «Dhāma», u oculto; flechas para el orden; «Como venía». `Rail.tsx`: `RAIL_DEFAULT`,
+  `railLayout(saved)` (añade botones nuevos en su sitio por defecto), `railEntries(t)`; los grupos y la línea («sep»)
+  son entradas más (barra / final / oculto). Se guarda en localStorage `bio.railLayout`. La Biblioteca (icono) fija al final.
+- Anthology recargada (mismos libros #5658–#5734, `put_book` reemplaza): **versos** como cita `> ` línea a línea con su
+  referencia (`extraer/volume.mjs`: líneas cortas muy sangradas, ≥2 seguidas, distancias según el interlineado de la
+  página, sin prosa inglesa ni la capital grande; firmas de cartas línea a línea; ~3000 versos) y las charlas
+  **«Unknown date, 1999»** separadas (vol. 35 +5, vol. 44 +2 → **926 charlas**). Encabezado «título · lugar · Unknown
+  date, 1999»: `parseLecture` da la fecha «1999» y `formatLecDate` «1999 (sin fecha exacta)».
+- Páginas descifradas de los PDF en `scripts/datos/anthology/extraer/cache/` (no van a GitHub): `all.mjs` ya tarda segundos.
 
 ### Novedades de la 0.20.1 (17-11-2026) — la barra reordenada y el panel con pétalos
 - Barra (`Rail.tsx`): Calendario · Vaiṣṇavas · **Árboles ▾** (Paramparā Tree, Línea de tiempo, Linaje, Vaṁśa, Panorama)
@@ -1913,6 +1925,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **17-11-2026 — v0.20.2**: botones de la barra a gusto en Ajustes; Anthology con los versos en sus líneas y 926
+  charlas (7 «Unknown date» separadas). Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.2
 - **17-11-2026 — v0.20.1**: barra reordenada (Árboles ▾, Dhāma ▾, Biblioteca como icono, sin «Libros»); carpetas del
   panel con el pétalo de la barra. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.1
 - **17-11-2026 — v0.20.0**: apartado «Anthology» (Bhakta Bandhav Anthology: 77 volúmenes, 919 charlas; buscar por

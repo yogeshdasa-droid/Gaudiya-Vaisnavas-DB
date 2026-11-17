@@ -16,6 +16,9 @@ function dateIn(s) {
   if (m) return { at: m.index, len: m[0].length, iso: `${m[3]}-${MI[m[2]]}-${m[1].padStart(2, "0")}`, year: +m[3] };
   m = s.match(D2);
   if (m) return { at: m.index, len: m[0].length, iso: `${m[3]}-${MI[m[1]]}-${m[2].padStart(2, "0")}`, year: +m[3] };
+  // «Murwillumbah - Unknown date, 1999» (vols. 35 and 44): only the year
+  m = s.match(/Unknown Date,?\s*(\d{4})/i);
+  if (m) return { at: m.index, len: m[0].length, iso: m[1], year: +m[1] };
   return null;
 }
 const clean = (s) => s.replace(/^[\s,.\-–—]+|[\s,.\-–—]+$/g, "").replace(/\s+/g, " ");
@@ -44,9 +47,23 @@ export async function readVolume(dir) {
   if (vyear) for (const ls of pages) for (const l of ls) l.t = l.t.replace(new RegExp(`(\\d{1,2}\\s*(?:${MONTHS}))\\s+[A-Z]{4}$`), `$1 ${vyear}`);
   const lectures = [];
   let intro = null, cur = null, para = "", prev = "";
-  const flush = () => { if (para.trim() && cur) cur.paras.push(para.trim()); para = ""; };
+  // kind of the block being built: "p" a paragraph, "v" a verse (lines kept, as a quote), "s" a signature (lines kept)
+  let kind = "p";
+  const flush = () => { if (para.trim() && cur) cur.paras.push(para.trim()); para = ""; kind = "p"; };
   const add = (l, margin) => {
     if (!cur) return;
+    // a verse (17-11-2026): a short line indented well past the paragraph indent (+18) — «sri-krsna-caitanya prabhu
+    // nityananda» at +50…+80 —, each line on its own; far to the right, a letter's signature
+    const k = /^[A-Z]$/.test(para) ? "p" : l.k || "p";
+    if (k !== "p" || kind !== "p") {
+      if (k !== kind) flush();
+      kind = k;
+      prev = l.t;
+      if (k === "p") { para = l.t; return; }
+      if (/[-­]$/.test(para) && /^[a-z]/.test(l.t)) para = para.slice(0, -1) + l.t;
+      else para += para ? "\n" + (k === "v" ? "> " : "") + l.t : (k === "v" ? "> " : "") + l.t;
+      return;
+    }
     // a new paragraph: the line is indented and the one before ended a sentence (not the lines beside a big initial)
     if (l.x > margin + 6 && para && !/^[A-Z]$/.test(para) && /[.!?:”"’)\]]$/.test(prev)) flush();
     prev = l.t;
@@ -64,6 +81,32 @@ export async function readVolume(dir) {
     const long = ls.filter((l) => l.t.length >= 55).map((l) => l.x);
     const margin = long.length ? Math.min(...long) : Math.min(...ls.map((l) => l.x));
     const centred = (l) => l && l.t.length < 80 && l.x > margin + 12;
+    // verses and signatures (whose middle is far to the right; a verse is centred): two or more short lines one after the other, well past the paragraph indent (the first
+    // line of an indented paragraph is alone); the reference just after a verse («Bhagavad-gita 9.22») goes with it
+    // (distances for pages drawn at the usual scale, 15 points between lines; vol. 11 is drawn ~4.5 times bigger)
+    const gaps = ls.slice(1).map((l, i) => Math.abs((ls[i].y ?? 0) - (l.y ?? 0))).filter((g) => g > 3).sort((a, b) => a - b);
+    const sc = gaps.length >= 5 ? Math.max(0.5, gaps[gaps.length >> 1] / 15) : 1;
+    const cand = (l) => (l && l.t.length < 80 && l.x > margin + 28 * sc ? (l.x + l.t.length * 2.7 * sc > margin + 215 * sc ? "s" : "v") : null);
+    ls.forEach((l, i) => {
+      const c = cand(l);
+      l.k = c && (c === cand(ls[i + 1]) || c === cand(ls[i - 1])) ? c : "p";
+    });
+    // an indented passage in English (a quotation in prose) is not a verse: its lines are full of «the», «and», «that»…
+    for (let i = 0; i < ls.length; ) {
+      if (ls[i].k !== "v") { i++; continue; }
+      let j = i;
+      while (j < ls.length && ls[j].k === "v") j++;
+      const run = ls.slice(i, j);
+      const words = run.flatMap((l) => l.t.match(/[A-Za-z’']+/g) || []);
+      const eng = words.filter((w) => /^(the|and|that|is|was|are|you|he|she|this|of|to|in|with|for|be|not|have|his|her|my|will|we|they|it|so|but|if|then|at|on)$/i.test(w)).length;
+      // or the lines beside a big initial («W» + «ithout the mercy…»)
+      const initial = ls.slice(Math.max(0, i - 3), i).some((l) => /^[A-Z]$/.test(l.t));
+      if (eng / Math.max(1, words.length) > 0.12 || initial) run.forEach((l) => (l.k = "p"));
+      i = j;
+    }
+    ls.forEach((l, i) => {
+      if (l.k !== "v" && cand(l) && i && ls[i - 1].k === "v" && l.t.length < 45 && (!ls[i + 1] || ls[i + 1].k !== "s")) l.k = "v";
+    });
     if (!cur && /^introduction$/i.test(ls[0].t)) { cur = intro = { title: "Introduction", paras: [] }; ls = ls.slice(1); }
     // the starts on this page: [index of first title line, index after the heading, lecture]
     const starts = [];
@@ -126,7 +169,7 @@ export async function readVolume(dir) {
       const up = (tt.match(/[A-Z]/g) || []).length, lo = (tt.match(/[a-z]/g) || []).length;
       if ((up > lo && /[A-Z]{3}/.test(tt)) || /^[A-Z]{3,}.*[a-z]+[A-Z]|[A-Z]{3}[a-z]/.test(tt))
         tt = tt.toLowerCase().replace(/(^|[\s“"‘(—-])([a-z])/g, (m, a, b) => a + b.toUpperCase()).replace(/\b(Of|And|The|To|In|Is|A|An|For|On|By|With|At|As|From)\b/g, (w, _x, i) => (i === 0 ? w : w.toLowerCase()));
-      tt = tt.replace(/(?:Op|Oe)(?= [A-Z])/g, "Of");
+      tt = tt.replace(/(?:Op|Oe)(?= [A-Z])/g, "Of").replace(/(\w)- (?=\w)/g, "$1-"); // «Sadhana- Bhakti» (a title in two lines)
       cur = { ...lec, title: tt, paras: [] };
       lectures.push(cur);
       from = b;
