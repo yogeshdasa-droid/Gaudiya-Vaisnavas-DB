@@ -1109,8 +1109,6 @@ export default function App() {
               setSideOpen(true);
             }
           }}
-          onSettings={() => setDialog({ kind: "settings", tab: "general" })}
-          onHelp={() => setDialog({ kind: "settings", tab: "help" })}
         />
       )}
       <header className="topbar">

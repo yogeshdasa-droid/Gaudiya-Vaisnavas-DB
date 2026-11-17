@@ -1,4 +1,4 @@
-import { BarChart3, CalendarDays, Clock3, Flower2, GitFork, HelpCircle, History, Home as HomeIcon, Library as LibIcon, MapPin, Network, Settings as Gear, Star, Trees, Users } from "lucide-react";
+import { BarChart3, BookOpen, CalendarDays, Clock3, Flower2, GitFork, History, Home as HomeIcon, Library as LibIcon, MapPin, Mic, Network, Settings as Gear, Star, Trees, Users } from "lucide-react";
 import { T } from "../i18n";
 import type { SideTab } from "./Sidebar";
 import { APP_NAME, LogoMark } from "./Logo";
@@ -15,12 +15,10 @@ interface Props {
   onView: (v: RailView) => void;
   /** the open panel again closes it */
   onSide: (tab: SideTab) => void;
-  onSettings: () => void;
-  onHelp: () => void;
 }
 
 /** The Windows 11 style's left bar: big icons with their names, like K-Desktop. */
-export function Rail({ t, compact, view, sideTab, sideOpen, onView, onSide, onSettings, onHelp }: Props) {
+export function Rail({ t, compact, view, sideTab, sideOpen, onView, onSide }: Props) {
   const views: [RailView, typeof Gear, string][] = [
     ["home", HomeIcon, t.home],
     ["calendar", CalendarDays, t.calendarShort],
@@ -55,9 +53,11 @@ export function Rail({ t, compact, view, sideTab, sideOpen, onView, onSide, onSe
       {views.map(([k, I, label]) => item(k, I, label, view === k, () => onView(k)))}
       <hr />
       {panels.map(([k, I, label]) => item(k, I, label, sideOpen && sideTab === k, () => onSide(k)))}
+      {/* Settings and Help are also at the top right: here the books and Gurudeva's lectures, closer at hand
+          (Whisper, 17-11-2026) */}
       <div className="rail-end">
-        {item("settings", Gear, t.settings, false, onSettings)}
-        {item("help", HelpCircle, t.help, false, onHelp)}
+        {item("books", BookOpen, t.books, sideOpen && sideTab === "books", () => onSide("books"))}
+        {item("lectures", Mic, t.lecturesGurudeva, sideOpen && sideTab === "lectures", () => onSide("lectures"))}
       </div>
     </nav>
   );

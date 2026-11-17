@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { BookMarked, ChevronRight, ChevronsDownUp, ChevronsUpDown, Flower2, MapPin, Pin, PinOff, Plus, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
+import { BookMarked, BookOpen, ChevronRight, ChevronsDownUp, ChevronsUpDown, Flower2, MapPin, Mic, Pin, PinOff, Plus, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
 import { GAUDA_AREAS, placeZone, VRAJA_AREAS, ZONES } from "../places";
 import { api, Bookmark, DocListItem, fileUrl, hueOf, isBhagavatam, isDeity, isPoet, Marks, Person, PersonListItem, Place, sortDisciples, TreeKind, TreePlace } from "../api";
 import { NoPhoto } from "./Logo";
@@ -9,7 +9,10 @@ import { arrange, TreeLine } from "./TreeView";
 import { possibleRepeats } from "./Review";
 import { Lang, T } from "../i18n";
 
-export type SideTab = "persons" | "places" | "deities" | "library" | "bookmarks" | "history";
+export type SideTab = "persons" | "places" | "deities" | "library" | "bookmarks" | "history" | "books" | "lectures";
+
+/** The two collections with a panel of their own, at the foot of the left bar (Whisper, 17-11-2026). */
+const COLLECTION_OF: Partial<Record<SideTab, string>> = { books: "Libros", lectures: "Lectures Gurudeva" };
 
 /** A text or record to show in its tree (`n` tells two requests apart). */
 export type Reveal = { kind: "doc" | "person"; id: number; n: number };
@@ -212,9 +215,6 @@ function PersonList({
   onMove,
   tag,
   onTag,
-  docs,
-  activeDocId,
-  onDoc,
   reveal,
   marks,
   onMark,
@@ -233,9 +233,6 @@ function PersonList({
   onMove: (id: number, place: TreePlace, kind?: TreeKind) => void;
   tag: string | null;
   onTag: (tag: string | null) => void;
-  docs: DocListItem[];
-  activeDocId: number | null;
-  onDoc: (id: number) => void;
   reveal: Reveal | null;
 }) {
   const [filter, setFilter] = useState("");
@@ -330,21 +327,6 @@ function PersonList({
     const extra = new Set(fieldHits);
     return { shown: treeFirst(named), mentions: treeFirst(tagged.filter((p) => extra.has(p.id) && !ids.has(p.id))) };
   }, [filter, tag, persons, fieldHits]);
-
-  // the places whose name, spellings, district or text have all the words
-  // collections that are not about people (Bhajans & Kirtans…): a group of
-  // their own after the records, with their texts
-  const topics = useMemo(() => {
-    const by = new Map<string, DocListItem[]>();
-    for (const d of docs) {
-      const col = d.dir.split("/")[0];
-      by.set(col, [...(by.get(col) ?? []), d]);
-    }
-    return [...by]
-      .filter(([, ds]) => ds.every((d) => d.personId === null))
-      .map(([name, ds]) => [name, [...ds].sort((a, b) => a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: "base" }))] as const)
-      .sort((a, b) => a[0].localeCompare(b[0], undefined, { sensitivity: "base" }));
-  }, [docs]);
 
   // the Guru Paramparā: the disciples of each record, in their order
   // (in a line view each one goes under its guru of that line, as in the drawn tree)
@@ -1080,52 +1062,6 @@ function PersonList({
               ))}
             </div>
           )}
-          {topics.map(([name, ds]) => (
-            <div key={name}>
-              {/* these start folded: the key is stored when opened */}
-              {groupHead(`col:${name}`, name, ds.length, undefined, undefined, closedGroups.has(`col:${name}`))}
-              {closedGroups.has(`col:${name}`) &&
-                (() => {
-                  // a collection with subfolders («Lectures Gurudeva/1999»…): its own texts first, then one folded
-                  // head per subfolder (Whisper, 16-11-2026)
-                  const docRow = (d: DocListItem, indent = false) => (
-                    <div
-                      key={d.id}
-                      data-ctx="doc"
-                      data-id={d.id}
-                      className={`tree-row doc${activeDocId === d.id ? " active" : ""}`}
-                      style={indent ? { paddingLeft: 30 } : undefined}
-                      onClick={() => onDoc(d.id)}
-                      title={d.title}
-                    >
-                      <FileText size={14} />
-                      <span className="name">{d.title}</span>
-                    </div>
-                  );
-                  const subs = new Map<string, DocListItem[]>();
-                  const own: DocListItem[] = [];
-                  for (const d of ds) {
-                    const sub = d.dir.split("/").slice(1).join("/");
-                    if (sub) subs.set(sub, [...(subs.get(sub) ?? []), d]);
-                    else own.push(d);
-                  }
-                  if (!subs.size) return ds.map((d) => docRow(d));
-                  return (
-                    <>
-                      {own.map((d) => docRow(d))}
-                      {[...subs]
-                        .sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }))
-                        .map(([sub, sd]) => (
-                          <div key={sub} style={{ paddingLeft: 14 }}>
-                            {groupHead(`col:${name}/${sub}`, sub, sd.length, undefined, undefined, closedGroups.has(`col:${name}/${sub}`))}
-                            {closedGroups.has(`col:${name}/${sub}`) && sd.map((d) => docRow(d, true))}
-                          </div>
-                        ))}
-                    </>
-                  );
-                })()}
-            </div>
-          ))}
           {/* the poets at the very bottom (Whisper, 16-11-2026) */}
           {poets.length > 0 && groupHead("poets", t.poets, poets.length, undefined, t.poetsHint)}
           {poets.length > 0 && !closedGroups.has("poets") && (
@@ -1524,7 +1460,8 @@ export function Sidebar(p: Props) {
       parts.forEach((_, i) => n.add(parts.slice(0, i + 1).join("/")));
       return n;
     });
-    if (p.tab !== "library") p.onTab("library");
+    const own = (Object.keys(COLLECTION_OF) as SideTab[]).find((k) => d.dir.split("/")[0] === COLLECTION_OF[k]);
+    if (p.tab !== (own ?? "library")) p.onTab(own ?? "library");
     scrollToRow(`[data-ctx="doc"][data-id="${d.id}"]`);
   }, [p.reveal]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
@@ -1554,7 +1491,23 @@ export function Sidebar(p: Props) {
     ["library", LibIcon, t.library],
     ["bookmarks", Star, t.bookmarks],
     ["history", History, t.history],
+    ["books", BookOpen, t.books],
+    ["lectures", Mic, t.lecturesGurudeva],
   ];
+  const coll = COLLECTION_OF[p.tab];
+  const collTree = useMemo(() => {
+    if (!coll) return null;
+    const words = foldName(libFilter).split(" ").filter(Boolean);
+    const docs = p.docs
+      .filter((d) => d.dir.split("/")[0] === coll)
+      .filter((d) => !words.length || words.every((w) => ` ${foldName(`${d.title} ${d.dir.split("/").join(" ")}`)}`.includes(` ${w}`)))
+      .sort((a, b) => a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: "base" }));
+    const root = buildTree(docs)[0];
+    const keys = new Set<string>();
+    const all = (ns: Node[]) => ns.forEach((n) => (keys.add(n.key), all(n.folders)));
+    if (root && words.length) all(root.folders);
+    return { root, keys: words.length ? keys : null };
+  }, [coll, libFilter, p.docs]);
 
   return (
     <aside className="sidebar">
@@ -1577,9 +1530,6 @@ export function Sidebar(p: Props) {
             onMove={p.onMovePerson}
             tag={p.tag}
             onTag={p.onTag}
-            docs={p.docs}
-            activeDocId={p.activeDocId}
-            onDoc={(id) => p.onDoc(id)}
             reveal={p.reveal}
             marks={p.marks}
             onMark={p.onMark}
@@ -1615,6 +1565,38 @@ export function Sidebar(p: Props) {
               onDoc={(id) => p.onDoc(id)}
               lang={p.lang}
             />
+          </div>
+        )}
+
+        {coll && collTree && (
+          <div className="fade-in">
+            <div className="person-filter">
+              <Search size={14} />
+              <input value={libFilter} placeholder={t.filterLibrary} title={t.filterLibraryHint} spellCheck={false} onChange={(e) => setLibFilter(e.target.value)} />
+              {libFilter && (
+                <button className="icon-btn" onClick={() => setLibFilter("")}>
+                  <X size={13} />
+                </button>
+              )}
+            </div>
+            {!collTree.root && <div className="side-empty">{t.noLibMatches}</div>}
+            {collTree.root && (
+              <>
+                {/* its own texts first («Daily Quotes»), then a folder per year or book */}
+                <Tree nodes={[]} docs={collTree.root.docs} depth={0} open={open} toggle={toggle} activeDir={p.activeDir} activeDocId={p.activeDocId} onFolder={p.onFolder} onDoc={(id) => p.onDoc(id)} lang={p.lang} />
+                <Tree
+                  nodes={collTree.root.folders}
+                  depth={1}
+                  open={collTree.keys ?? open}
+                  toggle={collTree.keys ? () => {} : toggle}
+                  activeDir={p.activeDir}
+                  activeDocId={p.activeDocId}
+                  onFolder={p.onFolder}
+                  onDoc={(id) => p.onDoc(id)}
+                  lang={p.lang}
+                />
+              </>
+            )}
           </div>
         )}
 
