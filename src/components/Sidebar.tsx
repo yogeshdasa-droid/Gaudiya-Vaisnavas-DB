@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { BookMarked, BookOpen, ChevronRight, ChevronsDownUp, ChevronsUpDown, Flower2, MapPin, Mic, Pin, PinOff, Plus, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
+import { BookMarked, ChevronRight, ChevronsDownUp, ChevronsUpDown, Flower2, MapPin, Mic, Pin, PinOff, Plus, FileText, Folder, FolderOpen, History, Library as LibIcon, Search, Star, Trash2, Upload, UserPlus, Users, X } from "lucide-react";
 import { GAUDA_AREAS, placeZone, VRAJA_AREAS, ZONES } from "../places";
 import { api, Bookmark, DocListItem, fileUrl, hueOf, isBhagavatam, isDeity, isPoet, Marks, Person, PersonListItem, Place, sortDisciples, TreeKind, TreePlace } from "../api";
 import { NoPhoto } from "./Logo";
@@ -12,7 +12,8 @@ import { Lang, T } from "../i18n";
 export type SideTab = "persons" | "places" | "deities" | "library" | "bookmarks" | "history" | "books" | "lectures";
 
 /** The two collections with a panel of their own, at the foot of the left bar (Whisper, 17-11-2026). */
-const COLLECTION_OF: Partial<Record<SideTab, string>> = { books: "Libros", lectures: "Lectures Gurudeva" };
+// (the «Books» button went away on 17-11-2026: the books are shown in the Library)
+const COLLECTION_OF: Partial<Record<SideTab, string>> = { lectures: "Lectures Gurudeva" };
 
 /** A text or record to show in its tree (`n` tells two requests apart). */
 export type Reveal = { kind: "doc" | "person"; id: number; n: number };
@@ -1491,7 +1492,6 @@ export function Sidebar(p: Props) {
     ["library", LibIcon, t.library],
     ["bookmarks", Star, t.bookmarks],
     ["history", History, t.history],
-    ["books", BookOpen, t.books],
     ["lectures", Mic, t.lecturesGurudeva],
   ];
   const coll = COLLECTION_OF[p.tab];

@@ -170,6 +170,10 @@ export default function App() {
   const [history, setHistory] = usePersisted<string[]>("history", []);
   const [recent, setRecent] = usePersisted<RecentDoc[]>("recent", []);
   const [sideTab, setSideTab] = usePersisted<SideTab>("sideTab", "persons");
+  // «Books» is no longer a panel of its own (17-11-2026): the books are in the Library
+  useEffect(() => {
+    if (sideTab === "books") setSideTab("library");
+  }, [sideTab]); // eslint-disable-line react-hooks/exhaustive-deps
   const [sideW, setSideW] = usePersisted("sideW", 280);
   const [resW, setResW] = usePersisted("resW", 430);
   const [sideOpen, setSideOpen] = usePersisted("sideOpen", true);

@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **17-11-2026** (versión **0.20.0**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **17-11-2026** (versión **0.20.1**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,17 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.0)
+## 5. Qué hace hoy (v0.20.1)
+
+### Novedades de la 0.20.1 (17-11-2026) — la barra reordenada y el panel con pétalos
+- Barra (`Rail.tsx`): Calendario · Vaiṣṇavas · **Árboles ▾** (Paramparā Tree, Línea de tiempo, Linaje, Vaṁśa, Panorama)
+  · **Dhāma ▾** (Tīrthas, Deidades) · Marcadores · Historial … Lectures Gurudeva · Anthology · **icono de Biblioteca**
+  (solo el icono `Archive`, clase `rail-icon`, al final). `Group` acepta `label`/`icon` propios (siempre muestra
+  «Árboles» / «Dhāma»; i18n `groupTrees`, `groupDhama`). Sin botón «Libros»: los libros se ven en la Biblioteca
+  (`COLLECTION_OF` ya sin `books`; un `sideTab` guardado «books» pasa a «library» en App.tsx).
+- Panel lateral (CSS al final de styles.css): carpetas y bibliotecas con el «pétalo» de la barra (`--petal-*`), la
+  abierta en rosa lleno; números en pastilla; marcas de color del árbol como pastilla redondeada entera; «Guru
+  Paramparā» (`.group-head`) en rosa.
 
 ### Novedades de la 0.20.0 (17-11-2026) — Bhakta Bandhav Anthology
 - Apartado nuevo **«Anthology»** (botón al final de la barra, `components/Anthology.tsx`): los 77 volúmenes de la
@@ -1903,6 +1913,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **17-11-2026 — v0.20.1**: barra reordenada (Árboles ▾, Dhāma ▾, Biblioteca como icono, sin «Libros»); carpetas del
+  panel con el pétalo de la barra. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.1
 - **17-11-2026 — v0.20.0**: apartado «Anthology» (Bhakta Bandhav Anthology: 77 volúmenes, 919 charlas; buscar por
   palabras, año, lugar y tema). Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.0
 - **17-11-2026 — v0.19.0**: la barra nueva (grupos desplegables, el nombre lleva a Inicio, opción «Arriba» en Ajustes).

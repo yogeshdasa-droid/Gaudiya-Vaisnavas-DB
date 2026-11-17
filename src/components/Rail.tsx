@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { BarChart3, BookCopy, BookOpen, CalendarDays, ChevronDown, Clock3, Flower2, GitFork, History, Library as LibIcon, MapPin, Mic, Network, Settings as Gear, Star, Trees, Users } from "lucide-react";
+import { Archive, BarChart3, BookCopy, CalendarDays, ChevronDown, Clock3, Flower2, GitFork, History, Landmark, ListTree, MapPin, Mic, Network, Settings as Gear, Star, Trees, Users } from "lucide-react";
 import { T } from "../i18n";
 import type { SideTab } from "./Sidebar";
 import { APP_NAME, LogoMark } from "./Logo";
@@ -20,9 +20,10 @@ interface Props {
 
 type Item = { key: string; icon: typeof Gear; label: string; on: boolean; click: () => void };
 
-/** A button that opens several (Whisper, 17-11-2026): it shows the one in use, or the first. On the left the
- *  others open just below; with the bar on top, as a menu. */
-function Group({ items, compact }: { items: Item[]; compact: boolean }) {
+/** A button that opens several (Whisper, 17-11-2026): with its own name and icon (Whisper: «Árboles», «Dhāma» — a
+ *  name different from what is inside), or else the one in use. On the left the others open just below; with the
+ *  bar on top, as a menu. */
+function Group({ items, compact, label, icon }: { items: Item[]; compact: boolean; label?: string; icon?: typeof Gear }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -34,12 +35,13 @@ function Group({ items, compact }: { items: Item[]; compact: boolean }) {
     return () => window.removeEventListener("mousedown", close);
   }, [open]);
   const shown = items.find((i) => i.on) ?? items[0];
-  const I = shown.icon;
+  const I = icon ?? shown.icon;
+  const name = label ?? shown.label;
   return (
     <div className={`rail-group${open ? " open" : ""}`} ref={ref}>
-      <button className={items.some((i) => i.on) ? "on" : ""} onClick={() => setOpen((o) => !o)} title={compact ? shown.label : undefined}>
+      <button className={items.some((i) => i.on) ? "on" : ""} onClick={() => setOpen((o) => !o)} title={compact ? name : undefined}>
         <I size={20} />
-        <span>{shown.label}</span>
+        <span>{name}</span>
         <ChevronDown size={14} className="rail-caret" />
       </button>
       {open && (
@@ -76,8 +78,11 @@ export function Rail({ t, compact, view, sideTab, sideOpen, onView, onSide }: Pr
         <span>{APP_NAME}</span>
       </div>
       {one(v("calendar", CalendarDays, t.calendarShort))}
+      {one(s("persons", Users, t.vaisnavas))}
       <Group
         compact={compact}
+        label={t.groupTrees}
+        icon={ListTree}
         items={[
           v("tree", Network, t.paramparaTree),
           v("timeline", Clock3, t.timeline),
@@ -86,16 +91,18 @@ export function Rail({ t, compact, view, sideTab, sideOpen, onView, onSide }: Pr
           v("panorama", BarChart3, t.panorama),
         ]}
       />
+      <Group compact={compact} label={t.groupDhama} icon={Landmark} items={[s("places", MapPin, t.tirthas), s("deities", Flower2, t.deities)]} />
       <hr />
-      {one(s("persons", Users, t.vaisnavas))}
-      {one(s("places", MapPin, t.tirthas))}
-      {one(s("deities", Flower2, t.deities))}
-      <Group compact={compact} items={[s("library", LibIcon, t.library), s("books", BookOpen, t.books)]} />
       {one(s("bookmarks", Star, t.bookmarks))}
       {one(s("history", History, t.history))}
       <div className="rail-end">
         {one(s("lectures", Mic, t.lecturesGurudeva))}
         {one(v("anthology", BookCopy, t.anthology))}
+        {/* the Library: only a small icon at the end, out of the way (Whisper, 17-11-2026: «like a ZIP logo»); all the
+            folders are in it — Books, Lectures Gurudeva, Anthology… */}
+        <button className={`rail-icon${sideOpen && sideTab === "library" ? " on" : ""}`} onClick={() => onSide("library")} title={t.library} aria-label={t.library}>
+          <Archive size={20} />
+        </button>
       </div>
     </nav>
   );
