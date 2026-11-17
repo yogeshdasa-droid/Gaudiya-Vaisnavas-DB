@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **17-11-2026** (versión **0.18.9**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **17-11-2026** (versión **0.19.0**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,18 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.18.9)
+## 5. Qué hace hoy (v0.19.0)
+
+### Novedades de la 0.19.0 (17-11-2026) — la barra nueva
+- `Rail.tsx`: el nombre «Vaiṣṇava-kośa» lleva a Inicio (ya no hay botón Inicio); `Group` = un botón que despliega varios
+  y muestra el que está en uso: «Paramparā Tree ▾» (Paramparā Tree, Línea de tiempo, Linaje, Vaṁśa, Panorama) y
+  «Biblioteca ▾» (Biblioteca, Libros); «Lectures Gurudeva» al final.
+- Ajustes › General › «Barra de botones»: a la izquierda o **arriba** (`barTop` en App.tsx → `data-rail="top"` en `<html>`;
+  CSS al final de styles.css): una fila encima de la búsqueda, menús hacia abajo; la lista de la izquierda gana espacio.
+- Inicio sin los botones Paramparā Tree / Línea de tiempo / Panorama bajo el título.
+- Datos: textos de las conferencias de SNM en 14 fichas (tandas 2–12; además Gaṅgā-mātā, Śrīdhara Mahārāja,
+  Rāmānujācārya, Raghunātha dāsa, Narottama).
+
 
 ### Novedades de la 0.18.9 (17-11-2026) — Libros y Lectures Gurudeva a mano; las charlas en pergamino
 - Barra izquierda (`Rail.tsx`): abajo «Libros» y «Lectures Gurudeva» en lugar de Ajustes y Ayuda (siguen arriba a la derecha).
@@ -1875,6 +1886,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **17-11-2026 — v0.19.0**: la barra nueva (grupos desplegables, el nombre lleva a Inicio, opción «Arriba» en Ajustes).
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.19.0
 - **17-11-2026 — v0.18.9**: «Libros» y «Lectures Gurudeva» en la barra izquierda; las charlas sobre un pergamino.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.9
 - **17-11-2026 — v0.18.8**: charlas de Gurudeva como textos sueltos en «Lectures Gurudeva/<año>», subcarpetas en el lateral.
