@@ -197,7 +197,7 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 - Las charlas de «Lectures Gurudeva» se leen sobre un **pergamino** (`Reader.tsx` `scroll-view`, CSS `.parchment`,
   `.parchment-roll`): papel dibujado con CSS (sin imagen que estirar), bordes rasgados con máscara, rollo arriba y abajo,
   título en caligrafía.
-- Datos: textos «In the lectures of Śrīla Bhaktivedānta Nārāyaṇa Gosvāmī Mahārāja» en 10 fichas (`snm/fichas2–9.mjs`):
+- Datos: textos «In the lectures of Śrīla Bhaktivedānta Nārāyaṇa Gosvāmī Mahārāja» en 9 fichas (`snm/fichas2–9.mjs`):
   Prabhupāda, Bhaktisiddhānta, Bhaktivinoda, Rūpa, Jīva, Nityānanda (guru: Lakṣmīpati Tīrtha primero), Advaita, Gadādhara, Śrīvāsa.
 
 
