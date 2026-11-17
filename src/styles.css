@@ -8453,3 +8453,147 @@ svg.satellite .map-dot {
   border-radius: 999px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
 }
+
+/* ================================================================ Gurudeva's lectures on a parchment scroll (17-11-2026, a test)
+   The paper is drawn here (no picture to stretch: the lectures are long): warm paper darker at the edges, a faint grain,
+   ragged left and right edges (a mask), and a rolled end above the start and below the end of the text. */
+.reader.scroll-view .reader-head {
+  background: transparent;
+  text-align: center;
+}
+.reader.scroll-view .reader-title .meta {
+  justify-content: center;
+}
+.reader.scroll-view .reader-head .reader-title h1 {
+  font-family: "Great Vibes", var(--font-serif), cursive;
+  font-weight: 400;
+  font-size: 44px;
+  line-height: 1.15;
+  letter-spacing: 0;
+  margin-top: 8px;
+  color: #9a6a2a;
+}
+:root[data-theme="dark"] .reader.scroll-view .reader-title h1 {
+  color: #e2c48c;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .reader.scroll-view .reader-title h1 {
+    color: #e2c48c;
+  }
+}
+.reader.scroll-view .reader-scroll {
+  padding: 18px 0 70px;
+}
+:root .reader.scroll-view .reader-scroll > .reader-body.parchment {
+  --paper: #f1dfb6;
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 46px 78px 56px;
+  border: 0;
+  border-radius: 0;
+  color: #3b2a16;
+  font-family: var(--font-serif);
+  line-height: 1.75;
+  background:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.22  0 0 0 0 0.08  0 0 0 0.10 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+    radial-gradient(120% 60% at 50% 50%, transparent 55%, rgba(120, 72, 20, 0.22) 100%),
+    linear-gradient(90deg, rgba(110, 66, 18, 0.28), transparent 9%, transparent 91%, rgba(110, 66, 18, 0.28)),
+    var(--paper);
+  /* the ragged edges: a torn border repeated down each side */
+  -webkit-mask:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='160' preserveAspectRatio='none'><path d='M14 0 L6 0 L9 12 L3 22 L8 34 L2 47 L7 58 L1 71 L6 83 L3 96 L9 108 L2 121 L7 133 L4 146 L8 160 L14 160 Z'/></svg>") left top / 14px 160px repeat-y,
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='160' preserveAspectRatio='none'><path d='M0 0 L8 0 L5 13 L11 24 L6 37 L12 49 L7 61 L13 73 L8 86 L11 98 L5 110 L12 122 L7 135 L10 147 L6 160 L0 160 Z'/></svg>") right top / 14px 160px repeat-y,
+    linear-gradient(#000, #000) center / calc(100% - 26px) 100% no-repeat;
+  mask:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='160' preserveAspectRatio='none'><path d='M14 0 L6 0 L9 12 L3 22 L8 34 L2 47 L7 58 L1 71 L6 83 L3 96 L9 108 L2 121 L7 133 L4 146 L8 160 L14 160 Z'/></svg>") left top / 14px 160px repeat-y,
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='160' preserveAspectRatio='none'><path d='M0 0 L8 0 L5 13 L11 24 L6 37 L12 49 L7 61 L13 73 L8 86 L11 98 L5 110 L12 122 L7 135 L10 147 L6 160 L0 160 Z'/></svg>") right top / 14px 160px repeat-y,
+    linear-gradient(#000, #000) center / calc(100% - 26px) 100% no-repeat;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
+}
+.reader-body.parchment h1,
+.reader-body.parchment h2,
+.reader-body.parchment h3 {
+  font-family: "Cormorant Garamond", var(--font-serif), serif;
+  font-style: italic;
+  font-weight: 700;
+  text-align: center;
+  color: #7a4512;
+  border: 0;
+  letter-spacing: 0;
+}
+.reader-body.parchment h2::after,
+.reader-body.parchment h3::after {
+  content: "❦";
+  display: block;
+  font-style: normal;
+  font-size: 0.6em;
+  opacity: 0.6;
+  margin-top: 2px;
+}
+.reader-body.parchment strong {
+  color: #5a3210;
+}
+.reader-body.parchment em {
+  color: #4a3218;
+}
+.reader-body.parchment blockquote {
+  background: rgba(150, 100, 40, 0.08);
+  border-left: 3px solid rgba(140, 90, 30, 0.45);
+  color: #4a3218;
+  font-style: italic;
+}
+.reader-body.parchment a {
+  color: #8a4b12;
+}
+.reader-body.parchment hr {
+  border-color: rgba(120, 80, 30, 0.3);
+}
+.reader-body.parchment mark {
+  background: #f2c76a;
+  color: #2a1a08;
+}
+/* the rolled ends: a wooden-paper cylinder with darker curled tips */
+.parchment-roll {
+  position: relative;
+  max-width: 840px;
+  height: 42px;
+  margin: 0 auto;
+  border-radius: 21px;
+  background: linear-gradient(
+    180deg,
+    #8c6334 0%,
+    #c9a26a 18%,
+    #f3e0b5 42%,
+    #e6c993 60%,
+    #b88c52 82%,
+    #7a542a 100%
+  );
+  box-shadow:
+    0 8px 14px rgba(0, 0, 0, 0.4),
+    inset 0 -2px 3px rgba(60, 35, 10, 0.35);
+  z-index: 1;
+}
+.parchment-roll.top {
+  margin-bottom: -14px;
+}
+.parchment-roll.bottom {
+  margin-top: -14px;
+}
+.parchment-roll::before,
+.parchment-roll::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  width: 26px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #5e3d1a 0 22%, #a57a44 30%, #d8b97f 52%, #8a6232 78%);
+  box-shadow: inset 0 0 4px rgba(40, 20, 5, 0.6);
+}
+.parchment-roll::before {
+  left: -6px;
+}
+.parchment-roll::after {
+  right: -6px;
+}

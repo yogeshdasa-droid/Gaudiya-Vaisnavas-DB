@@ -280,7 +280,9 @@ export function Reader(p: Props) {
   // the «Vraja-Nitya-līlā» texts the same way, in blue
   const vraja = doc.collection === VRAJA_LILA;
   const gano = doc.collection === GANODDESA || vraja;
-  const style: ReaderStyle = gano ? "serif" : readerStyle;
+  // Gurudeva's lectures, on a parchment scroll (Whisper, 17-11-2026: a test)
+  const scroll = doc.dir.split("/")[0] === "Lectures Gurudeva";
+  const style: ReaderStyle = gano || scroll ? "serif" : readerStyle;
   const isPdf = !!doc.original?.toLowerCase().endsWith(".pdf");
   const editSection = () => {
     const s = sections.find((x) => x.ordinal === currentOrd) ?? sections[0];
@@ -292,7 +294,7 @@ export function Reader(p: Props) {
   };
 
   return (
-    <div className={vraja ? "reader gano-view vraja-view" : gano ? "reader gano-view" : "reader"}>
+    <div className={vraja ? "reader gano-view vraja-view" : gano ? "reader gano-view" : scroll ? "reader scroll-view" : "reader"}>
       {gano && view === "text" && <Mandala className="gano-mandala" />}
       {view === "text" && <div className="read-progress" style={{ transform: `scaleX(${progress})` }} />}
       {/* the same «Back», always in sight at the bottom (Whisper, 16-11-2026: back to «Vaṁśa» after reading a verse) */}
@@ -441,7 +443,8 @@ export function Reader(p: Props) {
         <iframe className="pdf-frame" src={fileUrl("original", doc.id)} title={doc.original ?? doc.title} />
       ) : (
         <div className="reader-scroll" data-ctx="reader" ref={scrollRef} onScroll={onScroll}>
-          <div className={`reader-body ${style === "editor" ? "src-view" : style}`} style={{ fontSize }} ref={bodyRef} onClick={onBodyClick}>
+          {scroll && <div className="parchment-roll top" aria-hidden />}
+          <div className={`reader-body ${style === "editor" ? "src-view" : style}${scroll ? " parchment" : ""}`} style={{ fontSize }} ref={bodyRef} onClick={onBodyClick}>
             {doc.size < 50 && <p className="muted no-text">{doc.original ? t.noTextHint : ""}</p>}
             {lo > 0 && <div className="more-hint">• • •</div>}
             {sections.map((s) => (
@@ -449,6 +452,7 @@ export function Reader(p: Props) {
             ))}
             {hi < count - 1 && <div className="more-hint">• • •</div>}
           </div>
+          {scroll && <div className="parchment-roll bottom" aria-hidden />}
         </div>
       )}
 

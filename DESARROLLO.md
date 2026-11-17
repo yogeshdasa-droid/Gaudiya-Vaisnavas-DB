@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **17-11-2026** (versión **0.18.8**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **17-11-2026** (versión **0.18.9**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,18 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.18.8)
+## 5. Qué hace hoy (v0.18.9)
+
+### Novedades de la 0.18.9 (17-11-2026) — Libros y Lectures Gurudeva a mano; las charlas en pergamino
+- Barra izquierda (`Rail.tsx`): abajo «Libros» y «Lectures Gurudeva» en lugar de Ajustes y Ayuda (siguen arriba a la derecha).
+  Cada una abre su panel (`SideTab` «books» / «lectures», `COLLECTION_OF` en `Sidebar.tsx`) con buscador; las subcarpetas plegables.
+  El panel «Vaiṣṇavas» queda con Guru Paramparā, Vaiṣṇava-maṇḍala, Bhāgavata-maṇḍala y Poetas.
+- Las charlas de «Lectures Gurudeva» se leen sobre un **pergamino** (`Reader.tsx` `scroll-view`, CSS `.parchment`,
+  `.parchment-roll`): papel dibujado con CSS (sin imagen que estirar), bordes rasgados con máscara, rollo arriba y abajo,
+  título en caligrafía.
+- Datos: textos «In the lectures of Śrīla Bhaktivedānta Nārāyaṇa Gosvāmī Mahārāja» en 10 fichas (`snm/fichas2–9.mjs`):
+  Prabhupāda, Bhaktisiddhānta, Bhaktivinoda, Rūpa, Jīva, Nityānanda (guru: Lakṣmīpati Tīrtha primero), Advaita, Gadādhara, Śrīvāsa.
+
 
 ### Novedades de la 0.18.8 (17-11-2026) — las charlas de Gurudeva, una a una
 - Las 1.017 charlas de Śrīla Bhaktivedānta Nārāyaṇa Gosvāmī Mahārāja ya no van en «Libros» (un libro por año) sino como textos
@@ -1864,6 +1875,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **17-11-2026 — v0.18.9**: «Libros» y «Lectures Gurudeva» en la barra izquierda; las charlas sobre un pergamino.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.9
 - **17-11-2026 — v0.18.8**: charlas de Gurudeva como textos sueltos en «Lectures Gurudeva/<año>», subcarpetas en el lateral.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.8
 - **16-11-2026 — v0.18.7**: 92 fichas del Bhāgavatam; Hiraṇyākṣa, Rāvaṇa y Vibhīṣaṇa unidos a Vaṁśa.
