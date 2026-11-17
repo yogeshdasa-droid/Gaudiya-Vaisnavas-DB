@@ -1865,6 +1865,7 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 ## 8. Historial
 
 - **17-11-2026 — v0.18.8**: charlas de Gurudeva como textos sueltos en «Lectures Gurudeva/<año>», subcarpetas en el lateral.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.8
 - **16-11-2026 — v0.18.7**: 92 fichas del Bhāgavatam; Hiraṇyākṣa, Rāvaṇa y Vibhīṣaṇa unidos a Vaṁśa.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.18.7
 - **16-11-2026 — v0.18.6**: 75 fichas del Bhāgavatam unidas a Vaṁśa; «Poets» al final del lateral.
