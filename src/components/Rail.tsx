@@ -1,4 +1,5 @@
-import { BarChart3, BookOpen, CalendarDays, Clock3, Flower2, GitFork, History, Home as HomeIcon, Library as LibIcon, MapPin, Mic, Network, Settings as Gear, Star, Trees, Users } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { BarChart3, BookOpen, CalendarDays, ChevronDown, Clock3, Flower2, GitFork, History, Library as LibIcon, MapPin, Mic, Network, Settings as Gear, Star, Trees, Users } from "lucide-react";
 import { T } from "../i18n";
 import type { SideTab } from "./Sidebar";
 import { APP_NAME, LogoMark } from "./Logo";
@@ -17,48 +18,82 @@ interface Props {
   onSide: (tab: SideTab) => void;
 }
 
-/** The Windows 11 style's left bar: big icons with their names, like K-Desktop. */
+type Item = { key: string; icon: typeof Gear; label: string; on: boolean; click: () => void };
+
+/** A button that opens several (Whisper, 17-11-2026): it shows the one in use, or the first. On the left the
+ *  others open just below; with the bar on top, as a menu. */
+function Group({ items, compact }: { items: Item[]; compact: boolean }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: MouseEvent) => {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    window.addEventListener("mousedown", close);
+    return () => window.removeEventListener("mousedown", close);
+  }, [open]);
+  const shown = items.find((i) => i.on) ?? items[0];
+  const I = shown.icon;
+  return (
+    <div className={`rail-group${open ? " open" : ""}`} ref={ref}>
+      <button className={items.some((i) => i.on) ? "on" : ""} onClick={() => setOpen((o) => !o)} title={compact ? shown.label : undefined}>
+        <I size={20} />
+        <span>{shown.label}</span>
+        <ChevronDown size={14} className="rail-caret" />
+      </button>
+      {open && (
+        <div className="rail-menu">
+          {items.map((i) => (
+            <button key={i.key} className={i.on ? "on" : ""} onClick={() => (setOpen(false), i.click())} title={compact ? i.label : undefined}>
+              <i.icon size={20} />
+              <span>{i.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** The Windows 11 style's bar: big icons with their names, like K-Desktop (on the left, or in one row on top). */
 export function Rail({ t, compact, view, sideTab, sideOpen, onView, onSide }: Props) {
-  const views: [RailView, typeof Gear, string][] = [
-    ["home", HomeIcon, t.home],
-    ["calendar", CalendarDays, t.calendarShort],
-    ["vamsa", Trees, t.vamsa],
-    ["tree", Network, t.paramparaTree],
-    ["timeline", Clock3, t.timeline],
-    ["lineage", GitFork, t.lineage],
-    ["panorama", BarChart3, t.panorama],
-  ];
-  const panels: [SideTab, typeof Gear, string][] = [
-    ["persons", Users, t.vaisnavas],
-    ["places", MapPin, t.tirthas],
-    ["deities", Flower2, t.deities],
-    ["library", LibIcon, t.library],
-    ["bookmarks", Star, t.bookmarks],
-    ["history", History, t.history],
-  ];
-  const item = (key: string, I: typeof Gear, label: string, on: boolean, click: () => void) => (
-    <button key={key} className={on ? "on" : ""} onClick={click} title={compact ? label : undefined}>
-      <I size={20} />
-      <span>{label}</span>
+  const v = (k: RailView, icon: typeof Gear, label: string): Item => ({ key: k, icon, label, on: view === k, click: () => onView(k) });
+  const s = (k: SideTab, icon: typeof Gear, label: string): Item => ({ key: k, icon, label, on: sideOpen && sideTab === k, click: () => onSide(k) });
+  const one = (i: Item) => (
+    <button key={i.key} className={i.on ? "on" : ""} onClick={i.click} title={compact ? i.label : undefined}>
+      <i.icon size={20} />
+      <span>{i.label}</span>
     </button>
   );
   return (
     <nav className={`rail ${compact ? "compact" : ""}`}>
-      <div className="rail-brand">
+      {/* the name takes to the Home page: no «Home» button (Whisper, 17-11-2026) */}
+      <div className="rail-brand" role="button" tabIndex={0} onClick={() => onView("home")} onKeyDown={(e) => e.key === "Enter" && onView("home")} title={t.home}>
         <span className="logo mark">
           <LogoMark />
         </span>
         <span>{APP_NAME}</span>
       </div>
-      {views.map(([k, I, label]) => item(k, I, label, view === k, () => onView(k)))}
+      {one(v("calendar", CalendarDays, t.calendarShort))}
+      <Group
+        compact={compact}
+        items={[
+          v("tree", Network, t.paramparaTree),
+          v("timeline", Clock3, t.timeline),
+          v("lineage", GitFork, t.lineage),
+          v("vamsa", Trees, t.vamsa),
+          v("panorama", BarChart3, t.panorama),
+        ]}
+      />
       <hr />
-      {panels.map(([k, I, label]) => item(k, I, label, sideOpen && sideTab === k, () => onSide(k)))}
-      {/* Settings and Help are also at the top right: here the books and Gurudeva's lectures, closer at hand
-          (Whisper, 17-11-2026) */}
-      <div className="rail-end">
-        {item("books", BookOpen, t.books, sideOpen && sideTab === "books", () => onSide("books"))}
-        {item("lectures", Mic, t.lecturesGurudeva, sideOpen && sideTab === "lectures", () => onSide("lectures"))}
-      </div>
+      {one(s("persons", Users, t.vaisnavas))}
+      {one(s("places", MapPin, t.tirthas))}
+      {one(s("deities", Flower2, t.deities))}
+      <Group compact={compact} items={[s("library", LibIcon, t.library), s("books", BookOpen, t.books)]} />
+      {one(s("bookmarks", Star, t.bookmarks))}
+      {one(s("history", History, t.history))}
+      <div className="rail-end">{one(s("lectures", Mic, t.lecturesGurudeva))}</div>
     </nav>
   );
 }

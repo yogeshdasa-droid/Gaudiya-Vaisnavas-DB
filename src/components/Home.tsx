@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { BarChart3, Clock, Clock3, Database, MapPin, Network, FileText, HardDrive, Sparkles, Star, Upload, Users } from "lucide-react";
+import { Clock, Database, MapPin, FileText, HardDrive, Sparkles, Star, Upload, Users } from "lucide-react";
 import { Bookmark, fileUrl, hueOf, isFavorite, PersonListItem, Place, SearchResult, Status } from "../api";
 import { Lang, T } from "../i18n";
 import { AnimatedNumber } from "./ui";
@@ -27,9 +27,6 @@ interface Props {
   onImportDefaults: () => void;
   /** changes when the data changes (the calendar is read again) */
   reload: number;
-  onTimeline: () => void;
-  onTree: () => void;
-  onPanorama: () => void;
   places: Place[];
   onPlace: (id: number) => void;
   onCalendar: () => void;
@@ -68,7 +65,7 @@ function ofTheDay<X>(list: X[]): X | null {
   return list[(day * 7919) % list.length];
 }
 
-export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, onRecent, onBookmark, onImportDefaults, reload, onTimeline, onTree, onPanorama, places, onPlace, onCalendar, onClearRecent }: Props) {
+export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, onRecent, onBookmark, onImportDefaults, reload, places, onPlace, onCalendar, onClearRecent }: Props) {
   const empty = status !== null && status.docs === 0 && !status.busy;
   // something to discover each day: a record of the Guru Paramparā and a holy place
   const person = useMemo(() => ofTheDay([...persons].filter((p) => p.tree).sort((a, b) => a.id - b.id)), [persons]);
@@ -123,19 +120,7 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
           <div>
             <h1 className="hero-title">{t.welcome}</h1>
             <p>{t.tagline}</p>
-            {!empty && (
-              <div className="hero-actions">
-                <button className="btn ghost" onClick={onTree} title={t.treeViewHint}>
-                  <Network size={15} /> {t.treeView}
-                </button>
-                <button className="btn ghost" onClick={onTimeline} title={t.timelineHint}>
-                  <Clock3 size={15} /> {t.timeline}
-                </button>
-                <button className="btn ghost" onClick={onPanorama} title={t.panoramaHint}>
-                  <BarChart3 size={15} /> {t.panorama}
-                </button>
-              </div>
-            )}
+            {/* the Paramparā Tree, Timeline and Panorama buttons went to the bar (Whisper, 17-11-2026) */}
           </div>
         </header>
         <LotusDivider />

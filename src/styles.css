@@ -8597,3 +8597,137 @@ svg.satellite .map-dot {
 .parchment-roll::after {
   right: -6px;
 }
+
+/* ================================================================ the bar on top (17-11-2026, a test for Whisper)
+   The same buttons in one row above the search bar: the panel (Guru Paramparā…) takes the whole left side. */
+:root[data-rail="top"][data-skin] .app,
+:root[data-rail="top"] .app {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr auto;
+}
+:root[data-rail="top"][data-skin] .app > *,
+:root[data-rail="top"] .app > * {
+  grid-column: 1;
+}
+:root[data-rail="top"] .rail {
+  grid-column: 1;
+  grid-row: 1;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+  width: auto;
+  height: auto;
+  padding: 5px 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-right: 0;
+  border-bottom: 1px solid var(--lotus-line, var(--border));
+  scrollbar-width: none;
+}
+:root[data-rail="top"] .rail::-webkit-scrollbar {
+  display: none;
+}
+:root[data-rail="top"] .rail-brand {
+  padding: 0 12px 0 2px;
+  flex-shrink: 0;
+}
+:root[data-rail="top"] .rail button {
+  flex-shrink: 0;
+  height: 38px;
+  padding: 0 9px 0 5px;
+  gap: 7px;
+  font-size: 13.5px;
+}
+:root[data-rail="top"] .rail button svg {
+  width: 16px;
+  height: 16px;
+  padding: 5px;
+}
+:root[data-rail="top"] .rail button.on::before {
+  left: 10px;
+  right: 10px;
+  top: auto;
+  bottom: 0;
+  width: auto;
+  height: 3px;
+  margin-top: 0;
+}
+:root[data-rail="top"] .rail hr {
+  width: 0;
+  height: 24px;
+  margin: 0 6px;
+  border-top: 0;
+  border-left: 1px solid var(--lotus-line, var(--border));
+}
+:root[data-rail="top"] .rail-end {
+  flex-direction: row;
+  gap: 2px;
+  margin: 0 0 0 auto;
+  padding: 0;
+}
+/* a narrow window: only the petals */
+:root[data-rail="top"] .rail.compact :is(.rail-brand span:not(.logo), button span) {
+  display: none;
+}
+
+/* the Paramparā Tree, Timeline, Lineage and Panorama in one button (17-11-2026) */
+.rail-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.rail-group > button {
+  width: 100%;
+}
+.rail .rail-caret {
+  margin-left: auto;
+  padding: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  fill: none !important;
+  color: var(--text-3, var(--text)) !important;
+  transition: transform 0.15s;
+}
+.rail-group.open .rail-caret {
+  transform: rotate(180deg);
+}
+/* on the left: the four just below, indented */
+.rail-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-left: 14px;
+}
+.rail.compact .rail-menu {
+  padding-left: 0;
+}
+.rail.compact .rail-caret {
+  display: none;
+}
+/* on top: a menu that drops below the button */
+:root[data-rail="top"] .rail-group > button {
+  width: auto;
+}
+:root[data-rail="top"] .rail .rail-caret {
+  margin-left: 2px;
+}
+:root[data-rail="top"] .rail-menu {
+  position: fixed;
+  z-index: 50;
+  min-width: 210px;
+  padding: 6px;
+  margin-top: 44px;
+  background: var(--panel);
+  border: 1px solid var(--lotus-line, var(--border));
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+}
+/* the name of the app is the way Home (17-11-2026) */
+.rail-brand {
+  cursor: pointer;
+  border-radius: 6px;
+}
+.rail-brand:hover {
+  background: var(--hover);
+}

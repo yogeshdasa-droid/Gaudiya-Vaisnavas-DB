@@ -303,6 +303,8 @@ interface Props {
   onLotus: (on: boolean) => void;
   titleFont: TitleFont;
   onTitleFont: (f: TitleFont) => void;
+  barTop: boolean;
+  onBarTop: (on: boolean) => void;
   onClose: () => void;
   onToast: (msg: string) => void;
   onChanged: () => void;
@@ -421,6 +423,16 @@ export function Settings(p: Props) {
                         {f === "normal" ? t.titleFontNormal : f === "script" ? t.titleFontScript : t.titleFontClassic}
                       </button>
                     ))}
+                  </div>
+                </Row>
+                <Row label={t.barPlace} hint={t.barPlaceHint}>
+                  <div className="seg">
+                    <button className={!p.barTop ? "on" : ""} onClick={() => p.onBarTop(false)}>
+                      {t.barLeft}
+                    </button>
+                    <button className={p.barTop ? "on" : ""} onClick={() => p.onBarTop(true)}>
+                      {t.barTop}
+                    </button>
                   </div>
                 </Row>
               </Card>

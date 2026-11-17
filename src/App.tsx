@@ -158,6 +158,8 @@ export default function App() {
   const [lotus, setLotus] = usePersisted("lotus", true);
   // the font of the record names (15-11-2026): normal, calligraphy (Great Vibes) or classic (Cormorant Garamond italic)
   const [titleFont, setTitleFont] = usePersisted<TitleFont>("titleFont", "normal");
+  // the bar of buttons on the left or in one row on top (Whisper, 17-11-2026)
+  const [barTop, setBarTop] = usePersisted<boolean>("barTop", false);
   const [titlesOnly, setTitlesOnly] = usePersisted("titlesOnly", false);
   // search by meaning (EmbeddingGemma); starts off each time
   const [meaning, setMeaning] = useState(false);
@@ -357,6 +359,10 @@ export default function App() {
   useEffect(() => {
     document.documentElement.dataset.titleFont = titleFont;
   }, [titleFont]);
+  useEffect(() => {
+    if (barTop) document.documentElement.dataset.rail = "top";
+    else delete document.documentElement.dataset.rail;
+  }, [barTop]);
   const [systemDark, setSystemDark] = useState(() => window.matchMedia("(prefers-color-scheme: dark)").matches);
   useEffect(() => {
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -1375,9 +1381,6 @@ export default function App() {
             onBookmark={(b) => b.docId && openDoc(b.docId, b.ordinal)}
             onImportDefaults={importDefaults}
             reload={dataTick}
-            onTimeline={() => setMain({ kind: "timeline" })}
-            onTree={() => setMain({ kind: "tree" })}
-            onPanorama={() => setMain({ kind: "panorama" })}
             places={places}
             onPlace={openPlace}
             onCalendar={() => setMain({ kind: "calendar" })}
@@ -1546,6 +1549,8 @@ export default function App() {
           onLotus={setLotus}
           titleFont={titleFont}
           onTitleFont={setTitleFont}
+          barTop={barTop}
+          onBarTop={setBarTop}
           onClose={() => setDialog(null)}
           onToast={showToast}
           onChanged={refreshAll}
