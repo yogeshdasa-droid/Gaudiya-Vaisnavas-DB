@@ -7,6 +7,7 @@ mod calendar;
 mod check;
 mod chronicle;
 mod db;
+mod duration;
 mod export;
 mod extract;
 mod fill;
@@ -1120,6 +1121,26 @@ async fn library_index(state: State<'_, AppState>, id: i64) -> CmdResult<library
     library::update_index(&state.db_path, &f)
 }
 
+/// How long each recording of a library lasts, in seconds (Audios, 18-11-2026; kept in «biodata-duraciones.json»).
+#[tauri::command]
+async fn audio_durations(state: State<'_, AppState>, id: i64) -> CmdResult<std::collections::HashMap<String, f64>> {
+    let f = library::folder_of(&state.conn.lock().unwrap(), id)?.ok_or("Sin carpeta")?;
+    let db = state.db_path.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        let rels: Vec<String> = library::scan(&f)?
+            .into_iter()
+            .filter(|x| {
+                let n = x.name.to_lowercase();
+                [".mp3", ".wav", ".wma", ".wmv"].iter().any(|e| n.ends_with(e))
+            })
+            .map(|x| x.rel)
+            .collect();
+        Ok(duration::durations(&db, &f, &rels))
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}
+
 #[tauri::command]
 async fn library_search(state: State<'_, AppState>, id: i64, query: String) -> CmdResult<Vec<library::Hit>> {
     let f = library::folder_of(&state.conn.lock().unwrap(), id)?.ok_or("Sin carpeta")?;
@@ -1521,6 +1542,7 @@ fn main() {
             library_ids,
             library_index,
             library_search,
+            audio_durations,
             library_open,
             library_attachments,
             open_external,

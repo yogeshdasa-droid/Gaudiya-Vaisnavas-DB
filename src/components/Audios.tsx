@@ -352,6 +352,24 @@ const NO_FILTERS: Filters = { words: "", inText: false, lang: "", group: "", yea
 // what was shown last (coming back to the section finds it as it was)
 let memo: { filters: Filters; sel: string | null; scroll: number } = { filters: NO_FILTERS, sel: null, scroll: 0 };
 let scanCache: { folder: string; recs: Rec[] } | null = null;
+// how long each recording lasts (rel → seconds), read once per session
+let durCache: Record<string, number> | null = null;
+/** the order of the list (Whisper, 18-11-2026): by date, the longest first or the shortest first; remembered */
+type SortBy = "date" | "long" | "short";
+const SORT_KEY = "bio.audioSort";
+function readSort(): SortBy {
+  try {
+    const v = localStorage.getItem(SORT_KEY);
+    return v === "long" || v === "short" ? v : "date";
+  } catch {
+    return "date";
+  }
+}
+/** 4512 s → «1 h 15 min»; 2712 → «45 min» */
+function hm(s: number): string {
+  const m = Math.round(s / 60);
+  return m >= 60 ? `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")} min` : `${Math.max(1, m)} min`;
+}
 
 interface Props {
   t: T;
@@ -424,6 +442,17 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
   const [sel, setSel] = useState<string | null>(focus?.rel ?? memo.sel);
   const [limit, setLimit] = useState(200);
   const links = useAudioData();
+  const [durs, setDurs] = useState<Record<string, number> | null>(durCache);
+  const [sortBy, setSortBy] = useState<SortBy>(readSort);
+  const chooseSort = (s: SortBy) => {
+    setSortBy(s);
+    setLimit(200);
+    try {
+      localStorage.setItem(SORT_KEY, s);
+    } catch {
+      /* not remembered */
+    }
+  };
   const [written, setWritten] = useState<{ byDate: Map<string, Written[]>; all: Written[] } | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -444,6 +473,21 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
   useEffect(() => {
     void load();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // the lengths: after the list, in the background (the first time ~20 s for 6.600 files; then from the kept list)
+  useEffect(() => {
+    if (!recs?.length || durCache) return;
+    let alive = true;
+    api.audioDurations(AUDIOS_LIB).then(
+      (d) => {
+        durCache = d;
+        if (alive) setDurs(d);
+      },
+      () => {},
+    );
+    return () => {
+      alive = false;
+    };
+  }, [recs]);
   const docsKey = docs.length;
   useEffect(() => {
     let alive = true;
@@ -564,6 +608,12 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
       all
         .filter((r) => keep(r) && matchWords(r))
         .sort((a, b) => {
+          if (sortBy !== "date" && durs) {
+            // the unknown ones last
+            const da = durs[a.rel] || (sortBy === "long" ? -1 : 1e9);
+            const db = durs[b.rel] || (sortBy === "long" ? -1 : 1e9);
+            if (da !== db) return sortBy === "long" ? db - da : da - db;
+          }
           const pa = partsOf.get(a.rel);
           const pb = partsOf.get(b.rel);
           return (
@@ -574,7 +624,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
             a.name.localeCompare(b.name)
           );
         }),
-    [all, f, textDays, links, written, partsOf], // eslint-disable-line react-hooks/exhaustive-deps
+    [all, f, textDays, links, written, partsOf, sortBy, durs], // eslint-disable-line react-hooks/exhaustive-deps
   );
   // the counts of each list, with the other filters on
   const counts = useMemo(() => {
@@ -685,6 +735,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
           r={rec}
           groupLabel={groupLabel(rec)}
           pic={rec.place ? picOf.get(foldName(rec.place)) : undefined}
+          dur={durs?.[rec.rel] || 0}
           onPlace={onPlace}
           link={links[rec.name.toLowerCase()]?.doc !== undefined ? (links[rec.name.toLowerCase()] as { doc: number; ord?: number }) : undefined}
           ownTitle={!!links[rec.name.toLowerCase()]?.title}
@@ -847,7 +898,17 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
 
               <div className="au-list">
                 <div className="au-list-head">
-                  <span className="muted small">{A.found(list.length)}</span>
+                  <span className="muted small">
+                    {A.found(list.length)}
+                    {durs && list.length > 0 && ` · ${hm(list.reduce((n, r) => n + (durs[r.rel] || 0), 0))}`}
+                  </span>
+                  <div className="seg au-sort" title={durs ? undefined : A.sortWait}>
+                    {(["date", "long", "short"] as SortBy[]).map((s) => (
+                      <button key={s} className={sortBy === s ? "on" : ""} disabled={s !== "date" && !durs} onClick={() => chooseSort(s)}>
+                        {A.sort[s]}
+                      </button>
+                    ))}
+                  </div>
                   {list.some((r) => r.playable) && (
                     <button className="btn ghost" onClick={() => play(list.find((r) => r.playable)!, list)}>
                       <Play size={14} /> {A.playAll}
@@ -879,6 +940,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
                           {r.part && ` · ${r.part}`}
                           {r.place && ` · ${r.place}`}
                           {partsOf.has(r.rel) && ` · ${A.partOf(partsOf.get(r.rel)!.parts.indexOf(r) + 1, partsOf.get(r.rel)!.parts.length)}`} · <span className={`au-lang-chip l-${r.lang}`}>{groupLabel(r)}</span>
+                          {!!durs?.[r.rel] && <span className="au-dur"> · {clock(durs[r.rel])}</span>}
                         </span>
                         {snip && words.length > 0 && !words.every((w) => r.hay.includes(` ${w}`)) && (
                           <span className="anth-row-snip">
@@ -979,6 +1041,8 @@ function AudioPage(p: {
   groupLabel: string;
   /** its place in «Tīrthas», with a photo */
   pic?: Place;
+  /** how long it lasts (seconds; 0 = not known) */
+  dur: number;
   onPlace?: (id: number) => void;
   link?: { doc: number; ord?: number };
   /** the title was given by hand */
@@ -1098,6 +1162,7 @@ function AudioPage(p: {
       )}
       <div className="au-meta">
         {r.date && <span>{formatLecDate(r.date.length === 7 ? r.date.slice(0, 4) : r.date, lang)}</span>}
+        {p.dur > 0 && <span className="au-chip au-dur">{clock(p.dur)}</span>}
         {r.part && <span className="au-chip">{r.part}</span>}
         {r.place && (
           <button className="au-chip" onClick={() => p.onCrumb({ ...NO_FILTERS, place: r.place })}>

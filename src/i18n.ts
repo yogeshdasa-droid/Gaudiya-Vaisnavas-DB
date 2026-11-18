@@ -39,6 +39,8 @@ const es = {
   clearFilters: "Quitar filtros",
   audios: "Audios",
   au: {
+    sort: { date: "Por fecha", long: "Más largos", short: "Más cortos" },
+    sortWait: "Leyendo cuánto dura cada audio…",
     openPlace: "Abrir su lugar en Tīrthas",
     title: "Audios de Śrīla Gurudeva",
     count: (n: number) => `${n.toLocaleString("es")} audios`,
@@ -1339,6 +1341,8 @@ const en: Dict = {
   clearFilters: "Clear filters",
   audios: "Audios",
   au: {
+    sort: { date: "By date", long: "Longest", short: "Shortest" },
+    sortWait: "Reading how long each recording lasts…",
     openPlace: "Open its place in Tīrthas",
     title: "Śrīla Gurudeva's audios",
     count: (n: number) => `${n.toLocaleString("en")} recordings`,

@@ -10274,3 +10274,19 @@ button.au-chip:hover {
 .au-card.has-pic .au-card-head .au-pic-place + .link-btn {
   margin-left: 0;
 }
+
+/* ── Audios: the length of each recording and the order of the list (18-11-2026) ── */
+.au-list-head .au-sort {
+  margin-left: auto;
+  margin-right: 8px;
+}
+.au-sort button {
+  font-size: 12.5px;
+}
+.au-sort button:disabled {
+  opacity: 0.45;
+  cursor: progress;
+}
+.au-dur {
+  font-variant-numeric: tabular-nums;
+}

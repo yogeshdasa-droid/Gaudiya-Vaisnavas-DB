@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **18-11-2026** (versión **0.20.9**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **18-11-2026** (versión **0.20.10**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,17 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.9)
+## 5. Qué hace hoy (v0.20.10)
+
+### Novedades de la 0.20.10 (18-11-2026) — Audios: la duración de cada audio
+- `src-tauri/src/duration.rs` (sin crates nuevos): lee solo el principio de cada archivo — MP3 (cabecera Xing/Info o
+  VBRI; si no, tasa constante con el tamaño sin ID3), WAV (`fmt ` byte rate y `data`; 0/0xFFFFFFFF = resto del
+  archivo), WMA/WMV (ASF «file properties»: duración − preroll). Comando `audio_durations(id)` (spawn_blocking, rayon).
+  Caché derivada **`biodata-duraciones.json`** junto a la BD (`{folder, files: {rel: [tamaño, mtime, segundos]}}`):
+  se puede borrar; un archivo cambiado se vuelve a leer. 6.628 de 6.634 con duración (~18 s la primera vez en release),
+  comprobadas al segundo con el reproductor. Prueba ignorada `duration::tests::audios_folder` con la carpeta real.
+- Audios: duración en cada fila y en la página (chip), total de la lista arriba, orden «Por fecha / Más largos / Más
+  cortos» (`SortBy`, localStorage `bio.audioSort`; los botones esperan a que lleguen las duraciones).
 
 ### Novedades de la 0.20.9 (18-11-2026) — Retratos con marco de loto; foto del lugar en cada audio
 - Ajustes › General › **«Retratos: Marco de loto / Sencillo»** (`usePersisted("lotusPortrait", true)`): con loto, App pone
@@ -1998,6 +2008,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **18-11-2026 — v0.20.10**: Audios — la duración de cada audio, el total y ordenar por duración.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.10
 - **18-11-2026 — v0.20.9**: retratos con marco de loto (ficha y árbol lateral); la foto del lugar detrás de cada audio.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.9
 - **18-11-2026 — v0.20.8**: «Hoy, en otros años» en Inicio; «Calendario de las charlas» en Audios.
