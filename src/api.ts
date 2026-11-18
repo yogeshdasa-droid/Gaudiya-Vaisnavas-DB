@@ -810,8 +810,8 @@ export interface PullProgress {
 
 /** URL of a file stored in the database (cover image, original PDF, or a record's picture by person id). */
 /** «Audios» (18-11-2026): a recording's written lecture — a text of the database (ord: its part, for a book like the
- *  Anthology whose chapters are lectures). */
-export type AudioTexts = Record<string, { doc: number; ord?: number }>;
+ *  Anthology whose chapters are lectures) — and the title given to it by hand. */
+export type AudioTexts = Record<string, { doc?: number; ord?: number; title?: string }>;
 /** «Audios»: its folder is the library number 0 (`lib/0/…`). */
 export const AUDIOS_LIB = 0;
 

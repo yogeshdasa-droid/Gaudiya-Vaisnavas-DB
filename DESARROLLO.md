@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **18-11-2026** (versión **0.20.3**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **18-11-2026** (versión **0.20.4**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,16 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.3)
+## 5. Qué hace hoy (v0.20.4)
+
+### Novedades de la 0.20.4 (18-11-2026) — Audios: título editable y fondo de la charla escrita
+- Lápiz junto al título de cada audio: el título propio se guarda en meta `audio_texts` (`{title}`, con o sin charla
+  enlazada; `AudioTexts` = {doc?, ord?, title?}); ↺ vuelve al sacado del nombre del archivo. Se usa en la lista, la
+  barra y el buscador.
+- Fondo de la charla escrita (localStorage `bio.audioBg`): «Mandala» — `TempleMandala.ts`, el loto de un suelo de templo
+  (foto de Whisper) dibujado en SVG, fondo `fixed` (quieto bajo el texto), dos opacidades claro/oscuro —, «Pergamino»
+  (la regla `.parchment` de Lectures) o «Sin fondo». Con fondo, el texto siempre como libro (serif, Markdown dibujado).
+- Con varias charlas escritas el mismo día, primero la que comparte más palabras con el título del audio.
 
 ### Novedades de la 0.20.3 (18-11-2026) — apartado «Audios»
 - Botón **«Audios»** en la barra (al final; `Rail.tsx` `audios`). `components/Audios.tsx`: los audios de Śrīla Gurudeva
@@ -1942,6 +1951,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **18-11-2026 — v0.20.4**: Audios — título editable; la charla escrita sobre un mandala de templo o el pergamino; la
+  charla del día que más se parece al título. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.4
 - **18-11-2026 — v0.20.3**: apartado «Audios» (6.634 audios de Gurudeva por idioma, año y lugar; buscador también dentro
   de las charlas escritas; página de cada audio con su charla escrita). Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.3
 - **17-11-2026 — v0.20.2**: botones de la barra a gusto en Ajustes; Anthology con los versos en sus líneas y 926

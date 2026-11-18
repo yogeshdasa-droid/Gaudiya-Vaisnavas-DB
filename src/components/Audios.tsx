@@ -3,15 +3,28 @@
 // if wanted, inside the written lectures of the same day), lists by language, year and place, and a page for each
 // recording with its player and its written lecture below («like the Prabhupāda transcriptions»): the one of the same
 // day in «Lectures Gurudeva» or the Anthology, or any text linked by hand. The files stay in their folder (library 0).
-import { useEffect, useMemo, useRef, useState } from "react";
+import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { ArrowLeft, BookOpen, ExternalLink, FolderOpen, Headphones, Link2, Link2Off, MapPin, Pause, Play, RotateCw, Search, SkipBack, SkipForward, X } from "lucide-react";
+import { ArrowLeft, BookOpen, Check, ExternalLink, FolderOpen, Headphones, Link2, Link2Off, MapPin, Pause, Pencil, Play, RotateCcw, RotateCw, Search, SkipBack, SkipForward, X } from "lucide-react";
 import { api, AUDIOS_LIB, AudioTexts, DocListItem, LibEntry, libUrl, SectionText } from "../api";
 import { Lang, T } from "../i18n";
 import { anthologyVolumes, ANTHOLOGY, formatLecDate } from "./Anthology";
 import { foldName } from "./Sidebar";
 import { ReaderStyle, SectionView } from "./Reader";
 import { clock, player, savedPosition, Track, usePlayer } from "../audioPlayer";
+import { templeMandalaUrl } from "./TempleMandala";
+
+/** what is behind the written lecture (Whisper, 18-11-2026): the lotus of a temple floor, the parchment, or nothing */
+type Bg = "mandala" | "parchment" | "none";
+const BG_KEY = "bio.audioBg";
+function readBg(): Bg {
+  try {
+    const v = localStorage.getItem(BG_KEY);
+    return v === "parchment" || v === "none" ? v : "mandala";
+  } catch {
+    return "mandala";
+  }
+}
 
 const DEFAULT_FOLDERS = ["O:\\Gaudiya Vaisnavas DB\\Biblioteca\\Srila Gurudeva mp3"];
 const LECTURES = "Lectures Gurudeva";
@@ -359,7 +372,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
 
   const textOf = (r: Rec): Written | null => {
     const l = links[r.name.toLowerCase()];
-    if (l) return { doc: l.doc, ord: l.ord, title: "", date: r.date, src: "other" };
+    if (l?.doc !== undefined) return { doc: l.doc, ord: l.ord, title: "", date: r.date, src: "other" };
     return written?.byDate.get(r.date)?.[0] ?? null;
   };
 
@@ -383,7 +396,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
           }
           // and the texts linked by hand
           for (const [name, l] of Object.entries(links)) {
-            if (r.hits.some((hit) => hit.docId === l.doc && (l.ord === undefined || hit.ordinal === l.ord))) days.set(`name:${name}`, "");
+            if (l.doc !== undefined && r.hits.some((hit) => hit.docId === l.doc && (l.ord === undefined || hit.ordinal === l.ord))) days.set(`name:${name}`, "");
           }
           setTextDays(days);
         })
@@ -395,7 +408,15 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
     };
   }, [f.words, f.inText, written, links]);
 
-  const all = recs ?? [];
+  // the titles given by hand
+  const all = useMemo(
+    () =>
+      (recs ?? []).map((r) => {
+        const own = links[r.name.toLowerCase()]?.title;
+        return own ? { ...r, title: own, hay: `${r.hay} ${foldName(own)}` } : r;
+      }),
+    [recs, links],
+  );
   const words = foldName(f.words).split(" ").filter(Boolean);
   const keep = (r: Rec, skip?: keyof Filters) =>
     (skip === "lang" || !f.lang || r.lang === f.lang) &&
@@ -503,7 +524,15 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
           lang={lang}
           r={rec}
           groupLabel={groupLabel(rec)}
-          link={links[rec.name.toLowerCase()]}
+          link={links[rec.name.toLowerCase()]?.doc !== undefined ? (links[rec.name.toLowerCase()] as { doc: number; ord?: number }) : undefined}
+          ownTitle={!!links[rec.name.toLowerCase()]?.title}
+          onTitle={(title) => {
+            const k = rec.name.toLowerCase();
+            const next = { ...links, [k]: { ...links[k], title: title.trim() || undefined } };
+            if (!next[k].title) delete next[k].title;
+            if (next[k].doc === undefined && !next[k].title) delete next[k];
+            saveLinks(next);
+          }}
           written={written}
           docs={docs}
           sameDay={rec.date.length === 10 ? all.filter((x) => x.date === rec.date && x.rel !== rec.rel) : []}
@@ -515,9 +544,12 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
           onOther={(x) => setSel(x.rel)}
           onPlayOther={(x) => play(x, [rec, ...all.filter((y) => y.date === rec.date && y.rel !== rec.rel)])}
           onLink={(w) => {
+            const k = rec.name.toLowerCase();
+            const title = links[k]?.title;
             const next = { ...links };
-            if (w) next[rec.name.toLowerCase()] = w.ord === undefined ? { doc: w.doc } : { doc: w.doc, ord: w.ord };
-            else delete next[rec.name.toLowerCase()];
+            if (w) next[k] = { ...(w.ord === undefined ? { doc: w.doc } : { doc: w.doc, ord: w.ord }), ...(title ? { title } : {}) };
+            else if (title) next[k] = { title };
+            else delete next[k];
             saveLinks(next);
           }}
           onOpenDoc={onOpenDoc}
@@ -661,6 +693,9 @@ function AudioPage(p: {
   r: Rec;
   groupLabel: string;
   link?: { doc: number; ord?: number };
+  /** the title was given by hand */
+  ownTitle: boolean;
+  onTitle: (title: string) => void;
   written: { byDate: Map<string, Written[]>; all: Written[] } | null;
   docs: DocListItem[];
   sameDay: Rec[];
@@ -676,10 +711,30 @@ function AudioPage(p: {
 }) {
   const { t, lang, r } = p;
   const A = t.au;
-  const day = p.written?.byDate.get(r.date) ?? [];
+  // the lectures of that day, the one most like the recording's title first (several on one day: Whisper, 18-11-2026)
+  const day = useMemo(() => {
+    const ws = p.written?.byDate.get(r.date) ?? [];
+    const mine = new Set(foldName(r.title).split(" ").filter((w) => w.length > 2));
+    const score = (w: Written) => foldName(w.title).split(" ").filter((x) => x.length > 2 && [...mine].some((m) => x.startsWith(m) || m.startsWith(x))).length;
+    return [...ws].sort((x, y) => score(y) - score(x));
+  }, [p.written, r.date, r.title]);
   // the text shown: the one linked by hand, or else the first of that day
   const shown = p.link ?? (day[0] ? { doc: day[0].doc, ord: day[0].ord } : null);
   const [picking, setPicking] = useState(false);
+  const [editing, setEditing] = useState<string | null>(null);
+  const [bg, setBgState] = useState<Bg>(readBg);
+  const setBg = (b: Bg) => {
+    setBgState(b);
+    try {
+      localStorage.setItem(BG_KEY, b);
+    } catch {
+      /* not remembered */
+    }
+  };
+  const saveTitle = () => {
+    if (editing !== null && editing.trim() !== r.title) p.onTitle(editing);
+    setEditing(null);
+  };
   const pl = usePlayer();
   const isThis = pl.track?.rel === r.rel;
   const docTitle = (w: { doc: number; ord?: number }) => {
@@ -709,7 +764,35 @@ function AudioPage(p: {
           </>
         )}
       </nav>
-      <h1 className="au-title">{r.title}</h1>
+      {editing === null ? (
+        <h1 className="au-title">
+          {r.title}
+          <button className="icon-btn au-title-btn" onClick={() => setEditing(r.title)} title={A.editTitle}>
+            <Pencil size={15} />
+          </button>
+          {p.ownTitle && (
+            <button className="icon-btn au-title-btn" onClick={() => p.onTitle("")} title={A.resetTitle}>
+              <RotateCcw size={15} />
+            </button>
+          )}
+        </h1>
+      ) : (
+        <div className="au-title-edit">
+          <input
+            autoFocus
+            value={editing}
+            spellCheck={false}
+            onChange={(e) => setEditing(e.target.value)}
+            onKeyDown={(e) => (e.key === "Enter" ? saveTitle() : e.key === "Escape" && setEditing(null))}
+          />
+          <button className="btn" onClick={saveTitle}>
+            <Check size={14} /> {A.save}
+          </button>
+          <button className="btn ghost" onClick={() => setEditing(null)}>
+            {A.cancel}
+          </button>
+        </div>
+      )}
       <div className="au-meta">
         {r.date && <span>{formatLecDate(r.date.length === 7 ? r.date.slice(0, 4) : r.date, lang)}</span>}
         {r.part && <span className="au-chip">{r.part}</span>}
@@ -783,6 +866,15 @@ function AudioPage(p: {
           <button className="link-btn" onClick={() => setPicking((x) => !x)}>
             <Link2 size={13} /> {shown ? A.change : A.addText}
           </button>
+          {shown && (
+            <span className="au-bg-pick" title={A.bg}>
+              {(["mandala", "parchment", "none"] as Bg[]).map((b) => (
+                <button key={b} className={bg === b ? "on" : ""} onClick={() => setBg(b)}>
+                  {A.bgs[b]}
+                </button>
+              ))}
+            </span>
+          )}
         </div>
         {/* the other lectures of that day: choose which one goes with this recording */}
         {day.length > 1 && (
@@ -810,7 +902,7 @@ function AudioPage(p: {
             }}
           />
         )}
-        {shown ? <WrittenText key={`${shown.doc}:${shown.ord}`} doc={shown.doc} ord={shown.ord} readerStyle={p.readerStyle} fontSize={p.fontSize} /> : <p className="muted">{A.noText}</p>}
+        {shown ? <WrittenText key={`${shown.doc}:${shown.ord}`} doc={shown.doc} ord={shown.ord} bg={bg} readerStyle={p.readerStyle} fontSize={p.fontSize} /> : <p className="muted">{A.noText}</p>}
       </section>
     </article>
   );
@@ -847,7 +939,7 @@ function TextPicker({ t, written, docs, date, onPick }: { t: T; written: Written
 
 const NO_TERMS: never[] = [];
 /** the written lecture under the player, as in the reader */
-function WrittenText({ doc, ord, readerStyle, fontSize }: { doc: number; ord?: number; readerStyle: ReaderStyle; fontSize: number }) {
+function WrittenText({ doc, ord, bg, readerStyle, fontSize }: { doc: number; ord?: number; bg: Bg; readerStyle: ReaderStyle; fontSize: number }) {
   const [secs, setSecs] = useState<SectionText[] | null>(null);
   useEffect(() => {
     let alive = true;
@@ -861,10 +953,15 @@ function WrittenText({ doc, ord, readerStyle, fontSize }: { doc: number; ord?: n
     };
   }, [doc, ord]);
   if (!secs) return null;
+  // with a background, always as a book (the markdown drawn, in the serif letter); without one, as the reader is set
+  const plain = bg === "none";
+  const source = plain && readerStyle === "editor";
+  const cls = plain ? (source ? "src-view" : readerStyle) : bg === "parchment" ? "serif parchment" : "serif au-temple";
+  const style = { fontSize, ...(bg === "mandala" ? { "--au-mandala": templeMandalaUrl(0.2), "--au-mandala-dark": templeMandalaUrl(0.13) } : {}) } as CSSProperties;
   return (
-    <div className={`reader-body au-text ${readerStyle === "editor" ? "src-view" : readerStyle}`} style={{ fontSize }}>
+    <div className={`reader-body au-text ${cls}`} style={style}>
       {secs.map((s) => (
-        <SectionView key={s.id} s={s} terms={NO_TERMS} multi={secs.length > 1} source={readerStyle === "editor"} names={null} self={null} book />
+        <SectionView key={s.id} s={s} terms={NO_TERMS} multi={secs.length > 1} source={source} names={null} self={null} book />
       ))}
     </div>
   );

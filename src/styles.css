@@ -8484,7 +8484,8 @@ svg.satellite .map-dot {
 .reader.scroll-view .reader-scroll {
   padding: 18px 0 70px;
 }
-:root .reader.scroll-view .reader-scroll > .reader-body.parchment {
+:root .reader.scroll-view .reader-scroll > .reader-body.parchment,
+:root .au-written .reader-body.au-text.parchment {
   --paper: #f1dfb6;
   position: relative;
   max-width: 800px;
@@ -9503,5 +9504,105 @@ button.au-chip:hover {
   .au-facets {
     position: static;
     max-height: none;
+  }
+}
+
+/* Audios: the title can be changed; the written lecture over the lotus of a temple floor or on the parchment
+   (18-11-2026, Whisper). The lotus (TempleMandala.ts) stays still while the text goes over it. */
+.au-title-btn {
+  margin-left: 8px;
+  vertical-align: middle;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.au-title:hover .au-title-btn,
+.au-title-btn:focus-visible {
+  opacity: 0.75;
+}
+.au-title-edit {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 10px 0;
+}
+.au-title-edit input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 700;
+}
+.au-written h2 {
+  font-family: "Great Vibes", var(--font-serif), cursive;
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1.1;
+  color: #c79a4a;
+}
+.au-bg-pick {
+  display: inline-flex;
+  margin-left: auto;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.au-bg-pick button {
+  padding: 3px 11px;
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.au-bg-pick button.on {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+.au-written .reader-body.au-text.serif {
+  font-family: var(--font-serif);
+  line-height: 1.75;
+}
+.au-written .reader-body.au-text.au-temple {
+  position: relative;
+  padding: 44px 64px 56px;
+  border: 1px solid #e4ddd0;
+  border-radius: 14px;
+  color: #2b2620;
+  background:
+    var(--au-mandala) center / min(80vh, 760px) no-repeat fixed,
+    radial-gradient(130% 80% at 50% 40%, #fdfcf9 0%, #f3efe7 100%);
+  box-shadow: 0 10px 30px rgba(60, 40, 20, 0.12);
+}
+:root[data-theme="dark"] .au-written .reader-body.au-text.au-temple {
+  border-color: #34312c;
+  color: #e9e3d8;
+  background:
+    var(--au-mandala-dark) center / min(80vh, 760px) no-repeat fixed,
+    radial-gradient(130% 80% at 50% 40%, #24221f 0%, #191816 100%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .au-written .reader-body.au-text.au-temple {
+    border-color: #34312c;
+    color: #e9e3d8;
+    background:
+      var(--au-mandala-dark) center / min(80vh, 760px) no-repeat fixed,
+      radial-gradient(130% 80% at 50% 40%, #24221f 0%, #191816 100%);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  }
+}
+.au-written .reader-body.au-text.parchment {
+  margin: 0 auto;
+}
+@media (max-width: 700px) {
+  .au-written .reader-body.au-text.au-temple {
+    padding: 26px 20px 34px;
   }
 }
