@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **18-11-2026** (versión **0.20.6**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **18-11-2026** (versión **0.20.7**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,15 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.6)
+## 5. Qué hace hoy (v0.20.7)
+
+### Novedades de la 0.20.7 (18-11-2026) — Audios: ojos de idioma y partes de una charla
+- Junto al título, English · Hindi · Bengali · Sanskrit · Otros con un ojo cada uno (`EYES`, `seen()`; localStorage
+  `bio.audioLangs`): cerrado = esos audios fuera de la lista, la búsqueda y las cuentas. Las mezclas siguen a sus
+  idiomas; «Otros» = dudosos, música/ruido, sin clasificar. La página de un audio oculto se abre igual (`everything`).
+- Partes de una misma charla (`partOf()`: «P1/P2», «Part 3a», «pt01», «Tape 2», «T11A/B», «side_b2», «ISK67A/B»,
+  «Stuti-1/-2»; misma carpeta de origen; ≥2 partes — 551 series, 1.145 audios): en la lista juntas y en orden con
+  «parte 1 de 2»; al escuchar una, «siguiente» = la parte que sigue; en la página, «Partes de esta charla».
 
 ### Novedades de la 0.20.6 (18-11-2026) — Audios: transcripciones, favoritos, escuchados, tiempos y marcas
 - Todo lo que se añade a un audio va en meta `audio_texts` (clave: nombre del archivo en minúsculas) — `doc/ord` (charla
@@ -1969,6 +1977,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **18-11-2026 — v0.20.7**: Audios — un ojo por idioma junto al título; las partes de una misma charla seguidas.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.7
 - **18-11-2026 — v0.20.6**: Audios — quitar charlas que no son, «Escribir la transcripción», favoritos y escuchados,
   tiempos del texto que saltan en el audio, momentos marcados. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.6
 - **18-11-2026 — v0.20.5**: Audios — listas plegables; mandala pequeño en los audios con charla escrita.

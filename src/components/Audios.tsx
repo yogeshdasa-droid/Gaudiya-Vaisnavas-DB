@@ -5,7 +5,7 @@
 // day in «Lectures Gurudeva» or the Anthology, or any text linked by hand. The files stay in their folder (library 0).
 import { CSSProperties, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { ArrowLeft, BookOpen, Check, CheckCircle2, ChevronRight, Circle, ExternalLink, FilePlus2, FolderOpen, Headphones, Link2, Link2Off, MapPin, MapPinned, Pause, Pencil, Play, RotateCcw, RotateCw, Search, SkipBack, SkipForward, Star, X } from "lucide-react";
+import { ArrowLeft, BookOpen, Check, CheckCircle2, ChevronRight, Circle, ExternalLink, Eye, EyeOff, FilePlus2, FolderOpen, Headphones, Link2, Link2Off, MapPin, MapPinned, Pause, Pencil, Play, RotateCcw, RotateCw, Search, SkipBack, SkipForward, Star, X } from "lucide-react";
 import { api, AUDIOS_LIB, AudioMark, AudioTexts, DocListItem, LibEntry, libUrl, SectionText } from "../api";
 import { Lang, T } from "../i18n";
 import { anthologyVolumes, ANTHOLOGY, formatLecDate } from "./Anthology";
@@ -239,6 +239,40 @@ function toRec(e: LibEntry): Rec {
   };
 }
 
+// ------------------------------------------------------------------ parts of one lecture
+
+/** «P1/P2», «Part 3a/3b», «pt01», «Tape 2», «T11A/T11B», «side_b2», «ISK67A/ISK67B», «Bhisma Stuti-1/-2» (Whisper,
+ *  18-11-2026): the name without that mark, in the same folder it came from, is the lecture; `ord` orders its parts.
+ *  Only a lecture with two parts or more counts (551 of them, 1.145 recordings, on 18-11-2026). */
+const MARK = /(?:^|[\s_\-.(])(?:part|pt|p|tape|t)[\s_\-.]*(\d{1,3})([a-d])?(?=$|[\s_\-.)])/gi;
+const SIDE = /(?:^|[\s_\-.])side[\s_\-]*([a-d])(\d)?(?=$|[\s_\-.])/i;
+const letterIx = (l?: string) => (l ? "abcd".indexOf(l.toLowerCase()) + 1 : 0);
+export function partOf(name: string, origin: string): { key: string; ord: number } | null {
+  const base = name.replace(/\.[^.]+$/, "").trim();
+  let key: string;
+  let ord: number;
+  let m: RegExpMatchArray | null;
+  let last: RegExpExecArray | null = null;
+  let x: RegExpExecArray | null;
+  MARK.lastIndex = 0;
+  while ((x = MARK.exec(base))) last = x;
+  const side = base.match(SIDE);
+  if (side) {
+    key = base.slice(0, side.index) + "#" + base.slice(side.index! + side[0].length);
+    ord = letterIx(side[1]) * 100 + +(side[2] || 0);
+  } else if (last) {
+    key = base.slice(0, last.index) + "#" + base.slice(last.index + last[0].length);
+    ord = +last[1] * 10 + letterIx(last[2]);
+  } else if ((m = base.match(/^(.*?\d)([a-d])$/i))) {
+    key = m[1] + "#";
+    ord = letterIx(m[2]);
+  } else if ((m = base.match(/^(.*?\D)[\s_\-]+(\d{1,2})$/))) {
+    key = m[1] + "#";
+    ord = +m[2] * 10;
+  } else return null;
+  return { key: `${origin}|${key}`.toLowerCase().replace(/\s+/g, " "), ord };
+}
+
 // ------------------------------------------------------------------ written lectures
 
 interface Written {
@@ -274,6 +308,29 @@ async function writtenByDate(docs: DocListItem[]): Promise<{ byDate: Map<string,
 
 /** how a written lecture is named in the list of those removed from a recording */
 const wKey = (w: { doc: number; ord?: number }) => (w.ord === undefined ? `${w.doc}` : `${w.doc}:${w.ord}`);
+
+// ------------------------------------------------------------------ the languages shown
+
+/** An eye for each language next to the title (Whisper, 18-11-2026): a closed one takes those recordings out of
+ *  everything — the list, the search, the counts. The mixed ones follow their languages; «Others» = unclear, music or
+ *  noise, not classified. Remembered on this PC. */
+const EYES = ["en", "hi", "bn", "sa", "other"] as const;
+type EyeKey = (typeof EYES)[number];
+const EYES_KEY = "bio.audioLangs";
+function readEyes(): Record<EyeKey, boolean> {
+  const all = { en: true, hi: true, bn: true, sa: true, other: true };
+  try {
+    return { ...all, ...JSON.parse(localStorage.getItem(EYES_KEY) || "{}") };
+  } catch {
+    return all;
+  }
+}
+function seen(lang: Rec["lang"], eyes: Record<EyeKey, boolean>): boolean {
+  if (lang === "en" || lang === "hi" || lang === "bn" || lang === "sa") return eyes[lang];
+  if (lang === "mixEn") return eyes.en;
+  if (lang === "mixInd") return eyes.hi || eyes.bn;
+  return eyes.other;
+}
 
 // ------------------------------------------------------------------ the page
 
@@ -420,7 +477,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
   }, [f.words, f.inText, written, links]);
 
   // the titles given by hand
-  const all = useMemo(
+  const everything = useMemo(
     () =>
       (recs ?? []).map((r) => {
         const own = links[r.name.toLowerCase()]?.title;
@@ -428,6 +485,35 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
       }),
     [recs, links],
   );
+  // only the languages whose eye is open
+  const [eyes, setEyes] = useState(readEyes);
+  const flipEye = (k: EyeKey) => {
+    const next = { ...eyes, [k]: !eyes[k] };
+    setEyes(next);
+    try {
+      localStorage.setItem(EYES_KEY, JSON.stringify(next));
+    } catch {
+      /* not remembered */
+    }
+  };
+  const all = useMemo(() => everything.filter((r) => seen(r.lang, eyes)), [everything, eyes]);
+  // the parts of each lecture (in their order), for each recording that has them
+  const partsOf = useMemo(() => {
+    const by = new Map<string, { r: Rec; ord: number }[]>();
+    for (const r of everything) {
+      const x = partOf(r.name, r.origin);
+      if (!x) continue;
+      if (!by.has(x.key)) by.set(x.key, []);
+      by.get(x.key)!.push({ r, ord: x.ord });
+    }
+    const of = new Map<string, { key: string; parts: Rec[] }>();
+    for (const [key, v] of by) {
+      if (v.length < 2) continue;
+      const parts = v.sort((a, b) => a.ord - b.ord || a.r.name.localeCompare(b.r.name)).map((x) => x.r);
+      for (const r of parts) of.set(r.rel, { key, parts });
+    }
+    return of;
+  }, [everything]);
   const words = foldName(f.words).split(" ").filter(Boolean);
   const keep = (r: Rec, skip?: keyof Filters) =>
     (skip === "lang" || !f.lang || r.lang === f.lang) &&
@@ -443,8 +529,18 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
     () =>
       all
         .filter((r) => keep(r) && matchWords(r))
-        .sort((a, b) => (a.date || "9999").localeCompare(b.date || "9999") || (a.part || "").localeCompare(b.part || "") || a.name.localeCompare(b.name)),
-    [all, f, textDays, links, written], // eslint-disable-line react-hooks/exhaustive-deps
+        .sort((a, b) => {
+          const pa = partsOf.get(a.rel);
+          const pb = partsOf.get(b.rel);
+          return (
+            (a.date || "9999").localeCompare(b.date || "9999") ||
+            (a.part || "").localeCompare(b.part || "") ||
+            (pa?.key ?? a.name.toLowerCase()).localeCompare(pb?.key ?? b.name.toLowerCase()) ||
+            (pa && pb ? pa.parts.indexOf(a) - pb.parts.indexOf(b) : 0) ||
+            a.name.localeCompare(b.name)
+          );
+        }),
+    [all, f, textDays, links, written, partsOf], // eslint-disable-line react-hooks/exhaustive-deps
   );
   // the counts of each list, with the other filters on
   const counts = useMemo(() => {
@@ -472,8 +568,10 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
   const groupLabel = (r: Pick<Rec, "lang" | "sure">) => A.langs[r.lang] + (r.sure >= 0 ? ` · ${A.sure[r.sure]}` : "");
   const tracks = (rs: Rec[]): Track[] =>
     rs.filter((r) => r.playable).map((r) => ({ rel: r.rel, url: libUrl(AUDIOS_LIB, r.rel), title: r.title, sub: [r.date && formatLecDate(r.date.length === 7 ? r.date.slice(0, 4) : r.date, lang), r.place].filter(Boolean).join(" · ") }));
-  const play = (r: Rec, from: Rec[] = list) => {
-    const ts = tracks(from.some((x) => x.rel === r.rel) ? from : [r]);
+  const play = (r: Rec, from?: Rec[]) => {
+    // (a lecture in parts: «next» is its next part)
+    const src = from ?? partsOf.get(r.rel)?.parts ?? list;
+    const ts = tracks(src.some((x) => x.rel === r.rel) ? src : [r]);
     player.play(ts, Math.max(0, ts.findIndex((x) => x.rel === r.rel)));
   };
   const saveLinks = (next: AudioTexts) => {
@@ -483,7 +581,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
   const pl = usePlayer();
   const filtering = !!(f.words.trim() || f.lang || f.group || f.year || f.place || f.withText || f.fav || f.unheard);
   const toggle = (r: Rec, k: "fav" | "heard") => void updateAudio(audioKey(r.name), (e) => ({ ...e, [k]: !e[k] }), (e) => onToast(String(e)));
-  const rec = sel ? all.find((r) => r.rel === sel) ?? null : null;
+  const rec = sel ? everything.find((r) => r.rel === sel) ?? null : null;
 
   // back from a recording: where the list was
   useEffect(() => {
@@ -501,6 +599,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
           <h1>{A.title}</h1>
           <p className="muted">
             {recs ? A.count(all.length) : A.loading}
+            {recs && all.length < everything.length && <> {A.hiddenCount(everything.length - all.length)}</>}
             {folder && (
               <>
                 {" · "}
@@ -510,6 +609,18 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
               </>
             )}
           </p>
+        </div>
+        <div className="au-eyes">
+          {EYES.map((k) => {
+            const name = A.eyeLangs[k];
+            const label = k === "other" ? `${name} (${A.eyeOther})` : name;
+            return (
+              <button key={k} className={`au-eye${eyes[k] ? " on" : ""}`} onClick={() => flipEye(k)} title={eyes[k] ? A.eyeOn(label) : A.eyeOff(label)} aria-pressed={eyes[k]}>
+                {eyes[k] ? <Eye size={15} /> : <EyeOff size={15} />}
+                <span>{name}</span>
+              </button>
+            );
+          })}
         </div>
         <div className="au-head-btns">
           <button className="icon-btn" onClick={() => void load(true)} title={A.rescan}>
@@ -576,7 +687,8 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
           }}
           written={written}
           docs={docs}
-          sameDay={rec.date.length === 10 ? all.filter((x) => x.date === rec.date && x.rel !== rec.rel) : []}
+          parts={partsOf.get(rec.rel)?.parts ?? []}
+          sameDay={rec.date.length === 10 ? all.filter((x) => x.date === rec.date && x.rel !== rec.rel && !partsOf.get(rec.rel)?.parts.includes(x)) : []}
           readerStyle={readerStyle}
           fontSize={fontSize}
           onBack={() => setSel(null)}
@@ -683,7 +795,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
                 <div className="au-list-head">
                   <span className="muted small">{A.found(list.length)}</span>
                   {list.some((r) => r.playable) && (
-                    <button className="btn ghost" onClick={() => play(list.find((r) => r.playable)!)}>
+                    <button className="btn ghost" onClick={() => play(list.find((r) => r.playable)!, list)}>
                       <Play size={14} /> {A.playAll}
                     </button>
                   )}
@@ -711,7 +823,8 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
                         <span className="au-row-meta">
                           {r.date ? formatLecDate(r.date.length === 7 ? r.date.slice(0, 4) : r.date, lang) : A.noYear}
                           {r.part && ` · ${r.part}`}
-                          {r.place && ` · ${r.place}`} · <span className={`au-lang-chip l-${r.lang}`}>{groupLabel(r)}</span>
+                          {r.place && ` · ${r.place}`}
+                          {partsOf.has(r.rel) && ` · ${A.partOf(partsOf.get(r.rel)!.parts.indexOf(r) + 1, partsOf.get(r.rel)!.parts.length)}`} · <span className={`au-lang-chip l-${r.lang}`}>{groupLabel(r)}</span>
                         </span>
                         {snip && words.length > 0 && !words.every((w) => r.hay.includes(` ${w}`)) && (
                           <span className="anth-row-snip">
@@ -828,6 +941,8 @@ function AudioPage(p: {
   written: { byDate: Map<string, Written[]>; all: Written[] } | null;
   docs: DocListItem[];
   sameDay: Rec[];
+  /** the parts of its lecture, itself among them (none: not in parts) */
+  parts: Rec[];
   readerStyle: ReaderStyle;
   fontSize: number;
   onBack: () => void;
@@ -965,6 +1080,29 @@ function AudioPage(p: {
         {isThis && pl.error && <p className="au-error">{A.playError}</p>}
         {r.playable && <Marks t={t} marks={p.marks} onMarks={p.onMarks} live={isThis} time={pl.time} onJump={p.onPlayAt} />}
       </section>
+
+      {p.parts.length > 0 && (
+        <section className="au-sameday au-parts">
+          <h3>{A.partsTitle}</h3>
+          {p.parts.map((x, i) => {
+            const me = x.rel === r.rel;
+            return (
+              <div key={x.rel} className={`au-row small${me ? " on" : ""}`}>
+                <button className="au-play" disabled={!x.playable} onClick={() => (me ? p.onPlay() : p.onOther(x))}>
+                  <Play size={13} />
+                </button>
+                <button className="au-row-main" onClick={() => !me && p.onOther(x)}>
+                  <span className="au-row-title">
+                    {x.title}
+                    {me && <span className="muted small"> · {A.thisPart}</span>}
+                  </span>
+                  <span className="au-row-meta">{[A.partOf(i + 1, p.parts.length), x.date, A.langs[x.lang]].filter(Boolean).join(" · ")}</span>
+                </button>
+              </div>
+            );
+          })}
+        </section>
+      )}
 
       {p.sameDay.length > 0 && (
         <section className="au-sameday">

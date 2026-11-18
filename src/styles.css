@@ -9835,3 +9835,42 @@ button.au-chip:hover {
   font-size: 12px;
   white-space: nowrap;
 }
+
+/* Audios: an eye for each language next to the title (18-11-2026) */
+.au-eyes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-left: 18px;
+  align-self: center;
+}
+.au-eye {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.au-eye span {
+  text-decoration: line-through;
+  text-decoration-color: currentColor;
+}
+.au-eye.on {
+  border-color: transparent;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+.au-eye.on span {
+  text-decoration: none;
+}
+.au-eye:hover {
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
