@@ -21,13 +21,23 @@ export function splitNotes(notes: string): { body: string; links: NoteLink[] } {
   const at = notes.lastIndexOf(MARK);
   if (at < 0) return { body: notes, links: [] };
   const links: NoteLink[] = [];
+  // text that ended up after the block (18-11-2026: a script added a paragraph on the last link's line) goes back to
+  // the notes instead of becoming part of a link
+  const extra: string[] = [];
   for (const line of notes.slice(at + MARK.length).split(/\r?\n/)) {
-    const m = line.match(/^\s*-\s*(?:\[([^\]]*)\]\(<([^>]+)>\)|<([^>]+)>|(\S.*))\s*$/);
-    if (!m) continue;
-    const target = (m[2] ?? m[3] ?? m[4] ?? "").trim();
-    if (target) links.push({ label: (m[1] ?? "").trim(), target });
+    const m = line.match(/^\s*-\s*(?:\[([^\]]*)\]\(<([^>]+)>\)|<([^>]+)>)\s*(.*)$/);
+    if (m) {
+      const target = (m[2] ?? m[3] ?? "").trim();
+      if (target) links.push({ label: (m[1] ?? "").trim(), target });
+      if (m[4].trim()) extra.push(m[4].trim());
+      continue;
+    }
+    const bare = line.match(/^\s*-\s*((?:https?:|www\.|file:|[A-Za-z]:[\\/]|\\\\)\S.*?)\s*$/);
+    if (bare) links.push({ label: "", target: bare[1] });
+    else if (line.trim()) extra.push(line.trim());
   }
-  return { body: notes.slice(0, at).replace(/\s+$/, ""), links };
+  const body = [notes.slice(0, at).replace(/\s+$/, ""), ...extra].filter(Boolean).join("\n\n");
+  return { body, links };
 }
 
 /** The notes with their links block (none when there are no links). */

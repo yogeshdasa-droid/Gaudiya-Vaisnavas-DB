@@ -29,7 +29,12 @@ export async function aplicar(F) {
     }
     const f = Object.fromEntries(keys.map((k) => [k, p[k] ?? ""]));
     const ch = [];
-    if (g.notes && !f.notes.includes(g.notes.slice(0, 60))) { f.notes = (f.notes ? f.notes.trim() + " " : "") + g.notes; ch.push("notes+"); }
+    if (g.notes && !f.notes.includes(g.notes.slice(0, 60))) {
+      // before the «<!-- links -->» block, never after it (18-11-2026: on #1809 it went onto the last link's line)
+      const at = f.notes.lastIndexOf("<!-" + "- links -->");
+      const head = at < 0 ? f.notes : f.notes.slice(0, at), tail = at < 0 ? "" : "\\n\\n" + f.notes.slice(at);
+      f.notes = (head.trim() ? head.trim() + " " : "") + g.notes + tail; ch.push("notes+");
+    }
     for (const [k, v] of Object.entries(g.set || {})) if (f[k] !== v) { ch.push(k + ": «" + String(f[k]).slice(0, 60) + "» → «" + String(v).slice(0, 60) + "»"); f[k] = v; }
     if (ch.length) { if (!dry) await inv("update_person", { id: g.id, fields: f }); log.push("campos #" + g.id + ": " + ch.join("; ")); }
   }

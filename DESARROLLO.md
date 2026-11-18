@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **18-11-2026** (versión **0.20.11**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **18-11-2026** (versión **0.20.12**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,14 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.11)
+## 5. Qué hace hoy (v0.20.12)
+
+### Novedades de la 0.20.12 (18-11-2026) — enlaces de la ficha sin texto pegado
+- `splitNotes` (notesLinks.ts): el texto que quede detrás del bloque `<!-- links -->` (también en la línea de un
+  enlace) vuelve a las notas en vez de convertirse en enlace; las líneas sueltas solo cuentan como enlace si parecen una
+  dirección o una ruta. Causa: `scripts/datos/snm/aplicar.mjs` añadía el resumen al final de las notas, detrás de los
+  enlaces (#1809, #398; ya arreglado en la BD de Whisper); ahora escribe antes del bloque.
+- Audios: Whisper lo da por terminado (18-11-2026); la transcripción con whisper.cpp queda anulada.
 
 ### Novedades de la 0.20.11 (18-11-2026) — Audios: listas propias; audios en la ficha de cada persona
 - **Listas propias** («Kārtika», «para el coche»…): meta `audio_lists` = [{id, name, items: [clave del audio = nombre
@@ -2024,6 +2031,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **18-11-2026 — v0.20.12**: los enlaces de la ficha ya no se tragan el texto que quede detrás de ellos.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.12
 - **18-11-2026 — v0.20.11**: Audios — listas propias; en la ficha, los audios que nombran a la persona.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.11
 - **18-11-2026 — v0.20.10**: Audios — la duración de cada audio, el total y ordenar por duración.
