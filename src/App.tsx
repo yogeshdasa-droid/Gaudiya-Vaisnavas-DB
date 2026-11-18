@@ -1440,7 +1440,20 @@ export default function App() {
           {main.kind === "vamsa" && <Vamsa t={t} lang={lang} persons={persons} onPerson={openPerson} onOpenDoc={openDoc} />}
           {main.kind === "anthology" && <Anthology t={t} lang={lang} docs={docs} onOpenDoc={openDoc} />}
           {main.kind === "audios" && (
-            <Audios t={t} lang={lang} docs={docs} readerStyle={readerStyle} fontSize={fontSize} focus={main.focus} onOpenDoc={(d, o) => openDoc(d, o ?? 0)} onToast={showToast} />
+            <Audios
+              t={t}
+              lang={lang}
+              docs={docs}
+              readerStyle={readerStyle}
+              fontSize={fontSize}
+              reload={dataTick}
+              onNewText={async (title, collection) => {
+                const id = await api.createDoc(null, title, collection);
+                refreshAll();
+                return id;
+              }}
+              onEditText={editSectionOf}
+              focus={main.focus} onOpenDoc={(d, o) => openDoc(d, o ?? 0)} onToast={showToast} />
           )}
           {main.kind === "calendar" && <Calendar t={t} lang={lang} reload={dataTick} onPerson={openPerson} page />}
           {main.kind === "tree" && <TreeView t={t} lang={lang} persons={persons} onPerson={openPerson} marks={marks} onMark={cycleMark} focus={main.focus} ppFocus={main.pp} />}
@@ -1685,6 +1698,8 @@ export default function App() {
             showToast(t.saved);
             // edited from a record (its single text shown inline): stay there
             if (main.kind === "person") reloadPerson();
+            // a transcription written from «Audios»: stay on the recording's page
+            else if (main.kind === "audios") void 0;
             else setMain({ kind: "doc", target: { docId, ordinal, terms: target?.terms ?? [], nonce: Date.now() } });
             refreshAll();
           }}

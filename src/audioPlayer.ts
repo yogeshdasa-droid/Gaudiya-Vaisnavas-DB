@@ -1,6 +1,7 @@
 // The player of «Audios» (Whisper, 18-11-2026): one sound for the whole window, so that a lecture goes on while moving
 // around the app; the page and the bar at the bottom show the same controls. It remembers where each recording was left.
 import { useEffect, useState } from "react";
+import { audioKey, updateAudio } from "./audioData";
 
 export interface Track {
   /** path inside the Audios folder */
@@ -81,21 +82,25 @@ function audio(): HTMLAudioElement {
   });
   el.addEventListener("ended", () => {
     const tr = st.list[st.index];
-    if (tr) savePos(tr.rel, 0, 0);
+    if (tr) {
+      savePos(tr.rel, 0, 0);
+      // listened to the end: marked «listened» (Whisper, 18-11-2026)
+      void updateAudio(audioKey(tr.rel), (e) => ({ ...e, heard: true }));
+    }
     if (st.index + 1 < st.list.length) load(st.index + 1, true);
     else set({ playing: false });
   });
   return el;
 }
 
-function load(index: number, play: boolean) {
+function load(index: number, play: boolean, at?: number) {
   const a = audio();
   const tr = st.list[index];
   if (!tr) return;
   set({ index, time: 0, duration: 0, error: false });
   a.src = tr.url;
   a.playbackRate = st.rate;
-  const from = savedPosition(tr.rel);
+  const from = at ?? savedPosition(tr.rel);
   lastSaved = from;
   if (from) a.addEventListener("loadedmetadata", () => (a.currentTime = from), { once: true });
   if (play) void a.play().catch(() => set({ playing: false }));
@@ -121,6 +126,20 @@ export const player = {
     onStart?.();
     st = { ...st, list };
     load(index, true);
+  },
+  /** plays `list` from `index` at the second `at` (a time in the written lecture: «[14:10]») */
+  playAt(list: Track[], index: number, at: number) {
+    const cur = st.list[st.index];
+    if (cur && cur.rel === list[index]?.rel && el?.src) {
+      st = { ...st, list };
+      el.currentTime = at;
+      if (el.paused) void el.play().catch(() => {});
+      emit();
+      return;
+    }
+    onStart?.();
+    st = { ...st, list };
+    load(index, true, at);
   },
   toggle() {
     if (!el?.src) return;

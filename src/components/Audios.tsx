@@ -5,14 +5,15 @@
 // day in «Lectures Gurudeva» or the Anthology, or any text linked by hand. The files stay in their folder (library 0).
 import { CSSProperties, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { ArrowLeft, BookOpen, Check, ChevronRight, ExternalLink, FolderOpen, Headphones, Link2, Link2Off, MapPin, Pause, Pencil, Play, RotateCcw, RotateCw, Search, SkipBack, SkipForward, X } from "lucide-react";
-import { api, AUDIOS_LIB, AudioTexts, DocListItem, LibEntry, libUrl, SectionText } from "../api";
+import { ArrowLeft, BookOpen, Check, CheckCircle2, ChevronRight, Circle, ExternalLink, FilePlus2, FolderOpen, Headphones, Link2, Link2Off, MapPin, MapPinned, Pause, Pencil, Play, RotateCcw, RotateCw, Search, SkipBack, SkipForward, Star, X } from "lucide-react";
+import { api, AUDIOS_LIB, AudioMark, AudioTexts, DocListItem, LibEntry, libUrl, SectionText } from "../api";
 import { Lang, T } from "../i18n";
 import { anthologyVolumes, ANTHOLOGY, formatLecDate } from "./Anthology";
 import { foldName } from "./Sidebar";
 import { ReaderStyle, SectionView } from "./Reader";
 import { clock, player, savedPosition, Track, usePlayer } from "../audioPlayer";
 import { templeMandalaUrl } from "./TempleMandala";
+import { audioKey, setAudioData, updateAudio, useAudioData } from "../audioData";
 
 /** what is behind the written lecture (Whisper, 18-11-2026): the lotus of a temple floor, the parchment, or nothing */
 type Bg = "mandala" | "parchment" | "none";
@@ -271,6 +272,9 @@ async function writtenByDate(docs: DocListItem[]): Promise<{ byDate: Map<string,
   return { byDate, all };
 }
 
+/** how a written lecture is named in the list of those removed from a recording */
+const wKey = (w: { doc: number; ord?: number }) => (w.ord === undefined ? `${w.doc}` : `${w.doc}:${w.ord}`);
+
 // ------------------------------------------------------------------ the page
 
 interface Filters {
@@ -281,8 +285,10 @@ interface Filters {
   year: string;
   place: string;
   withText: boolean;
+  fav: boolean;
+  unheard: boolean;
 }
-const NO_FILTERS: Filters = { words: "", inText: false, lang: "", group: "", year: "", place: "", withText: false };
+const NO_FILTERS: Filters = { words: "", inText: false, lang: "", group: "", year: "", place: "", withText: false, fav: false, unheard: false };
 // what was shown last (coming back to the section finds it as it was)
 let memo: { filters: Filters; sel: string | null; scroll: number } = { filters: NO_FILTERS, sel: null, scroll: 0 };
 let scanCache: { folder: string; recs: Rec[] } | null = null;
@@ -293,13 +299,19 @@ interface Props {
   docs: DocListItem[];
   readerStyle: ReaderStyle;
   fontSize: number;
+  /** changes when the texts change (an edit saved) */
+  reload: number;
+  /** a new empty text (a transcription), its id */
+  onNewText: (title: string, collection: string) => Promise<number>;
+  /** opens the editor of a text's part */
+  onEditText: (docId: number, ordinal: number) => void;
   /** a recording to show (from the bar at the bottom) */
   focus?: { rel: string; n: number };
   onOpenDoc: (docId: number, ordinal?: number) => void;
   onToast: (msg: string) => void;
 }
 
-export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc, onToast }: Props) {
+export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText, onEditText, focus, onOpenDoc, onToast }: Props) {
   const A = t.au;
   const [folder, setFolder] = useState<string | null>(scanCache?.folder ?? null);
   const [recs, setRecs] = useState<Rec[] | null>(scanCache?.recs ?? null);
@@ -308,7 +320,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
   const [f, setF] = useState<Filters>(memo.filters);
   const [sel, setSel] = useState<string | null>(focus?.rel ?? memo.sel);
   const [limit, setLimit] = useState(200);
-  const [links, setLinks] = useState<AudioTexts>({});
+  const links = useAudioData();
   const [written, setWritten] = useState<{ byDate: Map<string, Written[]>; all: Written[] } | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -341,7 +353,6 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
   };
   useEffect(() => {
     void load();
-    api.audioTexts().then(setLinks, () => {});
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const docsKey = docs.length;
   useEffect(() => {
@@ -373,7 +384,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
   const textOf = (r: Rec): Written | null => {
     const l = links[r.name.toLowerCase()];
     if (l?.doc !== undefined) return { doc: l.doc, ord: l.ord, title: "", date: r.date, src: "other" };
-    return written?.byDate.get(r.date)?.[0] ?? null;
+    return written?.byDate.get(r.date)?.find((w) => !l?.hide?.includes(wKey(w))) ?? null;
   };
 
   // words inside the written lectures: the days whose lecture says them
@@ -423,7 +434,9 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
     (skip === "lang" || !f.group || r.group === f.group) &&
     (skip === "year" || !f.year || r.year === f.year) &&
     (skip === "place" || !f.place || r.place === f.place) &&
-    (!f.withText || !!textOf(r));
+    (!f.withText || !!textOf(r)) &&
+    (!f.fav || !!links[audioKey(r.name)]?.fav) &&
+    (!f.unheard || !links[audioKey(r.name)]?.heard);
   const matchWords = (r: Rec) =>
     !words.length || words.every((w) => r.hay.includes(` ${w}`)) || (!!textDays && (textDays.has(r.date) || textDays.has(`name:${r.name.toLowerCase()}`)));
   const list = useMemo(
@@ -464,12 +477,12 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
     player.play(ts, Math.max(0, ts.findIndex((x) => x.rel === r.rel)));
   };
   const saveLinks = (next: AudioTexts) => {
-    setLinks(next);
-    api.setAudioTexts(next).catch((e) => onToast(String(e)));
+    setAudioData(next, (e) => onToast(String(e)));
   };
 
   const pl = usePlayer();
-  const filtering = !!(f.words.trim() || f.lang || f.group || f.year || f.place || f.withText);
+  const filtering = !!(f.words.trim() || f.lang || f.group || f.year || f.place || f.withText || f.fav || f.unheard);
+  const toggle = (r: Rec, k: "fav" | "heard") => void updateAudio(audioKey(r.name), (e) => ({ ...e, [k]: !e[k] }), (e) => onToast(String(e)));
   const rec = sel ? all.find((r) => r.rel === sel) ?? null : null;
 
   // back from a recording: where the list was
@@ -526,6 +539,34 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
           groupLabel={groupLabel(rec)}
           link={links[rec.name.toLowerCase()]?.doc !== undefined ? (links[rec.name.toLowerCase()] as { doc: number; ord?: number }) : undefined}
           ownTitle={!!links[rec.name.toLowerCase()]?.title}
+          fav={!!links[audioKey(rec.name)]?.fav}
+          heard={!!links[audioKey(rec.name)]?.heard}
+          onToggle={(k) => toggle(rec, k)}
+          marks={links[audioKey(rec.name)]?.marks ?? []}
+          onMarks={(marks) => void updateAudio(audioKey(rec.name), (e) => ({ ...e, marks }), (e) => onToast(String(e)))}
+          hide={links[rec.name.toLowerCase()]?.hide ?? []}
+          reload={reload}
+          onHide={(hide) => {
+            const k = rec.name.toLowerCase();
+            const next = { ...links, [k]: { ...links[k], hide: hide.length ? hide : undefined } };
+            if (!hide.length) delete next[k].hide;
+            if (!Object.keys(next[k]).length) delete next[k];
+            saveLinks(next);
+          }}
+          onNewText={async () => {
+            try {
+              const title = `${rec.date ? `${rec.date} · ` : ""}${rec.title}`;
+              const id = await onNewText(title, A.transcripts);
+              const k = rec.name.toLowerCase();
+              const next = { ...links, [k]: { ...links[k], doc: id } };
+              delete next[k].ord;
+              saveLinks(next);
+              onEditText(id, 0);
+            } catch (e) {
+              onToast(String(e));
+            }
+          }}
+          onEditText={onEditText}
           onTitle={(title) => {
             const k = rec.name.toLowerCase();
             const next = { ...links, [k]: { ...links[k], title: title.trim() || undefined } };
@@ -541,6 +582,10 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
           onBack={() => setSel(null)}
           onCrumb={(p) => set(p)}
           onPlay={() => play(rec)}
+          onPlayAt={(sec) => {
+            const ts = tracks(list.some((x) => x.rel === rec.rel) ? list : [rec]);
+            player.playAt(ts, Math.max(0, ts.findIndex((x) => x.rel === rec.rel)), sec);
+          }}
           onOther={(x) => setSel(x.rel)}
           onPlayOther={(x) => play(x, [rec, ...all.filter((y) => y.date === rec.date && y.rel !== rec.rel)])}
           onLink={(w) => {
@@ -575,6 +620,14 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
               <label className="au-check">
                 <input type="checkbox" checked={f.withText} onChange={(e) => set({ withText: e.target.checked })} />
                 <LotusMark className="au-has-text" /> {A.withText}
+              </label>
+              <label className="au-check">
+                <input type="checkbox" checked={f.fav} onChange={(e) => set({ fav: e.target.checked })} />
+                <Star size={14} className="au-star-ico" /> {A.favs}
+              </label>
+              <label className="au-check">
+                <input type="checkbox" checked={f.unheard} onChange={(e) => set({ unheard: e.target.checked })} />
+                <Circle size={14} /> {A.unheard}
               </label>
               {filtering && (
                 <button className="btn ghost" onClick={() => set(NO_FILTERS)}>
@@ -639,8 +692,9 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
                   const on = pl.track?.rel === r.rel;
                   const tx = textOf(r);
                   const snip = textDays?.get(r.date);
+                  const mine = links[audioKey(r.name)];
                   return (
-                    <div key={r.rel} className={`au-row${on ? " on" : ""}`}>
+                    <div key={r.rel} className={`au-row${on ? " on" : ""}${mine?.heard ? " heard" : ""}`}>
                       <button
                         className="au-play"
                         disabled={!r.playable}
@@ -664,6 +718,12 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
                             <b>{A.inWritten}:</b> <span dangerouslySetInnerHTML={{ __html: snip }} />
                           </span>
                         )}
+                      </button>
+                      <button className={`au-mark au-fav${mine?.fav ? " on" : ""}`} onClick={() => toggle(r, "fav")} title={mine?.fav ? A.removeFav : A.addFav}>
+                        <Star size={16} />
+                      </button>
+                      <button className={`au-mark au-heard${mine?.heard ? " on" : ""}`} onClick={() => toggle(r, "heard")} title={mine?.heard ? A.markUnheard : A.markHeard}>
+                        {mine?.heard ? <CheckCircle2 size={16} /> : <Circle size={16} />}
                       </button>
                     </div>
                   );
@@ -753,6 +813,17 @@ function AudioPage(p: {
   link?: { doc: number; ord?: number };
   /** the title was given by hand */
   ownTitle: boolean;
+  fav: boolean;
+  heard: boolean;
+  onToggle: (k: "fav" | "heard") => void;
+  marks: AudioMark[];
+  onMarks: (marks: AudioMark[]) => void;
+  /** the lectures of that day removed from this recording */
+  hide: string[];
+  onHide: (hide: string[]) => void;
+  reload: number;
+  onNewText: () => void;
+  onEditText: (docId: number, ordinal: number) => void;
   onTitle: (title: string) => void;
   written: { byDate: Map<string, Written[]>; all: Written[] } | null;
   docs: DocListItem[];
@@ -762,6 +833,8 @@ function AudioPage(p: {
   onBack: () => void;
   onCrumb: (f: Partial<Filters>) => void;
   onPlay: () => void;
+  /** plays it from that second */
+  onPlayAt: (sec: number) => void;
   onOther: (r: Rec) => void;
   onPlayOther: (r: Rec) => void;
   onLink: (w: { doc: number; ord?: number } | null) => void;
@@ -771,11 +844,11 @@ function AudioPage(p: {
   const A = t.au;
   // the lectures of that day, the one most like the recording's title first (several on one day: Whisper, 18-11-2026)
   const day = useMemo(() => {
-    const ws = p.written?.byDate.get(r.date) ?? [];
+    const ws = (p.written?.byDate.get(r.date) ?? []).filter((w) => !p.hide.includes(wKey(w)));
     const mine = new Set(foldName(r.title).split(" ").filter((w) => w.length > 2));
     const score = (w: Written) => foldName(w.title).split(" ").filter((x) => x.length > 2 && [...mine].some((m) => x.startsWith(m) || m.startsWith(x))).length;
     return [...ws].sort((x, y) => score(y) - score(x));
-  }, [p.written, r.date, r.title]);
+  }, [p.written, r.date, r.title, p.hide]);
   // the text shown: the one linked by hand, or else the first of that day
   const shown = p.link ?? (day[0] ? { doc: day[0].doc, ord: day[0].ord } : null);
   const [picking, setPicking] = useState(false);
@@ -862,6 +935,12 @@ function AudioPage(p: {
         <button className={`au-chip au-lang-chip l-${r.lang}`} onClick={() => p.onCrumb({ ...NO_FILTERS, lang: r.lang, group: r.group })}>
           {p.groupLabel}
         </button>
+        <button className={`au-chip au-mark-chip${p.fav ? " on" : ""}`} onClick={() => p.onToggle("fav")} title={p.fav ? A.removeFav : A.addFav}>
+          <Star size={13} /> {A.favs.replace(/s$/, "")}
+        </button>
+        <button className={`au-chip au-mark-chip${p.heard ? " on" : ""}`} onClick={() => p.onToggle("heard")} title={p.heard ? A.markUnheard : A.markHeard}>
+          {p.heard ? <CheckCircle2 size={13} /> : <Circle size={13} />} {A.heard}
+        </button>
         <code className="au-file" title={r.rel}>
           {r.name}
         </code>
@@ -884,6 +963,7 @@ function AudioPage(p: {
           </button>
         )}
         {isThis && pl.error && <p className="au-error">{A.playError}</p>}
+        {r.playable && <Marks t={t} marks={p.marks} onMarks={p.onMarks} live={isThis} time={pl.time} onJump={p.onPlayAt} />}
       </section>
 
       {p.sameDay.length > 0 && (
@@ -914,6 +994,9 @@ function AudioPage(p: {
               <button className="link-btn" onClick={() => p.onOpenDoc(shown.doc, shown.ord ?? 0)}>
                 <BookOpen size={13} /> {A.openReader}
               </button>
+              <button className="link-btn" onClick={() => p.onEditText(shown.doc, shown.ord ?? 0)}>
+                <Pencil size={13} /> {A.editText}
+              </button>
               {p.link && (
                 <button className="link-btn" onClick={() => p.onLink(null)}>
                   <Link2Off size={13} /> {A.unlink}
@@ -924,6 +1007,11 @@ function AudioPage(p: {
           <button className="link-btn" onClick={() => setPicking((x) => !x)}>
             <Link2 size={13} /> {shown ? A.change : A.addText}
           </button>
+          {!p.link && (
+            <button className="link-btn" onClick={p.onNewText}>
+              <FilePlus2 size={13} /> {A.newTranscript}
+            </button>
+          )}
           {shown && (
             <span className="au-bg-pick" title={A.bg}>
               {(["mandala", "parchment", "none"] as Bg[]).map((b) => (
@@ -935,17 +1023,35 @@ function AudioPage(p: {
           )}
         </div>
         {/* the other lectures of that day: choose which one goes with this recording */}
-        {day.length > 1 && (
+        {(day.length > 0 || p.hide.length > 0) && (
           <div className="au-day-texts">
-            <span className="muted small">{A.sameDay}:</span>
+            {day.length > 0 && <span className="muted small">{A.sameDay}:</span>}
             {day.map((w) => {
               const on = shown && shown.doc === w.doc && shown.ord === w.ord;
               return (
-                <button key={`${w.doc}:${w.ord}`} className={`au-chip${on ? " on" : ""}`} onClick={() => p.onLink({ doc: w.doc, ord: w.ord })} title={A.link}>
-                  {w.src === "anth" ? A.anth : A.lec}: {w.title}
-                </button>
+                <span key={wKey(w)} className={`au-chip au-day-chip${on ? " on" : ""}`}>
+                  <button onClick={() => p.onLink({ doc: w.doc, ord: w.ord })} title={A.link}>
+                    {w.src === "anth" ? A.anth : A.lec}: {w.title}
+                  </button>
+                  <button
+                    className="au-chip-x"
+                    title={A.notThis}
+                    onClick={() => {
+                      // (if it was the one linked by hand, the link goes too)
+                      if (p.link && p.link.doc === w.doc && p.link.ord === w.ord) p.onLink(null);
+                      p.onHide([...p.hide, wKey(w)]);
+                    }}
+                  >
+                    <X size={12} />
+                  </button>
+                </span>
               );
             })}
+            {p.hide.length > 0 && (
+              <button className="link-btn small" onClick={() => p.onHide([])}>
+                {A.hiddenTexts(p.hide.length)}
+              </button>
+            )}
           </div>
         )}
         {picking && (
@@ -960,7 +1066,7 @@ function AudioPage(p: {
             }}
           />
         )}
-        {shown ? <WrittenText key={`${shown.doc}:${shown.ord}`} doc={shown.doc} ord={shown.ord} bg={bg} readerStyle={p.readerStyle} fontSize={p.fontSize} /> : <p className="muted">{A.noText}</p>}
+        {shown ? <WrittenText key={`${shown.doc}:${shown.ord}`} doc={shown.doc} ord={shown.ord} reload={p.reload} onTime={r.playable ? p.onPlayAt : undefined} jumpLabel={A.jumpTo} bg={bg} readerStyle={p.readerStyle} fontSize={p.fontSize} /> : <p className="muted">{A.noText}</p>}
       </section>
     </article>
   );
@@ -997,8 +1103,67 @@ function TextPicker({ t, written, docs, date, onPick }: { t: T; written: Written
 
 const NO_TERMS: never[] = [];
 /** the written lecture under the player, as in the reader */
-function WrittenText({ doc, ord, bg, readerStyle, fontSize }: { doc: number; ord?: number; bg: Bg; readerStyle: ReaderStyle; fontSize: number }) {
+/** «[14:10]», «(1:02:03)» or «14:10» at the start of a line → seconds */
+const TIME_RE = /[[(](\d{1,2}:)?(\d{1,2}):(\d{2})[\])]|(?<=^|\n)(\d{1,2}:)?(\d{1,2}):(\d{2})(?=\s)/g;
+function secondsOf(m: RegExpExecArray): number {
+  const h = m[1] ?? m[4];
+  const mm = m[2] ?? m[5];
+  const ss = m[3] ?? m[6];
+  return (h ? +h.slice(0, -1) * 3600 : 0) + +mm * 60 + +ss;
+}
+/** the times written in the lecture become links that play the recording from there (Whisper, 18-11-2026) */
+function linkTimes(root: HTMLElement, label: (c: string) => string) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const nodes: Text[] = [];
+  while (walker.nextNode()) {
+    const n = walker.currentNode as Text;
+    if (!n.parentElement?.closest(".au-time-link") && /\d:\d\d/.test(n.data)) nodes.push(n);
+  }
+  for (const n of nodes) {
+    const text = n.data;
+    TIME_RE.lastIndex = 0;
+    let m: RegExpExecArray | null;
+    let last = 0;
+    const frag = document.createDocumentFragment();
+    while ((m = TIME_RE.exec(text))) {
+      const sec = secondsOf(m);
+      frag.append(text.slice(last, m.index));
+      const a = document.createElement("button");
+      a.className = "au-time-link";
+      a.dataset.t = String(sec);
+      a.textContent = m[0];
+      a.title = label(m[0].replace(/[[\]()]/g, ""));
+      frag.append(a);
+      last = m.index + m[0].length;
+    }
+    if (!last) continue;
+    frag.append(text.slice(last));
+    n.replaceWith(frag);
+  }
+}
+
+function WrittenText({ doc, ord, reload, onTime, jumpLabel, bg, readerStyle, fontSize }: { doc: number; ord?: number; reload: number; onTime?: (sec: number) => void; jumpLabel: (c: string) => string; bg: Bg; readerStyle: ReaderStyle; fontSize: number }) {
   const [secs, setSecs] = useState<SectionText[] | null>(null);
+  const box = useRef<HTMLDivElement>(null);
+  // whenever the sections (re)write their text — it may come after this component's own effects, so an observer
+  // (linking again only what is not linked yet: no loop)
+  const timed = !!onTime;
+  useEffect(() => {
+    const el = box.current;
+    if (!el || !timed) return;
+    let raf = 0;
+    const run = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => linkTimes(el, jumpLabel));
+    };
+    run();
+    const mo = new MutationObserver(run);
+    mo.observe(el, { childList: true, subtree: true });
+    return () => {
+      mo.disconnect();
+      cancelAnimationFrame(raf);
+    };
+  }, [timed, secs]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -1009,7 +1174,7 @@ function WrittenText({ doc, ord, bg, readerStyle, fontSize }: { doc: number; ord
     return () => {
       alive = false;
     };
-  }, [doc, ord]);
+  }, [doc, ord, reload]);
   if (!secs) return null;
   // with a background, always as a book (the markdown drawn, in the serif letter); without one, as the reader is set
   const plain = bg === "none";
@@ -1017,9 +1182,76 @@ function WrittenText({ doc, ord, bg, readerStyle, fontSize }: { doc: number; ord
   const cls = plain ? (source ? "src-view" : readerStyle) : bg === "parchment" ? "serif parchment" : "serif au-temple";
   const style = { fontSize, ...(bg === "mandala" ? { "--au-mandala": templeMandalaUrl(0.2), "--au-mandala-dark": templeMandalaUrl(0.13) } : {}) } as CSSProperties;
   return (
-    <div className={`reader-body au-text ${cls}`} style={style}>
+    <div
+      ref={box}
+      className={`reader-body au-text ${cls}`}
+      style={style}
+      onClick={(e) => {
+        const t = (e.target as HTMLElement).closest<HTMLElement>(".au-time-link");
+        if (t && onTime) onTime(+t.dataset.t!);
+      }}
+    >
       {secs.map((s) => (
         <SectionView key={s.id} s={s} terms={NO_TERMS} multi={secs.length > 1} source={source} names={null} self={null} book />
+      ))}
+    </div>
+  );
+}
+
+// ------------------------------------------------------------------ marked moments
+
+/** «📍 Mark here» while it plays, with a note; the marks in order of time — a click plays from there (18-11-2026) */
+function Marks({ t, marks, onMarks, live, time, onJump }: { t: T; marks: AudioMark[]; onMarks: (m: AudioMark[]) => void; live: boolean; time: number; onJump: (sec: number) => void }) {
+  const A = t.au;
+  const [editing, setEditing] = useState<{ t: number; note: string } | null>(null);
+  const sorted = [...marks].sort((a, b) => a.t - b.t);
+  const saveNote = () => {
+    if (!editing) return;
+    onMarks(marks.map((m) => (m.t === editing.t ? { t: m.t, ...(editing.note.trim() ? { note: editing.note.trim() } : {}) } : m)));
+    setEditing(null);
+  };
+  return (
+    <div className="au-marks">
+      <div className="au-marks-head">
+        {sorted.length > 0 && <span className="au-card-label">{A.marksTitle}</span>}
+        <button
+          className="btn ghost au-mark-here"
+          disabled={!live}
+          onClick={() => {
+            const sec = Math.round(time);
+            if (!marks.some((m) => m.t === sec)) onMarks([...marks, { t: sec }]);
+            setEditing({ t: sec, note: marks.find((m) => m.t === sec)?.note ?? "" });
+          }}
+        >
+          <MapPinned size={15} /> {A.markHere}
+          {live && <span className="muted small"> · {clock(time)}</span>}
+        </button>
+      </div>
+      {sorted.map((m) => (
+        <div key={m.t} className="au-mark-row">
+          <button className="au-time-link" onClick={() => onJump(m.t)} title={A.jumpTo(clock(m.t))}>
+            {clock(m.t)}
+          </button>
+          {editing?.t === m.t ? (
+            <input
+              autoFocus
+              className="au-note-input"
+              value={editing.note}
+              placeholder={A.notePh}
+              spellCheck={false}
+              onChange={(e) => setEditing({ t: m.t, note: e.target.value })}
+              onKeyDown={(e) => (e.key === "Enter" ? saveNote() : e.key === "Escape" && setEditing(null))}
+              onBlur={saveNote}
+            />
+          ) : (
+            <button className="au-note" onClick={() => setEditing({ t: m.t, note: m.note ?? "" })} title={A.editNote}>
+              {m.note || <span className="muted">{A.editNote}…</span>}
+            </button>
+          )}
+          <button className="icon-btn au-mark-x" onClick={() => onMarks(marks.filter((x) => x.t !== m.t))} title={A.removeMark}>
+            <X size={13} />
+          </button>
+        </div>
       ))}
     </div>
   );
@@ -1077,6 +1309,7 @@ export function Transport({ t, big }: { t: T; big?: boolean }) {
 /** The bar at the bottom of the window while a recording plays (it goes on while moving around the app). */
 export function AudiosBar({ t, onOpen }: { t: T; onOpen: (rel: string) => void }) {
   const s = usePlayer();
+  const [flash, setFlash] = useState<string | null>(null);
   if (!s.track) return null;
   return (
     <div className="audio-bar au-bar">
@@ -1092,6 +1325,19 @@ export function AudiosBar({ t, onOpen }: { t: T; onOpen: (rel: string) => void }
         )}
       </button>
       <Transport t={t} />
+      <button
+        className="icon-btn au-bar-mark"
+        title={flash ?? t.au.markHere}
+        onClick={() => {
+          const sec = Math.round(s.time);
+          void updateAudio(audioKey(s.track!.rel), (e) => ({ ...e, marks: [...(e.marks ?? []), { t: sec }] }));
+          setFlash(t.au.marked(clock(sec)));
+          window.setTimeout(() => setFlash(null), 2500);
+        }}
+      >
+        <MapPinned size={16} />
+        {flash && <span className="au-flash">{flash}</span>}
+      </button>
       <button className="icon-btn" onClick={() => player.close()} title={t.au.close}>
         <X size={15} />
       </button>

@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **18-11-2026** (versión **0.20.5**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **18-11-2026** (versión **0.20.6**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,19 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.5)
+## 5. Qué hace hoy (v0.20.6)
+
+### Novedades de la 0.20.6 (18-11-2026) — Audios: transcripciones, favoritos, escuchados, tiempos y marcas
+- Todo lo que se añade a un audio va en meta `audio_texts` (clave: nombre del archivo en minúsculas) — `doc/ord` (charla
+  enlazada), `title`, `hide` (charlas del día que no son suyas: «doc» o «doc:ord»), `fav`, `heard`, `marks` [{t, note}] —
+  a través de `src/audioData.ts` (un solo sitio que guarda; el reproductor marca `heard` al terminar).
+- «×» en cada charla del día = «No es de este audio» (y «volver a mostrarlas»). «Escribir la transcripción»: texto nuevo
+  en la colección «Transcripciones» («AAAA-MM-DD · título»), enlazado y abierto en el editor (al guardar se queda en
+  Audios). «Editar el texto» en la charla mostrada.
+- Estrella y ✓ en cada fila y en la página; filtros «Favoritos» / «Sin escuchar».
+- Tiempos en la charla escrita («[14:10]», «(1:05:12)», «14:10 » al principio de línea) → enlace que pone el audio ahí
+  (`linkTimes` + MutationObserver; `player.playAt`).
+- «Marcar aquí» (con nota) en la tarjeta del audio y 📍 en la barra de abajo; «Momentos marcados» con salto, nota y quitar.
 
 ### Novedades de la 0.20.5 (18-11-2026) — Audios: listas plegables y el mandala de «con charla escrita»
 - «Por idioma / año / lugar» se abren y cierran con su cabecera (`FacetBox`, localStorage `bio.audioFacets`; por defecto
@@ -1957,6 +1969,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **18-11-2026 — v0.20.6**: Audios — quitar charlas que no son, «Escribir la transcripción», favoritos y escuchados,
+  tiempos del texto que saltan en el audio, momentos marcados. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.6
 - **18-11-2026 — v0.20.5**: Audios — listas plegables; mandala pequeño en los audios con charla escrita.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.5
 - **18-11-2026 — v0.20.4**: Audios — título editable; la charla escrita sobre un mandala de templo o el pergamino; la
