@@ -543,6 +543,8 @@ export const api = {
   setTreeMarks: (marks: Marks) => invoke<void>("set_tree_marks", { marks: JSON.stringify(marks) }),
   /** the written lecture linked to each recording of «Audios» (key: file name in lower case) */
   audioTexts: () => invoke<string>("audio_texts").then((s) => JSON.parse(s) as AudioTexts),
+  audioLists: () => invoke<string>("audio_lists").then((s) => JSON.parse(s) as AudioList[]),
+  setAudioLists: (lists: AudioList[]) => invoke<void>("set_audio_lists", { lists: JSON.stringify(lists) }),
   setAudioTexts: (links: AudioTexts) => invoke<void>("set_audio_texts", { links: JSON.stringify(links) }),
   relate: (disciple: number, guru: number, kind: TreeKind, oldGuru: number | null) => invoke<number>("relate", { disciple, guru, kind, oldGuru }),
   unrelate: (disciple: number, guru: number) => invoke<number>("unrelate", { disciple, guru }),
@@ -815,6 +817,8 @@ export interface PullProgress {
  *  Anthology whose chapters are lectures) —, the title given to it by hand, and the lectures of that day that are not
  *  its own («doc» or «doc:ord»). */
 export type AudioTexts = Record<string, { doc?: number; ord?: number; title?: string; hide?: string[]; fav?: boolean; heard?: boolean; marks?: AudioMark[] }>;
+/** one of Whisper's own lists of recordings: its recordings by their key (file name in lower case), in order */
+export type AudioList = { id: string; name: string; items: string[] };
 /** a moment marked in a recording (seconds) with a note */
 export type AudioMark = { t: number; note?: string };
 /** «Audios»: its folder is the library number 0 (`lib/0/…`). */

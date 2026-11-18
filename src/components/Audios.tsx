@@ -5,7 +5,7 @@
 // day in «Lectures Gurudeva» or the Anthology, or any text linked by hand. The files stay in their folder (library 0).
 import { CSSProperties, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { ArrowLeft, BookOpen, Check, CheckCircle2, ChevronRight, Circle, ExternalLink, Eye, EyeOff, FilePlus2, FolderOpen, Headphones, Link2, Link2Off, MapPin, MapPinned, Pause, Pencil, Play, RotateCcw, RotateCw, Search, SkipBack, SkipForward, Star, X } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowUp, BookOpen, ListMusic, ListPlus, Plus, Trash2, Check, CheckCircle2, ChevronRight, Circle, ExternalLink, Eye, EyeOff, FilePlus2, FolderOpen, Headphones, Link2, Link2Off, MapPin, MapPinned, Pause, Pencil, Play, RotateCcw, RotateCw, Search, SkipBack, SkipForward, Star, X } from "lucide-react";
 import { api, AUDIOS_LIB, AudioMark, AudioTexts, DocListItem, fileUrl, LibEntry, libUrl, Place, SectionText } from "../api";
 import { Lang, T } from "../i18n";
 import { LectureGrid } from "./LectureGrid";
@@ -14,7 +14,8 @@ import { foldName } from "./Sidebar";
 import { ReaderStyle, SectionView } from "./Reader";
 import { clock, player, savedPosition, Track, usePlayer } from "../audioPlayer";
 import { templeMandalaUrl } from "./TempleMandala";
-import { audioKey, setAudioData, updateAudio, useAudioData } from "../audioData";
+import { audioKey, setAudioData, updateAudio, updateLists, useAudioData, useAudioLists } from "../audioData";
+import { ask } from "./ui";
 
 /** what is behind the written lecture (Whisper, 18-11-2026): the lotus of a temple floor, the parchment, or nothing */
 type Bg = "mandala" | "parchment" | "none";
@@ -343,12 +344,14 @@ interface Filters {
   year: string;
   /** «1996-05»: a month of the grid of the lectures */
   month: string;
+  /** one of the own lists (its id): only its recordings, in its order */
+  list: string;
   place: string;
   withText: boolean;
   fav: boolean;
   unheard: boolean;
 }
-const NO_FILTERS: Filters = { words: "", inText: false, lang: "", group: "", year: "", month: "", place: "", withText: false, fav: false, unheard: false };
+const NO_FILTERS: Filters = { words: "", inText: false, lang: "", group: "", year: "", month: "", list: "", place: "", withText: false, fav: false, unheard: false };
 // what was shown last (coming back to the section finds it as it was)
 let memo: { filters: Filters; sel: string | null; scroll: number } = { filters: NO_FILTERS, sel: null, scroll: 0 };
 let scanCache: { folder: string; recs: Rec[] } | null = null;
@@ -592,11 +595,32 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
     return of;
   }, [everything]);
   const words = foldName(f.words).split(" ").filter(Boolean);
+  // the own lists; the one shown, and where each of its recordings goes
+  const lists = useAudioLists();
+  const curList = f.list ? lists.find((l) => l.id === f.list) ?? null : null;
+  const listIx = useMemo(() => new Map((curList?.items ?? []).map((k, i) => [k, i])), [curList]);
+  const listErr = (e: unknown) => onToast(String(e));
+  const moveInList = (k: string, by: number) =>
+    void updateLists(
+      (ls) =>
+        ls.map((l) => {
+          if (l.id !== f.list) return l;
+          const items = [...l.items];
+          const i = items.indexOf(k);
+          const j = i + by;
+          if (i < 0 || j < 0 || j >= items.length) return l;
+          [items[i], items[j]] = [items[j], items[i]];
+          return { ...l, items };
+        }),
+      listErr,
+    );
+  const removeFromList = (k: string) => void updateLists((ls) => ls.map((l) => (l.id === f.list ? { ...l, items: l.items.filter((x) => x !== k) } : l)), listErr);
   const keep = (r: Rec, skip?: keyof Filters) =>
     (skip === "lang" || !f.lang || r.lang === f.lang) &&
     (skip === "lang" || !f.group || r.group === f.group) &&
     (skip === "year" || !f.year || r.year === f.year) &&
     (skip === "year" || !f.month || r.date.startsWith(f.month)) &&
+    (!f.list || listIx.has(audioKey(r.name))) &&
     (skip === "place" || !f.place || r.place === f.place) &&
     (!f.withText || !!textOf(r)) &&
     (!f.fav || !!links[audioKey(r.name)]?.fav) &&
@@ -608,6 +632,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
       all
         .filter((r) => keep(r) && matchWords(r))
         .sort((a, b) => {
+          if (f.list) return (listIx.get(audioKey(a.name)) ?? 0) - (listIx.get(audioKey(b.name)) ?? 0);
           if (sortBy !== "date" && durs) {
             // the unknown ones last
             const da = durs[a.rel] || (sortBy === "long" ? -1 : 1e9);
@@ -624,7 +649,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
             a.name.localeCompare(b.name)
           );
         }),
-    [all, f, textDays, links, written, partsOf, sortBy, durs], // eslint-disable-line react-hooks/exhaustive-deps
+    [all, f, textDays, links, written, partsOf, sortBy, durs, listIx], // eslint-disable-line react-hooks/exhaustive-deps
   );
   // the counts of each list, with the other filters on
   const counts = useMemo(() => {
@@ -665,7 +690,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
   const pl = usePlayer();
   // the grid of the lectures: the recordings with every filter on but the year and month
   const gridRecs = useMemo(() => all.filter((r) => keep(r, "year") && matchWords(r)), [all, f, textDays, links, written]); // eslint-disable-line react-hooks/exhaustive-deps
-  const filtering = !!(f.words.trim() || f.lang || f.group || f.year || f.month || f.place || f.withText || f.fav || f.unheard);
+  const filtering = !!(f.words.trim() || f.lang || f.group || f.year || f.month || f.list || f.place || f.withText || f.fav || f.unheard);
   const toggle = (r: Rec, k: "fav" | "heard") => void updateAudio(audioKey(r.name), (e) => ({ ...e, [k]: !e[k] }), (e) => onToast(String(e)));
   const rec = sel ? everything.find((r) => r.rel === sel) ?? null : null;
 
@@ -736,6 +761,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
           groupLabel={groupLabel(rec)}
           pic={rec.place ? picOf.get(foldName(rec.place)) : undefined}
           dur={durs?.[rec.rel] || 0}
+          onToast={onToast}
           onPlace={onPlace}
           link={links[rec.name.toLowerCase()]?.doc !== undefined ? (links[rec.name.toLowerCase()] as { doc: number; ord?: number }) : undefined}
           ownTitle={!!links[rec.name.toLowerCase()]?.title}
@@ -855,6 +881,9 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
 
             <div className="au-body">
               <aside className="au-facets">
+                <FacetBox id="lists" title={A.lists.title} active={curList?.name ?? ""}>
+                  <OwnLists t={t} current={f.list} onList={(id) => set({ ...NO_FILTERS, list: f.list === id ? "" : id })} onToast={onToast} />
+                </FacetBox>
                 <FacetBox id="lang" title={A.byLang} active={f.group ? groupLabel(groupInfo(f.group)) : f.lang ? A.langs[f.lang] : ""}>
                   {LANG_ORDER.filter((l) => groupsOf.has(l)).map((l) => {
                     const gs = [...groupsOf.get(l)!].sort((a, b) => groupInfo(a).sure - groupInfo(b).sure);
@@ -897,12 +926,27 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
               </aside>
 
               <div className="au-list">
+                {curList && (
+                  <ListHead
+                    t={t}
+                    name={curList.name}
+                    total={durs ? hm(list.reduce((n, r) => n + (durs[r.rel] || 0), 0)) : ""}
+                    count={list.length}
+                    onRename={(name) => void updateLists((ls) => ls.map((l) => (l.id === curList.id ? { ...l, name } : l)), listErr)}
+                    onDelete={async () => {
+                      if (!(await ask(A.lists.deleteConfirm(curList.name)))) return;
+                      set({ list: "" });
+                      void updateLists((ls) => ls.filter((l) => l.id !== curList.id), listErr);
+                    }}
+                    onClose={() => set({ list: "" })}
+                  />
+                )}
                 <div className="au-list-head">
                   <span className="muted small">
                     {A.found(list.length)}
                     {durs && list.length > 0 && ` · ${hm(list.reduce((n, r) => n + (durs[r.rel] || 0), 0))}`}
                   </span>
-                  <div className="seg au-sort" title={durs ? undefined : A.sortWait}>
+                  <div className="seg au-sort" title={durs ? undefined : A.sortWait} hidden={!!curList}>
                     {(["date", "long", "short"] as SortBy[]).map((s) => (
                       <button key={s} className={sortBy === s ? "on" : ""} disabled={s !== "date" && !durs} onClick={() => chooseSort(s)}>
                         {A.sort[s]}
@@ -954,6 +998,20 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
                       <button className={`au-mark au-heard${mine?.heard ? " on" : ""}`} onClick={() => toggle(r, "heard")} title={mine?.heard ? A.markUnheard : A.markHeard}>
                         {mine?.heard ? <CheckCircle2 size={16} /> : <Circle size={16} />}
                       </button>
+                      <AddToList t={t} k={audioKey(r.name)} onToast={onToast} />
+                      {curList && (
+                        <>
+                          <button className="au-mark on au-order" onClick={() => moveInList(audioKey(r.name), -1)} title={A.lists.up}>
+                            <ArrowUp size={15} />
+                          </button>
+                          <button className="au-mark on au-order" onClick={() => moveInList(audioKey(r.name), 1)} title={A.lists.down}>
+                            <ArrowDown size={15} />
+                          </button>
+                          <button className="au-mark on au-order" onClick={() => removeFromList(audioKey(r.name))} title={A.lists.remove}>
+                            <X size={15} />
+                          </button>
+                        </>
+                      )}
                     </div>
                   );
                 })}
@@ -1000,7 +1058,7 @@ function LotusMark({ className, title }: { className?: string; title?: string })
 /** «Por idioma», «Por año», «Por lugar» open and close with their heading (Whisper, 18-11-2026); remembered. Closed
  *  with a filter on, the heading says which. */
 const FACETS_KEY = "bio.audioFacets";
-const FACETS_DEFAULT: Record<string, boolean> = { lang: true, year: false, place: false, grid: true };
+const FACETS_DEFAULT: Record<string, boolean> = { lists: true, lang: true, year: false, place: false, grid: true };
 function readFacets(): Record<string, boolean> {
   try {
     return { ...FACETS_DEFAULT, ...JSON.parse(localStorage.getItem(FACETS_KEY) || "{}") };
@@ -1032,6 +1090,153 @@ function FacetBox({ id, title, active, children }: { id: string; title: string; 
   );
 }
 
+// ------------------------------------------------------------------ own lists (Whisper, 18-11-2026)
+
+const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+
+/** a box to write the name of a list (Enter = done, Escape = leave it) */
+function NameBox({ placeholder, initial = "", onDone, onCancel }: { placeholder: string; initial?: string; onDone: (name: string) => void; onCancel?: () => void }) {
+  const [v, setV] = useState(initial);
+  return (
+    <input
+      className="au-list-name"
+      value={v}
+      placeholder={placeholder}
+      autoFocus={!!onCancel}
+      spellCheck={false}
+      onChange={(e) => setV(e.target.value)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && v.trim()) {
+          onDone(v.trim());
+          setV("");
+        }
+        if (e.key === "Escape") onCancel?.();
+      }}
+      onBlur={() => onCancel?.()}
+    />
+  );
+}
+
+/** «Mis listas» on the left: each list with how many recordings; a new one */
+function OwnLists({ t, current, onList, onToast }: { t: T; current: string; onList: (id: string) => void; onToast: (m: string) => void }) {
+  const L = t.au.lists;
+  const lists = useAudioLists();
+  const [adding, setAdding] = useState(false);
+  return (
+    <div className="au-own-lists">
+      {!lists.length && <p className="muted small au-lists-empty">{L.empty}</p>}
+      {lists.map((l) => (
+        <button key={l.id} className={`au-facet${current === l.id ? " on" : ""}`} onClick={() => onList(l.id)}>
+          <span>
+            <ListMusic size={13} /> {l.name}
+          </span>
+          <em>{l.items.length}</em>
+        </button>
+      ))}
+      {adding ? (
+        <NameBox
+          placeholder={L.newName}
+          onDone={(name) => {
+            const id = newId();
+            void updateLists((ls) => [...ls, { id, name, items: [] }], (e) => onToast(String(e)));
+            setAdding(false);
+            onList(id);
+          }}
+          onCancel={() => setAdding(false)}
+        />
+      ) : (
+        <button className="link-btn small au-lists-new" onClick={() => setAdding(true)}>
+          <Plus size={13} /> {L.new}
+        </button>
+      )}
+    </div>
+  );
+}
+
+/** the button «add to a list» of a recording, with its little menu: each list (ticked if it is in it) and a new one */
+function AddToList({ t, k, chip, onToast }: { t: T; k: string; chip?: boolean; onToast: (m: string) => void }) {
+  const L = t.au.lists;
+  const lists = useAudioLists();
+  const [open, setOpen] = useState(false);
+  const box = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: MouseEvent) => {
+      if (!box.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, [open]);
+  const inAny = lists.filter((l) => l.items.includes(k));
+  const err = (e: unknown) => onToast(String(e));
+  const flip = (id: string) =>
+    void updateLists((ls) => ls.map((l) => (l.id !== id ? l : l.items.includes(k) ? { ...l, items: l.items.filter((x) => x !== k) } : { ...l, items: [...l.items, k] })), err);
+  return (
+    <span className="au-addlist-wrap" ref={box}>
+      <button
+        className={chip ? `au-chip au-mark-chip${inAny.length ? " on" : ""}` : `au-mark au-addlist${inAny.length ? " on" : ""}`}
+        onClick={() => setOpen(!open)}
+        title={inAny.length ? L.inLists(inAny.map((l) => l.name).join(", ")) : L.add}
+      >
+        <ListPlus size={chip ? 13 : 16} />
+        {chip && ` ${inAny.length ? inAny.map((l) => l.name).join(", ") : L.addShort}`}
+      </button>
+      {open && (
+        <div className="au-list-menu">
+          <div className="au-list-menu-head">{L.add}</div>
+          {lists.map((l) => (
+            <label key={l.id} className="au-list-menu-row">
+              <input type="checkbox" checked={l.items.includes(k)} onChange={() => flip(l.id)} />
+              <span>{l.name}</span>
+              <em>{l.items.length}</em>
+            </label>
+          ))}
+          <NameBox placeholder={L.newName} onDone={(name) => void updateLists((ls) => [...ls, { id: newId(), name, items: [k] }], err)} />
+        </div>
+      )}
+    </span>
+  );
+}
+
+/** over the list when one own list is shown: its name (to change), how long it all lasts, delete it */
+function ListHead(p: { t: T; name: string; total: string; count: number; onRename: (n: string) => void; onDelete: () => void; onClose: () => void }) {
+  const L = p.t.au.lists;
+  const [edit, setEdit] = useState(false);
+  return (
+    <div className="au-list-title">
+      <ListMusic size={20} />
+      {edit ? (
+        <NameBox
+          placeholder={L.newName}
+          initial={p.name}
+          onDone={(n) => {
+            p.onRename(n);
+            setEdit(false);
+          }}
+          onCancel={() => setEdit(false)}
+        />
+      ) : (
+        <h2>{p.name}</h2>
+      )}
+      <span className="muted small">
+        {L.count(p.count)}
+        {p.total && ` · ${p.total}`}
+      </span>
+      <span className="au-list-title-btns">
+        <button className="icon-btn" onClick={() => setEdit(true)} title={L.rename}>
+          <Pencil size={14} />
+        </button>
+        <button className="icon-btn" onClick={p.onDelete} title={L.delete}>
+          <Trash2 size={14} />
+        </button>
+        <button className="icon-btn" onClick={p.onClose} title={L.close}>
+          <X size={14} />
+        </button>
+      </span>
+    </div>
+  );
+}
+
 // ------------------------------------------------------------------ one recording
 
 function AudioPage(p: {
@@ -1043,6 +1248,7 @@ function AudioPage(p: {
   pic?: Place;
   /** how long it lasts (seconds; 0 = not known) */
   dur: number;
+  onToast: (m: string) => void;
   onPlace?: (id: number) => void;
   link?: { doc: number; ord?: number };
   /** the title was given by hand */
@@ -1178,6 +1384,7 @@ function AudioPage(p: {
         <button className={`au-chip au-mark-chip${p.heard ? " on" : ""}`} onClick={() => p.onToggle("heard")} title={p.heard ? A.markUnheard : A.markHeard}>
           {p.heard ? <CheckCircle2 size={13} /> : <Circle size={13} />} {A.heard}
         </button>
+        <AddToList t={t} k={audioKey(r.name)} chip onToast={p.onToast} />
         <code className="au-file" title={r.rel}>
           {r.name}
         </code>

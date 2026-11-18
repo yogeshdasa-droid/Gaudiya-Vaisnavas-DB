@@ -10290,3 +10290,185 @@ button.au-chip:hover {
 .au-dur {
   font-variant-numeric: tabular-nums;
 }
+
+/* ── Audios: own lists (18-11-2026) ── */
+.au-own-lists {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.au-own-lists .au-facet span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.au-lists-empty {
+  margin: 4px 8px 6px;
+  line-height: 1.4;
+}
+.au-lists-new {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 4px 8px;
+}
+.au-list-name {
+  margin: 4px 0;
+  padding: 6px 9px;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  min-width: 0;
+}
+.au-addlist-wrap {
+  position: relative;
+  display: inline-flex;
+}
+.au-addlist.on {
+  color: var(--accent-text);
+}
+.au-order {
+  color: var(--muted);
+}
+.au-list-menu {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 4px);
+  right: 0;
+  width: 250px;
+  padding: 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--panel-solid, var(--surface));
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+.au-list-menu-head {
+  padding: 4px 6px 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.au-list-menu-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13.5px;
+}
+.au-list-menu-row:hover {
+  background: var(--hover);
+}
+.au-list-menu-row span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.au-list-menu-row em {
+  font-style: normal;
+  font-size: 12px;
+  color: var(--muted);
+}
+.au-list-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+.au-list-title h2 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 20px;
+}
+.au-list-title .au-list-name {
+  flex: 0 1 280px;
+}
+.au-list-title-btns {
+  margin-left: auto;
+  display: inline-flex;
+  gap: 4px;
+}
+
+/* ── Record › recordings that name this person (18-11-2026) ── */
+.person-audios summary dt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.pa-group {
+  margin: 8px 0 12px;
+}
+.pa-group h4 {
+  margin: 0 0 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.pa-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 4px;
+  border-radius: 8px;
+}
+.pa-row:hover,
+.pa-row.on {
+  background: var(--hover);
+}
+.pa-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 0;
+  background: none;
+  padding: 4px 0;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.pa-title {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pa-main:hover .pa-title {
+  color: var(--accent-text);
+  text-decoration: underline;
+}
+.pa-lec {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-2);
+  font: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+.pa-lec:hover {
+  border-color: var(--accent);
+  color: var(--accent-text);
+}

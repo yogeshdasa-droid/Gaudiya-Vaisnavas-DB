@@ -3,7 +3,7 @@
 // Kept here once for the whole window, so that the page and the player (which marks a recording «listened» when it
 // ends, even with the page closed) never write over each other.
 import { useEffect, useState } from "react";
-import { api, AudioTexts } from "./api";
+import { api, AudioList, AudioTexts } from "./api";
 
 let data: AudioTexts = {};
 let loaded: Promise<void> | null = null;
@@ -59,6 +59,54 @@ export function useAudioData(): AudioTexts {
     void load();
     f();
     return () => void subs.delete(f);
+  }, []);
+  return d;
+}
+
+// ------------------------------------------------------------------ own lists (Whisper, 18-11-2026)
+
+let lists: AudioList[] = [];
+let listsLoaded: Promise<void> | null = null;
+let listsSaving: Promise<void> = Promise.resolve();
+const listSubs = new Set<() => void>();
+
+function loadLists(): Promise<void> {
+  if (!listsLoaded)
+    listsLoaded = api.audioLists().then(
+      (d) => {
+        lists = Array.isArray(d) ? d : [];
+        listSubs.forEach((f) => f());
+      },
+      () => {
+        listsLoaded = null;
+      },
+    );
+  return listsLoaded;
+}
+
+/** all the lists at once (a whole new array) */
+export async function setAudioLists(next: AudioList[], onError?: (e: unknown) => void) {
+  await loadLists();
+  lists = next;
+  listSubs.forEach((f) => f());
+  const snapshot = lists;
+  listsSaving = listsSaving.then(() => api.setAudioLists(snapshot)).catch((e) => onError?.(e));
+}
+
+/** changes the lists from what they are now */
+export async function updateLists(f: (ls: AudioList[]) => AudioList[], onError?: (e: unknown) => void) {
+  await loadLists();
+  await setAudioLists(f(lists), onError);
+}
+
+export function useAudioLists(): AudioList[] {
+  const [d, setD] = useState(lists);
+  useEffect(() => {
+    const f = () => setD(lists);
+    listSubs.add(f);
+    void loadLists();
+    f();
+    return () => void listSubs.delete(f);
   }, []);
   return d;
 }

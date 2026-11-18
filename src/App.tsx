@@ -1344,6 +1344,9 @@ export default function App() {
             }}
             onAddText={addTextFor}
             onFindMentions={findMentions}
+            docs={docs}
+            onAudio={(rel) => setMain({ kind: "audios", focus: { rel, n: Date.now() } })}
+            onOpenLecture={(d, o) => openDoc(d, o ?? 0)}
             onSearchIn={searchInPerson}
             onEditDoc={(docId, ord) => editSectionOf(docId, ord ?? 0)}
             onNewFromText={(docId, fragment, notes, source) =>

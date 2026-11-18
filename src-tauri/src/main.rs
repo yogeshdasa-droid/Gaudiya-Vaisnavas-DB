@@ -619,6 +619,19 @@ async fn set_audio_texts(state: State<'_, AppState>, links: String) -> CmdResult
     db::set_meta(&state.conn.lock().unwrap(), "audio_texts", &links).map_err(err)
 }
 
+/// Whisper's own lists of recordings («Kārtika», «for the car»…; 18-11-2026): JSON [{id, name, items: [file name in
+/// lower case]}], in meta like `audio_texts` (the format stays).
+#[tauri::command]
+async fn audio_lists(state: State<'_, AppState>) -> CmdResult<String> {
+    Ok(db::get_meta(&state.conn.lock().unwrap(), "audio_lists").map_err(err)?.unwrap_or_else(|| "[]".into()))
+}
+
+#[tauri::command]
+async fn set_audio_lists(state: State<'_, AppState>, lists: String) -> CmdResult<()> {
+    serde_json::from_str::<serde_json::Value>(&lists).map_err(err)?;
+    db::set_meta(&state.conn.lock().unwrap(), "audio_lists", &lists).map_err(err)
+}
+
 /// The drawn Paramparā Tree saved as a picture (SVG) where the user chose.
 #[tauri::command]
 async fn save_tree_svg(path: String, svg: String) -> CmdResult<()> {
@@ -1460,6 +1473,8 @@ fn main() {
             set_tree_marks,
             audio_texts,
             set_audio_texts,
+            audio_lists,
+            set_audio_lists,
             relate,
             unrelate,
             sync_tree,

@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { PersonAudios } from "./PersonAudios";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { ArrowUp, Trees, BookOpen, Library, MapPin, ChevronDown, ChevronLeft, ChevronRight, Star, Combine, FileDown, FilePlus2, Printer, FileText, Folder, GitFork, GitMerge, Flower2, Globe, History, ImagePlus, Images, ListTree, LocateFixed, MoreHorizontal, Network, Pencil, Route, Search, Sparkles, StickyNote, TextSearch, Trash2, Undo2, UserPlus, UserRound, Users, X } from "lucide-react";
-import { api, FAVORITES, fileUrl, GANODDESA, VRAJA_LILA, imageCaption, isNamesake, LifeSpan, MAIN_TEXT, NAMESAKES, Place, Person, PersonDoc, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind } from "../api";
+import { api, FAVORITES, fileUrl, GANODDESA, VRAJA_LILA, imageCaption, isNamesake, LifeSpan, MAIN_TEXT, NAMESAKES, Place, Person, PersonDoc, PersonListItem, SectionText, TocEntry, TREE_KINDS, TreeKind, DocListItem } from "../api";
 import { formatSize, Lang, T } from "../i18n";
 import { ask, CollectionChip } from "./ui";
 import { ReaderStyle, SectionView } from "./Reader";
@@ -76,6 +77,10 @@ interface Props {
   onLibrary: (p: Person) => void;
   /** a web link of the record, opened inside the window */
   onOpenWeb: (url: string, title: string) => void;
+  /** «Audios que lo nombran»: the texts (to find the written lectures), a recording's page, a lecture at its part */
+  docs: DocListItem[];
+  onAudio: (rel: string) => void;
+  onOpenLecture: (docId: number, ordinal?: number) => void;
 }
 
 const NO_TERMS: Term[] = [];
@@ -1435,6 +1440,7 @@ export function PersonView(p: Props) {
                 </dd>
               </details>
             )}
+            <PersonAudios t={t} lang={lang} name={person.name} aka={person.aka} docs={p.docs} onAudio={p.onAudio} onOpenDoc={p.onOpenLecture} />
           {notes.links.length > 0 && (
             <section className="ency-sec">
               <h2>{t.linksSection}</h2>

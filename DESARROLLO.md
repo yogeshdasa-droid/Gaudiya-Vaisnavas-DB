@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **18-11-2026** (versión **0.20.10**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **18-11-2026** (versión **0.20.11**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,23 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.10)
+## 5. Qué hace hoy (v0.20.11)
+
+### Novedades de la 0.20.11 (18-11-2026) — Audios: listas propias; audios en la ficha de cada persona
+- **Listas propias** («Kārtika», «para el coche»…): meta `audio_lists` = [{id, name, items: [clave del audio = nombre
+  del archivo en minúsculas]}] (comandos `audio_lists` / `set_audio_lists`, sin cambio de formato; entra en las copias).
+  `audioData.ts`: `useAudioLists`, `updateLists`, `setAudioLists` (un solo sitio que guarda). Audios.tsx: caja «Mis
+  listas» (FacetBox `lists`, `OwnLists`), botón ＋ en cada fila y chip en la página (`AddToList`: casillas + nombre
+  de una lista nueva con Enter, `NameBox`), filtro `list` = solo esa lista en su orden (sin los botones de orden),
+  ↑ ↓ × en cada fila, cabecera `ListHead` (nombre con lápiz, total, borrar con `ask`, volver). «Escuchar todos» = en
+  el orden de la lista. (Sin `window.prompt`: el nombre se escribe en una casilla.)
+- **Audios en la ficha** (`components/PersonAudios.tsx`): sección plegable «Audios de Śrīla Gurudeva que lo nombran»
+  (tras «Coincidieron en vida»); busca solo al abrirla. Nombres = nombre + aka sin «Śrī/Śrīla/Lord…» delante ni
+  «(…)». (1) En el título: comparación «suelta» (w = v, sin la -a final: Goswami = Gosvāmī, Thakur = Ṭhākura).
+  (2) En la charla escrita del mismo día (Lectures Gurudeva + Anthology, frase exacta por FTS; solo nombres de 2+
+  palabras si los hay — «rūpa» es también «forma»), más los audios enlazados a mano a esa charla y sin las quitadas
+  con «×»; ordenados por veces, 25 + «y N más». Botón «📖 N veces» abre la charla. Respeta los ojos de idioma.
+  PersonView: props nuevas `docs`, `onAudio`, `onOpenLecture`.
 
 ### Novedades de la 0.20.10 (18-11-2026) — Audios: la duración de cada audio
 - `src-tauri/src/duration.rs` (sin crates nuevos): lee solo el principio de cada archivo — MP3 (cabecera Xing/Info o
@@ -2008,6 +2024,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **18-11-2026 — v0.20.11**: Audios — listas propias; en la ficha, los audios que nombran a la persona.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.11
 - **18-11-2026 — v0.20.10**: Audios — la duración de cada audio, el total y ordenar por duración.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.10
 - **18-11-2026 — v0.20.9**: retratos con marco de loto (ficha y árbol lateral); la foto del lugar detrás de cada audio.
