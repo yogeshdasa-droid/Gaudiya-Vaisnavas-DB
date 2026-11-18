@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
 import { Clock, Database, MapPin, FileText, HardDrive, Sparkles, Star, Upload, Users } from "lucide-react";
-import { Bookmark, fileUrl, hueOf, isFavorite, PersonListItem, Place, SearchResult, Status } from "../api";
+import { Bookmark, DocListItem, fileUrl, hueOf, isFavorite, PersonListItem, Place, SearchResult, Status } from "../api";
 import { Lang, T } from "../i18n";
 import { AnimatedNumber } from "./ui";
 import { coverHidden, LotusDivider, LotusMandala, NoPhoto } from "./Logo";
 import { Calendar } from "./Calendar";
+import { TodayYears } from "./TodayYears";
 
 export interface RecentDoc {
   docId: number;
@@ -32,6 +33,10 @@ interface Props {
   onCalendar: () => void;
   /** «Recently opened» emptied */
   onClearRecent: () => void;
+  /** «Today, in other years»: the texts, to find the written lectures of this day */
+  docs: DocListItem[];
+  onOpenDoc: (docId: number, ordinal?: number) => void;
+  onAudio: (rel: string) => void;
 }
 
 /** The size of the library: records, texts, original files, database (Panorama › Status). */
@@ -65,7 +70,7 @@ function ofTheDay<X>(list: X[]): X | null {
   return list[(day * 7919) % list.length];
 }
 
-export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, onRecent, onBookmark, onImportDefaults, reload, places, onPlace, onCalendar, onClearRecent }: Props) {
+export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, onRecent, onBookmark, onImportDefaults, reload, places, onPlace, onCalendar, onClearRecent, docs, onOpenDoc, onAudio }: Props) {
   const empty = status !== null && status.docs === 0 && !status.busy;
   // something to discover each day: a record of the Guru Paramparā and a holy place
   const person = useMemo(() => ofTheDay([...persons].filter((p) => p.tree).sort((a, b) => a.id - b.id)), [persons]);
@@ -172,6 +177,8 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
           </section>
         )}
 
+
+        {!empty && <TodayYears t={t} lang={lang} docs={docs} reload={reload} onPerson={onPerson} onOpenDoc={onOpenDoc} onAudio={onAudio} />}
 
         {(person || place) && (
           <section>

@@ -8,6 +8,7 @@ import { open } from "@tauri-apps/plugin-dialog";
 import { ArrowLeft, BookOpen, Check, CheckCircle2, ChevronRight, Circle, ExternalLink, Eye, EyeOff, FilePlus2, FolderOpen, Headphones, Link2, Link2Off, MapPin, MapPinned, Pause, Pencil, Play, RotateCcw, RotateCw, Search, SkipBack, SkipForward, Star, X } from "lucide-react";
 import { api, AUDIOS_LIB, AudioMark, AudioTexts, DocListItem, LibEntry, libUrl, SectionText } from "../api";
 import { Lang, T } from "../i18n";
+import { LectureGrid } from "./LectureGrid";
 import { anthologyVolumes, ANTHOLOGY, formatLecDate } from "./Anthology";
 import { foldName } from "./Sidebar";
 import { ReaderStyle, SectionView } from "./Reader";
@@ -275,7 +276,7 @@ export function partOf(name: string, origin: string): { key: string; ord: number
 
 // ------------------------------------------------------------------ written lectures
 
-interface Written {
+export interface Written {
   doc: number;
   ord?: number;
   title: string;
@@ -284,7 +285,7 @@ interface Written {
 }
 
 /** «Lectures Gurudeva» texts («1996-05-06 · title») and the Anthology's lectures, by their date */
-async function writtenByDate(docs: DocListItem[]): Promise<{ byDate: Map<string, Written[]>; all: Written[] }> {
+export async function writtenByDate(docs: DocListItem[]): Promise<{ byDate: Map<string, Written[]>; all: Written[] }> {
   const all: Written[] = [];
   for (const d of docs) {
     if (d.dir.split("/")[0] !== LECTURES) continue;
@@ -340,12 +341,14 @@ interface Filters {
   lang: string;
   group: string;
   year: string;
+  /** «1996-05»: a month of the grid of the lectures */
+  month: string;
   place: string;
   withText: boolean;
   fav: boolean;
   unheard: boolean;
 }
-const NO_FILTERS: Filters = { words: "", inText: false, lang: "", group: "", year: "", place: "", withText: false, fav: false, unheard: false };
+const NO_FILTERS: Filters = { words: "", inText: false, lang: "", group: "", year: "", month: "", place: "", withText: false, fav: false, unheard: false };
 // what was shown last (coming back to the section finds it as it was)
 let memo: { filters: Filters; sel: string | null; scroll: number } = { filters: NO_FILTERS, sel: null, scroll: 0 };
 let scanCache: { folder: string; recs: Rec[] } | null = null;
@@ -368,6 +371,29 @@ interface Props {
   onToast: (msg: string) => void;
 }
 
+/** The recordings of the Audios folder (read once per session; also used by Home, «Today, in other years»). */
+export async function scanAudios(fresh = false): Promise<{ folder: string | null; missing: boolean; recs: Rec[] }> {
+  if (!fresh && scanCache) return { folder: scanCache.folder, missing: false, recs: scanCache.recs };
+  let v = await api.getLibrary(AUDIOS_LIB);
+  if (!v.folder) {
+    for (const d of DEFAULT_FOLDERS) {
+      try {
+        await api.setLibraryFolder(AUDIOS_LIB, d);
+        v = await api.getLibrary(AUDIOS_LIB);
+        break;
+      } catch {
+        /* the next one */
+      }
+    }
+  }
+  const recs = v.entries.filter((e) => MEDIA.test(e.name)).map(toRec);
+  if (v.folder) scanCache = { folder: v.folder, recs };
+  return { folder: v.folder, missing: v.missing, recs };
+}
+
+/** whether the eyes of «Audios» show this recording's language (closed eyes hide it everywhere, also on Home) */
+export const langShown = (l: Rec["lang"]) => seen(l, readEyes());
+
 export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText, onEditText, focus, onOpenDoc, onToast }: Props) {
   const A = t.au;
   const [folder, setFolder] = useState<string | null>(scanCache?.folder ?? null);
@@ -385,24 +411,11 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
     if (!fresh && scanCache) return;
     setRecs(null);
     try {
-      let v = await api.getLibrary(AUDIOS_LIB);
-      if (!v.folder) {
-        for (const d of DEFAULT_FOLDERS) {
-          try {
-            await api.setLibraryFolder(AUDIOS_LIB, d);
-            v = await api.getLibrary(AUDIOS_LIB);
-            break;
-          } catch {
-            /* the next one */
-          }
-        }
-      }
+      const v = await scanAudios(fresh);
       setFolder(v.folder);
       setNoFolder(!v.folder);
       setMissing(v.missing);
-      const rs = v.entries.filter((e) => MEDIA.test(e.name)).map(toRec);
-      if (v.folder) scanCache = { folder: v.folder, recs: rs };
-      setRecs(rs);
+      setRecs(v.recs);
     } catch (e) {
       onToast(String(e));
       setRecs([]);
@@ -519,6 +532,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
     (skip === "lang" || !f.lang || r.lang === f.lang) &&
     (skip === "lang" || !f.group || r.group === f.group) &&
     (skip === "year" || !f.year || r.year === f.year) &&
+    (skip === "year" || !f.month || r.date.startsWith(f.month)) &&
     (skip === "place" || !f.place || r.place === f.place) &&
     (!f.withText || !!textOf(r)) &&
     (!f.fav || !!links[audioKey(r.name)]?.fav) &&
@@ -579,7 +593,9 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
   };
 
   const pl = usePlayer();
-  const filtering = !!(f.words.trim() || f.lang || f.group || f.year || f.place || f.withText || f.fav || f.unheard);
+  // the grid of the lectures: the recordings with every filter on but the year and month
+  const gridRecs = useMemo(() => all.filter((r) => keep(r, "year") && matchWords(r)), [all, f, textDays, links, written]); // eslint-disable-line react-hooks/exhaustive-deps
+  const filtering = !!(f.words.trim() || f.lang || f.group || f.year || f.month || f.place || f.withText || f.fav || f.unheard);
   const toggle = (r: Rec, k: "fav" | "heard") => void updateAudio(audioKey(r.name), (e) => ({ ...e, [k]: !e[k] }), (e) => onToast(String(e)));
   const rec = sel ? everything.find((r) => r.rel === sel) ?? null : null;
 
@@ -748,6 +764,22 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
               )}
             </div>
 
+            <div className="au-grid-box au-facets">
+              <FacetBox id="grid" title={A.grid.title} active={f.month ? f.month : ""}>
+                <LectureGrid
+                  t={t}
+                  lang={lang}
+                  recs={gridRecs}
+                  written={written?.all ?? []}
+                  month={f.month}
+                  year={f.year}
+                  onMonth={(m) => set({ month: m, year: "" })}
+                  onYear={(y) => set({ year: y, month: "" })}
+                  onOpenDoc={onOpenDoc}
+                />
+              </FacetBox>
+            </div>
+
             <div className="au-body">
               <aside className="au-facets">
                 <FacetBox id="lang" title={A.byLang} active={f.group ? groupLabel(groupInfo(f.group)) : f.lang ? A.langs[f.lang] : ""}>
@@ -774,7 +806,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
                 <FacetBox id="year" title={A.byYear} active={f.year}>
                   <div className="au-years">
                     {years.map(([y, n]) => (
-                      <button key={y} className={`au-facet${f.year === y ? " on" : ""}`} onClick={() => set({ year: f.year === y ? "" : y })}>
+                      <button key={y} className={`au-facet${f.year === y ? " on" : ""}`} onClick={() => set({ year: f.year === y ? "" : y, month: "" })}>
                         <span>{y || A.noYear}</span>
                         <span className="n">{n}</span>
                       </button>
@@ -884,7 +916,7 @@ function LotusMark({ className, title }: { className?: string; title?: string })
 /** «Por idioma», «Por año», «Por lugar» open and close with their heading (Whisper, 18-11-2026); remembered. Closed
  *  with a filter on, the heading says which. */
 const FACETS_KEY = "bio.audioFacets";
-const FACETS_DEFAULT: Record<string, boolean> = { lang: true, year: false, place: false };
+const FACETS_DEFAULT: Record<string, boolean> = { lang: true, year: false, place: false, grid: true };
 function readFacets(): Record<string, boolean> {
   try {
     return { ...FACETS_DEFAULT, ...JSON.parse(localStorage.getItem(FACETS_KEY) || "{}") };

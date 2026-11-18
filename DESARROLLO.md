@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **18-11-2026** (versión **0.20.7**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **18-11-2026** (versión **0.20.8**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,18 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.7)
+## 5. Qué hace hoy (v0.20.8)
+
+### Novedades de la 0.20.8 (18-11-2026) — «Hoy, en otros años» y el calendario de las charlas
+- Inicio, tras las favoritas: **«Hoy, en otros años»** (`components/TodayYears.tsx`): la aparición/desaparición del día
+  según el calendario (con foto, clic = ficha) y, por años (del más reciente), los audios y las charlas escritas
+  (Lectures Gurudeva + Anthology) de este día del mes. 4 por año + «y N más»; partes/copias con el mismo título, lugar y
+  AM/PM en una fila («2 partes»); ▶ sigue con los demás del día; respeta los ojos de idioma. De Audios.tsx se exportan
+  `scanAudios()` (lectura de la carpeta, con la caché de la sesión), `langShown()`, `writtenByDate()`, `Written`.
+- Audios: caja plegable **«Calendario de las charlas»** encima de la lista (`components/LectureGrid.tsx`, FacetBox
+  `grid`, abierta por defecto): años (solo los que tienen algo) × meses, más color donde hay más audios + charlas
+  escritas (raíz cuadrada del máximo), total por año. Clic en un mes = filtro `month` («2007-11») de la lista y sus
+  charlas escritas debajo de la cuadrícula; clic en un año = filtro de año. Cuenta con los demás filtros puestos.
 
 ### Novedades de la 0.20.7 (18-11-2026) — Audios: ojos de idioma y partes de una charla
 - Junto al título, English · Hindi · Bengali · Sanskrit · Otros con un ojo cada uno (`EYES`, `seen()`; localStorage
@@ -1977,6 +1988,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **18-11-2026 — v0.20.8**: «Hoy, en otros años» en Inicio; «Calendario de las charlas» en Audios.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.8
 - **18-11-2026 — v0.20.7**: Audios — un ojo por idioma junto al título; las partes de una misma charla seguidas.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.7
 - **18-11-2026 — v0.20.6**: Audios — quitar charlas que no son, «Escribir la transcripción», favoritos y escuchados,

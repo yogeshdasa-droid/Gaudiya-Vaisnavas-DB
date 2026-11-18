@@ -1400,6 +1400,9 @@ export default function App() {
             onPlace={openPlace}
             onCalendar={() => setMain({ kind: "calendar" })}
             onClearRecent={() => setRecent([])}
+            docs={docs}
+            onOpenDoc={(d, o) => openDoc(d, o ?? 0)}
+            onAudio={(rel) => setMain({ kind: "audios", focus: { rel, n: Date.now() } })}
           />
         )}
         <ViewGuard key={main.kind} message={t.viewFailed} back={t.viewFailedBack} onBack={() => setMain({ kind: "home" })}>
