@@ -90,6 +90,7 @@ import { Home, RecentDoc } from "./components/Home";
 import { EMPTY_FILTERS, Filters, hasFilter, Results } from "./components/Results";
 import { Reader, ReaderStyle, ReaderTarget } from "./components/Reader";
 import type { TitleFont } from "./components/Settings";
+import { lotusMiniUrl, templeMandalaUrl } from "./components/TempleMandala";
 import { PersonView } from "./components/PersonView";
 import { DuplicatesDialog } from "./components/Review";
 import { Timeline } from "./components/Timeline";
@@ -161,6 +162,8 @@ export default function App() {
   const [lotus, setLotus] = usePersisted("lotus", true);
   // the font of the record names (15-11-2026): normal, calligraphy (Great Vibes) or classic (Cormorant Garamond italic)
   const [titleFont, setTitleFont] = usePersisted<TitleFont>("titleFont", "normal");
+  // the portraits in the lotus of a temple floor or plain (Whisper, 18-11-2026)
+  const [lotusPortrait, setLotusPortrait] = usePersisted<boolean>("lotusPortrait", true);
   // the bar of buttons on the left or in one row on top (Whisper, 17-11-2026)
   const [barTop, setBarTop] = usePersisted<boolean>("barTop", false);
   const [railSaved, setRailSaved] = usePersisted<RailLayout | null>("railLayout", null);
@@ -373,6 +376,14 @@ export default function App() {
   useEffect(() => {
     document.documentElement.dataset.titleFont = titleFont;
   }, [titleFont]);
+  useEffect(() => {
+    const r = document.documentElement;
+    if (lotusPortrait) {
+      r.style.setProperty("--temple-frame", templeMandalaUrl(1));
+      r.style.setProperty("--lotus-mini", lotusMiniUrl());
+      r.dataset.portrait = "lotus";
+    } else delete r.dataset.portrait;
+  }, [lotusPortrait]);
   useEffect(() => {
     if (barTop) document.documentElement.dataset.rail = "top";
     else delete document.documentElement.dataset.rail;
@@ -1456,7 +1467,10 @@ export default function App() {
                 return id;
               }}
               onEditText={editSectionOf}
-              focus={main.focus} onOpenDoc={(d, o) => openDoc(d, o ?? 0)} onToast={showToast} />
+              focus={main.focus} onOpenDoc={(d, o) => openDoc(d, o ?? 0)} onToast={showToast}
+              places={places}
+              onPlace={openPlace}
+            />
           )}
           {main.kind === "calendar" && <Calendar t={t} lang={lang} reload={dataTick} onPerson={openPerson} page />}
           {main.kind === "tree" && <TreeView t={t} lang={lang} persons={persons} onPerson={openPerson} marks={marks} onMark={cycleMark} focus={main.focus} ppFocus={main.pp} />}
@@ -1585,6 +1599,8 @@ export default function App() {
           onLotus={setLotus}
           titleFont={titleFont}
           onTitleFont={setTitleFont}
+          lotusPortrait={lotusPortrait}
+          onLotusPortrait={setLotusPortrait}
           barTop={barTop}
           onBarTop={setBarTop}
           railLayout={railLay}

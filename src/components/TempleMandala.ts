@@ -27,6 +27,22 @@ function bud(cornerDeg: number): string {
   );
 }
 
+/** The small lotus behind the photos of the side tree (Whisper, 18-11-2026): white petals in two rows, a red ring,
+ *  the photo over the middle. A data: URL for CSS. */
+let mini = "";
+export function lotusMiniUrl(): string {
+  if (mini) return mini;
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-12 -12 24 24" width="48" height="48">` +
+    `<circle r="11.3" fill="none" stroke="#c98a2e" stroke-width="0.9"/>` +
+    `<path d="${ring(8, (a) => petal(a, 4, 11, 16), 22.5)}" fill="#f7f3ea" stroke="#3a3530" stroke-width="0.6"/>` +
+    `<path d="${ring(8, (a) => petal(a, 4, 11.6, 15))}" fill="#fbf8f2" stroke="#2a2622" stroke-width="0.6"/>` +
+    `<circle r="8.6" fill="#b5392c"/>` +
+    `</svg>`;
+  mini = `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`;
+  return mini;
+}
+
 let cached: Record<string, string> = {};
 export function templeMandalaUrl(opacity: number): string {
   const k = String(opacity);

@@ -6,7 +6,7 @@
 import { CSSProperties, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { ArrowLeft, BookOpen, Check, CheckCircle2, ChevronRight, Circle, ExternalLink, Eye, EyeOff, FilePlus2, FolderOpen, Headphones, Link2, Link2Off, MapPin, MapPinned, Pause, Pencil, Play, RotateCcw, RotateCw, Search, SkipBack, SkipForward, Star, X } from "lucide-react";
-import { api, AUDIOS_LIB, AudioMark, AudioTexts, DocListItem, LibEntry, libUrl, SectionText } from "../api";
+import { api, AUDIOS_LIB, AudioMark, AudioTexts, DocListItem, fileUrl, LibEntry, libUrl, Place, SectionText } from "../api";
 import { Lang, T } from "../i18n";
 import { LectureGrid } from "./LectureGrid";
 import { anthologyVolumes, ANTHOLOGY, formatLecDate } from "./Anthology";
@@ -369,6 +369,25 @@ interface Props {
   focus?: { rel: string; n: number };
   onOpenDoc: (docId: number, ordinal?: number) => void;
   onToast: (msg: string) => void;
+  /** the Tīrthas: a recording whose place has a photo shows it behind its player (Whisper, 18-11-2026) */
+  places?: Place[];
+  onPlace?: (id: number) => void;
+}
+
+/** a Tīrtha with a photo for each name it goes by (its name first, then its other names; «Gokula (Nanda-bhavana)» also
+ *  as «Gokula») */
+function placePhotos(places: Place[]): Map<string, Place> {
+  const by = new Map<string, Place>();
+  const withPic = places.filter((p) => p.hasPhoto);
+  const put = (n: string, p: Place) => {
+    const k = foldName(n.trim());
+    if (k && !by.has(k)) by.set(k, p);
+  };
+  for (const p of withPic) put(p.name, p);
+  const bare = (n: string) => n.replace(/\s*\(.*?\)\s*/g, " ");
+  for (const p of withPic) put(bare(p.name), p);
+  for (const p of withPic) for (const a of p.aka.split(/[,;·\n]/)) put(bare(a), p);
+  return by;
 }
 
 /** The recordings of the Audios folder (read once per session; also used by Home, «Today, in other years»). */
@@ -394,7 +413,8 @@ export async function scanAudios(fresh = false): Promise<{ folder: string | null
 /** whether the eyes of «Audios» show this recording's language (closed eyes hide it everywhere, also on Home) */
 export const langShown = (l: Rec["lang"]) => seen(l, readEyes());
 
-export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText, onEditText, focus, onOpenDoc, onToast }: Props) {
+export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText, onEditText, focus, onOpenDoc, onToast, places: tirthas, onPlace }: Props) {
+  const picOf = useMemo(() => placePhotos(tirthas ?? []), [tirthas]);
   const A = t.au;
   const [folder, setFolder] = useState<string | null>(scanCache?.folder ?? null);
   const [recs, setRecs] = useState<Rec[] | null>(scanCache?.recs ?? null);
@@ -664,6 +684,8 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
           lang={lang}
           r={rec}
           groupLabel={groupLabel(rec)}
+          pic={rec.place ? picOf.get(foldName(rec.place)) : undefined}
+          onPlace={onPlace}
           link={links[rec.name.toLowerCase()]?.doc !== undefined ? (links[rec.name.toLowerCase()] as { doc: number; ord?: number }) : undefined}
           ownTitle={!!links[rec.name.toLowerCase()]?.title}
           fav={!!links[audioKey(rec.name)]?.fav}
@@ -955,6 +977,9 @@ function AudioPage(p: {
   lang: Lang;
   r: Rec;
   groupLabel: string;
+  /** its place in «Tīrthas», with a photo */
+  pic?: Place;
+  onPlace?: (id: number) => void;
   link?: { doc: number; ord?: number };
   /** the title was given by hand */
   ownTitle: boolean;
@@ -1093,9 +1118,17 @@ function AudioPage(p: {
         </code>
       </div>
 
-      <section className="au-card">
+      <section
+        className={`au-card${p.pic ? " has-pic" : ""}`}
+        style={p.pic ? ({ "--pic": `url("${fileUrl("placephoto", p.pic.id)}?v=${encodeURIComponent(p.pic.modified)}")` } as CSSProperties) : undefined}
+      >
         <div className="au-card-head">
           <span className="au-card-label">{A.original}</span>
+          {p.pic && p.onPlace && (
+            <button className="au-pic-place" onClick={() => p.onPlace!(p.pic!.id)} title={A.openPlace}>
+              <MapPin size={13} /> {p.pic.name}
+            </button>
+          )}
           <button className="link-btn" onClick={() => api.libraryOpen(AUDIOS_LIB, r.rel).catch(() => {})}>
             <ExternalLink size={13} /> {A.openPc}
           </button>

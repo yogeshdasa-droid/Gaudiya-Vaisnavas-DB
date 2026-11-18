@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **18-11-2026** (versión **0.20.8**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **18-11-2026** (versión **0.20.9**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,17 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.8)
+## 5. Qué hace hoy (v0.20.9)
+
+### Novedades de la 0.20.9 (18-11-2026) — Retratos con marco de loto; foto del lugar en cada audio
+- Ajustes › General › **«Retratos: Marco de loto / Sencillo»** (`usePersisted("lotusPortrait", true)`): con loto, App pone
+  `data-portrait="lotus"` en <html> y las variables CSS `--temple-frame` (= `templeMandalaUrl(1)`) y `--lotus-mini`
+  (= `lotusMiniUrl()`, nuevo en TempleMandala.ts). Ficha: la foto redonda (47 %) en el centro del mandala del templo;
+  árbol lateral: `.row-av` de 24 px con el loto pequeño detrás. Todo en CSS; «Sencillo» = como antes.
+- Audios: si el lugar del audio tiene foto en Tīrthas, de fondo en la tarjeta del reproductor (degradado hacia la
+  izquierda) con un botón «📍 lugar» que abre el Tīrtha. `placePhotos()` en Audios.tsx: nombre plegado del Tīrtha,
+  luego sin paréntesis, luego sus otros nombres (aka); props nuevas `places` / `onPlace` de Audios. Hoy coinciden
+  Vṛndāvana, Govardhana, Mathurā, Varṣāṇā (Navadvīpa, Māyāpura y Purī no tienen foto aún).
 
 ### Novedades de la 0.20.8 (18-11-2026) — «Hoy, en otros años» y el calendario de las charlas
 - Inicio, tras las favoritas: **«Hoy, en otros años»** (`components/TodayYears.tsx`): la aparición/desaparición del día
@@ -1988,6 +1998,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **18-11-2026 — v0.20.9**: retratos con marco de loto (ficha y árbol lateral); la foto del lugar detrás de cada audio.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.9
 - **18-11-2026 — v0.20.8**: «Hoy, en otros años» en Inicio; «Calendario de las charlas» en Audios.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.8
 - **18-11-2026 — v0.20.7**: Audios — un ojo por idioma junto al título; las partes de una misma charla seguidas.

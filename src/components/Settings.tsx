@@ -378,6 +378,8 @@ interface Props {
   onLotus: (on: boolean) => void;
   titleFont: TitleFont;
   onTitleFont: (f: TitleFont) => void;
+  lotusPortrait: boolean;
+  onLotusPortrait: (v: boolean) => void;
   barTop: boolean;
   onBarTop: (on: boolean) => void;
   railLayout: RailLayout;
@@ -500,6 +502,16 @@ export function Settings(p: Props) {
                         {f === "normal" ? t.titleFontNormal : f === "script" ? t.titleFontScript : t.titleFontClassic}
                       </button>
                     ))}
+                  </div>
+                </Row>
+                <Row label={t.portrait} hint={t.portraitHint}>
+                  <div className="seg">
+                    <button className={p.lotusPortrait ? "on" : ""} onClick={() => p.onLotusPortrait(true)}>
+                      {t.portraitLotus}
+                    </button>
+                    <button className={!p.lotusPortrait ? "on" : ""} onClick={() => p.onLotusPortrait(false)}>
+                      {t.portraitPlain}
+                    </button>
                   </div>
                 </Row>
                 <Row label={t.barPlace} hint={t.barPlaceHint}>
