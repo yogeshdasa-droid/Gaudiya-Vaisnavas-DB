@@ -604,6 +604,20 @@ async fn set_tree_marks(state: State<'_, AppState>, marks: String) -> CmdResult<
     db::set_meta(&state.conn.lock().unwrap(), "tree_marks", &marks).map_err(err)
 }
 
+/// The written lecture linked to each recording of the Audios section (Whisper, 18-11-2026): JSON
+/// {file name in lower case: {doc, ord}}, in meta (no table of its own: the format stays). The section's
+/// folder is the library «folder:0» (the same commands and `lib/0/…` addresses as a record's library).
+#[tauri::command]
+async fn audio_texts(state: State<'_, AppState>) -> CmdResult<String> {
+    Ok(db::get_meta(&state.conn.lock().unwrap(), "audio_texts").map_err(err)?.unwrap_or_else(|| "{}".into()))
+}
+
+#[tauri::command]
+async fn set_audio_texts(state: State<'_, AppState>, links: String) -> CmdResult<()> {
+    serde_json::from_str::<serde_json::Value>(&links).map_err(err)?;
+    db::set_meta(&state.conn.lock().unwrap(), "audio_texts", &links).map_err(err)
+}
+
 /// The drawn Paramparā Tree saved as a picture (SVG) where the user chose.
 #[tauri::command]
 async fn save_tree_svg(path: String, svg: String) -> CmdResult<()> {
@@ -1423,6 +1437,8 @@ fn main() {
             save_tree_svg,
             tree_marks,
             set_tree_marks,
+            audio_texts,
+            set_audio_texts,
             relate,
             unrelate,
             sync_tree,

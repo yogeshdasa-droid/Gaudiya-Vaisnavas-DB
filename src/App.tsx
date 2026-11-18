@@ -103,6 +103,8 @@ import { WebPage } from "./components/WebPage";
 import { Rail, railLayout, RailLayout } from "./components/Rail";
 import { showInVamsa, Vamsa } from "./components/Vamsa";
 import { Anthology } from "./components/Anthology";
+import { Audios, AudiosBar } from "./components/Audios";
+import { player as audiosPlayer, setOnStart as setAudiosOnStart } from "./audioPlayer";
 import { APP_NAME, LogoMark, LotusMandala } from "./components/Logo";
 import { Calendar } from "./components/Calendar";
 import { ask, Kbd, Splitter, ViewGuard } from "./components/ui";
@@ -130,7 +132,7 @@ function usePersisted<T>(key: string, fallback: T) {
 }
 
 /** panorama.place: open on the map at that place (`n` tells two requests apart) */
-type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number }; journey?: { id: string; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "vamsa" } | { kind: "anthology" } | { kind: "tree"; focus?: { id: number; n: number }; pp?: { id: string; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number } | { kind: "library"; id: number } | { kind: "web"; url: string; title: string };
+type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number }; journey?: { id: string; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "vamsa" } | { kind: "anthology" } | { kind: "audios"; focus?: { rel: string; n: number } } | { kind: "tree"; focus?: { id: number; n: number }; pp?: { id: string; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number } | { kind: "library"; id: number } | { kind: "web"; url: string; title: string };
 
 type Dialog =
   | { kind: "settings"; tab: SettingsTab }
@@ -213,6 +215,11 @@ export default function App() {
   const [libIds, setLibIds] = useState<number[]>([]);
   useEffect(() => void api.libraryIds().then(setLibIds, () => {}), []);
   const [player, setPlayer] = useState<{ id: number; list: LibEntry[]; index: number } | null>(null);
+  // «Audios» and a record's library do not play at the same time
+  useEffect(() => {
+    setAudiosOnStart(() => setPlayer(null));
+    return () => setAudiosOnStart(null);
+  }, []);
   const [menu, setMenu] = useState<MenuState | null>(null);
   const [readerDoc, setReaderDoc] = useState<DocInfo | null>(null);
   const [dataTick, setDataTick] = useState(0);
@@ -1404,7 +1411,7 @@ export default function App() {
               name={persons.find((x) => x.id === main.id)?.name ?? ""}
               hasPhoto={!!persons.find((x) => x.id === main.id)?.hasPhoto}
               onBack={() => openPerson(main.id)}
-              onPlay={(list, index) => setPlayer({ id: main.id, list, index })}
+              onPlay={(list, index) => (audiosPlayer.close(), setPlayer({ id: main.id, list, index }))}
               playing={player && player.id === main.id ? player.list[player.index]?.rel ?? null : null}
               onToast={showToast}
               onChanged={() => api.libraryIds().then(setLibIds, () => {})}
@@ -1432,11 +1439,15 @@ export default function App() {
           )}
           {main.kind === "vamsa" && <Vamsa t={t} lang={lang} persons={persons} onPerson={openPerson} onOpenDoc={openDoc} />}
           {main.kind === "anthology" && <Anthology t={t} lang={lang} docs={docs} onOpenDoc={openDoc} />}
+          {main.kind === "audios" && (
+            <Audios t={t} lang={lang} docs={docs} readerStyle={readerStyle} fontSize={fontSize} focus={main.focus} onOpenDoc={(d, o) => openDoc(d, o ?? 0)} onToast={showToast} />
+          )}
           {main.kind === "calendar" && <Calendar t={t} lang={lang} reload={dataTick} onPerson={openPerson} page />}
           {main.kind === "tree" && <TreeView t={t} lang={lang} persons={persons} onPerson={openPerson} marks={marks} onMark={cycleMark} focus={main.focus} ppFocus={main.pp} />}
         </ViewGuard>
       </main>
 
+      <AudiosBar t={t} onOpen={(rel) => setMain({ kind: "audios", focus: { rel, n: Date.now() } })} />
       {player && (
         <AudioBar
           t={t}

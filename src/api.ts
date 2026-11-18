@@ -541,6 +541,9 @@ export const api = {
   setFamily: (id: number, relatives: [number, string][]) => invoke<void>("set_family", { id, relatives }),
   treeMarks: () => invoke<string>("tree_marks").then((s) => JSON.parse(s) as Marks),
   setTreeMarks: (marks: Marks) => invoke<void>("set_tree_marks", { marks: JSON.stringify(marks) }),
+  /** the written lecture linked to each recording of «Audios» (key: file name in lower case) */
+  audioTexts: () => invoke<string>("audio_texts").then((s) => JSON.parse(s) as AudioTexts),
+  setAudioTexts: (links: AudioTexts) => invoke<void>("set_audio_texts", { links: JSON.stringify(links) }),
   relate: (disciple: number, guru: number, kind: TreeKind, oldGuru: number | null) => invoke<number>("relate", { disciple, guru, kind, oldGuru }),
   unrelate: (disciple: number, guru: number) => invoke<number>("unrelate", { disciple, guru }),
   syncTree: (write: boolean) => invoke<SyncChange[]>("sync_tree", { write }),
@@ -806,6 +809,12 @@ export interface PullProgress {
 }
 
 /** URL of a file stored in the database (cover image, original PDF, or a record's picture by person id). */
+/** «Audios» (18-11-2026): a recording's written lecture — a text of the database (ord: its part, for a book like the
+ *  Anthology whose chapters are lectures). */
+export type AudioTexts = Record<string, { doc: number; ord?: number }>;
+/** «Audios»: its folder is the library number 0 (`lib/0/…`). */
+export const AUDIOS_LIB = 0;
+
 /** A file of a record's library (a folder on the PC linked to it). */
 export interface LibEntry {
   /** path inside the folder, with «/» */

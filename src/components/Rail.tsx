@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { Archive, BarChart3, BookCopy, CalendarDays, ChevronDown, Clock3, Flower2, GitFork, History, Landmark, ListTree, MapPin, Mic, Minus, Network, Settings as Gear, Star, Trees, Users } from "lucide-react";
+import { Archive, BarChart3, BookCopy, CalendarDays, ChevronDown, Clock3, Flower2, GitFork, Headphones, History, Landmark, ListTree, MapPin, Mic, Minus, Network, Settings as Gear, Star, Trees, Users } from "lucide-react";
 import { T } from "../i18n";
 import type { SideTab } from "./Sidebar";
 import { APP_NAME, LogoMark } from "./Logo";
 
-export type RailView = "home" | "calendar" | "tree" | "timeline" | "lineage" | "panorama" | "vamsa" | "anthology";
+export type RailView = "home" | "calendar" | "tree" | "timeline" | "lineage" | "panorama" | "vamsa" | "anthology" | "audios";
 
 interface Props {
   t: T;
@@ -27,10 +27,10 @@ export type RailPlace = "bar" | "end" | "trees" | "dhama" | "hidden";
 export type RailLayout = { order: string[]; place: Record<string, RailPlace> };
 export const RAIL_GROUPS = ["g:trees", "g:dhama"] as const;
 export const RAIL_DEFAULT: RailLayout = {
-  order: ["calendar", "persons", "g:trees", "tree", "timeline", "lineage", "vamsa", "panorama", "g:dhama", "places", "deities", "sep", "bookmarks", "history", "lectures", "anthology"],
+  order: ["calendar", "persons", "g:trees", "tree", "timeline", "lineage", "vamsa", "panorama", "g:dhama", "places", "deities", "sep", "bookmarks", "history", "lectures", "anthology", "audios"],
   place: {
     calendar: "bar", persons: "bar", "g:trees": "bar", tree: "trees", timeline: "trees", lineage: "trees", vamsa: "trees", panorama: "trees",
-    "g:dhama": "bar", places: "dhama", deities: "dhama", sep: "bar", bookmarks: "bar", history: "bar", lectures: "end", anthology: "end",
+    "g:dhama": "bar", places: "dhama", deities: "dhama", sep: "bar", bookmarks: "bar", history: "bar", lectures: "end", anthology: "end", audios: "end",
   },
 };
 /** a saved layout with the buttons added later in their default place (and unknown ones dropped) */
@@ -72,6 +72,7 @@ export function railEntries(t: T): Record<string, Entry> {
     history: { icon: History, label: t.history, side: "history" },
     lectures: { icon: Mic, label: t.lecturesGurudeva, side: "lectures" },
     anthology: { icon: BookCopy, label: t.anthology, view: "anthology" },
+    audios: { icon: Headphones, label: t.audios, view: "audios" },
   };
 }
 

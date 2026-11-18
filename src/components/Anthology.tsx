@@ -10,7 +10,7 @@ import { Lang, T } from "../i18n";
  *  place or subject, and the full text through the normal search, limited to the collection. */
 export const ANTHOLOGY = "Anthology";
 
-interface Lec {
+export interface Lec {
   docId: number;
   ordinal: number;
   title: string;
@@ -51,6 +51,26 @@ interface Props {
 // the index is read once per session (77 books)
 let cache: { key: string; vols: Vol[] } | null = null;
 
+/** The Anthology's volumes with their lectures (read once; also used by «Audios» to find a recording's written lecture). */
+export async function anthologyVolumes(docs: DocListItem[]): Promise<Vol[]> {
+  const books = docs.filter((d) => d.dir.split("/")[0] === ANTHOLOGY);
+  const key = books.map((b) => b.id).join(",");
+  if (cache?.key === key) return cache.vols;
+  const vs = await Promise.all(
+    books.map(async (b) => {
+      const { toc } = await api.getDoc(b.id);
+      const lectures = toc.flatMap((e) => {
+        const p = parseLecture(e.heading);
+        return p ? [{ docId: b.id, ordinal: e.ordinal, ...p }] : [];
+      });
+      return { id: b.id, title: b.title, vol: +(b.title.match(/Vol-(\d+)/)?.[1] ?? 0), lectures };
+    }),
+  );
+  vs.sort((a, b) => a.vol - b.vol);
+  cache = { key, vols: vs };
+  return vs;
+}
+
 export function Anthology({ t, lang, docs, onOpenDoc }: Props) {
   const books = useMemo(() => docs.filter((d) => d.dir.split("/")[0] === ANTHOLOGY), [docs]);
   const key = books.map((b) => b.id).join(",");
@@ -58,21 +78,8 @@ export function Anthology({ t, lang, docs, onOpenDoc }: Props) {
   useEffect(() => {
     if (cache?.key === key) return;
     let alive = true;
-    Promise.all(
-      books.map(async (b) => {
-        const { toc } = await api.getDoc(b.id);
-        const lectures = toc.flatMap((e) => {
-          const p = parseLecture(e.heading);
-          return p ? [{ docId: b.id, ordinal: e.ordinal, ...p }] : [];
-        });
-        return { id: b.id, title: b.title, vol: +(b.title.match(/Vol-(\d+)/)?.[1] ?? 0), lectures };
-      }),
-    )
-      .then((vs) => {
-        vs.sort((a, b) => a.vol - b.vol);
-        cache = { key, vols: vs };
-        if (alive) setVols(vs);
-      })
+    anthologyVolumes(docs)
+      .then((vs) => alive && setVols(vs))
       .catch(() => alive && setVols([]));
     return () => {
       alive = false;

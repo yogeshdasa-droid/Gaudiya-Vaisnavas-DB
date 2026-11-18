@@ -38,14 +38,14 @@ pub fn set_folder(conn: &Connection, id: i64, folder: Option<&str>) -> Res<()> {
     }
 }
 
-/// All the records with a library: (record, folder).
+/// All the records with a library: (record, folder). (Not «folder:0»: the Audios section's folder, not a record.)
 pub fn all_folders(conn: &Connection) -> Res<Vec<(i64, String)>> {
     let mut st = conn.prepare("SELECT key, value FROM meta WHERE key LIKE 'folder:%'").map_err(e)?;
     let rows = st
         .query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))
         .map_err(e)?
         .filter_map(|r| r.ok())
-        .filter_map(|(k, v)| k.strip_prefix("folder:").and_then(|n| n.parse().ok()).map(|n| (n, v)))
+        .filter_map(|(k, v)| k.strip_prefix("folder:").and_then(|n| n.parse::<i64>().ok()).filter(|n| *n > 0).map(|n| (n, v)))
         .collect();
     Ok(rows)
 }

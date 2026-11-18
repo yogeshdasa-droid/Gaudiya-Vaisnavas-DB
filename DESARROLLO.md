@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **17-11-2026** (versión **0.20.2**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **18-11-2026** (versión **0.20.3**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,24 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.2)
+## 5. Qué hace hoy (v0.20.3)
+
+### Novedades de la 0.20.3 (18-11-2026) — apartado «Audios»
+- Botón **«Audios»** en la barra (al final; `Rail.tsx` `audios`). `components/Audios.tsx`: los audios de Śrīla Gurudeva
+  de la carpeta `…BibliotecaSrila Gurudeva mp3` (ordenada por idioma: `Por escucha<Idioma - 1 seguro…>`,
+  `Ingles`, `Bengali`; ver CONTINUAR, «IDIOMA DE LOS MP3»). La carpeta es la **biblioteca nº 0** (`folder:0` en meta,
+  direcciones `lib/0/…`; `library::all_folders` la deja fuera); los archivos no entran en la BD.
+- `readName()` saca del nombre la fecha (AAAAMMDD, AAAAMMXX, «12May92», el año; si no, la carpeta «Year 2001»), AM/PM,
+  el lugar (tabla `PLACES`: alias → nombre) y el título. Listas «Por idioma» (con seguro / bastante / poco / por el
+  nombre), «Por año», «Por lugar»; buscador por palabras y, si se marca, **dentro de las charlas escritas del mismo día**
+  (búsqueda normal en «Lectures Gurudeva» + Anthology → fechas).
+- Página de cada audio: reproductor, «Otros audios de ese día», y la **charla escrita** debajo: la del mismo día
+  (Lectures Gurudeva «AAAA-MM-DD · título», o una charla de la Anthology — `anthologyVolumes()` exportado) o una
+  enlazada a mano («Añadir la charla escrita…» / «Cambiar»): meta `audio_texts` = JSON {nombre del archivo en
+  minúsculas: {doc, ord}} (comandos `audio_texts`/`set_audio_texts`; sin cambio de formato).
+- `src/audioPlayer.ts`: un solo reproductor para la ventana (sigue sonando al navegar; barra `AudiosBar` abajo; ±15 s,
+  anterior/siguiente, velocidad; recuerda la posición de cada audio en localStorage `bio.audioPos`). No suena a la vez
+  que el de la Biblioteca de una ficha. WMA/WMV: solo «Abrir con el programa del PC».
 
 ### Novedades de la 0.20.2 (17-11-2026) — botones de la barra a gusto; Anthology con versos y 926 charlas
 - Ajustes › General › **«Botones de la barra»** (`RailButtons` en `Settings.tsx`): cada botón en la barra, al final,
@@ -1925,6 +1942,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **18-11-2026 — v0.20.3**: apartado «Audios» (6.634 audios de Gurudeva por idioma, año y lugar; buscador también dentro
+  de las charlas escritas; página de cada audio con su charla escrita). Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.3
 - **17-11-2026 — v0.20.2**: botones de la barra a gusto en Ajustes; Anthology con los versos en sus líneas y 926
   charlas (7 «Unknown date» separadas). Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.2
 - **17-11-2026 — v0.20.1**: barra reordenada (Árboles ▾, Dhāma ▾, Biblioteca como icono, sin «Libros»); carpetas del
