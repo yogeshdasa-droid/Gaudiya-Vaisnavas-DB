@@ -9606,3 +9606,54 @@ button.au-chip:hover {
     padding: 26px 20px 34px;
   }
 }
+
+/* Audios: the lists on the left open and close (18-11-2026) */
+.au-facets h3 {
+  padding: 0;
+}
+.au-facet-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.au-facet-head:hover {
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.au-caret {
+  flex: none;
+  transition: transform 0.15s;
+}
+.au-facets section.open .au-caret {
+  transform: rotate(90deg);
+}
+.au-facet-active {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 400;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.au-facets section.closed h3 {
+  margin-bottom: 0;
+}
+
+/* the small lotus of a recording with a written lecture (18-11-2026) */
+.lotus-mark {
+  flex: none;
+  vertical-align: -3px;
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.25));
+}
+.au-row-title .lotus-mark {
+  width: 17px;
+  height: 17px;
+}

@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **18-11-2026** (versión **0.20.4**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **18-11-2026** (versión **0.20.5**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,13 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.4)
+## 5. Qué hace hoy (v0.20.5)
+
+### Novedades de la 0.20.5 (18-11-2026) — Audios: listas plegables y el mandala de «con charla escrita»
+- «Por idioma / año / lugar» se abren y cierran con su cabecera (`FacetBox`, localStorage `bio.audioFacets`; por defecto
+  solo idioma abierto); cerrada con un filtro puesto, la cabecera lo dice («Por año · 1996»).
+- Un audio con charla escrita lleva un mandala pequeño (`LotusMark`, el loto del templo en miniatura) junto al título;
+  también en la casilla «Con charla escrita».
 
 ### Novedades de la 0.20.4 (18-11-2026) — Audios: título editable y fondo de la charla escrita
 - Lápiz junto al título de cada audio: el título propio se guarda en meta `audio_texts` (`{title}`, con o sin charla
@@ -1951,6 +1957,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **18-11-2026 — v0.20.5**: Audios — listas plegables; mandala pequeño en los audios con charla escrita.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.5
 - **18-11-2026 — v0.20.4**: Audios — título editable; la charla escrita sobre un mandala de templo o el pergamino; la
   charla del día que más se parece al título. Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.4
 - **18-11-2026 — v0.20.3**: apartado «Audios» (6.634 audios de Gurudeva por idioma, año y lugar; buscador también dentro

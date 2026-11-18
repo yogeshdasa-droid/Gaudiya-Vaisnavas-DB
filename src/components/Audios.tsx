@@ -3,9 +3,9 @@
 // if wanted, inside the written lectures of the same day), lists by language, year and place, and a page for each
 // recording with its player and its written lecture below («like the Prabhupāda transcriptions»): the one of the same
 // day in «Lectures Gurudeva» or the Anthology, or any text linked by hand. The files stay in their folder (library 0).
-import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
+import { CSSProperties, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { ArrowLeft, BookOpen, Check, ExternalLink, FolderOpen, Headphones, Link2, Link2Off, MapPin, Pause, Pencil, Play, RotateCcw, RotateCw, Search, SkipBack, SkipForward, X } from "lucide-react";
+import { ArrowLeft, BookOpen, Check, ChevronRight, ExternalLink, FolderOpen, Headphones, Link2, Link2Off, MapPin, Pause, Pencil, Play, RotateCcw, RotateCw, Search, SkipBack, SkipForward, X } from "lucide-react";
 import { api, AUDIOS_LIB, AudioTexts, DocListItem, LibEntry, libUrl, SectionText } from "../api";
 import { Lang, T } from "../i18n";
 import { anthologyVolumes, ANTHOLOGY, formatLecDate } from "./Anthology";
@@ -574,7 +574,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
               </label>
               <label className="au-check">
                 <input type="checkbox" checked={f.withText} onChange={(e) => set({ withText: e.target.checked })} />
-                {A.withText}
+                <LotusMark className="au-has-text" /> {A.withText}
               </label>
               {filtering && (
                 <button className="btn ghost" onClick={() => set(NO_FILTERS)}>
@@ -585,8 +585,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
 
             <div className="au-body">
               <aside className="au-facets">
-                <section>
-                  <h3>{A.byLang}</h3>
+                <FacetBox id="lang" title={A.byLang} active={f.group ? groupLabel(groupInfo(f.group)) : f.lang ? A.langs[f.lang] : ""}>
                   {LANG_ORDER.filter((l) => groupsOf.has(l)).map((l) => {
                     const gs = [...groupsOf.get(l)!].sort((a, b) => groupInfo(a).sure - groupInfo(b).sure);
                     const one = gs.length === 1;
@@ -606,9 +605,8 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
                       </div>
                     );
                   })}
-                </section>
-                <section>
-                  <h3>{A.byYear}</h3>
+                </FacetBox>
+                <FacetBox id="year" title={A.byYear} active={f.year}>
                   <div className="au-years">
                     {years.map(([y, n]) => (
                       <button key={y} className={`au-facet${f.year === y ? " on" : ""}`} onClick={() => set({ year: f.year === y ? "" : y })}>
@@ -617,16 +615,15 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
                       </button>
                     ))}
                   </div>
-                </section>
-                <section>
-                  <h3>{A.byPlace}</h3>
+                </FacetBox>
+                <FacetBox id="place" title={A.byPlace} active={f.place}>
                   {places.map(([p, n]) => (
                     <button key={p} className={`au-facet${f.place === p ? " on" : ""}`} onClick={() => set({ place: f.place === p ? "" : p })}>
                       <span>{p}</span>
                       <span className="n">{n}</span>
                     </button>
                   ))}
-                </section>
+                </FacetBox>
               </aside>
 
               <div className="au-list">
@@ -655,7 +652,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
                       <button className="au-row-main" onClick={() => setSel(r.rel)}>
                         <span className="au-row-title">
                           {r.title}
-                          {tx && <BookOpen size={13} className="au-has-text" />}
+                          {tx && <LotusMark className="au-has-text" title={A.withText} />}
                         </span>
                         <span className="au-row-meta">
                           {r.date ? formatLecDate(r.date.length === 7 ? r.date.slice(0, 4) : r.date, lang) : A.noYear}
@@ -682,6 +679,67 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, focus, onOpenDoc,
         )
       )}
     </div>
+  );
+}
+
+/** The small lotus that marks a recording with a written lecture (Whisper, 18-11-2026: «the mandala» — the temple
+ *  floor's lotus in miniature: a red circle, white petals drawn in dark, an orange middle). */
+function LotusMark({ className, title }: { className?: string; title?: string }) {
+  const pts = Array.from({ length: 8 }, (_, i) => i * 45);
+  const petal = (a: number, r1: number, r2: number, w: number) => {
+    const P = (r: number, d: number) => {
+      const x = ((d - 90) * Math.PI) / 180;
+      return `${(r * Math.cos(x)).toFixed(2)} ${(r * Math.sin(x)).toFixed(2)}`;
+    };
+    return `M${P(r1, a)} Q${P((r1 + r2) / 2, a - w)} ${P(r2, a)} Q${P((r1 + r2) / 2, a + w)} ${P(r1, a)}Z`;
+  };
+  return (
+    <svg className={`lotus-mark ${className ?? ""}`} viewBox="-12 -12 24 24" width="16" height="16" role={title ? "img" : undefined} aria-hidden={title ? undefined : true}>
+      {title && <title>{title}</title>}
+      <circle r="11" fill="none" stroke="#b5392c" strokeWidth="1.3" />
+      <path d={pts.map((a) => petal(a + 22.5, 3, 9.6, 26)).join(" ")} fill="#f7f3ea" stroke="#3a3530" strokeWidth="0.9" />
+      <path d={pts.map((a) => petal(a, 3, 10.4, 24)).join(" ")} fill="#fbf8f2" stroke="#2a2622" strokeWidth="0.9" />
+      <path d={pts.map((a) => petal(a + 22.5, 2.6, 6.2, 22)).join(" ")} fill="#d0683f" stroke="#7c2c1c" strokeWidth="0.5" />
+      <circle r="3" fill="#d98a2a" />
+      <circle r="1.3" fill="#fbf8f2" />
+    </svg>
+  );
+}
+
+// ------------------------------------------------------------------ the lists on the left
+
+/** «Por idioma», «Por año», «Por lugar» open and close with their heading (Whisper, 18-11-2026); remembered. Closed
+ *  with a filter on, the heading says which. */
+const FACETS_KEY = "bio.audioFacets";
+const FACETS_DEFAULT: Record<string, boolean> = { lang: true, year: false, place: false };
+function readFacets(): Record<string, boolean> {
+  try {
+    return { ...FACETS_DEFAULT, ...JSON.parse(localStorage.getItem(FACETS_KEY) || "{}") };
+  } catch {
+    return { ...FACETS_DEFAULT };
+  }
+}
+function FacetBox({ id, title, active, children }: { id: string; title: string; active: string; children: ReactNode }) {
+  const [open, setOpen] = useState(() => readFacets()[id]);
+  const toggle = () => {
+    setOpen(!open);
+    try {
+      localStorage.setItem(FACETS_KEY, JSON.stringify({ ...readFacets(), [id]: !open }));
+    } catch {
+      /* not remembered */
+    }
+  };
+  return (
+    <section className={open ? "open" : "closed"}>
+      <h3>
+        <button className="au-facet-head" onClick={toggle} aria-expanded={open}>
+          <ChevronRight size={16} className="au-caret" />
+          <span>{title}</span>
+          {!open && active && <span className="au-facet-active">· {active}</span>}
+        </button>
+      </h3>
+      {open && children}
+    </section>
   );
 }
 
