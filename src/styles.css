@@ -7739,7 +7739,7 @@ svg.satellite .map-dot {
   font-size: 13px;
 }
 /* the texts of a record can be dragged into another order (the order used to join them) */
-.text-card[draggable="true"] {
+.text-card.can-drag {
   cursor: grab;
 }
 .text-card.dragging {
@@ -7821,8 +7821,14 @@ svg.satellite .map-dot {
 }
 
 /* the favourites on the home page can be dragged into another order */
-.fav-card[draggable="true"] {
+.fav-card[data-reorder] {
   cursor: grab;
+}
+/* where the dragged card will go */
+.fav-card.drop-here,
+.text-card.drop-here {
+  outline: 2px dashed var(--accent);
+  outline-offset: 3px;
 }
 .fav-card.dragging {
   opacity: 0.4;

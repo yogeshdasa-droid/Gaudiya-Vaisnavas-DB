@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **21-11-2026** (versión **0.20.13**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **21-11-2026** (versión **0.20.14**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,14 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.13)
+## 5. Qué hace hoy (v0.20.14)
+
+### Novedades de la 0.20.14 (21-11-2026) — arrastrar para ordenar, arreglado
+- Las favoritas de Inicio y los textos de la ficha no se movían al arrastrarlos: en Windows Tauri se queda el
+  drag-and-drop del navegador (`onDragDropEvent`, para soltar archivos del Explorador) y el `drop` nunca llegaba.
+  Ahora `components/reorder.ts` (`useReorder(grupo, onMove)`, `moveId`): con eventos de puntero (pulsar, mover 6 px,
+  soltar sobre otra tarjeta → ocupa su sitio); borde de puntos en la tarjeta de destino (`.drop-here`); el clic que
+  acaba un arrastre no abre la tarjeta. Usarlo para cualquier otra lista que se ordene a mano.
 
 ### Novedades de la 0.20.13 (21-11-2026) — apartado «Vídeos»
 - Botón «Vídeos» (icono Film) al final de la barra: el mismo `Audios.tsx` con `kind="video"` sobre
@@ -2042,6 +2049,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **21-11-2026 — v0.20.14**: arrastrar para ordenar las favoritas de Inicio y los textos de la ficha (no funcionaba).
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.14
 - **21-11-2026 — v0.20.13**: apartado «Vídeos» (los vídeos de Śrīla Gurudeva, abiertos con el programa del PC).
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.13
 - **18-11-2026 — v0.20.12**: los enlaces de la ficha ya no se tragan el texto que quede detrás de ellos.

@@ -14,6 +14,7 @@ import { foldName } from "./Sidebar";
 import { placesOfPerson } from "../places";
 import { journeysOf } from "./journeys";
 import { linkKind, linkLabel, linkOpenTarget, splitNotes } from "../notesLinks";
+import { moveId, useReorder } from "./reorder";
 
 /** Titles that come and go after a name: "Rupa" = "Rupa Gosvami". */
 const TITLES = new Set(
@@ -506,7 +507,6 @@ export function PersonView(p: Props) {
   };
   // the order of the texts, dragged by hand (kept in this computer); «join» follows it
   const [docOrder, setDocOrder] = useState<number[]>([]);
-  const [dragDoc, setDragDoc] = useState<number | null>(null);
   useEffect(() => {
     try {
       setDocOrder(JSON.parse(localStorage.getItem(`docOrder:${p.id}`) ?? "[]"));
@@ -520,17 +520,15 @@ export function PersonView(p: Props) {
         return (ia < 0 ? Infinity : ia) - (ib < 0 ? Infinity : ib);
       })
     : [];
-  const dropDoc = (onto: number) => {
-    if (dragDoc === null || dragDoc === onto) return;
-    const ids = orderedDocs.map((d) => d.id).filter((x) => x !== dragDoc);
-    ids.splice(ids.indexOf(onto), 0, dragDoc);
+  const docDrag = useReorder("doc", (from, onto) => {
+    const ids = moveId(orderedDocs.map((d) => d.id), from, onto);
     setDocOrder(ids);
     try {
       localStorage.setItem(`docOrder:${p.id}`, JSON.stringify(ids));
     } catch {
       /* not kept: the order still works now */
     }
-  };
+  });
   const joinMe = async () => {
     if (person && (await ask(t.joinOneConfirm(person.name))))
       api.joinTexts(person.id, orderedDocs.map((d) => d.id)).catch((e) => p.onToast(String(e)));
@@ -1365,15 +1363,11 @@ export function PersonView(p: Props) {
                   key={d.id}
                   data-ctx="doc"
                   data-id={d.id}
-                  className={`text-card ${dragDoc === d.id ? "dragging" : ""}`}
+                  className={`text-card ${docDrag.cls(d.id)} ${orderedDocs.length > 1 ? "can-drag" : ""}`}
                   style={{ animationDelay: `${Math.min(i, 12) * 30}ms` }}
-                  onClick={() => p.onOpenDoc(d.id)}
-                  draggable={orderedDocs.length > 1}
+                  onClick={docDrag.click(() => p.onOpenDoc(d.id))}
                   title={orderedDocs.length > 1 ? t.dragTextHint : undefined}
-                  onDragStart={(e) => (setDragDoc(d.id), (e.dataTransfer.effectAllowed = "move"))}
-                  onDragEnd={() => setDragDoc(null)}
-                  onDragOver={(e) => dragDoc !== null && e.preventDefault()}
-                  onDrop={(e) => (e.preventDefault(), dropDoc(d.id), setDragDoc(null))}
+                  {...(orderedDocs.length > 1 ? docDrag.item(d.id) : {})}
                 >
                   {d.hasCover ? <img src={fileUrl("cover", d.id)} alt="" loading="lazy" /> : <FileText size={22} />}
                   <span className="tc-title">{d.title}</span>

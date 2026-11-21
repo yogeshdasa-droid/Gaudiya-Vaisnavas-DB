@@ -6,6 +6,7 @@ import { AnimatedNumber } from "./ui";
 import { coverHidden, LotusDivider, LotusMandala, NoPhoto } from "./Logo";
 import { Calendar } from "./Calendar";
 import { TodayYears } from "./TodayYears";
+import { moveId, useReorder } from "./reorder";
 
 export interface RecentDoc {
   docId: number;
@@ -85,7 +86,6 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
       return [];
     }
   });
-  const [dragFav, setDragFav] = useState<number | null>(null);
   const favorites = useMemo(() => {
     const byId = new Map(persons.map((p) => [p.id, p]));
     const depth = (p: PersonListItem) => {
@@ -100,17 +100,15 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
       .sort((a, b) => hand(a.p.id) - hand(b.p.id) || a.d - b.d || a.p.name.localeCompare(b.p.name))
       .map((x) => x.p);
   }, [persons, favOrder]);
-  const dropFav = (onto: number) => {
-    if (dragFav === null || dragFav === onto) return;
-    const ids = favorites.map((f) => f.id).filter((x) => x !== dragFav);
-    ids.splice(ids.indexOf(onto), 0, dragFav);
+  const favDrag = useReorder("fav", (from, onto) => {
+    const ids = moveId(favorites.map((f) => f.id), from, onto);
     setFavOrder(ids);
     try {
       localStorage.setItem("favOrder", JSON.stringify(ids));
     } catch {
       /* not kept: the order still works now */
     }
-  };
+  });
   const firstLine = (s: string) => {
     const one = s.split("\n")[0].trim();
     return one.length > 220 ? one.slice(0, 220).replace(/\s+\S*$/, "") + "…" : one;
@@ -150,16 +148,12 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
               {favorites.map((f) => (
                 <button
                   key={f.id}
-                  className={`fav-card ${dragFav === f.id ? "dragging" : ""}`}
+                  className={`fav-card ${favDrag.cls(f.id)}`}
                   data-ctx="person"
                   data-id={f.id}
-                  onClick={() => onPerson(f.id)}
+                  onClick={favDrag.click(() => onPerson(f.id))}
                   title={(f.aka ? `${f.name}\n${f.aka}` : f.name) + "\n" + t.dragFavHint}
-                  draggable
-                  onDragStart={(e) => (setDragFav(f.id), (e.dataTransfer.effectAllowed = "move"))}
-                  onDragEnd={() => setDragFav(null)}
-                  onDragOver={(e) => dragFav !== null && e.preventDefault()}
-                  onDrop={(e) => (e.preventDefault(), dropFav(f.id), setDragFav(null))}
+                  {...favDrag.item(f.id)}
                 >
                   <span className="fav-photo">
                     {f.hasPhoto ? (
