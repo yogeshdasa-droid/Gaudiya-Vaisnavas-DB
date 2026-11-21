@@ -877,3 +877,7 @@ export function hueOf(name: string): number {
   for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
   return (h * 137) % 360;
 }
+
+/** the texts of a folder of the library (with its subfolders: the written lectures are by year) that say these words */
+export const searchIn = (query: string, dir: string, limit: number) =>
+  api.search({ query, titlesOnly: false, prefix: true, sort: "relevance", collections: [], dir, docId: null, personId: null, offset: 0, limit });

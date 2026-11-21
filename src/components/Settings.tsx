@@ -27,7 +27,7 @@ import { getVersion } from "@tauri-apps/api/app";
 import { Lang, T } from "../i18n";
 import { ask, Kbd, Modal } from "./ui";
 import type { ReaderStyle } from "./Reader";
-import { RAIL_DEFAULT, railEntries, RailLayout, RailPlace } from "./Rail";
+import { RAIL_DEFAULT, RAIL_ZONES, railEntries, RailLayout, RailPlace } from "./Rail";
 
 /** the font of the record names: system, calligraphy (Great Vibes) or classic (Cormorant Garamond italic) */
 export type TitleFont = "normal" | "script" | "classic";
@@ -156,12 +156,10 @@ function Row({ label, hint, children }: { label: string; hint?: string; children
   );
 }
 
-/** Ajustes › «Botones de la barra» (Whisper, 17-11-2026): where each button of the bar goes, and in what order. The
- *  rows are shown place by place (bar, inside each group, end, hidden); the arrows move a button among its neighbours. */
+/** Ajustes › «Botones de la barra» (Whisper, 17-11-2026; zones 21-11-2026): in which zone each button of the bar goes
+ *  (or hidden), and in what order. The rows are shown zone by zone; the arrows move a button among its neighbours. */
 function RailButtons({ t, layout, onLayout }: { t: T; layout: RailLayout; onLayout: (l: RailLayout) => void }) {
   const E = railEntries(t);
-  const groupOf: Record<string, RailPlace> = { "g:trees": "trees", "g:dhama": "dhama" };
-  const isGroup = (k: string) => k in groupOf || k === "sep";
   const sibs = (k: string) => layout.order.filter((x) => layout.place[x] === layout.place[k]);
   const move = (k: string, d: -1 | 1) => {
     const sb = sibs(k);
@@ -179,12 +177,12 @@ function RailButtons({ t, layout, onLayout }: { t: T; layout: RailLayout; onLayo
     order.splice(last ? last[1] + 1 : order.length, 0, k);
     onLayout({ order, place: { ...layout.place, [k]: p } });
   };
-  const row = (k: string, depth: number) => {
+  const places: RailPlace[] = [...RAIL_ZONES, "hidden"];
+  const row = (k: string) => {
     const e = E[k];
     const sb = sibs(k);
-    const places: RailPlace[] = isGroup(k) ? ["bar", "end", "hidden"] : ["bar", "end", "trees", "dhama", "hidden"];
     return (
-      <div key={k} className={"rail-set-row" + (layout.place[k] === "hidden" ? " off" : "") + (isGroup(k) ? " grp" : "")} style={{ paddingLeft: 6 + depth * 26 }}>
+      <div key={k} className={"rail-set-row" + (layout.place[k] === "hidden" ? " off" : "")} style={{ paddingLeft: 32 }}>
         <e.icon size={17} />
         <span className="rail-set-name">{e.label}</span>
         <button className="icon-btn" disabled={sb[0] === k} onClick={() => move(k, -1)} title={t.railUp}>
@@ -196,33 +194,32 @@ function RailButtons({ t, layout, onLayout }: { t: T; layout: RailLayout; onLayo
         <select value={layout.place[k]} onChange={(ev) => setPlace(k, ev.target.value as RailPlace)}>
           {places.map((p) => (
             <option key={p} value={p}>
-              {t.railPlace[p]}
+              {p === "hidden" ? t.railHidden : t.railZone[p]}
             </option>
           ))}
         </select>
       </div>
     );
   };
-  const zone = (z: RailPlace) =>
-    layout.order
-      .filter((k) => layout.place[k] === z)
-      .flatMap((k) => [row(k, 0), ...(groupOf[k] ? layout.order.filter((x) => layout.place[x] === groupOf[k]).map((x) => row(x, 1)) : [])]);
-  // a button inside a hidden group: shown under it, still in that group
   return (
     <Card title={t.railButtons}>
       <p className="muted small">{t.railButtonsHint}</p>
       <div className="rail-set">
-        {zone("bar")}
-        <div className="rail-set-head">{t.railPlace.end}</div>
-        {zone("end")}
-        <div className="rail-set-head">{t.railPlace.hidden}</div>
-        {zone("hidden")}
+        {places.map((p) => {
+          const keys = layout.order.filter((k) => layout.place[k] === p);
+          if (!keys.length) return null;
+          return [
+            <div key={"h:" + p} className="rail-set-head">
+              {p === "hidden" ? t.railHidden : t.railZone[p]}
+            </div>,
+            ...keys.map(row),
+          ];
+        })}
       </div>
       <div className="btn-row">
         <button className="btn ghost" onClick={() => onLayout(RAIL_DEFAULT)}>
           <Undo2 size={15} /> {t.railReset}
         </button>
-        <span className="muted small">{t.railLibraryNote}</span>
       </div>
     </Card>
   );

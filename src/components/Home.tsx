@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
-import { Clock, Database, MapPin, FileText, HardDrive, Sparkles, Star, Upload, Users } from "lucide-react";
+import { CalendarDays, Clock, Database, Headphones, Library, MapPin, FileText, HardDrive, Sparkles, Star, Upload, Users } from "lucide-react";
 import { Bookmark, DocListItem, fileUrl, hueOf, isFavorite, PersonListItem, Place, SearchResult, Status } from "../api";
 import { Lang, T } from "../i18n";
 import { AnimatedNumber } from "./ui";
 import { coverHidden, LotusDivider, LotusMandala, NoPhoto } from "./Logo";
 import { Calendar } from "./Calendar";
 import { TodayYears } from "./TodayYears";
+import type { RailZone } from "./Rail";
 import { moveId, useReorder } from "./reorder";
 
 export interface RecentDoc {
@@ -38,6 +39,8 @@ interface Props {
   docs: DocListItem[];
   onOpenDoc: (docId: number, ordinal?: number) => void;
   onAudio: (rel: string) => void;
+  /** a zone of the bar, from its door on this page */
+  onZone: (z: RailZone) => void;
 }
 
 /** The size of the library: records, texts, original files, database (Panorama › Status). */
@@ -71,7 +74,7 @@ function ofTheDay<X>(list: X[]): X | null {
   return list[(day * 7919) % list.length];
 }
 
-export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, onRecent, onBookmark, onImportDefaults, reload, places, onPlace, onCalendar, onClearRecent, docs, onOpenDoc, onAudio }: Props) {
+export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, onRecent, onBookmark, onImportDefaults, reload, places, onPlace, onCalendar, onClearRecent, docs, onOpenDoc, onAudio, onZone }: Props) {
   const empty = status !== null && status.docs === 0 && !status.busy;
   // something to discover each day: a record of the Guru Paramparā and a holy place
   const person = useMemo(() => ofTheDay([...persons].filter((p) => p.tree).sort((a, b) => a.id - b.id)), [persons]);
@@ -126,6 +129,28 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
             {/* the Paramparā Tree, Timeline and Panorama buttons went to the bar (Whisper, 17-11-2026) */}
           </div>
         </header>
+        {/* the five zones of the bar as doors (21-11-2026), each with what it holds */}
+        {!empty && (
+          <div className="zone-doors">
+            {(
+              [
+                ["people", Users, persons.length.toLocaleString(lang), t.zoneDoorPeople],
+                ["dhama", MapPin, places.length.toLocaleString(lang), t.zoneDoorDhama],
+                ["time", CalendarDays, new Date().toLocaleDateString(lang, { day: "numeric", month: "long" }), t.zoneDoorTime],
+                ["katha", Headphones, "", t.zoneDoorKatha],
+                ["library", Library, (status?.docs ?? docs.length).toLocaleString(lang), t.zoneDoorLibrary],
+              ] as [RailZone, typeof Users, string, string][]
+            ).map(([z, I, n, hint]) => (
+              <button key={z} className="zone-door" onClick={() => onZone(z)} title={hint}>
+                <I size={20} />
+                <span className="zone-door-name">{t.railZone[z]}</span>
+                {n && <span className="zone-door-n">{n}</span>}
+                <span className="zone-door-hint">{hint}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
         <LotusDivider />
 
         {empty && (
@@ -172,8 +197,6 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
         )}
 
 
-        {!empty && <TodayYears t={t} lang={lang} docs={docs} reload={reload} onPerson={onPerson} onOpenDoc={onOpenDoc} onAudio={onAudio} />}
-
         {(person || place) && (
           <section>
             <h2>
@@ -214,6 +237,8 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
             </div>
           </section>
         )}
+
+        {!empty && <TodayYears t={t} lang={lang} docs={docs} reload={reload} onPerson={onPerson} onOpenDoc={onOpenDoc} onAudio={onAudio} />}
 
 
         <LotusDivider />

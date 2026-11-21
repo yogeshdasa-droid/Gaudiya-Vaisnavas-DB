@@ -10479,3 +10479,353 @@ button.au-chip:hover {
   border-color: var(--accent);
   color: var(--accent-text);
 }
+
+/* ================================================================ the bar in five zones (21-11-2026)
+   Vaiṣṇavas · Dhāma · Tiempo · Hari-kathā · Biblioteca: a small title over each group of buttons; the title folds it. */
+.rail-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.rail-zone-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 4px 2px 12px;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  user-select: none;
+}
+.rail-zone-head:hover {
+  color: var(--text);
+}
+.rail-zone-head svg {
+  opacity: 0;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.rail-zone-head:hover svg,
+.rail-zone.shut .rail-zone-head svg {
+  opacity: 0.8;
+}
+.rail-zone.shut .rail-zone-head svg {
+  transform: rotate(-90deg);
+}
+.rail .rail-zone button {
+  height: 38px;
+}
+/* only icons: the title becomes a thin line */
+.rail.compact .rail-zone-head {
+  margin: 8px 10px 4px;
+  height: 0;
+  border-top: 1px solid var(--border);
+  overflow: hidden;
+}
+/* the bar on top: no titles, a line between the zones */
+:root[data-rail="top"] .rail-zone {
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+}
+:root[data-rail="top"] .rail-zone-head {
+  width: 0;
+  height: 24px;
+  margin: 0 6px;
+  border-left: 1px solid var(--lotus-line, var(--border));
+  overflow: hidden;
+}
+:root[data-rail="top"] .rail .rail-zone button {
+  height: 38px;
+}
+
+/* ================================================================ Hari-kathā (21-11-2026)
+   the tabs over the written lectures, the Anthology, the audios and the videos, and the page that searches the four */
+.katha-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.katha-tabs-name {
+  margin-right: 10px;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.katha-tabs button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.katha-tabs button svg {
+  color: var(--accent-text);
+}
+.katha-tabs button:hover {
+  background: var(--hover);
+}
+.katha-tabs button.on {
+  border-color: var(--accent);
+  background: var(--selected);
+  font-weight: 600;
+}
+.katha-page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 26px 28px 60px;
+  overflow: auto;
+}
+.katha-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.katha-search:focus-within {
+  border-color: var(--accent);
+}
+.katha-search svg {
+  color: var(--accent-text);
+}
+.katha-search input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 16px;
+}
+.katha-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 22px;
+}
+.katha-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.katha-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+.katha-card svg {
+  color: var(--accent-text);
+}
+.katha-card-name {
+  font-size: 16px;
+  font-weight: 600;
+}
+.katha-card-n {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent-text);
+}
+.katha-tip {
+  grid-column: 1 / -1;
+  margin-top: 6px;
+}
+.katha-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+  align-items: start;
+}
+.katha-col h3 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+.katha-col h3 svg {
+  color: var(--accent-text);
+}
+.katha-col h3 .link-btn {
+  margin-left: auto;
+}
+.katha-hit {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.katha-hit:hover {
+  background: var(--hover);
+}
+.katha-hit-title {
+  font-weight: 600;
+  font-size: 13.5px;
+}
+.katha-hit-meta {
+  color: var(--muted);
+  font-size: 12px;
+}
+.katha-hit .snippet {
+  font-size: 12.5px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* the tabs and the part of Hari-kathā below them share the main area */
+.katha-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+.katha-wrap > .katha-tabs {
+  flex-shrink: 0;
+}
+.katha-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.katha-body > * {
+  flex: 1;
+  min-height: 0;
+}
+.katha-body > .katha-page {
+  width: 100%;
+  overflow: auto;
+}
+/* under the main search: the Tīrthas and Hari-kathā that say it too (21-11-2026) */
+.also-in {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 4px 8px 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 12.5px;
+}
+.also-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  padding: 2px 0;
+}
+.also-row svg {
+  color: var(--accent-text);
+}
+.also-name {
+  font-weight: 600;
+}
+.also-chip {
+  padding: 1px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent-text);
+  font-size: 12px;
+  cursor: pointer;
+}
+.also-chip:hover,
+.also-katha:hover {
+  background: var(--hover);
+}
+.also-katha {
+  cursor: pointer;
+  border-radius: 6px;
+}
+/* the five zones as doors on the home page (21-11-2026) */
+.zone-doors {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin: 18px 0 6px;
+}
+.zone-door {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  min-width: 0;
+  padding: 12px 12px 11px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
+}
+.zone-door:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+.zone-door svg {
+  color: var(--accent-text);
+}
+.zone-door-name {
+  font-weight: 700;
+  font-size: 14px;
+}
+.zone-door-n {
+  color: var(--accent-text);
+  font-weight: 700;
+  font-size: 15px;
+}
+.zone-door-hint {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+@media (max-width: 900px) {
+  .zone-doors {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

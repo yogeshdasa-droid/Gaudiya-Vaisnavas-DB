@@ -6,7 +6,7 @@
 import { CSSProperties, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { ArrowDown, ArrowLeft, ArrowUp, BookOpen, ListMusic, ListPlus, Plus, Trash2, Check, CheckCircle2, ChevronRight, Circle, ExternalLink, Eye, EyeOff, FilePlus2, Film, FolderOpen, Headphones, Link2, Link2Off, MapPin, MapPinned, Pause, Pencil, Play, RotateCcw, RotateCw, Search, SkipBack, SkipForward, Star, X } from "lucide-react";
-import { api, AUDIOS_LIB, VIDEOS_LIB, AudioMark, AudioTexts, DocListItem, fileUrl, LibEntry, libUrl, Place, SectionText } from "../api";
+import { api, searchIn, AUDIOS_LIB, VIDEOS_LIB, AudioMark, AudioTexts, DocListItem, fileUrl, LibEntry, libUrl, Place, SectionText } from "../api";
 import { Lang, T } from "../i18n";
 import { LectureGrid } from "./LectureGrid";
 import { anthologyVolumes, ANTHOLOGY, formatLecDate } from "./Anthology";
@@ -556,8 +556,9 @@ export function Audios({ kind = "audio", t, lang, docs, readerStyle, fontSize, r
     if (!q || !f.inText || !written) return setTextDays(null);
     let alive = true;
     const h = window.setTimeout(() => {
-      api
-        .search({ query: q, titlesOnly: false, prefix: true, sort: "relevance", collections: [LECTURES, ANTHOLOGY], dir: null, docId: null, personId: null, offset: 0, limit: 500 })
+      // by folder: the lectures are kept by year («Lectures Gurudeva/2003»), and a collection name alone missed them
+      Promise.all([LECTURES, ANTHOLOGY].map((dir) => searchIn(q, dir, 500)))
+        .then((rs) => ({ hits: rs.flatMap((x) => x.hits) }))
         .then((r) => {
           if (!alive) return;
           const dateOf = new Map<string, string>();

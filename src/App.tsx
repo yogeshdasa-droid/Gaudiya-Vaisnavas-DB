@@ -102,6 +102,7 @@ import { Lineage } from "./components/Lineage";
 import { AudioBar, PersonLibrary } from "./components/PersonLibrary";
 import { WebPage } from "./components/WebPage";
 import { Rail, railLayout, RailLayout } from "./components/Rail";
+import { AlsoIn, HariKatha, KathaTab, KathaTabs } from "./components/HariKatha";
 import { showInVamsa, Vamsa } from "./components/Vamsa";
 import { Anthology } from "./components/Anthology";
 import { Audios, AudiosBar } from "./components/Audios";
@@ -133,7 +134,7 @@ function usePersisted<T>(key: string, fallback: T) {
 }
 
 /** panorama.place: open on the map at that place (`n` tells two requests apart) */
-type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number }; journey?: { id: string; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "vamsa" } | { kind: "anthology" } | { kind: "audios"; focus?: { rel: string; n: number } } | { kind: "videos" } | { kind: "tree"; focus?: { id: number; n: number }; pp?: { id: string; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number } | { kind: "library"; id: number } | { kind: "web"; url: string; title: string };
+type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number }; journey?: { id: string; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "vamsa" } | { kind: "anthology" } | { kind: "katha"; q?: string; n?: number } | { kind: "audios"; focus?: { rel: string; n: number } } | { kind: "videos"; focus?: { rel: string; n: number } } | { kind: "tree"; focus?: { id: number; n: number }; pp?: { id: string; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number } | { kind: "library"; id: number } | { kind: "web"; url: string; title: string };
 
 type Dialog =
   | { kind: "settings"; tab: SettingsTab }
@@ -166,7 +167,7 @@ export default function App() {
   const [lotusPortrait, setLotusPortrait] = usePersisted<boolean>("lotusPortrait", true);
   // the bar of buttons on the left or in one row on top (Whisper, 17-11-2026)
   const [barTop, setBarTop] = usePersisted<boolean>("barTop", false);
-  const [railSaved, setRailSaved] = usePersisted<RailLayout | null>("railLayout", null);
+  const [railSaved, setRailSaved] = usePersisted<RailLayout | null>("railZones", null);
   const railLay = useMemo(() => railLayout(railSaved), [railSaved]);
   const [titlesOnly, setTitlesOnly] = usePersisted("titlesOnly", false);
   // search by meaning (EmbeddingGemma); starts off each time
@@ -253,6 +254,13 @@ export default function App() {
   const [update, setUpdate] = useState<Update | null>(null);
   const [updatePct, setUpdatePct] = useState<number | null | undefined>(undefined);
   const [reveal, setReveal] = useState<Reveal | null>(null);
+  // a tab of Hari-kathā: the written lectures are a panel on the left, the rest pages
+  const openKatha = (k: KathaTab) => {
+    if (k !== "lectures") return setMain({ kind: k });
+    sideAutoHid.current = false;
+    setSideTab("lectures");
+    setSideOpen(true);
+  };
   const revealIn = (kind: Reveal["kind"], id: number) => {
     sideAutoHid.current = false;
     setSideOpen(true);
@@ -1291,6 +1299,7 @@ export default function App() {
               onFilters={setFilters}
               hasQuery={hasQuery}
               generation={generation}
+              extra={<AlsoIn t={t} query={query} places={places} onPlace={openPlace} onKatha={(q) => setMain({ kind: "katha", q, n: Date.now() })} />}
             />
             <Splitter onDrag={(dx) => setResW((w) => Math.min(760, Math.max(300, w + dx)))} onDoubleClick={() => setResW(430)} />
           </>
@@ -1417,6 +1426,13 @@ export default function App() {
             docs={docs}
             onOpenDoc={(d, o) => openDoc(d, o ?? 0)}
             onAudio={(rel) => setMain({ kind: "audios", focus: { rel, n: Date.now() } })}
+            onZone={(z) => {
+              if (z === "time") return setMain({ kind: "calendar" });
+              if (z === "katha") return setMain({ kind: "katha" });
+              sideAutoHid.current = false;
+              setSideTab(z === "people" ? "persons" : z === "dhama" ? "places" : "library");
+              setSideOpen(true);
+            }}
           />
         )}
         <ViewGuard key={main.kind} message={t.viewFailed} back={t.viewFailedBack} onBack={() => setMain({ kind: "home" })}>
@@ -1455,27 +1471,47 @@ export default function App() {
             <Panorama t={t} lang={lang} reload={dataTick} persons={persons} onPerson={openPerson} places={places} onPlace={openPlace} focus={main.place} journey={main.journey} status={status} onPlacesChanged={() => api.listPlaces().then(setPlaces).catch(fail)} onToast={showToast} />
           )}
           {main.kind === "vamsa" && <Vamsa t={t} lang={lang} persons={persons} onPerson={openPerson} onOpenDoc={openDoc} />}
-          {main.kind === "anthology" && <Anthology t={t} lang={lang} docs={docs} onOpenDoc={openDoc} />}
-          {(main.kind === "audios" || main.kind === "videos") && (
-            <Audios
-              key={main.kind}
-              kind={main.kind === "videos" ? "video" : "audio"}
-              t={t}
-              lang={lang}
-              docs={docs}
-              readerStyle={readerStyle}
-              fontSize={fontSize}
-              reload={dataTick}
-              onNewText={async (title, collection) => {
-                const id = await api.createDoc(null, title, collection);
-                refreshAll();
-                return id;
-              }}
-              onEditText={editSectionOf}
-              focus={main.kind === "audios" ? main.focus : undefined} onOpenDoc={(d, o) => openDoc(d, o ?? 0)} onToast={showToast}
-              places={places}
-              onPlace={openPlace}
-            />
+          {(main.kind === "katha" || main.kind === "anthology" || main.kind === "audios" || main.kind === "videos") && (
+            <div className="katha-wrap">
+              <KathaTabs t={t} on={main.kind} onTab={openKatha} />
+              <div className="katha-body">
+                {main.kind === "katha" && (
+                  <HariKatha
+                    key={main.kind === "katha" ? main.n ?? 0 : 0}
+                    start={main.kind === "katha" ? main.q : undefined}
+                    t={t}
+                    lang={lang}
+                    docs={docs}
+                    onOpenDoc={(d, o) => openDoc(d, o ?? 0)}
+                    onAudio={(rel) => setMain({ kind: "audios", focus: { rel, n: Date.now() } })}
+                    onVideo={(rel) => setMain({ kind: "videos", focus: { rel, n: Date.now() } })}
+                    onTab={openKatha}
+                  />
+                )}
+                {main.kind === "anthology" && <Anthology t={t} lang={lang} docs={docs} onOpenDoc={openDoc} />}
+                {(main.kind === "audios" || main.kind === "videos") && (
+                  <Audios
+                    key={main.kind}
+                    kind={main.kind === "videos" ? "video" : "audio"}
+                    t={t}
+                    lang={lang}
+                    docs={docs}
+                    readerStyle={readerStyle}
+                    fontSize={fontSize}
+                    reload={dataTick}
+                    onNewText={async (title, collection) => {
+                      const id = await api.createDoc(null, title, collection);
+                      refreshAll();
+                      return id;
+                    }}
+                    onEditText={editSectionOf}
+                    focus={main.focus} onOpenDoc={(d, o) => openDoc(d, o ?? 0)} onToast={showToast}
+                    places={places}
+                    onPlace={openPlace}
+                  />
+                )}
+                    </div>
+            </div>
           )}
           {main.kind === "calendar" && <Calendar t={t} lang={lang} reload={dataTick} onPerson={openPerson} page />}
           {main.kind === "tree" && <TreeView t={t} lang={lang} persons={persons} onPerson={openPerson} marks={marks} onMark={cycleMark} focus={main.focus} ppFocus={main.pp} />}

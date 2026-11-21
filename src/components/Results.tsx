@@ -35,6 +35,8 @@ interface Props {
   onFilters: (f: Filters) => void;
   hasQuery: boolean;
   generation: number;
+  /** above the records and texts: the Tīrthas and Hari-kathā that say it too */
+  extra?: React.ReactNode;
 }
 
 function Highlighted({ text, terms }: { text: string; terms: Term[] }) {
@@ -161,6 +163,7 @@ export function Results(p: Props) {
 
       <div className="result-list" ref={listRef}>
         {result?.error && <div className="error-box">{result.error}</div>}
+        {hasQuery && p.extra}
         {!result && [0, 1, 2, 3, 4].map((i) => <Skeleton key={i} />)}
         {result && !result.error && hits.length === 0 && result.persons.length === 0 && !loading && (
           <div className="empty-state small">

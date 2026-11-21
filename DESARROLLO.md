@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **21-11-2026** (versión **0.20.15**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **21-11-2026** (versión **0.20.16**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,24 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.15)
+## 5. Qué hace hoy (v0.20.16)
+
+### Novedades de la 0.20.16 (21-11-2026) — la app ordenada en 5 zonas (Whisper: «un poco all over the place»)
+- **Barra en 5 zonas** con título plegable (`bio.railFolded`): Vaiṣṇavas (Fichas, Linaje, Árbol Paramparā, Vaṁśa) ·
+  Dhāma (Tīrthas, Deidades) · Tiempo (Calendario, Línea de tiempo, Panorama) · Hari-kathā (Buscar en todo, Charlas
+  escritas, Antología, Audios, Vídeos) · Biblioteca (Biblioteca, Marcadores); Historial oculto; botón «Inicio».
+  `Rail.tsx`: `RAIL_ZONES`, `RailPlace` = zona | "hidden", guardado en localStorage `railZones` (el `railLayout` de
+  la 0.20.2 se ignora); Ajustes › «Botones de la barra» por zonas. Sin menús desplegables en la barra.
+- **Ficha**: Notas · Linaje · «Ver en ▾» (la lista, Árbol, Vaṁśa, viajes) · «Buscar ▾» (en sus textos, menciones) · ⋯
+  (`actMenu` en PersonView.tsx).
+- **Hari-kathā** (`HariKatha.tsx`): vista `katha` — tarjetas y una búsqueda en charlas escritas, Antología (texto,
+  `searchIn(query, dir)` en api.ts: por carpeta, porque la colección de las charlas es «Lectures Gurudeva/<año>»),
+  audios y vídeos (título/lugar/fecha, `recMatch`, caché `allRecs`); `KathaTabs` encima de Antología/Audios/Vídeos
+  (`.katha-wrap`). Arreglado: «Buscar también dentro de las charlas escritas» de Audios solo veía las de la raíz.
+- **Inicio**: 5 «puertas» de las zonas (`.zone-doors`, `onZone`); «Del día» antes de «Hoy, en otros años».
+  **Búsqueda principal**: `AlsoIn` encima de los resultados (Tīrthas que coinciden + «Hari-kathā: N audios y M
+  vídeos… verlo todo junto» → vista `katha` con esas palabras).
+- Nombres: «Charlas escritas» (Written lectures), «Antología», «Árbol Paramparā».
 
 ### Novedades de la 0.20.15 (21-11-2026) — favoritas en 8 columnas, ◎ en las fichas del Bhāgavatam
 - Inicio › «Mis fichas favoritas»: 8 por fila (`.fav-grid` minmax 84px, nombre 11.5px y hasta 3 líneas).
@@ -2057,6 +2074,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **21-11-2026 — v0.20.16**: la app ordenada — barra en 5 zonas, botones de la ficha en menús, Hari-kathā con una búsqueda, Inicio con las zonas.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.16
 - **21-11-2026 — v0.20.15**: favoritas en 8 columnas; ◎ en las fichas del Bhāgavatam; «Ver en Vaṁśa» de las 22 fichas nuevas.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.15
 - **21-11-2026 — v0.20.14**: arrastrar para ordenar las favoritas de Inicio y los textos de la ficha (no funcionaba).

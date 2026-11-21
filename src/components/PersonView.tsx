@@ -383,13 +383,15 @@ export function PersonView(p: Props) {
   const [cap, setCap] = useState<{ id: number; name: string } | null>(null);
   // «See journeys» (12-11-2026, Whisper): in place of «Paramparā…», which went into the «…» menu
   const trips = useMemo(() => journeysOf(p.id), [p.id]);
-  const [tripMenu, setTripMenu] = useState(false);
+  // the record's buttons in two menus (21-11-2026, Whisper: «a bit all over the place»): «See in ▾» and «Search ▾»
+  const [actMenu, setActMenu] = useState<"see" | "search" | null>(null);
   useEffect(() => {
-    if (!tripMenu) return;
-    const close = () => setTripMenu(false);
+    if (!actMenu) return;
+    const close = () => setActMenu(null);
     window.addEventListener("click", close);
     return () => window.removeEventListener("click", close);
-  }, [tripMenu]);
+  }, [actMenu]);
+  const openAct = (m: "see" | "search") => (e: React.MouseEvent) => (e.stopPropagation(), setActMenu((x) => (x === m ? null : m)));
 
   // Ctrl+V with a picture copied (in a browser: right click › «Copy image») = the record's photo (15-11-2026)
   const pasteRef = useRef({ id: p.id, onPhotoChanged: p.onPhotoChanged, onToast: p.onToast, msg: t.photoPasted });
@@ -910,55 +912,55 @@ export function PersonView(p: Props) {
                     <StickyNote size={15} /> {showNotes ? t.hideNotes : t.seeNotes}
                   </button>
                 )}
-                <button className="btn small" onClick={() => p.onSearchIn(person)} title={t.searchInPerson}>
-                  <TextSearch size={15} /> {t.searchInPersonShort}
-                </button>
-                <button className="btn ghost small" onClick={() => p.onFindMentions(person)} title={t.findMentions}>
-                  <Search size={15} /> {t.findMentionsShort}
-                </button>
-                <button className="icon-btn" onClick={() => p.onReveal(person)} title={t.revealInTree}>
-                  <LocateFixed size={17} />
-                </button>
-                {me?.tree && (
-                  <button className="btn ghost small" onClick={() => p.onShowInTree(person)} title={t.showInTreeHint}>
-                    <Network size={15} /> {t.showInTree}
-                  </button>
-                )}
+                {/* Linaje in sight: the one used most (Whisper) */}
                 {me && (
-                  <button className="btn ghost small" onClick={() => p.onShowLineage(person)} title={t.showLineageHint}>
-                    <GitFork size={15} /> {t.showLineage}
+                  <button className="btn small" onClick={() => p.onShowLineage(person)} title={t.showLineageHint}>
+                    <GitFork size={15} /> {t.lineage}
                   </button>
                 )}
-                {vamsaKeysOf(person.id).length > 0 && (
-                  <button className="btn ghost small" onClick={() => p.onShowVamsa(vamsaKeysOf(person.id)[0])} title={t.showVamsaHint}>
-                    <Trees size={15} /> {t.showVamsa}
+                <div className="menu-wrap">
+                  <button className={`btn ghost small${actMenu === "see" ? " on" : ""}`} onClick={openAct("see")} title={t.seeInHint}>
+                    <LocateFixed size={15} /> {t.seeIn} <ChevronDown size={14} />
                   </button>
-                )}
-                {trips.length > 0 && (
-                  <div className="menu-wrap">
-                    <button
-                      className="btn ghost small"
-                      title={t.seeJourneysHint}
-                      onClick={(e) => {
-                        if (trips.length === 1) return p.onShowJourney(trips[0].id);
-                        e.stopPropagation();
-                        setTripMenu((m) => !m);
-                      }}
-                    >
-                      <Route size={15} /> {t.seeJourneys}
-                      {trips.length > 1 && <ChevronDown size={14} />}
-                    </button>
-                    {tripMenu && (
-                      <div className="menu trips-menu" onClick={(e) => e.stopPropagation()}>
-                        {trips.map((j) => (
-                          <button key={j.id} onClick={() => (setTripMenu(false), p.onShowJourney(j.id))}>
-                            <Route size={15} /> {j.title[lang === "en" ? "en" : "es"]} <span className="muted small">{j.when}</span>
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
+                  {actMenu === "see" && (
+                    <div className="menu" onClick={(e) => e.stopPropagation()}>
+                      <button onClick={() => (setActMenu(null), p.onReveal(person))} title={t.revealInTree}>
+                        <LocateFixed size={15} /> {t.seeInList}
+                      </button>
+                      {me?.tree && (
+                        <button onClick={() => (setActMenu(null), p.onShowInTree(person))} title={t.showInTreeHint}>
+                          <Network size={15} /> {t.paramparaTree}
+                        </button>
+                      )}
+                      {vamsaKeysOf(person.id).length > 0 && (
+                        <button onClick={() => (setActMenu(null), p.onShowVamsa(vamsaKeysOf(person.id)[0]))} title={t.showVamsaHint}>
+                          <Trees size={15} /> {t.vamsa}
+                        </button>
+                      )}
+                      {trips.length > 0 && <hr />}
+                      {trips.map((j) => (
+                        <button key={j.id} onClick={() => (setActMenu(null), p.onShowJourney(j.id))} title={t.seeJourneysHint}>
+                          <Route size={15} /> {j.title[lang === "en" ? "en" : "es"]} <span className="muted small">{j.when}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="menu-wrap">
+                  <button className={`btn ghost small${actMenu === "search" ? " on" : ""}`} onClick={openAct("search")}>
+                    <Search size={15} /> {t.searchMenu} <ChevronDown size={14} />
+                  </button>
+                  {actMenu === "search" && (
+                    <div className="menu" onClick={(e) => e.stopPropagation()}>
+                      <button onClick={() => (setActMenu(null), p.onSearchIn(person))} title={t.searchInPerson}>
+                        <TextSearch size={15} /> {t.searchInPersonShort}
+                      </button>
+                      <button onClick={() => (setActMenu(null), p.onFindMentions(person))} title={t.findMentions}>
+                        <Search size={15} /> {t.findMentionsShort}
+                      </button>
+                    </div>
+                  )}
+                </div>
                 <div className="menu-wrap">
                   <button
                     className={`icon-btn ${menu ? "on" : ""}`}
