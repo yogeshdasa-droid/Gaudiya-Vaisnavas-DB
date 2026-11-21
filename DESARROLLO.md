@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **21-11-2026** (versión **0.20.16**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **21-11-2026** (versión **0.20.17**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,18 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.16)
+## 5. Qué hace hoy (v0.20.17)
+
+### Novedades de la 0.20.17 (21-11-2026) — filtros de la búsqueda, Ajustes, nombres cortos
+- Búsqueda: los ~30 botones «Lectures Gurudeva/AAAA» son uno, «Charlas escritas» (`groupFacets` en Results.tsx);
+  elegido, sus años en una fila debajo (`togglePart`: el primer clic deja ese año, luego varios).
+- Nombres de colección en pantalla (`collectionLabel` / `setCollectionLabels` en ui.tsx, puestos por App según el
+  idioma): «Lectures Gurudeva/2002» → «Charlas escritas · 2002», «Anthology» → «Antología».
+- Ajustes en tres bloques con título: Personal (Apariencia, Barra de botones, Calendario) · Datos (Base de datos,
+  Copias, Carpetas de origen, Papelera) · Herramientas (Reemplazar, Significado) · Ayuda. Pestañas nuevas
+  `bar`, `calendar`, `data` (antes todo en «General»).
+- Favoritas de Inicio: `shortName` (Home.tsx) quita «Śrīla»/«Śrī» delante y «Mahārāja» detrás; la ficha y el
+  globo siguen con el nombre entero.
 
 ### Novedades de la 0.20.16 (21-11-2026) — la app ordenada en 5 zonas (Whisper: «un poco all over the place»)
 - **Barra en 5 zonas** con título plegable (`bio.railFolded`): Vaiṣṇavas (Fichas, Linaje, Árbol Paramparā, Vaṁśa) ·
@@ -2074,6 +2085,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **21-11-2026 — v0.20.17**: filtros de la búsqueda agrupados («Charlas escritas» con sus años), Ajustes en bloques, nombres cortos en las favoritas.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.17
 - **21-11-2026 — v0.20.16**: la app ordenada — barra en 5 zonas, botones de la ficha en menús, Hari-kathā con una búsqueda, Inicio con las zonas.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.16
 - **21-11-2026 — v0.20.15**: favoritas en 8 columnas; ◎ en las fichas del Bhāgavatam; «Ver en Vaṁśa» de las 22 fichas nuevas.

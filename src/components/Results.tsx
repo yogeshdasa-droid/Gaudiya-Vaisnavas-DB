@@ -3,7 +3,7 @@ import { FileText, Folder, ListTree, SearchX, UserRound, X } from "lucide-react"
 import { Hit, hueOf, SearchResult } from "../api";
 import { highlightParts, Term } from "../fold";
 import { Lang, T } from "../i18n";
-import { AnimatedNumber, CollectionChip } from "./ui";
+import { AnimatedNumber, CollectionChip, collectionLabel } from "./ui";
 
 export interface Filters {
   collections: string[];
@@ -37,6 +37,26 @@ interface Props {
   generation: number;
   /** above the records and texts: the Tīrthas and Hari-kathā that say it too */
   extra?: React.ReactNode;
+}
+
+/** a collection and its folders («Lectures Gurudeva», «Lectures Gurudeva/2003»…) as one */
+interface FacetGroup {
+  name: string;
+  count: number;
+  parts: { name: string; count: number }[];
+}
+function groupFacets(facets: { name: string; count: number }[]): FacetGroup[] {
+  const by = new Map<string, FacetGroup>();
+  for (const f of facets) {
+    const top = f.name.split("/")[0];
+    const g = by.get(top) ?? { name: top, count: 0, parts: [] };
+    g.count += f.count;
+    g.parts.push(f);
+    by.set(top, g);
+  }
+  // the parts by name (the years in order), the groups by how much they have
+  for (const g of by.values()) g.parts.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+  return [...by.values()].sort((a, b) => b.count - a.count);
 }
 
 function Highlighted({ text, terms }: { text: string; terms: Term[] }) {
@@ -88,6 +108,27 @@ export function Results(p: Props) {
     const has = filters.collections.includes(name);
     onFilters({ ...filters, collections: has ? filters.collections.filter((c) => c !== name) : [...filters.collections, name] });
   };
+  // the collections in folders («Lectures Gurudeva/2003»…) as one chip with the total (21-11-2026: 30 chips were too
+  // many); chosen, its parts appear in a row below to narrow it
+  const groups = groupFacets(result?.facets ?? []);
+  const groupOn = (g: FacetGroup) => g.parts.every((x) => filters.collections.includes(x.name));
+  const groupSome = (g: FacetGroup) => g.parts.some((x) => filters.collections.includes(x.name));
+  const toggleGroup = (g: FacetGroup) => {
+    const names = g.parts.map((x) => x.name);
+    const rest = filters.collections.filter((c) => !names.includes(c));
+    onFilters({ ...filters, collections: groupSome(g) ? rest : [...rest, ...names] });
+  };
+  // a part of a group: only that one (the first click), then several
+  const togglePart = (g: FacetGroup, name: string) => {
+    const names = g.parts.map((x) => x.name);
+    const mine = filters.collections.filter((c) => names.includes(c));
+    const rest = filters.collections.filter((c) => !names.includes(c));
+    if (mine.length === names.length) return onFilters({ ...filters, collections: [...rest, name] });
+    const next = mine.includes(name) ? mine.filter((c) => c !== name) : [...mine, name];
+    onFilters({ ...filters, collections: [...rest, ...(next.length ? next : names)] });
+  };
+  const label = collectionLabel;
+  const open = groups.find((g) => g.parts.length > 1 && groupSome(g));
   const scoped = !!filters.scope || !!filters.doc || !!filters.person;
 
   return (
@@ -97,19 +138,48 @@ export function Results(p: Props) {
           <button className={`facet ${filters.collections.length === 0 ? "on" : ""}`} onClick={() => onFilters({ ...filters, collections: [] })}>
             {t.allCollections}
           </button>
-          {result?.facets.map((f) => (
-            <button
-              key={f.name}
-              className={`facet ${filters.collections.includes(f.name) ? "on" : ""}`}
-              style={{ "--h": hueOf(f.name) } as React.CSSProperties}
-              onClick={() => toggleCollection(f.name)}
-            >
-              <i className="dot" />
-              {f.name}
-              <span className="n">{f.count.toLocaleString(lang)}</span>
-            </button>
-          ))}
+          {groups.map((g) =>
+            g.parts.length === 1 && g.parts[0].name === g.name ? (
+              <button
+                key={g.name}
+                className={`facet ${filters.collections.includes(g.name) ? "on" : ""}`}
+                style={{ "--h": hueOf(g.name) } as React.CSSProperties}
+                onClick={() => toggleCollection(g.name)}
+              >
+                <i className="dot" />
+                {label(g.name)}
+                <span className="n">{g.count.toLocaleString(lang)}</span>
+              </button>
+            ) : (
+              <button
+                key={g.name}
+                className={`facet group ${groupOn(g) ? "on" : groupSome(g) ? "some" : ""}`}
+                style={{ "--h": hueOf(g.name) } as React.CSSProperties}
+                onClick={() => toggleGroup(g)}
+                title={t.facetGroupHint(g.parts.length)}
+              >
+                <i className="dot" />
+                {label(g.name)}
+                <span className="n">{g.count.toLocaleString(lang)}</span>
+              </button>
+            ),
+          )}
         </div>
+        {open && (
+          <div className="facets parts">
+            <span className="parts-name">{label(open.name)}:</span>
+            {open.parts.map((x) => (
+              <button
+                key={x.name}
+                className={`facet small ${filters.collections.includes(x.name) && !groupOn(open) ? "on" : ""}`}
+                onClick={() => togglePart(open, x.name)}
+              >
+                {x.name.slice(open.name.length + 1) || label(open.name)}
+                <span className="n">{x.count.toLocaleString(lang)}</span>
+              </button>
+            ))}
+          </div>
+        )}
         <div className="facets kinds">
           <button
             className={`facet ${filters.paramparaOnly ? "on" : ""}`}

@@ -1,23 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import {
-  ArchiveRestore,
-  ArrowDown,
-  ArrowUp,
-  CalendarDays,
-  Database,
-  FileDown,
-  DatabaseBackup,
-  FolderInput,
-  FolderOpen,
-  HelpCircle,
-  RefreshCw,
-  Replace,
-  Settings as Gear,
-  Sparkles,
-  Trash2,
-  Undo2,
-} from "lucide-react";
+import { ArchiveRestore, ArrowDown, ArrowUp, CalendarDays, Database, FileDown, DatabaseBackup, FolderInput, FolderOpen, HelpCircle, RefreshCw, Replace, Settings as Gear, Sparkles, Trash2, Undo2, Palette, PanelLeft } from "lucide-react";
 import { api, BackupCopy, BackupSettings, CalendarInfo, DefaultSource, PersonListItem, Status, Trashed } from "../api";
 import { ReviewPane } from "./Review";
 import { FillPane } from "./Fill";
@@ -33,7 +16,7 @@ import { RAIL_DEFAULT, RAIL_ZONES, railEntries, RailLayout, RailPlace } from "./
 export type TitleFont = "normal" | "script" | "classic";
 
 export type Theme = "system" | "light" | "dark";
-export type SettingsTab = "general" | "backups" | "review" | "fill" | "replace" | "meaning" | "sources" | "trash" | "help";
+export type SettingsTab = "general" | "bar" | "calendar" | "data" | "backups" | "review" | "fill" | "replace" | "meaning" | "sources" | "trash" | "help";
 
 const when = (secs: number, lang: Lang) => new Date(secs * 1000).toLocaleString(lang === "es" ? "es-ES" : "en-GB", { dateStyle: "medium", timeStyle: "short" });
 
@@ -420,16 +403,24 @@ export function Settings(p: Props) {
       p.onImportStarted();
     });
 
-  const tabs: [SettingsTab, typeof Gear, string][] = [
-    ["general", Gear, t.general],
+  // in three blocks with a title (21-11-2026): what is personal, the data, the tools; the help at the end
+  const tabs: ([SettingsTab, typeof Gear, string] | string)[] = [
+    t.settingsBlock.personal,
+    ["general", Palette, t.looksTitle],
+    ["bar", PanelLeft, t.barTab],
+    ["calendar", CalendarDays, t.calendarTitle],
+    t.settingsBlock.data,
+    ["data", Database, t.database],
     ["backups", DatabaseBackup, t.backups],
     // «Revisar» (Comprobar los datos, repetidas…) and «Rellenar fichas» hidden (12-11-2026, Whisper: «más lío que
     // ayuda»); their panes and commands stay (Claude's scripts use check_data etc.): to show them again, put back
     // ["review", ClipboardCheck, t.review] and ["fill", UserCheck, t.fillTab] here (and their lucide-react imports).
-    ["replace", Replace, t.replaceTab],
-    ["meaning", Sparkles, t.meaningTab],
     ["sources", FolderInput, t.sourcesTitle],
     ["trash", Trash2, `${t.trash}${status?.trash ? ` (${status.trash})` : ""}`],
+    t.settingsBlock.tools,
+    ["replace", Replace, t.replaceTab],
+    ["meaning", Sparkles, t.meaningTab],
+    "",
     ["help", HelpCircle, t.help],
   ];
 
@@ -437,17 +428,26 @@ export function Settings(p: Props) {
     <Modal wide className="settings-modal" title={t.settings} icon={<Gear size={18} />} onClose={p.onClose}>
       <div className="settings">
         <nav className="settings-nav">
-          {tabs.map(([k, I, label]) => (
-            <button key={k} className={tab === k ? "active" : ""} onClick={() => setTab(k)}>
-              <span className="nav-ic">
-                <I size={16} />
-              </span>
-              <span className="nav-txt">
-                <b>{label}</b>
-                <small>{t.settingsHints[k]}</small>
-              </span>
-            </button>
-          ))}
+          {tabs.map((x, i) =>
+            typeof x === "string" ? (
+              <div key={"b" + i} className="settings-block">
+                {x}
+              </div>
+            ) : (
+              <button key={x[0]} className={tab === x[0] ? "active" : ""} onClick={() => setTab(x[0])}>
+                <span className="nav-ic">
+                  {(() => {
+                    const I = x[1];
+                    return <I size={16} />;
+                  })()}
+                </span>
+                <span className="nav-txt">
+                  <b>{x[2]}</b>
+                  <small>{t.settingsHints[x[0]]}</small>
+                </span>
+              </button>
+            ),
+          )}
         </nav>
 
         <div className="settings-pane fade-in" key={tab}>
@@ -511,6 +511,12 @@ export function Settings(p: Props) {
                     </button>
                   </div>
                 </Row>
+              </Card>
+            </>
+          )}
+          {tab === "bar" && (
+            <>
+              <Card title={t.barTab}>
                 <Row label={t.barPlace} hint={t.barPlaceHint}>
                   <div className="seg">
                     <button className={!p.barTop ? "on" : ""} onClick={() => p.onBarTop(false)}>
@@ -523,7 +529,11 @@ export function Settings(p: Props) {
                 </Row>
               </Card>
               <RailButtons t={t} layout={p.railLayout} onLayout={p.onRailLayout} />
-              <CalendarSettings t={t} onToast={p.onToast} onChanged={p.onChanged} />
+            </>
+          )}
+          {tab === "calendar" && <CalendarSettings t={t} onToast={p.onToast} onChanged={p.onChanged} />}
+          {tab === "data" && (
+            <>
               <Card title={t.database}>
                 {status && (
                   <p className="muted small">
@@ -566,7 +576,7 @@ export function Settings(p: Props) {
             </>
           )}
 
-          {tab !== "general" && (
+          {!["general", "bar", "calendar", "data"].includes(tab) && (
             <Card>
               {tab === "backups" && <Backups t={t} lang={lang} onToast={p.onToast} />}
 

@@ -66,6 +66,14 @@ export function StatTiles({ t, lang, status }: { t: T; lang: Lang; status: Statu
   );
 }
 
+/** a favourite's card (21-11-2026, Whisper): the name without «Śrīla» / «Śrī» before it and «Mahārāja» after it, so
+ *  that it is not cut — «Śrīla Bhaktivedānta Svāmī Prabhupāda» → «Bhaktivedānta Svāmī Prabhupāda»; the record and the
+ *  tooltip keep it whole. «Śrīmatī» stays (it is part of how she is called), and a name that would be left empty too. */
+export function shortName(name: string): string {
+  const s = name.replace(/^(?:Śrīla|Śrī|Sri|Srila)\s+/, "").replace(/\s+Mahārāja$/, "").trim();
+  return s || name;
+}
+
 /** The same one all day, another one tomorrow. */
 function ofTheDay<X>(list: X[]): X | null {
   if (!list.length) return null;
@@ -189,7 +197,7 @@ export function Home({ t, lang, status, persons, recent, bookmarks, onPerson, on
                       <NoPhoto name={f.name} />
                     )}
                   </span>
-                  <span className="fav-name">{f.name}</span>
+                  <span className="fav-name">{shortName(f.name)}</span>
                 </button>
               ))}
             </div>

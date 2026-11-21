@@ -68,11 +68,21 @@ export function Modal({
 }
 
 /** Colored pill for a collection name (same hue everywhere). */
+/** how some collections are called on screen, in the language in use (set by App): «Lectures Gurudeva» →
+ *  «Charlas escritas» (21-11-2026); «Lectures Gurudeva/2002» → «Charlas escritas · 2002» */
+let LABELS: Record<string, string> = {};
+export const setCollectionLabels = (m: Record<string, string>) => void (LABELS = m);
+export function collectionLabel(name: string): string {
+  const [top, ...rest] = name.split("/");
+  const l = LABELS[top];
+  return l ? [l, ...rest].join(" · ") : name;
+}
+
 export function CollectionChip({ name, onClick }: { name: string; onClick?: () => void }) {
   return (
-    <span className={`chip ${onClick ? "clickable" : ""}`} style={{ "--h": hueOf(name) } as React.CSSProperties} onClick={onClick}>
+    <span className={`chip ${onClick ? "clickable" : ""}`} style={{ "--h": hueOf(name) } as React.CSSProperties} onClick={onClick} title={name}>
       <i className="dot" />
-      {name}
+      {collectionLabel(name)}
     </span>
   );
 }

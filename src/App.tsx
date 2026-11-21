@@ -109,7 +109,7 @@ import { Audios, AudiosBar } from "./components/Audios";
 import { player as audiosPlayer, setOnStart as setAudiosOnStart } from "./audioPlayer";
 import { APP_NAME, LogoMark, LotusMandala } from "./components/Logo";
 import { Calendar } from "./components/Calendar";
-import { ask, Kbd, Splitter, ViewGuard } from "./components/ui";
+import { ask, Kbd, Splitter, ViewGuard, setCollectionLabels } from "./components/ui";
 
 const PAGE = 50;
 
@@ -190,6 +190,8 @@ export default function App() {
   const sidePinnedNow = useRef(sidePinned);
   sidePinnedNow.current = sidePinned;
   const t = dicts[lang];
+  // the collections' names on screen in this language (CollectionChip, the search's chips)
+  setCollectionLabels({ "Lectures Gurudeva": t.lecturesGurudeva, Anthology: t.anthology });
 
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
