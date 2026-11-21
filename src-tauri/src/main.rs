@@ -1144,7 +1144,7 @@ async fn audio_durations(state: State<'_, AppState>, id: i64) -> CmdResult<std::
             .into_iter()
             .filter(|x| {
                 let n = x.name.to_lowercase();
-                [".mp3", ".wav", ".wma", ".wmv"].iter().any(|e| n.ends_with(e))
+                [".mp3", ".wav", ".wma", ".wmv", ".asf"].iter().any(|e| n.ends_with(e))
             })
             .map(|x| x.rel)
             .collect();

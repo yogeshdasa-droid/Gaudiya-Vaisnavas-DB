@@ -5,8 +5,8 @@
 // day in «Lectures Gurudeva» or the Anthology, or any text linked by hand. The files stay in their folder (library 0).
 import { CSSProperties, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { ArrowDown, ArrowLeft, ArrowUp, BookOpen, ListMusic, ListPlus, Plus, Trash2, Check, CheckCircle2, ChevronRight, Circle, ExternalLink, Eye, EyeOff, FilePlus2, FolderOpen, Headphones, Link2, Link2Off, MapPin, MapPinned, Pause, Pencil, Play, RotateCcw, RotateCw, Search, SkipBack, SkipForward, Star, X } from "lucide-react";
-import { api, AUDIOS_LIB, AudioMark, AudioTexts, DocListItem, fileUrl, LibEntry, libUrl, Place, SectionText } from "../api";
+import { ArrowDown, ArrowLeft, ArrowUp, BookOpen, ListMusic, ListPlus, Plus, Trash2, Check, CheckCircle2, ChevronRight, Circle, ExternalLink, Eye, EyeOff, FilePlus2, Film, FolderOpen, Headphones, Link2, Link2Off, MapPin, MapPinned, Pause, Pencil, Play, RotateCcw, RotateCw, Search, SkipBack, SkipForward, Star, X } from "lucide-react";
+import { api, AUDIOS_LIB, VIDEOS_LIB, AudioMark, AudioTexts, DocListItem, fileUrl, LibEntry, libUrl, Place, SectionText } from "../api";
 import { Lang, T } from "../i18n";
 import { LectureGrid } from "./LectureGrid";
 import { anthologyVolumes, ANTHOLOGY, formatLecDate } from "./Anthology";
@@ -22,7 +22,7 @@ type Bg = "mandala" | "parchment" | "none";
 const BG_KEY = "bio.audioBg";
 function readBg(): Bg {
   try {
-    const v = localStorage.getItem(BG_KEY);
+    const v = localStorage.getItem(BG_KEY + K.suf);
     return v === "parchment" || v === "none" ? v : "mandala";
   } catch {
     return "mandala";
@@ -221,7 +221,7 @@ export function readName(name: string, origin: string): Pick<Rec, "date" | "year
   return { date, year, part, place, title: t || base };
 }
 
-function toRec(e: LibEntry): Rec {
+function toRec(e: LibEntry, kind: MediaKind = "audio"): Rec {
   const parts = e.rel.split("/");
   let group = "";
   let origin = parts.slice(0, -1).join("/");
@@ -236,7 +236,7 @@ function toRec(e: LibEntry): Rec {
     ...gi,
     origin,
     ...r,
-    playable: PLAYABLE.test(e.name),
+    playable: kind === "audio" && PLAYABLE.test(e.name),
     hay: ` ${foldName([r.title, r.place, e.name.replace(/[_.]/g, " "), origin, r.date, r.part].join(" "))}`,
   };
 }
@@ -319,10 +319,10 @@ const wKey = (w: { doc: number; ord?: number }) => (w.ord === undefined ? `${w.d
 const EYES = ["en", "hi", "bn", "sa", "other"] as const;
 type EyeKey = (typeof EYES)[number];
 const EYES_KEY = "bio.audioLangs";
-function readEyes(): Record<EyeKey, boolean> {
+function readEyes(suf = K.suf): Record<EyeKey, boolean> {
   const all = { en: true, hi: true, bn: true, sa: true, other: true };
   try {
-    return { ...all, ...JSON.parse(localStorage.getItem(EYES_KEY) || "{}") };
+    return { ...all, ...JSON.parse(localStorage.getItem(EYES_KEY + suf) || "{}") };
   } catch {
     return all;
   }
@@ -353,16 +353,35 @@ interface Filters {
 }
 const NO_FILTERS: Filters = { words: "", inText: false, lang: "", group: "", year: "", month: "", list: "", place: "", withText: false, fav: false, unheard: false };
 // what was shown last (coming back to the section finds it as it was)
-let memo: { filters: Filters; sel: string | null; scroll: number } = { filters: NO_FILTERS, sel: null, scroll: 0 };
-let scanCache: { folder: string; recs: Rec[] } | null = null;
-// how long each recording lasts (rel → seconds), read once per session
-let durCache: Record<string, number> | null = null;
+/** «Audios» or «Vídeos» (Whisper, 21-11-2026): the same section on «Srila Gurudeva mp3» (library 0) or on «Srila
+ *  Gurudeva Videos» (library -1); the videos open with the PC's program (almost all are WMV). What each one remembers
+ *  on this PC has its own keys («.video» after the audio ones). */
+export type MediaKind = "audio" | "video";
+const VIDEO_EXT = /\.(wmv|asf|avi|mp4|m4v|mpg|mpeg|mod|mts|m2ts|3gp|mov|mkv|flv|webm|vob)$/i;
+const KINDS = {
+  audio: { kind: "audio" as MediaKind, lib: AUDIOS_LIB, folders: DEFAULT_FOLDERS, media: MEDIA, suf: "" },
+  video: { kind: "video" as MediaKind, lib: VIDEOS_LIB, folders: ["O:\\Gaudiya Vaisnavas DB\\Biblioteca\\Srila Gurudeva Videos"], media: VIDEO_EXT, suf: ".video" },
+};
+type Store = {
+  // what was shown last (coming back to the section finds it as it was)
+  memo: { filters: Filters; sel: string | null; scroll: number };
+  scan: { folder: string; recs: Rec[] } | null;
+  // how long each recording lasts (rel → seconds), read once per session
+  dur: Record<string, number> | null;
+};
+const STORES: Record<MediaKind, Store> = {
+  audio: { memo: { filters: NO_FILTERS, sel: null, scroll: 0 }, scan: null, dur: null },
+  video: { memo: { filters: NO_FILTERS, sel: null, scroll: 0 }, scan: null, dur: null },
+};
+/** the kind on screen (only one of the two is shown at a time) */
+let K = KINDS.audio;
+let S = STORES.audio;
 /** the order of the list (Whisper, 18-11-2026): by date, the longest first or the shortest first; remembered */
 type SortBy = "date" | "long" | "short";
 const SORT_KEY = "bio.audioSort";
 function readSort(): SortBy {
   try {
-    const v = localStorage.getItem(SORT_KEY);
+    const v = localStorage.getItem(SORT_KEY + K.suf);
     return v === "long" || v === "short" ? v : "date";
   } catch {
     return "date";
@@ -375,6 +394,8 @@ function hm(s: number): string {
 }
 
 interface Props {
+  /** «Audios» or «Vídeos» */
+  kind?: MediaKind;
   t: T;
   lang: Lang;
   docs: DocListItem[];
@@ -412,46 +433,50 @@ function placePhotos(places: Place[]): Map<string, Place> {
 }
 
 /** The recordings of the Audios folder (read once per session; also used by Home, «Today, in other years»). */
-export async function scanAudios(fresh = false): Promise<{ folder: string | null; missing: boolean; recs: Rec[] }> {
-  if (!fresh && scanCache) return { folder: scanCache.folder, missing: false, recs: scanCache.recs };
-  let v = await api.getLibrary(AUDIOS_LIB);
+export async function scanAudios(fresh = false, kind: MediaKind = "audio"): Promise<{ folder: string | null; missing: boolean; recs: Rec[] }> {
+  const st = STORES[kind];
+  const k = KINDS[kind];
+  if (!fresh && st.scan) return { folder: st.scan.folder, missing: false, recs: st.scan.recs };
+  let v = await api.getLibrary(k.lib);
   if (!v.folder) {
-    for (const d of DEFAULT_FOLDERS) {
+    for (const d of k.folders) {
       try {
-        await api.setLibraryFolder(AUDIOS_LIB, d);
-        v = await api.getLibrary(AUDIOS_LIB);
+        await api.setLibraryFolder(k.lib, d);
+        v = await api.getLibrary(k.lib);
         break;
       } catch {
         /* the next one */
       }
     }
   }
-  const recs = v.entries.filter((e) => MEDIA.test(e.name)).map(toRec);
-  if (v.folder) scanCache = { folder: v.folder, recs };
+  const recs = v.entries.filter((e) => k.media.test(e.name)).map((e) => toRec(e, kind));
+  if (v.folder) st.scan = { folder: v.folder, recs };
   return { folder: v.folder, missing: v.missing, recs };
 }
 
 /** whether the eyes of «Audios» show this recording's language (closed eyes hide it everywhere, also on Home) */
-export const langShown = (l: Rec["lang"]) => seen(l, readEyes());
+export const langShown = (l: Rec["lang"]) => seen(l, readEyes(""));
 
-export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText, onEditText, focus, onOpenDoc, onToast, places: tirthas, onPlace }: Props) {
+export function Audios({ kind = "audio", t, lang, docs, readerStyle, fontSize, reload, onNewText, onEditText, focus, onOpenDoc, onToast, places: tirthas, onPlace }: Props) {
+  K = KINDS[kind];
+  S = STORES[kind];
   const picOf = useMemo(() => placePhotos(tirthas ?? []), [tirthas]);
   const A = t.au;
-  const [folder, setFolder] = useState<string | null>(scanCache?.folder ?? null);
-  const [recs, setRecs] = useState<Rec[] | null>(scanCache?.recs ?? null);
+  const [folder, setFolder] = useState<string | null>(S.scan?.folder ?? null);
+  const [recs, setRecs] = useState<Rec[] | null>(S.scan?.recs ?? null);
   const [missing, setMissing] = useState(false);
   const [noFolder, setNoFolder] = useState(false);
-  const [f, setF] = useState<Filters>(memo.filters);
-  const [sel, setSel] = useState<string | null>(focus?.rel ?? memo.sel);
+  const [f, setF] = useState<Filters>(S.memo.filters);
+  const [sel, setSel] = useState<string | null>(focus?.rel ?? S.memo.sel);
   const [limit, setLimit] = useState(200);
   const links = useAudioData();
-  const [durs, setDurs] = useState<Record<string, number> | null>(durCache);
+  const [durs, setDurs] = useState<Record<string, number> | null>(S.dur);
   const [sortBy, setSortBy] = useState<SortBy>(readSort);
   const chooseSort = (s: SortBy) => {
     setSortBy(s);
     setLimit(200);
     try {
-      localStorage.setItem(SORT_KEY, s);
+      localStorage.setItem(SORT_KEY + K.suf, s);
     } catch {
       /* not remembered */
     }
@@ -460,10 +485,10 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
   const listRef = useRef<HTMLDivElement>(null);
 
   const load = async (fresh = false) => {
-    if (!fresh && scanCache) return;
+    if (!fresh && S.scan) return;
     setRecs(null);
     try {
-      const v = await scanAudios(fresh);
+      const v = await scanAudios(fresh, kind);
       setFolder(v.folder);
       setNoFolder(!v.folder);
       setMissing(v.missing);
@@ -478,11 +503,11 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   // the lengths: after the list, in the background (the first time ~20 s for 6.600 files; then from the kept list)
   useEffect(() => {
-    if (!recs?.length || durCache) return;
+    if (!recs?.length || S.dur) return;
     let alive = true;
-    api.audioDurations(AUDIOS_LIB).then(
+    api.audioDurations(K.lib).then(
       (d) => {
-        durCache = d;
+        STORES[kind].dur = d;
         if (alive) setDurs(d);
       },
       () => {},
@@ -503,15 +528,15 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
     if (focus) setSel(focus.rel);
   }, [focus?.n]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
-    memo = { ...memo, filters: f, sel };
+    S.memo = { ...S.memo, filters: f, sel };
   }, [f, sel]);
 
   const chooseFolder = async () => {
     const d = await open({ directory: true, title: A.chooseFolder });
     if (typeof d !== "string") return;
     try {
-      await api.setLibraryFolder(AUDIOS_LIB, d);
-      scanCache = null;
+      await api.setLibraryFolder(K.lib, d);
+      S.scan = null;
       void load(true);
     } catch (e) {
       onToast(String(e));
@@ -571,7 +596,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
     const next = { ...eyes, [k]: !eyes[k] };
     setEyes(next);
     try {
-      localStorage.setItem(EYES_KEY, JSON.stringify(next));
+      localStorage.setItem(EYES_KEY + K.suf, JSON.stringify(next));
     } catch {
       /* not remembered */
     }
@@ -676,13 +701,15 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
   };
   const groupLabel = (r: Pick<Rec, "lang" | "sure">) => A.langs[r.lang] + (r.sure >= 0 ? ` · ${A.sure[r.sure]}` : "");
   const tracks = (rs: Rec[]): Track[] =>
-    rs.filter((r) => r.playable).map((r) => ({ rel: r.rel, url: libUrl(AUDIOS_LIB, r.rel), title: r.title, sub: [r.date && formatLecDate(r.date.length === 7 ? r.date.slice(0, 4) : r.date, lang), r.place].filter(Boolean).join(" · ") }));
+    rs.filter((r) => r.playable).map((r) => ({ rel: r.rel, url: libUrl(K.lib, r.rel), title: r.title, sub: [r.date && formatLecDate(r.date.length === 7 ? r.date.slice(0, 4) : r.date, lang), r.place].filter(Boolean).join(" · ") }));
   const play = (r: Rec, from?: Rec[]) => {
     // (a lecture in parts: «next» is its next part)
     const src = from ?? partsOf.get(r.rel)?.parts ?? list;
     const ts = tracks(src.some((x) => x.rel === r.rel) ? src : [r]);
     player.play(ts, Math.max(0, ts.findIndex((x) => x.rel === r.rel)));
   };
+  /** a video (or a recording the window can't play): with the PC's program */
+  const openPc = (r: Rec) => void api.libraryOpen(K.lib, r.rel).catch((e) => onToast(String(e)));
   const saveLinks = (next: AudioTexts) => {
     setAudioData(next, (e) => onToast(String(e)));
   };
@@ -696,20 +723,20 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
 
   // back from a recording: where the list was
   useEffect(() => {
-    if (!rec && listRef.current) listRef.current.scrollTop = memo.scroll;
+    if (!rec && listRef.current) listRef.current.scrollTop = S.memo.scroll;
   }, [rec]);
 
   const years = [...counts.year].sort((a, b) => (a[0] || "9999").localeCompare(b[0] || "9999"));
   const places = [...counts.place].filter(([p]) => p).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 
   return (
-    <div className="audios" ref={listRef} onScroll={(e) => !rec && (memo.scroll = (e.target as HTMLElement).scrollTop)}>
+    <div className="audios" ref={listRef} onScroll={(e) => !rec && (S.memo.scroll = (e.target as HTMLElement).scrollTop)}>
       <header className="anth-head au-head">
-        <Headphones size={30} />
+        {kind === "video" ? <Film size={30} /> : <Headphones size={30} />}
         <div>
-          <h1>{A.title}</h1>
+          <h1>{kind === "video" ? A.video.title : A.title}</h1>
           <p className="muted">
-            {recs ? A.count(all.length) : A.loading}
+            {recs ? (kind === "video" ? A.video.count(all.length) : A.count(all.length)) : A.loading}
             {recs && all.length < everything.length && <> {A.hiddenCount(everything.length - all.length)}</>}
             {folder && (
               <>
@@ -745,7 +772,7 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
 
       {(noFolder || missing) && (
         <div className="au-empty">
-          <p>{missing && folder ? A.missing(folder) : A.noFolder}</p>
+          <p>{missing && folder ? A.missing(folder) : kind === "video" ? A.video.noFolder : A.noFolder}</p>
           <button className="btn" onClick={chooseFolder}>
             <FolderOpen size={15} /> {A.chooseFolder}
           </button>
@@ -968,9 +995,9 @@ export function Audios({ t, lang, docs, readerStyle, fontSize, reload, onNewText
                     <div key={r.rel} className={`au-row${on ? " on" : ""}${mine?.heard ? " heard" : ""}`}>
                       <button
                         className="au-play"
-                        disabled={!r.playable}
-                        onClick={() => (on ? player.toggle() : play(r))}
-                        title={r.playable ? A.listen : A.cantPlay}
+                        disabled={!r.playable && kind !== "video"}
+                        onClick={() => (!r.playable ? openPc(r) : on ? player.toggle() : play(r))}
+                        title={r.playable ? A.listen : kind === "video" ? A.video.watch : A.cantPlay}
                       >
                         {on && pl.playing ? <Pause size={15} /> : <Play size={15} />}
                       </button>
@@ -1061,7 +1088,7 @@ const FACETS_KEY = "bio.audioFacets";
 const FACETS_DEFAULT: Record<string, boolean> = { lists: true, lang: true, year: false, place: false, grid: true };
 function readFacets(): Record<string, boolean> {
   try {
-    return { ...FACETS_DEFAULT, ...JSON.parse(localStorage.getItem(FACETS_KEY) || "{}") };
+    return { ...FACETS_DEFAULT, ...JSON.parse(localStorage.getItem(FACETS_KEY + K.suf) || "{}") };
   } catch {
     return { ...FACETS_DEFAULT };
   }
@@ -1071,7 +1098,7 @@ function FacetBox({ id, title, active, children }: { id: string; title: string; 
   const toggle = () => {
     setOpen(!open);
     try {
-      localStorage.setItem(FACETS_KEY, JSON.stringify({ ...readFacets(), [id]: !open }));
+      localStorage.setItem(FACETS_KEY + K.suf, JSON.stringify({ ...readFacets(), [id]: !open }));
     } catch {
       /* not remembered */
     }
@@ -1299,7 +1326,7 @@ function AudioPage(p: {
   const setBg = (b: Bg) => {
     setBgState(b);
     try {
-      localStorage.setItem(BG_KEY, b);
+      localStorage.setItem(BG_KEY + K.suf, b);
     } catch {
       /* not remembered */
     }
@@ -1322,7 +1349,7 @@ function AudioPage(p: {
       </button>
       <nav className="au-crumbs">
         <button className="link-btn" onClick={() => p.onCrumb({ ...NO_FILTERS })}>
-          {t.audios}
+          {K.kind === "video" ? t.videos : t.audios}
         </button>
         {" / "}
         <button className="link-btn" onClick={() => p.onCrumb({ ...NO_FILTERS, lang: r.lang, group: r.group })}>
@@ -1401,11 +1428,15 @@ function AudioPage(p: {
               <MapPin size={13} /> {p.pic.name}
             </button>
           )}
-          <button className="link-btn" onClick={() => api.libraryOpen(AUDIOS_LIB, r.rel).catch(() => {})}>
+          <button className="link-btn" onClick={() => api.libraryOpen(K.lib, r.rel).catch(() => {})}>
             <ExternalLink size={13} /> {A.openPc}
           </button>
         </div>
-        {!r.playable ? (
+        {!r.playable && K.kind === "video" ? (
+          <button className="btn au-listen" onClick={() => void api.libraryOpen(K.lib, r.rel).catch(() => {})}>
+            <Film size={16} /> {A.video.watch}
+          </button>
+        ) : !r.playable ? (
           <p className="muted">{A.cantPlay}</p>
         ) : isThis ? (
           <Transport t={t} big />
@@ -1425,7 +1456,7 @@ function AudioPage(p: {
             const me = x.rel === r.rel;
             return (
               <div key={x.rel} className={`au-row small${me ? " on" : ""}`}>
-                <button className="au-play" disabled={!x.playable} onClick={() => (me ? p.onPlay() : p.onOther(x))}>
+                <button className="au-play" disabled={!x.playable && K.kind !== "video"} onClick={() => (!x.playable ? void api.libraryOpen(K.lib, x.rel).catch(() => {}) : me ? p.onPlay() : p.onOther(x))}>
                   <Play size={13} />
                 </button>
                 <button className="au-row-main" onClick={() => !me && p.onOther(x)}>
@@ -1443,10 +1474,10 @@ function AudioPage(p: {
 
       {p.sameDay.length > 0 && (
         <section className="au-sameday">
-          <h3>{A.sameDayAudios}</h3>
+          <h3>{K.kind === "video" ? A.video.sameDay : A.sameDayAudios}</h3>
           {p.sameDay.map((x) => (
             <div key={x.rel} className="au-row small">
-              <button className="au-play" disabled={!x.playable} onClick={() => p.onPlayOther(x)}>
+              <button className="au-play" disabled={!x.playable && K.kind !== "video"} onClick={() => (!x.playable ? void api.libraryOpen(K.lib, x.rel).catch(() => {}) : p.onPlayOther(x))}>
                 <Play size={13} />
               </button>
               <button className="au-row-main" onClick={() => p.onOther(x)}>

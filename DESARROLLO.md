@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **18-11-2026** (versión **0.20.12**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **21-11-2026** (versión **0.20.13**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,18 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.12)
+## 5. Qué hace hoy (v0.20.13)
+
+### Novedades de la 0.20.13 (21-11-2026) — apartado «Vídeos»
+- Botón «Vídeos» (icono Film) al final de la barra: el mismo `Audios.tsx` con `kind="video"` sobre
+  `Biblioteca\Srila Gurudeva Videos` (biblioteca **-1** = `VIDEOS_LIB` en api.ts; `all_folders` solo cuenta ids > 0).
+  `KINDS` / `STORES` (lo recordado de cada uno); `K` / `S` = el que está en pantalla (solo se ve uno a la vez);
+  `scanAudios(fresh, kind)` (Inicio y la ficha siguen con los audios). Claves de localStorage con «.video» detrás.
+  Todo vídeo se abre con el programa del PC (▶ de la fila y «Ver el vídeo»): casi todos son WMV. Comparte `audio_texts` y
+  `audio_lists` (las claves son nombres de archivo). `audio_durations` lee también `.asf`.
+- Idioma de los vídeos: `O:\Whispers\idioma-mp3\video\` (`idioma-video.mjs`, como `idioma.mjs`; `mover-video.mjs` →
+  «Por escucha\<grupo>\…» como los mp3, así la app muestra los idiomas). Corre fuera de la sesión (Programador de tareas).
+
 
 ### Novedades de la 0.20.12 (18-11-2026) — enlaces de la ficha sin texto pegado
 - `splitNotes` (notesLinks.ts): el texto que quede detrás del bloque `<!-- links -->` (también en la línea de un
@@ -2031,6 +2042,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **21-11-2026 — v0.20.13**: apartado «Vídeos» (los vídeos de Śrīla Gurudeva, abiertos con el programa del PC).
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.13
 - **18-11-2026 — v0.20.12**: los enlaces de la ficha ya no se tragan el texto que quede detrás de ellos.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.12
 - **18-11-2026 — v0.20.11**: Audios — listas propias; en la ficha, los audios que nombran a la persona.

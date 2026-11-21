@@ -38,6 +38,7 @@ const es = {
   noResultsHint: "Prueba con menos palabras, activa «Inicio de palabra» o quita filtros.",
   clearFilters: "Quitar filtros",
   audios: "Audios",
+  videos: "Vídeos",
   au: {
     lists: {
       title: "Mis listas",
@@ -60,6 +61,13 @@ const es = {
     sortWait: "Leyendo cuánto dura cada audio…",
     openPlace: "Abrir su lugar en Tīrthas",
     title: "Audios de Śrīla Gurudeva",
+    video: {
+      title: "Vídeos de Śrīla Gurudeva",
+      count: (n: number) => `${n.toLocaleString("es")} vídeos`,
+      noFolder: "Elige la carpeta donde están los vídeos.",
+      watch: "Ver el vídeo (con el programa del PC)",
+      sameDay: "Otros vídeos de ese día",
+    },
     count: (n: number) => `${n.toLocaleString("es")} audios`,
     loading: "Leyendo la carpeta…",
     noFolder: "Elige la carpeta donde están los audios.",
@@ -1371,6 +1379,7 @@ const en: Dict = {
   noResultsHint: "Try fewer words, turn on “Word beginnings”, or remove filters.",
   clearFilters: "Clear filters",
   audios: "Audios",
+  videos: "Videos",
   au: {
     lists: {
       title: "My lists",
@@ -1393,6 +1402,13 @@ const en: Dict = {
     sortWait: "Reading how long each recording lasts…",
     openPlace: "Open its place in Tīrthas",
     title: "Śrīla Gurudeva's audios",
+    video: {
+      title: "Videos of Śrīla Gurudeva",
+      count: (n: number) => `${n.toLocaleString("en")} videos`,
+      noFolder: "Choose the folder where the videos are.",
+      watch: "Watch the video (with the PC's program)",
+      sameDay: "Other videos of that day",
+    },
     count: (n: number) => `${n.toLocaleString("en")} recordings`,
     loading: "Reading the folder…",
     noFolder: "Choose the folder where the recordings are.",

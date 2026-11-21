@@ -823,6 +823,8 @@ export type AudioList = { id: string; name: string; items: string[] };
 export type AudioMark = { t: number; note?: string };
 /** «Audios»: its folder is the library number 0 (`lib/0/…`). */
 export const AUDIOS_LIB = 0;
+/** «Vídeos» (21-11-2026): its folder is the library number -1 (not a record: they are all > 0). */
+export const VIDEOS_LIB = -1;
 
 /** A file of a record's library (a folder on the PC linked to it). */
 export interface LibEntry {

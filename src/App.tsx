@@ -133,7 +133,7 @@ function usePersisted<T>(key: string, fallback: T) {
 }
 
 /** panorama.place: open on the map at that place (`n` tells two requests apart) */
-type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number }; journey?: { id: string; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "vamsa" } | { kind: "anthology" } | { kind: "audios"; focus?: { rel: string; n: number } } | { kind: "tree"; focus?: { id: number; n: number }; pp?: { id: string; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number } | { kind: "library"; id: number } | { kind: "web"; url: string; title: string };
+type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number }; journey?: { id: string; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "vamsa" } | { kind: "anthology" } | { kind: "audios"; focus?: { rel: string; n: number } } | { kind: "videos" } | { kind: "tree"; focus?: { id: number; n: number }; pp?: { id: string; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number } | { kind: "library"; id: number } | { kind: "web"; url: string; title: string };
 
 type Dialog =
   | { kind: "settings"; tab: SettingsTab }
@@ -1456,8 +1456,10 @@ export default function App() {
           )}
           {main.kind === "vamsa" && <Vamsa t={t} lang={lang} persons={persons} onPerson={openPerson} onOpenDoc={openDoc} />}
           {main.kind === "anthology" && <Anthology t={t} lang={lang} docs={docs} onOpenDoc={openDoc} />}
-          {main.kind === "audios" && (
+          {(main.kind === "audios" || main.kind === "videos") && (
             <Audios
+              key={main.kind}
+              kind={main.kind === "videos" ? "video" : "audio"}
               t={t}
               lang={lang}
               docs={docs}
@@ -1470,7 +1472,7 @@ export default function App() {
                 return id;
               }}
               onEditText={editSectionOf}
-              focus={main.focus} onOpenDoc={(d, o) => openDoc(d, o ?? 0)} onToast={showToast}
+              focus={main.kind === "audios" ? main.focus : undefined} onOpenDoc={(d, o) => openDoc(d, o ?? 0)} onToast={showToast}
               places={places}
               onPlace={openPlace}
             />
@@ -1721,7 +1723,7 @@ export default function App() {
             // edited from a record (its single text shown inline): stay there
             if (main.kind === "person") reloadPerson();
             // a transcription written from «Audios»: stay on the recording's page
-            else if (main.kind === "audios") void 0;
+            else if (main.kind === "audios" || main.kind === "videos") void 0;
             else setMain({ kind: "doc", target: { docId, ordinal, terms: target?.terms ?? [], nonce: Date.now() } });
             refreshAll();
           }}
