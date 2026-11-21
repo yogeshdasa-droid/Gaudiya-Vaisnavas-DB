@@ -21,6 +21,10 @@ export function refKey(q: string): string | null {
   if (m) return `bg ${m[1]}`;
   m = /^(?:cc\s*)?(a|adi|m|madhya|an|antya)(?:\s*lila)?\s*(\d+\.\d+(?:-\d+)?)$/.exec(s);
   if (m) return `cc ${LILA[m[1]]} ${m[2]}`;
+  m = /^(?:iso|isopanisad|sri isopanisad)\s*(\d+)$/.exec(s);
+  if (m) return `iso ${m[1]}`;
+  m = /^(?:noi|upadesamrta|sri upadesamrta|nectar of instruction)\s*(\d+)$/.exec(s);
+  if (m) return `noi ${m[1]}`;
   return null;
 }
 /** the key of a section heading («CC Madhya 20.57» → «cc madhya 20.57») */

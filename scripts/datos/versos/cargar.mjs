@@ -27,18 +27,21 @@ const add = (key, title, dir, ref, v) => {
   });
 };
 
-// Śrīmad-Bhāgavatam 1–9 (the RTF/DOC of the library)
+// Śrīmad-Bhāgavatam 1–9 (the RTF/DOC of the library) — only cantos not in vedabase/datos/sb (since 21-11-2026 those
+// come from «Vedabase Original», desde-original.mjs: 60 references more and the Devanāgarī)
+const VB = path.join(ROOT, "vedabase", "datos");
+const vbCantos = new Set(fs.existsSync(path.join(VB, "sb")) ? fs.readdirSync(path.join(VB, "sb")).filter((f) => /^\d+-\d+\.json$/.test(f)).map((f) => f.split("-")[0]) : []);
 for (const f of ["sb-rtf.json", "sb-doc.json"]) {
   const p = path.join(ROOT, "libros", f);
   if (!fs.existsSync(p)) continue;
   for (const v of JSON.parse(fs.readFileSync(p, "utf8"))) {
     const canto = v.ref.split(".")[0];
+    if (vbCantos.has(canto)) continue;
     add(`sb${canto}`, `Śrīmad-Bhāgavatam · ${ORD[canto]} Canto (verses)`, "Versos/Śrīmad-Bhāgavatam", `SB ${v.ref}`, v);
   }
 }
-// vedabase.io: Gītā, Caitanya-caritāmṛta, Bhāgavatam 10–12 (only whole chapters)
-const VB = path.join(ROOT, "vedabase", "datos");
-for (const book of ["bg", "cc", "sb"]) {
+// vedabase.io / Vedabase Original: Gītā, Caitanya-caritāmṛta, Bhāgavatam, Īśopaniṣad, NOI (only whole chapters)
+for (const book of ["bg", "cc", "sb", "iso", "noi"]) {
   const d = path.join(VB, book);
   if (!fs.existsSync(d)) continue;
   const files = fs.readdirSync(d).filter((f) => /^[a-z0-9]+(-\d+)?\.json$/.test(f));
@@ -48,6 +51,8 @@ for (const book of ["bg", "cc", "sb"]) {
     for (const v of c.verses) {
       if (!v.lines?.length) continue;
       if (book === "bg") add("bg", "Bhagavad-gītā As It Is (verses)", "Versos/Bhagavad-gītā", `BG ${c.part}.${v.ref}`, v);
+      else if (book === "iso") add("iso", "Śrī Īśopaniṣad (verses)", "Versos/Śrī Īśopaniṣad", `Īśo ${v.ref}`, v);
+      else if (book === "noi") add("noi", "Śrī Upadeśāmṛta · The Nectar of Instruction (verses)", "Versos/Śrī Upadeśāmṛta", `NOI ${v.ref}`, v);
       else if (book === "cc") add(`cc-${c.part}`, `Śrī Caitanya-caritāmṛta · ${LILA[c.part]}-līlā (verses)`, "Versos/Śrī Caitanya-caritāmṛta", `CC ${LILA[c.part]} ${c.chapter}.${v.ref}`, v);
       else add(`sb${c.part}`, `Śrīmad-Bhāgavatam · ${ORD[c.part]} Canto (verses)`, "Versos/Śrīmad-Bhāgavatam", `SB ${c.part}.${c.chapter}.${v.ref}`, v);
     }

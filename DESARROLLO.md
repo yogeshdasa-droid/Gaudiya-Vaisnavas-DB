@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **21-11-2026** (versión **0.20.18**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **21-11-2026** (versión **0.20.19**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,19 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.18)
+## 5. Qué hace hoy (v0.20.19)
+
+### Novedades de la 0.20.19 (21-11-2026) — más versos (Vedabase Original), biblioteca de Śrīla Prabhupāda
+- **«Versos»**: `refKey` entiende también «Īśo 3» / «isopanisad 3» y «NOI 2» / «upadesamrta 2»; ayuda con esos
+  ejemplos. Datos (sin código de la app): el programa **«Vedabase Original»** (vedabase-studio, Tauri) guarda cada libro
+  como un SQLite dentro de su IndexedDB (`%LOCALAPPDATA%\com.jaganat.vedabase\…\IndexedDB\…blob\1\00\*`: cabecera
+  Chromium `ff 11 02` + snappy → «SQLite format 3»; tablas `meta`, `toc`, `content` con `text` = original +
+  transliteración separadas por línea en blanco y «\» al final de cada línea, `synonyms`, `translation`, `purport`,
+  `blocks` = párrafos HTML; inglés y español). De ahí: Caitanya-caritāmṛta completo, SB 1–10.13 (sustituye a los RTF:
+  60 referencias más), Īśopaniṣad, NOI → `O:\Whispers\versos\vedabase\desde-original.mjs` → `cargar.mjs`.
+  Colección «Versos»: 16 libros, 20.302 versos. SB 10.14–12 siguen bajando de vedabase.io.
+- **Biblioteca de Śrīla Prabhupāda** (#125, carpeta `Biblioteca\Srila Prabhupada` enlazada): «Lectures & Classes»
+  (1.619) y «Conversations & Walks» (1.989) como .md por sección y año (`scripts/datos/prabhupada/charlas-md.mjs`).
 
 ### Novedades de la 0.20.18 (21-11-2026) — buscador de versos, diacríticos en toda la biblioteca
 - **«Versos»** (`Verses.tsx`, botón en la zona Biblioteca): por referencia (`refKey`: «sb 11.3.21», «bg2.13»,
@@ -2100,6 +2112,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **21-11-2026 — v0.20.19**: «Versos» entiende «Īśo N» y «NOI N»; versos del Caitanya-caritāmṛta, SB 1–10.13, Īśopaniṣad y NOI desde «Vedabase Original»; charlas y conversaciones de Śrīla Prabhupāda en su biblioteca.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.19
 - **21-11-2026 — v0.20.18**: buscador de versos (SB 1–9 + lo que baje de vedabase), versos centrados, Reemplazar protege rutas y versos.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.18
 - **21-11-2026 — v0.20.17**: filtros de la búsqueda agrupados («Charlas escritas» con sus años), Ajustes en bloques, nombres cortos en las favoritas.
