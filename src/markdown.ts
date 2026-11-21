@@ -9,11 +9,31 @@ const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 /**
+ * A verse (21-11-2026, Whisper: «que se vea como la segunda foto»): in its lines, centred, with its reference.
+ *   ::: verse SB 11.3.21
+ *   tasmād guruṁ prapadyeta
+ *   jijñāsuḥ śreya uttamam
+ *   :::
+ */
+export const VERSE_BLOCK = /^:::[ \t]*verse[ \t]*([^\n]*)\n([\s\S]*?)\n:::[ \t]*$/gm;
+export function verseHtml(ref: string, body: string): string {
+  const lines = body
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .map((l) => `<span class="verse-line">${esc(l)}</span>`)
+    .join("");
+  return `<div class="verse">${lines}${ref.trim() ? `<span class="verse-ref">${esc(ref.trim())}</span>` : ""}</div>`;
+}
+
+/**
  * Obsidian-flavoured markdown → sanitized HTML.
  * Images and wikilinks become data-* placeholders the reader resolves later.
  */
 export function renderMarkdown(src: string): string {
   let s = src
+    // verses: their own block (an HTML block for marked: blank lines around)
+    .replace(VERSE_BLOCK, (_m, ref: string, body: string) => `\n\n${verseHtml(ref, body)}\n\n`)
     // VedaBase exports indent lines with spaces: don't turn them into code blocks.
     .replace(/^[ \t]{4,}(?=\S)/gm, "")
     // Obsidian block ids "text ^0f7dd6"
@@ -81,8 +101,19 @@ export function renderSource(src: string): string {
     .replace(/^\s+|\s+$/g, "")
     .split("\n");
   let fence = false;
+  // a verse block: its lines centred (the «::: verse» lines faint), like in the reading view
+  let verse = false;
   const out = lines.map((raw) => {
     const line = esc(raw);
+    if (!fence && /^:::[ \t]*verse\b/.test(raw)) {
+      verse = true;
+      return `<div class="ln verse-mark">${line}</div>`;
+    }
+    if (verse && /^:::[ \t]*$/.test(raw)) {
+      verse = false;
+      return `<div class="ln verse-mark">${line}</div>`;
+    }
+    if (verse) return `<div class="ln verse-line">${line || " "}</div>`;
     if (/^\s*(```|~~~)/.test(raw)) {
       fence = !fence;
       return `<div class="ln fence">${line}</div>`;

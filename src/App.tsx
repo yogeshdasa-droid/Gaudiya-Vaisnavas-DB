@@ -103,6 +103,7 @@ import { AudioBar, PersonLibrary } from "./components/PersonLibrary";
 import { WebPage } from "./components/WebPage";
 import { Rail, railLayout, RailLayout } from "./components/Rail";
 import { AlsoIn, HariKatha, KathaTab, KathaTabs } from "./components/HariKatha";
+import { Verses } from "./components/Verses";
 import { showInVamsa, Vamsa } from "./components/Vamsa";
 import { Anthology } from "./components/Anthology";
 import { Audios, AudiosBar } from "./components/Audios";
@@ -134,7 +135,7 @@ function usePersisted<T>(key: string, fallback: T) {
 }
 
 /** panorama.place: open on the map at that place (`n` tells two requests apart) */
-type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number }; journey?: { id: string; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "vamsa" } | { kind: "anthology" } | { kind: "katha"; q?: string; n?: number } | { kind: "audios"; focus?: { rel: string; n: number } } | { kind: "videos"; focus?: { rel: string; n: number } } | { kind: "tree"; focus?: { id: number; n: number }; pp?: { id: string; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number } | { kind: "library"; id: number } | { kind: "web"; url: string; title: string };
+type Main = { kind: "home" } | { kind: "timeline" } | { kind: "lineage"; focus?: { id: number; n: number } } | { kind: "panorama"; place?: { id: number; n: number }; journey?: { id: string; n: number } } | { kind: "place"; id: number } | { kind: "calendar" } | { kind: "vamsa" } | { kind: "anthology" } | { kind: "katha"; q?: string; n?: number } | { kind: "verses" } | { kind: "audios"; focus?: { rel: string; n: number } } | { kind: "videos"; focus?: { rel: string; n: number } } | { kind: "tree"; focus?: { id: number; n: number }; pp?: { id: string; n: number } } | { kind: "doc"; target: ReaderTarget } | { kind: "person"; id: number } | { kind: "library"; id: number } | { kind: "web"; url: string; title: string };
 
 type Dialog =
   | { kind: "settings"; tab: SettingsTab }
@@ -1515,6 +1516,7 @@ export default function App() {
                     </div>
             </div>
           )}
+          {main.kind === "verses" && <Verses t={t} docs={docs} onOpenDoc={(d, o) => openDoc(d, o)} />}
           {main.kind === "calendar" && <Calendar t={t} lang={lang} reload={dataTick} onPerson={openPerson} page />}
           {main.kind === "tree" && <TreeView t={t} lang={lang} persons={persons} onPerson={openPerson} marks={marks} onMark={cycleMark} focus={main.focus} ppFocus={main.pp} />}
         </ViewGuard>

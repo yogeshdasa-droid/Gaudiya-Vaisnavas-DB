@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Archive, BarChart3, BookCopy, CalendarDays, ChevronDown, Clock3, Film, Flower2, GitFork, Headphones, History, Home, MapPin, Mic, Network, Search, Settings as Gear, Star, Trees, Users } from "lucide-react";
+import { Archive, BarChart3, BookCopy, CalendarDays, ChevronDown, Clock3, Film, Flower2, GitFork, Headphones, History, Home, MapPin, Mic, Network, Quote, Search, Settings as Gear, Star, Trees, Users } from "lucide-react";
 import { T } from "../i18n";
 import type { SideTab } from "./Sidebar";
 import { APP_NAME, LogoMark } from "./Logo";
 
-export type RailView = "home" | "calendar" | "tree" | "timeline" | "lineage" | "panorama" | "vamsa" | "anthology" | "katha" | "audios" | "videos";
+export type RailView = "home" | "calendar" | "tree" | "timeline" | "lineage" | "panorama" | "vamsa" | "anthology" | "katha" | "audios" | "videos" | "verses";
 
 interface Props {
   t: T;
@@ -30,13 +30,13 @@ export type RailPlace = RailZone | "hidden";
 export type RailLayout = { order: string[]; place: Record<string, RailPlace> };
 export const RAIL_DEFAULT: RailLayout = {
   // Linaje before the Paramparā Tree: it is the one used most (Whisper); the History is never used → hidden
-  order: ["persons", "lineage", "tree", "vamsa", "places", "deities", "calendar", "timeline", "panorama", "katha", "lectures", "anthology", "audios", "videos", "library", "bookmarks", "history"],
+  order: ["persons", "lineage", "tree", "vamsa", "places", "deities", "calendar", "timeline", "panorama", "katha", "lectures", "anthology", "audios", "videos", "library", "verses", "bookmarks", "history"],
   place: {
     persons: "people", lineage: "people", tree: "people", vamsa: "people",
     places: "dhama", deities: "dhama",
     calendar: "time", timeline: "time", panorama: "time",
     katha: "katha", lectures: "katha", anthology: "katha", audios: "katha", videos: "katha",
-    library: "library", bookmarks: "library", history: "hidden",
+    library: "library", verses: "library", bookmarks: "library", history: "hidden",
   },
 };
 /** a saved layout with the buttons added later in their default place (and unknown ones dropped) */
@@ -76,6 +76,7 @@ export function railEntries(t: T): Record<string, Entry> {
     audios: { icon: Headphones, label: t.audios, view: "audios" },
     videos: { icon: Film, label: t.videos, view: "videos" },
     library: { icon: Archive, label: t.library, side: "library" },
+    verses: { icon: Quote, label: t.verses, view: "verses" },
     bookmarks: { icon: Star, label: t.bookmarks, side: "bookmarks" },
     history: { icon: History, label: t.history, side: "history" },
   };

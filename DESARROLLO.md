@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **21-11-2026** (versión **0.20.17**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **21-11-2026** (versión **0.20.18**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,22 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.17)
+## 5. Qué hace hoy (v0.20.18)
+
+### Novedades de la 0.20.18 (21-11-2026) — buscador de versos, diacríticos en toda la biblioteca
+- **«Versos»** (`Verses.tsx`, botón en la zona Biblioteca): por referencia (`refKey`: «sb 11.3.21», «bg2.13»,
+  «Cc. M 20.57») o por palabras del verso / traducción (`searchIn(q, "Versos")`, la búsqueda normal pliega los
+  diacríticos). Los versos están en la colección **«Versos»** (un libro por canto / līlā / la Gītā, una sección por
+  verso, encabezado «SB 4.1.1»), cargados con `scripts/datos/versos/cargar.mjs` (put_book: repetir = reemplaza).
+  Fuentes en `O:Whispersersos`: SB 1–9 de los RTF/DOC de «BibliotecaSrila Prabhupada» (`sb-rtf.mjs`, Balaram
+  → IAST con `rtf.mjs`; 3 y 9 pasados a RTF con Word) y `vedabase/bajar.mjs` (vedabase.io, 1 petición/10 s:
+  Gītā, Caitanya-caritāmṛta, SB 10–12; tarea «Versos vedabase»).
+- **Bloque de verso** en Markdown: `::: verse REF` … líneas … `:::` → centrado, en cursiva, en sus líneas, con la
+  referencia (`VERSE_BLOCK` / `verseHtml` en markdown.ts; también en la vista Editor).
+- **Reemplazar** (replace.rs) ya no toca: las rutas de archivos ni los destinos de enlaces (`url_spans`: `<…>`,
+  `](…)`, «O:…», file:) y, con una lista de palabras, las líneas de verso sin diacríticos (`verse_spans`: cursiva o
+  «> », ≥4 palabras, <10 % inglés). Con eso se pusieron los diacríticos a toda la biblioteca de Whisper (~950.000
+  palabras; `scripts/datos/diacriticos/lista.mjs`).
 
 ### Novedades de la 0.20.17 (21-11-2026) — filtros de la búsqueda, Ajustes, nombres cortos
 - Búsqueda: los ~30 botones «Lectures Gurudeva/AAAA» son uno, «Charlas escritas» (`groupFacets` en Results.tsx);
@@ -2085,6 +2100,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **21-11-2026 — v0.20.18**: buscador de versos (SB 1–9 + lo que baje de vedabase), versos centrados, Reemplazar protege rutas y versos.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.18
 - **21-11-2026 — v0.20.17**: filtros de la búsqueda agrupados («Charlas escritas» con sus años), Ajustes en bloques, nombres cortos en las favoritas.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.17
 - **21-11-2026 — v0.20.16**: la app ordenada — barra en 5 zonas, botones de la ficha en menús, Hari-kathā con una búsqueda, Inicio con las zonas.

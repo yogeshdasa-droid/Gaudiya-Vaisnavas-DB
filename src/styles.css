@@ -10865,3 +10865,65 @@ button.au-chip:hover {
   margin: 8px 10px;
   border-top: 1px solid var(--border);
 }
+
+/* ================================================================ verses (21-11-2026)
+   «::: verse SB 11.3.21 … :::»: in its lines, centred and in italics, the reference under it */
+.verse {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1.2em auto;
+  padding: 0.6em 1em;
+  text-align: center;
+  font-style: italic;
+  font-size: 1.08em;
+  line-height: 1.75;
+}
+.verse .verse-line {
+  display: block;
+}
+.verse .verse-ref {
+  display: block;
+  margin-top: 0.45em;
+  font-style: normal;
+  font-size: 0.78em;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+/* the «Editor» view (Markdown visible): the same lines centred, the marks of the block faint */
+.ln.verse-line {
+  text-align: center;
+  font-style: italic;
+}
+.ln.verse-mark {
+  text-align: center;
+  opacity: 0.35;
+  font-size: 0.85em;
+}
+
+/* the «Versos» page (21-11-2026) */
+.verses-page {
+  max-width: 820px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 26px 28px 60px;
+  overflow: auto;
+}
+.verses-help {
+  margin-top: 16px;
+}
+.verse-card {
+  margin-top: 18px;
+  padding: 6px 18px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.verse-card .reader-body {
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+.verse-card .reader-body em:only-child {
+  font-size: 0.85em;
+}

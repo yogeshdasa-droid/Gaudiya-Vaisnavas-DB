@@ -77,8 +77,46 @@ fn at_word_edges(text: &str, s: usize, e: usize) -> bool {
 /// Web addresses: their words are left alone by the diacritics helper.
 fn url_spans(text: &str) -> Vec<(usize, usize)> {
     static RE: OnceLock<Regex> = OnceLock::new();
-    let re = RE.get_or_init(|| Regex::new(r"(?i)\b(?:https?://|www\.)\S+").unwrap());
+    // web addresses, and (21-11-2026, before putting the diacritics in the whole library) the targets of the links to
+    // files of the PC: «[name](<O:\…\Srila Gurudeva mp3\…>)», «<…>», «](…)» and a path alone to the end of its line —
+    // «Srila» inside a path must stay «Srila» or the link no longer opens
+    let re = RE.get_or_init(|| {
+        Regex::new(r"(?i)\b(?:https?://|www\.)\S+|<[^<>\n]+>|\]\([^)\n]+\)|(?:\bfile:|\b[a-z]:[\\/]|\\\\)[^\n<>]*").unwrap()
+    });
     re.find_iter(text).map(|m| (m.start(), m.end())).collect()
+}
+
+/// Lines of a Sanskrit or Bengali verse written without diacritics (21-11-2026): a line in italics («*yatra ragan
+/// avaptatva…*») or quoted («> sri-krsna-caitanya prabhu nityananda»), of four words or more, almost without English
+/// words. The word list must not touch them: «yatra» there is «where», not «yātrā», and a verse with half its words
+/// marked is worse than one without marks. Translations and prose (full of «the», «and»…) are changed.
+fn verse_spans(text: &str) -> Vec<(usize, usize)> {
+    const EN: &[&str] = &[
+        "the", "and", "of", "to", "in", "is", "was", "are", "that", "this", "with", "for", "he", "she", "it", "his",
+        "her", "they", "you", "we", "i", "my", "be", "not", "by", "as", "on", "at", "from", "who", "which", "will",
+        "a", "an", "or", "but", "so", "if", "then", "there", "their", "him", "me", "our", "all", "one", "what",
+        "has", "have", "had", "were", "been", "when", "how", "can", "do", "does", "no", "o", "lord", "your",
+    ];
+    let mut out = Vec::new();
+    let mut start = 0;
+    for line in text.split_inclusive('\n') {
+        let end = start + line.len();
+        let t = line.trim();
+        let marked = t.starts_with('>') || (t.len() > 2 && (t.starts_with('*') || t.starts_with('_')) && (t.ends_with('*') || t.ends_with('_')));
+        if marked {
+            let words: Vec<String> = t
+                .split(|c: char| !c.is_alphanumeric() && c != '\'' && c != '’')
+                .filter(|w| !w.is_empty())
+                .map(str::to_lowercase)
+                .collect();
+            let english = words.iter().filter(|w| EN.contains(&w.as_str())).count();
+            if words.len() >= 4 && english * 10 < words.len() {
+                out.push((start, end));
+            }
+        }
+        start = end;
+    }
+    out
 }
 
 impl Replacer {
@@ -136,7 +174,8 @@ impl Replacer {
                 if map.is_empty() {
                     return;
                 }
-                let urls = url_spans(text);
+                let mut urls = url_spans(text);
+                urls.extend(verse_spans(text));
                 for (s, end) in word_spans(text) {
                     let w = &text[s..end];
                     let Some(r) = map.get(&w.to_lowercase()) else { continue };
@@ -540,6 +579,20 @@ mod tests {
         let words = Spec { words: vec![("krishna".into(), "kṛṣṇa".into())], ..spec("", "", false, false) };
         let r = Replacer::new(&words).unwrap();
         assert_eq!(r.apply("Krishna's www.krishna.com KRISHNA").unwrap().0, "Kṛṣṇa's www.krishna.com KṚṢṆA");
+        // a verse without marks stays as it is; its translation and the prose change
+        let yatra = Spec { words: vec![("yatra".into(), "yātrā".into()), ("krsna".into(), "kṛṣṇa".into())], ..spec("", "", false, false) };
+        let r = Replacer::new(&yatra).unwrap();
+        assert_eq!(
+            r.apply("*yatra ragan avaptatva pravrttir upajayate*\n> Where Krsna is, there is the Ratha-yatra of all\nKrsna's Ratha-yatra").unwrap().0,
+            "*yatra ragan avaptatva pravrttir upajayate*\n> Where Kṛṣṇa is, there is the Ratha-yātrā of all\nKṛṣṇa's Ratha-yātrā"
+        );
+        // the links to files keep their path
+        let srila = Spec { words: vec![("srila".into(), "śrīla".into())], ..spec("", "", false, false) };
+        let r = Replacer::new(&srila).unwrap();
+        assert_eq!(
+            r.apply("Srila: [Srila talk](<O:\\Lib\\Srila Gurudeva mp3\\a.mp3>) <O:\\Srila x>\nO:\\Lib\\Srila y.pdf\nSrila").unwrap().0,
+            "Śrīla: [Śrīla talk](<O:\\Lib\\Srila Gurudeva mp3\\a.mp3>) <O:\\Srila x>\nO:\\Lib\\Srila y.pdf\nŚrīla"
+        );
     }
 }
 
