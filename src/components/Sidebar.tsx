@@ -684,7 +684,8 @@ function PersonList({
       }
     } else {
       const q = persons.find((x) => x.id === reveal.id);
-      toggleGroup(q && isPoet(q) ? "poets" : "other", false);
+      // (the records of the Bhāgavatam have their own group — the same choice as the lists above)
+      toggleGroup(q && isPoet(q) ? "poets" : q && isBhagavatam(q) ? "sb" : "other", false);
     }
     scrollToRow(`[data-ctx="person"][data-id="${reveal.id}"]`);
   }, [reveal, parentOf]); // eslint-disable-line react-hooks/exhaustive-deps

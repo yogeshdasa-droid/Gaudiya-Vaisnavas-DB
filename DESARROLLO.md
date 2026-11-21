@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **21-11-2026** (versión **0.20.14**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **21-11-2026** (versión **0.20.15**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,15 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.14)
+## 5. Qué hace hoy (v0.20.15)
+
+### Novedades de la 0.20.15 (21-11-2026) — favoritas en 8 columnas, ◎ en las fichas del Bhāgavatam
+- Inicio › «Mis fichas favoritas»: 8 por fila (`.fav-grid` minmax 84px, nombre 11.5px y hasta 3 líneas).
+- ◎ «Mostrar en el árbol» de una ficha del Bhāgavatam abría «Otros vaiṣṇavas» (donde no está): ahora abre su grupo
+  «Bhāgavata-maṇḍala» (`sb`, Sidebar.tsx, el efecto de `reveal`).
+- Datos (en la BD de Whisper): tandas 21 y 22 del Bhāgavatam (`scripts/datos/sb/fichas21.mjs` sabios #2400–#2409,
+  `fichas22.mjs` demonios de Vraja #2410–#2421); `vamsa-records.json` con 83 nombres. `sb/vkeys.mjs <nombre>` da
+  las claves de Vaṁśa de un nombre.
 
 ### Novedades de la 0.20.14 (21-11-2026) — arrastrar para ordenar, arreglado
 - Las favoritas de Inicio y los textos de la ficha no se movían al arrastrarlos: en Windows Tauri se queda el
@@ -2049,6 +2057,8 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **21-11-2026 — v0.20.15**: favoritas en 8 columnas; ◎ en las fichas del Bhāgavatam; «Ver en Vaṁśa» de las 22 fichas nuevas.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.15
 - **21-11-2026 — v0.20.14**: arrastrar para ordenar las favoritas de Inicio y los textos de la ficha (no funcionaba).
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.14
 - **21-11-2026 — v0.20.13**: apartado «Vídeos» (los vídeos de Śrīla Gurudeva, abiertos con el programa del PC).
