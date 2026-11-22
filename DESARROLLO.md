@@ -189,7 +189,14 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.23)
+## 5. Qué hace hoy (v0.20.24)
+
+### Novedades de la 0.20.24 (22-11-2026) — el índice de versos se mantiene al día
+- `verse_index::status` devuelve `{verses, stale, age_hours}`: la firma de la biblioteca (nº de textos, tamaño, última modificación)
+  se guarda al construir (meta `verse_index_sig`, `verse_index_at`). `Verses.tsx`: sin índice → lo construye; caducado hace ≥ 24 h →
+  lo rehace solo; caducado hace menos → aviso con «Ponerlo al día». Nota: `set_section_text` no toca `docs.modified`.
+- Filtro de listas de términos (≥ 5 trozos con coma, 80 % de 1–2 palabras); las canciones con comas se quedan.
+- 63 pruebas (`verse_index`: 6).
 
 ### Novedades de la 0.20.23 (22-11-2026) — «Versos» como buscador de versos de TODA la biblioteca
 - **Índice de versos** (`verse_index.rs`, DERIVADO: tablas `verse_index` y `verse_index_places`, se borran y se rehacen; meta
@@ -2184,6 +2191,7 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **22-11-2026 — v0.20.24**: el índice de versos se mantiene al día (se construye solo, se rehace si lleva > 24 h caducado, aviso «Ponerlo al día»); filtro de listas de términos. 63 pruebas.
 - **22-11-2026 — v0.20.23**: índice de versos de toda la biblioteca (`verse_index.rs`) y tarjetas por verso en «Versos»; «También en la biblioteca»; paso 4B de los versos (scripts). 61 pruebas.
 - **22-11-2026 — v0.20.21**: «Convertor PDF» (Ajustes › Herramientas): PDF Balaram → IAST, añadir a la biblioteca o exportar .txt; arreglos de la 0.20.20 (búsqueda de pdftotext con respaldo, arrastre sin abrir «Importar», decodificación UTF-8/Latin-1).
 - **22-11-2026 — v0.20.20**: primera versión del Convertor PDF.

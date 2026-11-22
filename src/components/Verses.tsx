@@ -47,16 +47,27 @@ export function Verses({ t, docs, onOpenDoc }: { t: T; docs: DocListItem[]; onOp
   const [cards, setCards] = useState<VerseHit[]>([]);
   const [indexing, setIndexing] = useState(false);
   const [indexN, setIndexN] = useState<number | null>(null);
+  // the library changed after the index was built (a text was added or edited)
+  const [stale, setStale] = useState(false);
   const buildIndex = async () => {
     setIndexing(true);
     try {
       setIndexN((await api.buildVerseIndex()).verses);
+      setStale(false);
     } finally {
       setIndexing(false);
     }
   };
   useEffect(() => {
-    api.verseIndexStatus().then((n) => (n > 0 ? setIndexN(n) : buildIndex())).catch(() => setIndexN(0));
+    // not built → build it; out of date for more than a day → build it again by itself; out of date since a little → say so
+    api
+      .verseIndexStatus()
+      .then((st) => {
+        if (st.verses > 0) setIndexN(st.verses);
+        if (st.verses === 0 || (st.stale && st.age_hours >= 24)) buildIndex();
+        else setStale(st.stale);
+      })
+      .catch(() => setIndexN(0));
   }, []);
   const input = useRef<HTMLInputElement>(null);
   const books = useMemo(() => docs.filter((d) => d.dir.split("/")[0] === VERSES_DIR), [docs]);
@@ -182,7 +193,10 @@ export function Verses({ t, docs, onOpenDoc }: { t: T; docs: DocListItem[]; onOp
       ))}
       {!!indexN && !indexing && (
         <p className="muted small verses-reindex">
-          {t.versesIndexed(indexN)} <button className="link-btn small" onClick={buildIndex}>{t.versesReindex}</button>
+          {stale ? t.versesStale : t.versesIndexed(indexN)}{" "}
+          <button className="link-btn small" onClick={buildIndex}>
+            {stale ? t.versesUpdate : t.versesReindex}
+          </button>
         </p>
       )}
       {wide.length > 0 && (

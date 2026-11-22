@@ -153,6 +153,21 @@ impl Detector {
         if t.len() < 8 || t.len() > 90 {
             return None;
         }
+        // a list of names or terms («brahma-gāyatrī, guru-mantra, guru-gāyatrī, gaura-mantra, …»): five or more comma pieces,
+        // 80 % of them of one or two words. Songs with commas («śrī rūpa mañjarī, saṅge jābo kabe, …») have longer pieces and stay.
+        {
+            let mut pieces: Vec<usize> = vec![0];
+            for w in &t {
+                *pieces.last_mut().unwrap() += 1;
+                if w.ends_with(',') {
+                    pieces.push(0);
+                }
+            }
+            pieces.retain(|n| *n > 0);
+            if pieces.len() >= 5 && pieces.iter().filter(|n| **n <= 2).count() * 5 >= pieces.len() * 4 {
+                return None;
+            }
+        }
         let upper = t.iter().filter(|w| w.chars().next().map_or(false, is_capital)).count();
         if upper * 5 > t.len() {
             return None;
@@ -186,6 +201,7 @@ const WINDOW: usize = 36;
 /// Rebuild the whole index. Returns how many distinct verses there are.
 pub fn build(conn: &mut Connection) -> rusqlite::Result<BuildInfo> {
     let det = Detector::new();
+    let sig = signature(conn); // before reading: a change while it runs makes it stale again
     let mut by_f: HashMap<String, Entry> = HashMap::new();
 
     // 1. the verses of «Versos» (Vedabase): seeds, with their reference
@@ -338,6 +354,8 @@ pub fn build(conn: &mut Connection) -> rusqlite::Result<BuildInfo> {
         }
     }
     crate::db::set_meta(&tx, "verse_index", &format!("{}", outs.len()))?;
+    crate::db::set_meta(&tx, "verse_index_sig", &sig)?;
+    crate::db::set_meta(&tx, "verse_index_at", &now_secs().to_string())?;
     tx.commit()?;
     Ok(BuildInfo { verses: outs.len(), in_several_texts: several })
 }
@@ -361,15 +379,39 @@ pub struct VerseHit {
     pub places: Vec<VersePlace>,
 }
 
-/// has the index been built?
-pub fn status(conn: &Connection) -> i64 {
-    crate::db::get_meta(conn, "verse_index").ok().flatten().and_then(|v| v.parse().ok()).unwrap_or(0)
+/// what the library looks like now (texts, sizes, last change): the index is out of date when it differs from the one it was built with
+fn signature(conn: &Connection) -> String {
+    conn.query_row("SELECT count(*), COALESCE(sum(size), 0), COALESCE(max(modified), '') FROM docs WHERE deleted IS NULL", [], |r| {
+        Ok(format!("{}|{}|{}", r.get::<_, i64>(0)?, r.get::<_, i64>(1)?, r.get::<_, String>(2)?))
+    })
+    .unwrap_or_default()
+}
+
+fn now_secs() -> i64 {
+    std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs() as i64).unwrap_or(0)
+}
+
+#[derive(Serialize)]
+pub struct Status {
+    /// verses in the index (0 = not built yet)
+    pub verses: i64,
+    /// the library changed after the index was built
+    pub stale: bool,
+    /// hours since it was built
+    pub age_hours: i64,
+}
+
+pub fn status(conn: &Connection) -> Status {
+    let verses = crate::db::get_meta(conn, "verse_index").ok().flatten().and_then(|v| v.parse().ok()).unwrap_or(0);
+    let sig = crate::db::get_meta(conn, "verse_index_sig").ok().flatten();
+    let at: i64 = crate::db::get_meta(conn, "verse_index_at").ok().flatten().and_then(|v| v.parse().ok()).unwrap_or(0);
+    Status { verses, stale: sig.as_deref().map_or(false, |b| b != signature(conn).as_str()), age_hours: if at > 0 { (now_secs() - at).max(0) / 3600 } else { 0 } }
 }
 
 /// verses that contain these words (with or without diacritics, a piece of a verse is enough), most widespread first
 pub fn search(conn: &Connection, query: &str, limit: usize) -> rusqlite::Result<Vec<VerseHit>> {
     let q = letters(query);
-    if q.len() < 6 || status(conn) == 0 {
+    if q.len() < 6 || status(conn).verses == 0 {
         return Ok(vec![]);
     }
     let mut st = conn.prepare("SELECT id, best, reference, docs, variants FROM verse_index WHERE keys LIKE ?1 ORDER BY docs DESC, id LIMIT ?2")?;
@@ -407,6 +449,28 @@ mod tests {
         assert_eq!(runs.len(), 1);
         let v = d.refine(&runs[0]).expect("a verse");
         assert!(v.starts_with("bhaktyā vihīnā") && v.ends_with("vṛnde"), "{v}");
+    }
+
+    #[test]
+    fn ignores_lists_of_terms_but_keeps_songs() {
+        let d = Detector::new();
+        assert!(d.refine("brahma-gāyatrī, guru-mantra, guru-gāyatrī, gaura-mantra, gaura-gāyatrī, kṛṣṇamantra, kāma-gāyatrī, pañca-tattva,").is_none());
+        assert!(d.refine("śrī rūpa mañjarī, saṅge jābo kabe, rasa-sevā-śikṣā-tare tad-anugā ha’ye, rādhā-kuṇḍa-taṭe, rahibo harṣitāntare").is_some());
+        // a song with commas keeps its longer pieces
+        assert!(d.refine("kā̃hā ĵāū̃ kā̃hā gele kṛṣṇa pāū̃, kṛṣṇa binā prāṇa mora ĵāya, hā hā prabhu śrī-caitanya, kṛpā kara mora ĵāya").is_some());
+    }
+
+    #[test]
+    fn index_knows_when_the_library_changed() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        crate::db::init(&conn).unwrap();
+        assert_eq!(status(&conn).verses, 0);
+        build(&mut conn).unwrap();
+        assert!(!status(&conn).stale);
+        conn.execute("INSERT INTO docs(id, collection, dir, title, stem, kind, size) VALUES (9, 'Libros', 'Libros', 'Nuevo', 'nuevo', 'md', 5)", []).unwrap();
+        assert!(status(&conn).stale);
+        build(&mut conn).unwrap();
+        assert!(!status(&conn).stale);
     }
 
     #[test]

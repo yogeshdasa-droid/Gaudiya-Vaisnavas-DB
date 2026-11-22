@@ -644,7 +644,7 @@ export const api = {
   libraryIds: () => invoke<number[]>("library_ids"),
   /** how long each recording of a library lasts (seconds; 0 = not known), read once and kept next to the database */
   buildVerseIndex: () => invoke<{ verses: number; in_several_texts: number }>("build_verse_index"),
-  verseIndexStatus: () => invoke<number>("verse_index_status"),
+  verseIndexStatus: () => invoke<{ verses: number; stale: boolean; age_hours: number }>("verse_index_status"),
   searchVerseIndex: (query: string, limit = 40) => invoke<VerseHit[]>("search_verse_index", { query, limit }),
   audioDurations: (id: number) => invoke<Record<string, number>>("audio_durations", { id }),
   libraryIndex: (id: number) => invoke<{ files: number; changed: number }>("library_index", { id }),

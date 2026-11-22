@@ -497,7 +497,7 @@ async fn build_verse_index(state: State<'_, AppState>) -> CmdResult<verse_index:
 
 /// how many verses the index has (0 = not built yet)
 #[tauri::command]
-async fn verse_index_status(state: State<'_, AppState>) -> CmdResult<i64> {
+async fn verse_index_status(state: State<'_, AppState>) -> CmdResult<verse_index::Status> {
     Ok(verse_index::status(&state.conn.lock().unwrap()))
 }
 
