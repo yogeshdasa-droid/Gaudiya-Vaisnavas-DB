@@ -1,10 +1,11 @@
 import { ReactNode, useEffect, useState } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { ArchiveRestore, ArrowDown, ArrowUp, CalendarDays, Database, FileDown, DatabaseBackup, FolderInput, FolderOpen, HelpCircle, RefreshCw, Replace, Settings as Gear, Sparkles, Trash2, Undo2, Palette, PanelLeft } from "lucide-react";
+import { ArchiveRestore, ArrowDown, ArrowUp, CalendarDays, Database, FileDown, DatabaseBackup, FolderInput, FolderOpen, HelpCircle, Languages, RefreshCw, Replace, Settings as Gear, Sparkles, Trash2, Undo2, Palette, PanelLeft } from "lucide-react";
 import { api, BackupCopy, BackupSettings, CalendarInfo, DefaultSource, PersonListItem, Status, Trashed } from "../api";
 import { ReviewPane } from "./Review";
 import { FillPane } from "./Fill";
 import { ClearVersionsSection, JoinSection, MeaningPane, ReplacePane, SlimSection } from "./Tools";
+import { ConvertorPane } from "./Convertor";
 import { checkUpdate, installUpdate } from "../update";
 import { getVersion } from "@tauri-apps/api/app";
 import { Lang, T } from "../i18n";
@@ -16,7 +17,7 @@ import { RAIL_DEFAULT, RAIL_ZONES, railEntries, RailLayout, RailPlace } from "./
 export type TitleFont = "normal" | "script" | "classic";
 
 export type Theme = "system" | "light" | "dark";
-export type SettingsTab = "general" | "bar" | "calendar" | "data" | "backups" | "review" | "fill" | "replace" | "meaning" | "sources" | "trash" | "help";
+export type SettingsTab = "general" | "bar" | "calendar" | "data" | "backups" | "review" | "fill" | "replace" | "meaning" | "convertor" | "sources" | "trash" | "help";
 
 const when = (secs: number, lang: Lang) => new Date(secs * 1000).toLocaleString(lang === "es" ? "es-ES" : "en-GB", { dateStyle: "medium", timeStyle: "short" });
 
@@ -420,6 +421,7 @@ export function Settings(p: Props) {
     t.settingsBlock.tools,
     ["replace", Replace, t.replaceTab],
     ["meaning", Sparkles, t.meaningTab],
+    ["convertor", Languages, t.convertorTab],
     "",
     ["help", HelpCircle, t.help],
   ];
@@ -598,6 +600,8 @@ export function Settings(p: Props) {
               {tab === "replace" && <ReplacePane t={t} onToast={p.onToast} onOpenDoc={(id) => p.onOpenDoc(id, tab)} />}
 
               {tab === "meaning" && <MeaningPane t={t} onToast={p.onToast} />}
+
+              {tab === "convertor" && <ConvertorPane t={t} onToast={p.onToast} />}
 
               {tab === "sources" && (
                 <>

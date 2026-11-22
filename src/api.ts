@@ -662,7 +662,30 @@ export const api = {
   semanticStop: () => invoke<void>("semantic_stop"),
   semanticPull: () => invoke<void>("semantic_pull"),
   semanticSearch: (params: SearchParams) => invoke<SearchResult>("semantic_search", { params }),
+
+  /** Convert a PDF file to text with optional Balaram→IAST encoding */
+  convertPdf: (path: string, applyBalaram: boolean) => invoke<PdfConvertResult>("convert_pdf", { path, applyBalaram }),
+  /** Write a UTF-8 text file to disk */
+  writeTextFile: (path: string, text: string) => invoke<void>("write_text_file", { path, text }),
+  /** Add a whole book (title + sections) to the library; replaces if same source */
+  putBook: (args: {
+    collection: string; dir: string; title: string; date: string | null;
+    source: string; sections: BookSection[]; cover: string | null;
+  }) => invoke<number>("put_book", args),
 };
+
+// ---- PDF convertor
+
+export interface PdfConvertResult {
+  text: string;
+  pages: number;
+  is_balaram: boolean;
+}
+
+export interface BookSection {
+  heading: string | null;
+  text: string;
+}
 
 // ---- find and replace / diacritics
 

@@ -52,7 +52,7 @@ pub fn read_document(path: &Path, bytes: &[u8]) -> Option<String> {
 /// Old "Balaram" fonts drew IAST letters over Latin-1 ones: "Çré Kåñëa" is
 /// "Śrī Kṛṣṇa". Letters like ä, å, ë, ö, ò never appear in English or Spanish,
 /// so a text full of them is Balaram (and its ñ is ṣ, not the Spanish ñ).
-fn is_balaram(text: &str) -> bool {
+pub fn is_balaram(text: &str) -> bool {
     let marks = text.chars().filter(|c| "äåëöòùÄÅËÖÒ".contains(*c)).count();
     marks >= 5 && marks * 400 >= text.chars().filter(|c| c.is_alphabetic()).count()
 }

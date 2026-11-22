@@ -87,10 +87,17 @@ const call = (expr) =>
     ws.addEventListener("message", h);
     ws.send(JSON.stringify({ id, method: "Runtime.evaluate", params: { expression: expr, awaitPromise: true, returnByValue: true } }));
   });
+const MAX_CHUNK = 600;
 for (const k of keys) {
   const b = books.get(k);
-  const arg = { collection: "Versos", dir: b.dir, title: b.title, date: null, source: b.source, sections: b.sections, cover: null };
-  const r = await call(`(async () => { try { return await window.__TAURI_INTERNALS__.invoke("put_book", ${JSON.stringify(arg)}); } catch (e) { return "ERROR " + e; } })()`);
-  console.log(`${k}: ${b.title} — ${b.sections.length} versos → ${typeof r === "number" ? "#" + r : JSON.stringify(r)}`);
+  const chunks = [];
+  for (let i = 0; i < b.sections.length; i += MAX_CHUNK) chunks.push(b.sections.slice(i, i + MAX_CHUNK));
+  for (let ci = 0; ci < chunks.length; ci++) {
+    const src = chunks.length > 1 ? `${b.source}:${ci}` : b.source;
+    const title = chunks.length > 1 ? `${b.title} (${ci + 1}/${chunks.length})` : b.title;
+    const arg = { collection: "Versos", dir: b.dir, title, date: null, source: src, sections: chunks[ci], cover: null };
+    const r = await call(`(async () => { try { return await window.__TAURI_INTERNALS__.invoke("put_book", ${JSON.stringify(arg)}); } catch (e) { return "ERROR " + e; } })()`);
+    console.log(`${k}${chunks.length > 1 ? ` [${ci + 1}/${chunks.length}]` : ""}: ${title} — ${chunks[ci].length} versos → ${typeof r === "number" ? "#" + r : JSON.stringify(r)}`);
+  }
 }
 ws.close();

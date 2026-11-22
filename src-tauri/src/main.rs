@@ -1247,6 +1247,55 @@ async fn path_kinds(paths: Vec<String>) -> CmdResult<Vec<&'static str>> {
         .collect())
 }
 
+/// Convert a PDF file to text, optionally applying Balaram→IAST encoding.
+/// Returns the text (pages separated by \f), page count, and whether Balaram was detected.
+#[derive(serde::Serialize)]
+struct PdfConvertResult {
+    text: String,
+    pages: usize,
+    is_balaram: bool,
+}
+
+#[tauri::command]
+async fn convert_pdf(path: String, apply_balaram: bool) -> CmdResult<PdfConvertResult> {
+    use std::process::Command;
+    let pdftotext = [
+        r"C:\msys64\ucrt64\bin\pdftotext.exe",
+        r"C:\ucrt64\bin\pdftotext.exe",
+        r"C:\Program Files\Xpdf\pdftotext.exe",
+        r"C:\Program Files (x86)\Xpdf\pdftotext.exe",
+    ]
+    .iter()
+    .find(|&&p| std::path::Path::new(p).exists())
+    .map(|p| p.to_string())
+    .unwrap_or_else(|| "pdftotext".to_string());
+
+    let out = Command::new(&pdftotext)
+        .args([&path, "-"])
+        .output()
+        .map_err(|e| format!("pdftotext no encontrado ({pdftotext}): {e}"))?;
+
+    if !out.status.success() && out.stdout.is_empty() {
+        return Err(format!("pdftotext error: {}", String::from_utf8_lossy(&out.stderr)).into());
+    }
+    // pdftotext on Balaram PDFs outputs raw Latin-1 bytes; each byte maps 1:1 to its Unicode code point
+    let latin1: String = out.stdout.iter().map(|&b| b as char).collect();
+    let is_balaram = extract::is_balaram(&latin1);
+    let text = if apply_balaram && is_balaram {
+        extract::balaram_to_iast(&latin1)
+    } else {
+        latin1
+    };
+    let pages = text.chars().filter(|&c| c == '\x0c').count() + 1;
+    Ok(PdfConvertResult { text, pages, is_balaram })
+}
+
+/// Write a UTF-8 text file to disk (used by the PDF Convertor «Export» button).
+#[tauri::command]
+async fn write_text_file(path: String, text: String) -> CmdResult<()> {
+    std::fs::write(&path, text.as_bytes()).map_err(|e| format!("No se pudo escribir {path}: {e}").into())
+}
+
 /// `bio://localhost/cover/12` and `bio://localhost/original/12` (on Windows
 /// `http://bio.localhost/...`): files stored in the database, for <img> and
 /// the PDF viewer.
@@ -1577,7 +1626,9 @@ fn main() {
             semantic_index,
             semantic_stop,
             semantic_pull,
-            semantic_search
+            semantic_search,
+            convert_pdf,
+            write_text_file
         ])
         .run(tauri::generate_context!())
         .expect("error while running Gaudiya Vaisnavas DB");
