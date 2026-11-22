@@ -342,6 +342,25 @@ pub fn save_section(conn: &mut Connection, doc_id: i64, ordinal: i64, new_text: 
     tx.commit().map_err(e)
 }
 
+/// Replaces the text of one section exactly as given: unlike `save_section` it does not cut it again at its
+/// headings, so the sections of the text (and their numbers) stay the same. The earlier version is kept.
+pub fn set_section_text(conn: &mut Connection, doc_id: i64, ordinal: i64, new_text: &str) -> Res<()> {
+    let tx = conn.transaction().map_err(e)?;
+    keep_doc_version(&tx, doc_id, false).map_err(e)?;
+    let mut all: Vec<Section> = tx
+        .prepare("SELECT heading, text FROM sections WHERE doc_id = ?1 ORDER BY ordinal")
+        .map_err(e)?
+        .query_map([doc_id], |r| Ok(Section { heading: r.get(0)?, text: r.get(1)? }))
+        .map_err(e)?
+        .collect::<Result<_, _>>()
+        .map_err(e)?;
+    let Some(sec) = all.get_mut(ordinal as usize) else { return Err("Sección no encontrada".into()) };
+    sec.text = new_text.replace("\r\n", "\n");
+    write_sections(&tx, doc_id, &all).map_err(e)?;
+    tx.execute("UPDATE docs SET modified = datetime('now', 'localtime') WHERE id = ?1", [doc_id]).map_err(e)?;
+    tx.commit().map_err(e)
+}
+
 /// Where `fragment` (text selected on screen, so without the Markdown marks)
 /// is in `full`: from the start of the line of its first word to the end of
 /// the line of its last one. Long pieces are found by their first and last

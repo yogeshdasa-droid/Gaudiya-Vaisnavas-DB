@@ -188,7 +188,20 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.21)
+## 5. Qué hace hoy (v0.20.22)
+
+### Novedades de la 0.20.22 (22-11-2026) — paso 4 de los versos: las charlas con sus versos bien escritos
+- Rust: **`set_section_text(docId, ordinal, text)`** (`store::set_section_text`): cambia el texto de UNA sección tal cual, sin
+  volver a partirlo por sus títulos y guardando la versión anterior. `save_section` (el del editor) SÍ lo parte de nuevo
+  por sus «#»: usarlo desde un script cambia el número de secciones (en la prueba, 49 textos pasaron de 1 a 4, de 26 a 30…)
+  y desplaza las siguientes. `put_book` por origen tampoco sirve para las charlas sueltas (origen vacío o repetido).
+- Scripts (`scripts/datos/versos/`): `paso4-analiza.mjs <biodata.db>` (solo lectura: cuenta y enseña muestras) y
+  `paso4-aplica.mjs <puerto> <biodata.db>` (escribe por la app; `--dry`, `--solo=`, `--limit=`; idempotente). Reconoce el
+  verso por su TEXTO sin acentos (solo a–z) contra los 25.800 de «Versos», sea cual sea el formato (`> `, cursiva, línea
+  suelta, varias líneas) y lo cambia por el bloque `::: verse REF … :::` SOLO si es el verso entero y la línea no lleva ya
+  diacríticos. Lo que cita solo un trozo, o difiere en alguna letra, no se toca. Probado en copia: 565 secciones, 244 textos,
+  1.381 versos; ni metadatos, ni nº de secciones, ni encabezados cambian.
+- Ojo: `read-only` + escribir a la vez da a veces «database is locked»: el script reintenta.
 
 ### Novedades de la 0.20.21 (22-11-2026) — «Convertor PDF» (Ajustes › Herramientas)
 - **Convertor PDF** (`Convertor.tsx`, `ConvertorPane`): arrastra un PDF (o «elegir») → texto con **IAST correcto** si la
@@ -203,6 +216,14 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
   abierto (`convertorState.active`), para que un PDF soltado ahí no abra también el diálogo de importar.
 - v0.20.20 (misma función) salió con tres fallos que corrige la 0.20.21: `pdftotext` solo se buscaba en rutas de MSYS2,
   el arrastre abría además «Importar», y un PDF sin Balaram se decodificaba como Latin-1.
+- Datos (22-11-2026): los libros de `Biblioteca\Sri Srimad Bhaktivedanta Narayana\Books` (formato Calibre) con
+  `scripts/datos/narayana/cargar.mjs` (usa `convert_pdf`; título y portada del `.opf`; secciones de 6 páginas; origen
+  `narayana:<id Calibre>`, así que repetirlo no duplica). **120 libros** en «Libros/Nārāyaṇa Mahārāja» (101) y
+  «Libros/Nārāyaṇa Mahārāja · español» (19), solo texto y portada (los PDF no se guardan). **No entran** los ≈ 42 con
+  tipografías sánscritas propias que `convert_pdf` aún no decodifica (salen «‚r”» por «Śrī»: el script los rechaza si hay
+  > 0,4 % de caracteres rotos y los lista) ni el EPUB «Source of Inspiration». Los 10 mapas / folletos / escaneados sin texto
+  están como PDF sueltos en la colección «Maps & Others» (import_sources con archivos sueltos: la importación de carpetas
+  Calibre crearía una ficha de persona por título). La BD pasó de ≈ 950 a ≈ 1390 MB.
 - Datos (fuera del repo, `O:\Whispers\versos\vedabase\`): `desde-sloka.mjs` extrae del PDF del *Śrī Ślokāmṛtam* los versos
   de BRS, Śikṣāṣṭaka, Manaḥ-śikṣā, Padyāvalī, HBV y Vilāpa (IAST por Balaram) a `datos\sloka\*.json`; `cargar-sloka.mjs`
   los carga en «Versos» con `put_book` (**`dir` = «Versos/<libro>»**: sin el prefijo `Versos/` el libro sale como colección propia).
@@ -1522,6 +1543,22 @@ imágenes con pie y origen. Scripts en `scripts/datos/nandgram/` (`bajar.mjs`, `
 `casar.mjs`). Falta: casar cada vida con su ficha (revisar homónimos a mano), añadirla como texto «Nandgram Dham — …»
 (colección «Nandgram Dham», con la dirección de la fuente), rellenar solo campos vacíos, y proponer sus imágenes como
 foto de las fichas que no tienen. Detalle en CONTINUAR.md.
+
+### ▶▶▶▶ IDEA (Whisper, 22-11-2026): «Versos» como un MOTOR DE BÚSQUEDA DE VERSOS — pendiente
+- **Lo que quiere Whisper:** que la página «Versos» use TODA la biblioteca como base —los libros de Nārāyaṇa Mahārāja
+  (120 ya dentro), SB, CC, BG, las charlas, la Anthology…— y encuentre cualquier verso, no solo los de la colección.
+- **El fallo de hoy:** buscar «bhaktyā vihīnā aparādha» no da nada. El verso (Vṛndā-devī, «bhaktyā vihīnā aparādha-lakṣaiḥ
+  kṣiptaś ca kāmādi-taraṅga-madhye…») está 23 veces en la biblioteca (2 charlas, 3 Anthology, 18 libros) pero 0 en «Versos»:
+  esa colección es solo lo de Vedabase (SB, CC, BG, Īśo, NOI) + 74 versos del Ślokāmṛtam, y `Verses.tsx` busca solo ahí.
+- **Qué hacer (a pensar con calma):** (1) construir un ÍNDICE DE VERSOS de todo el texto: detectar los versos en libros y
+  charlas (bloques `::: verse`, líneas en cursiva o con `> `, varias líneas cortas seguidas, referencia al lado o bajo el
+  verso) y quedarse, por cada verso distinto (texto plegado a–z), con su mejor escritura (la que más diacríticos tiene), su
+  referencia y en qué textos sale (con enlace). (2) Que la búsqueda de Versos lea ese índice: por palabras con o sin
+  diacríticos, también un trozo suelto, y por referencia. (3) Lo que hoy es el paso 4 (cambiar los versos de las charlas
+  por el bloque bueno) pasa a usar el mismo índice, y entonces los versos que no son de Vedabase (stotras, Gītāvalī,
+  Vṛndāṣṭaka, Prema-bhakti-candrikā, Padma Purāṇa, Hari-bhakti-vilāsa…) también se pueden arreglar.
+- **Cuidado:** los libros de Nārāyaṇa Mahārāja traen sus versos con diacríticos pero maquetados como párrafo (la extracción
+  de PDF junta las líneas), y 42 libros siguen sin importar por tipografías propias rotas (ver más arriba).
 
 ### ▶▶▶ Para la próxima sesión (después del 07-11-2026) — LEER CONTINUAR.md
 **Terminados los Textos principales de las 38 fichas del árbol** que no lo tenían (tandas 1–10, scripts `tp*.json`,

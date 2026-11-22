@@ -747,6 +747,12 @@ async fn save_section(state: State<'_, AppState>, doc_id: i64, ordinal: i64, tex
     store::save_section(&mut state.conn.lock().unwrap(), doc_id, ordinal, &text)
 }
 
+/// One section's text exactly as given, without cutting it again at its headings (used by the verse scripts).
+#[tauri::command]
+async fn set_section_text(state: State<'_, AppState>, doc_id: i64, ordinal: i64, text: String) -> CmdResult<()> {
+    store::set_section_text(&mut state.conn.lock().unwrap(), doc_id, ordinal, &text)
+}
+
 #[tauri::command]
 async fn update_doc(state: State<'_, AppState>, doc_id: i64, meta: store::DocMeta) -> CmdResult<()> {
     store::update_doc(&mut state.conn.lock().unwrap(), doc_id, &meta)
@@ -1570,6 +1576,7 @@ fn main() {
             create_doc,
             put_book,
             save_section,
+            set_section_text,
             update_doc,
             set_doc_tag,
             rename_folder,

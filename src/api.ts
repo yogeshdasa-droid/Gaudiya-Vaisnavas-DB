@@ -560,6 +560,8 @@ export const api = {
   createDoc: (personId: number | null, title: string, collection: string) =>
     invoke<number>("create_doc", { personId, title, collection }),
   saveSection: (docId: number, ordinal: number, text: string) => invoke<void>("save_section", { docId, ordinal, text }),
+  /** a section's text exactly as given (no re-cutting at its headings; the earlier version is kept) */
+  setSectionText: (docId: number, ordinal: number, text: string) => invoke<void>("set_section_text", { docId, ordinal, text }),
   moveText: (docId: number, fragment: string, toPerson: number, title: string) => invoke<number>("move_text", { docId, fragment, toPerson, title }),
   /** takes the piece out of its text (whole lines; earlier version kept) and gives it back as written */
   cutText: (docId: number, fragment: string) => invoke<string>("cut_text", { docId, fragment }),
