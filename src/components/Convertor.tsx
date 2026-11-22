@@ -5,28 +5,29 @@ import { AlertCircle, BookOpen, CheckCircle2, Download, Upload } from "lucide-re
 import { api, PdfConvertResult } from "../api";
 import { T } from "../i18n";
 
+/** true while the convertor is on screen: the window's own drop (import dialog) must leave a dropped PDF to it */
+export const convertorState = { active: false };
+
 /** Ajustes › Convertor PDF: drag a PDF, convert Balaram→IAST, add to library or export. */
 export function ConvertorPane({ t, onToast }: { t: T; onToast: (msg: string) => void }) {
   const [path, setPath] = useState<string | null>(null);
   const [result, setResult] = useState<PdfConvertResult | null>(null);
   const [applyBalaram, setApplyBalaram] = useState(true);
+  const balaramRef = useRef(true);
   const [busy, setBusy] = useState(false);
   const [title, setTitle] = useState("");
   const [collection, setCollection] = useState("Libros");
   const [splitMode, setSplitMode] = useState<"one" | "page">("one");
   const [dragging, setDragging] = useState(false);
-  const dropRef = useRef<HTMLDivElement>(null);
 
-  const loadPdf = async (p: string, bal = applyBalaram) => {
+  /** `fresh`: a new file (new title); not fresh: the same file again with the conversion switched */
+  const loadPdf = async (p: string, fresh: boolean) => {
     setBusy(true);
     try {
-      const r = await api.convertPdf(p, bal);
+      const r = await api.convertPdf(p, balaramRef.current);
       setPath(p);
       setResult(r);
-      if (!title) {
-        const name = p.replace(/\\/g, "/").split("/").pop()?.replace(/\.pdf$/i, "") ?? "";
-        setTitle(name);
-      }
+      if (fresh) setTitle(p.replace(/\\/g, "/").split("/").pop()?.replace(/\.pdf$/i, "") ?? "");
     } catch (e) {
       onToast(String(e));
     } finally {
@@ -34,16 +35,18 @@ export function ConvertorPane({ t, onToast }: { t: T; onToast: (msg: string) => 
     }
   };
 
-  // Tauri file-drop events
+  // Tauri file-drop events (the window's own handler in App.tsx stands aside while this is open)
   useEffect(() => {
+    convertorState.active = true;
     const up = listen<{ paths: string[] }>("tauri://drag-drop", (e) => {
       setDragging(false);
       const pdf = e.payload.paths.find((p) => p.toLowerCase().endsWith(".pdf"));
-      if (pdf) loadPdf(pdf);
+      if (pdf) loadPdf(pdf, true);
     });
     const over = listen("tauri://drag-over", () => setDragging(true));
     const leave = listen("tauri://drag-leave", () => setDragging(false));
     return () => {
+      convertorState.active = false;
       up.then((f) => f());
       over.then((f) => f());
       leave.then((f) => f());
@@ -52,12 +55,13 @@ export function ConvertorPane({ t, onToast }: { t: T; onToast: (msg: string) => 
 
   const pickFile = async () => {
     const p = await open({ multiple: false, filters: [{ name: "PDF", extensions: ["pdf"] }] });
-    if (typeof p === "string") loadPdf(p);
+    if (typeof p === "string") loadPdf(p, true);
   };
 
   const toggleBalaram = (val: boolean) => {
     setApplyBalaram(val);
-    if (path) loadPdf(path, val);
+    balaramRef.current = val;
+    if (path) loadPdf(path, false);
   };
 
   const addToLibrary = async () => {
@@ -119,7 +123,6 @@ export function ConvertorPane({ t, onToast }: { t: T; onToast: (msg: string) => 
     <div className="conv-pane">
       {/* Drop zone */}
       <div
-        ref={dropRef}
         className={`conv-drop${dragging ? " drag-over" : ""}${busy ? " busy" : ""}`}
         onClick={pickFile}
       >

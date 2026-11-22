@@ -2,7 +2,7 @@
 
 Documento para retomar el trabajo en el futuro (una persona o una sesión nueva de Claude).
 Resume qué es la app, cómo está hecha, qué reglas no hay que romper y qué queda pendiente.
-Última actualización: **21-11-2026** (versión **0.20.19**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
+Última actualización: **22-11-2026** (versión **0.20.21**). Desde la 0.17.7 la app se llama **Vaiṣṇava-kośa** en
 pantalla (logo: libro abierto con tilaka); el nombre interno (`productName`), el identifier y las carpetas siguen igual.
 
 > **Para retomar con Claude**, basta con abrir esta carpeta y decir algo como:
@@ -188,7 +188,24 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.19)
+## 5. Qué hace hoy (v0.20.21)
+
+### Novedades de la 0.20.21 (22-11-2026) — «Convertor PDF» (Ajustes › Herramientas)
+- **Convertor PDF** (`Convertor.tsx`, `ConvertorPane`): arrastra un PDF (o «elegir») → texto con **IAST correcto** si la
+  fuente es Balaram (la misma tabla `balaram_to_iast` de `extract.rs`), vista previa, y dos salidas: **«Añadir a la
+  biblioteca»** (`put_book`: todo en una sección o una por página; colección a elegir, por defecto «Libros»; el mismo PDF
+  — origen `pdf:<ruta>` — se reemplaza a sí mismo) y **«Exportar .txt»** (`write_text_file`).
+- Rust (`main.rs`): `convert_pdf(path, apply_balaram)` → `{ text, pages, is_balaram }` (páginas separadas por `\f`).
+  Usa **pdftotext** si está en el PC (Git for Windows lo trae en `C:\Program Files\Git\ucrt64\bin`, también MSYS2/Xpdf): con
+  fuente Balaram saca bytes Latin-1 sin tocar; con un PDF normal, UTF-8 (`-enc UTF-8`). **Sin pdftotext** cae al lector
+  de la biblioteca (`extract::pdf_pages`, pdf-extract), así que funciona en cualquier PC. `extract::is_balaram` ahora es `pub`.
+- El arrastre de la ventana (`onDragDropEvent` de `App.tsx`, que abre «Importar») se aparta mientras el convertor está
+  abierto (`convertorState.active`), para que un PDF soltado ahí no abra también el diálogo de importar.
+- v0.20.20 (misma función) salió con tres fallos que corrige la 0.20.21: `pdftotext` solo se buscaba en rutas de MSYS2,
+  el arrastre abría además «Importar», y un PDF sin Balaram se decodificaba como Latin-1.
+- Datos (fuera del repo, `O:\Whispers\versos\vedabase\`): `desde-sloka.mjs` extrae del PDF del *Śrī Ślokāmṛtam* los versos
+  de BRS, Śikṣāṣṭaka, Manaḥ-śikṣā, Padyāvalī, HBV y Vilāpa (IAST por Balaram) a `datos\sloka\*.json`; `cargar-sloka.mjs`
+  los carga en «Versos» con `put_book` (**`dir` = «Versos/<libro>»**: sin el prefijo `Versos/` el libro sale como colección propia).
 
 ### Novedades de la 0.20.19 (21-11-2026) — más versos (Vedabase Original), biblioteca de Śrīla Prabhupāda
 - **«Versos»**: `refKey` entiende también «Īśo 3» / «isopanisad 3» y «NOI 2» / «upadesamrta 2»; ayuda con esos
@@ -2112,6 +2129,9 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **22-11-2026 — v0.20.21**: «Convertor PDF» (Ajustes › Herramientas): PDF Balaram → IAST, añadir a la biblioteca o exportar .txt; arreglos de la 0.20.20 (búsqueda de pdftotext con respaldo, arrastre sin abrir «Importar», decodificación UTF-8/Latin-1).
+- **22-11-2026 — v0.20.20**: primera versión del Convertor PDF.
+  Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.20
 - **21-11-2026 — v0.20.19**: «Versos» entiende «Īśo N» y «NOI N»; versos del Caitanya-caritāmṛta, SB 1–10.13, Īśopaniṣad y NOI desde «Vedabase Original»; charlas y conversaciones de Śrīla Prabhupāda en su biblioteca.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.19
 - **21-11-2026 — v0.20.18**: buscador de versos (SB 1–9 + lo que baje de vedabase), versos centrados, Reemplazar protege rutas y versos.

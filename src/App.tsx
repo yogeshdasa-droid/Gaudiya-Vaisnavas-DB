@@ -97,6 +97,7 @@ import { Timeline } from "./components/Timeline";
 import { Panorama } from "./components/Panorama";
 import { TreeView } from "./components/TreeView";
 import { Settings, SettingsTab, Theme } from "./components/Settings";
+import { convertorState } from "./components/Convertor";
 import { Reveal, SideTab, Sidebar } from "./components/Sidebar";
 import { Lineage } from "./components/Lineage";
 import { AudioBar, PersonLibrary } from "./components/PersonLibrary";
@@ -501,6 +502,7 @@ export default function App() {
       }),
       getCurrentWebview().onDragDropEvent((e) => {
         const p = e.payload;
+        if (convertorState.active) return setDragging(false); // Ajustes › Convertor PDF takes the dropped file
         if (p.type === "enter" || p.type === "over") setDragging(true);
         else if (p.type === "leave") setDragging(false);
         else if (p.type === "drop") {

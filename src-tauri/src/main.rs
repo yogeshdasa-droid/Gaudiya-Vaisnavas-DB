@@ -1256,38 +1256,71 @@ struct PdfConvertResult {
     is_balaram: bool,
 }
 
-#[tauri::command]
-async fn convert_pdf(path: String, apply_balaram: bool) -> CmdResult<PdfConvertResult> {
-    use std::process::Command;
-    let pdftotext = [
+/// pdftotext's output for a PDF; None if the program is not on this PC or reads nothing.
+fn run_pdftotext(path: &str, utf8: bool) -> Option<Vec<u8>> {
+    let exe = [
+        r"C:\Program Files\Git\ucrt64\bin\pdftotext.exe",
         r"C:\msys64\ucrt64\bin\pdftotext.exe",
-        r"C:\ucrt64\bin\pdftotext.exe",
         r"C:\Program Files\Xpdf\pdftotext.exe",
         r"C:\Program Files (x86)\Xpdf\pdftotext.exe",
     ]
     .iter()
-    .find(|&&p| std::path::Path::new(p).exists())
+    .find(|p| Path::new(p).exists())
     .map(|p| p.to_string())
     .unwrap_or_else(|| "pdftotext".to_string());
-
-    let out = Command::new(&pdftotext)
-        .args([&path, "-"])
-        .output()
-        .map_err(|e| format!("pdftotext no encontrado ({pdftotext}): {e}"))?;
-
-    if !out.status.success() && out.stdout.is_empty() {
-        return Err(format!("pdftotext error: {}", String::from_utf8_lossy(&out.stderr)).into());
+    let mut cmd = std::process::Command::new(exe);
+    if utf8 {
+        cmd.args(["-enc", "UTF-8"]);
     }
-    // pdftotext on Balaram PDFs outputs raw Latin-1 bytes; each byte maps 1:1 to its Unicode code point
-    let latin1: String = out.stdout.iter().map(|&b| b as char).collect();
-    let is_balaram = extract::is_balaram(&latin1);
-    let text = if apply_balaram && is_balaram {
-        extract::balaram_to_iast(&latin1)
-    } else {
-        latin1
+    cmd.args([path, "-"]);
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        cmd.creation_flags(0x0800_0000); // no console window
+    }
+    let out = cmd.output().ok()?;
+    (!out.stdout.is_empty()).then_some(out.stdout)
+}
+
+fn pdf_to_text(path: &str, apply_balaram: bool) -> CmdResult<PdfConvertResult> {
+    let mut text: Option<String> = None;
+    if let Some(bytes) = run_pdftotext(path, false) {
+        // a Balaram font comes out as raw Latin-1 bytes, any other PDF as UTF-8
+        let (t, was_utf8) = match String::from_utf8(bytes) {
+            Ok(s) => (s, true),
+            Err(e) => (e.into_bytes().iter().map(|&b| b as char).collect::<String>(), false),
+        };
+        text = Some(if !extract::is_balaram(&t) && !was_utf8 {
+            run_pdftotext(path, true).map(|b| String::from_utf8_lossy(&b).into_owned()).unwrap_or(t)
+        } else {
+            t
+        });
+    }
+    // without pdftotext on this PC: the reader the library uses to import PDFs
+    let text = match text {
+        Some(t) => t,
+        None => {
+            let bytes = std::fs::read(path).map_err(|e| format!("{path}: {e}"))?;
+            let pages = extract::pdf_pages(&bytes);
+            if pages.iter().all(|p| p.trim().is_empty()) {
+                return Err("No se pudo leer texto de este PDF (¿está escaneado?)".into());
+            }
+            pages.join("\x0c")
+        }
     };
-    let pages = text.chars().filter(|&c| c == '\x0c').count() + 1;
+    let text = text.replace("\r\n", "\n");
+    let is_balaram = extract::is_balaram(&text);
+    let text = if apply_balaram && is_balaram { extract::balaram_to_iast(&text) } else { text };
+    // pdftotext ends every page with \f: the last one does not start another page
+    let pages = text.trim_end_matches(['\x0c', '\n']).matches('\x0c').count() + 1;
     Ok(PdfConvertResult { text, pages, is_balaram })
+}
+
+#[tauri::command]
+async fn convert_pdf(path: String, apply_balaram: bool) -> CmdResult<PdfConvertResult> {
+    tauri::async_runtime::spawn_blocking(move || pdf_to_text(&path, apply_balaram))
+        .await
+        .map_err(|e| e.to_string())?
 }
 
 /// Write a UTF-8 text file to disk (used by the PDF Convertor «Export» button).

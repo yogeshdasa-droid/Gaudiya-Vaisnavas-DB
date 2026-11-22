@@ -75,6 +75,14 @@ pub fn balaram_to_iast(text: &str) -> String {
         .collect()
 }
 
+/// The text of each page of a PDF as pdf-extract reads it (empty if it cannot be read).
+pub fn pdf_pages(bytes: &[u8]) -> Vec<String> {
+    match std::panic::catch_unwind(|| pdf_extract::extract_text_from_mem_by_pages(bytes)) {
+        Ok(Ok(pages)) => pages,
+        _ => Vec::new(),
+    }
+}
+
 fn pdf(bytes: &[u8]) -> String {
     if bytes.len() > MAX_PDF_BYTES {
         return String::new();
