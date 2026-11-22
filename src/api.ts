@@ -643,6 +643,9 @@ export const api = {
   setLibraryFolder: (id: number, folder: string | null) => invoke<void>("set_library_folder", { id, folder }),
   libraryIds: () => invoke<number[]>("library_ids"),
   /** how long each recording of a library lasts (seconds; 0 = not known), read once and kept next to the database */
+  buildVerseIndex: () => invoke<{ verses: number; in_several_texts: number }>("build_verse_index"),
+  verseIndexStatus: () => invoke<number>("verse_index_status"),
+  searchVerseIndex: (query: string, limit = 40) => invoke<VerseHit[]>("search_verse_index", { query, limit }),
   audioDurations: (id: number) => invoke<Record<string, number>>("audio_durations", { id }),
   libraryIndex: (id: number) => invoke<{ files: number; changed: number }>("library_index", { id }),
   librarySearch: (id: number, query: string) => invoke<LibHit[]>("library_search", { id, query }),
@@ -906,3 +909,13 @@ export function hueOf(name: string): number {
 /** the texts of a folder of the library (with its subfolders: the written lectures are by year) that say these words */
 export const searchIn = (query: string, dir: string, limit: number) =>
   api.search({ query, titlesOnly: false, prefix: true, sort: "relevance", collections: [], dir, docId: null, personId: null, offset: 0, limit });
+
+/** a verse of the verse index: once, with every text where it appears (22-11-2026) */
+export interface VerseHit {
+  id: number;
+  best: string;
+  reference: string | null;
+  docs: number;
+  variants: number;
+  places: { doc_id: number; ordinal: number; title: string; dir: string; heading: string | null }[];
+}

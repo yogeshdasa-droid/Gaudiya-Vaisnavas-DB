@@ -130,6 +130,7 @@ Para probar cosas que modifican datos, crear fichas de prueba (p. ej. «Zzprueba
 
 ```
 src-tauri/src/                       (Rust: datos y lógica)
+  verse_index.rs  índice de versos de toda la biblioteca (derivado)
   main.rs     comandos que llama la interfaz; protocolo bio:// (portadas, PDF, fotos, imágenes);
               importación inicial (DEFAULT_SOURCES); trabajos en segundo plano; copia automática
               (20 s después de arrancar); limpiezas únicas al arrancar (notas, títulos, claves)
@@ -188,7 +189,24 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.22)
+## 5. Qué hace hoy (v0.20.23)
+
+### Novedades de la 0.20.23 (22-11-2026) — «Versos» como buscador de versos de TODA la biblioteca
+- **Índice de versos** (`verse_index.rs`, DERIVADO: tablas `verse_index` y `verse_index_places`, se borran y se rehacen; meta
+  `verse_index`; sin DATA_VERSION). Semillas = los versos de la colección «Versos» (con su referencia); el resto se detecta en
+  el texto corrido (tramos de ≥ 8 palabras sánscritas, ≥ la mitad con diacríticos; fuera índices con puntos, sinónimos palabra a
+  palabra, listas; se recortan rótulos «dāsa:» y citas «(Gītā…»). Las escrituras del mismo verso se agrupan por ventanas de 36
+  letras plegadas compartidas (los refranes en > 40 escrituras no unen). Se queda la mejor escritura (la de Vedabase si hay).
+  Comandos: `build_verse_index` (≈ 20 s), `verse_index_status`, `search_verse_index`. En la copia de pruebas: 30.958 versos,
+  4.619 en ≥ 2 textos. Prototipo y análisis: `scripts/datos/versos/indice-prueba.mjs`.
+- **Pantalla** (`Verses.tsx`): al buscar por palabras, una tarjeta por verso (centrado) con «Sale en N textos» plegable (libro ›
+  páginas, botón para abrir); los de Vedabase salen con su referencia («BG 18.66»). Se construye solo la primera vez; «Volver a
+  hacerlo» lo rehace. Debajo, «También en la biblioteca» (búsqueda de frase exacta y de palabras en todos los textos).
+- **Paso 4B** (`scripts/datos/versos/paso4b-analiza.mjs` / `paso4b-aplica.mjs`): en las charlas, los versos sin diacríticos que sean
+  COMPLETOS una entrada del índice pasan a `::: verse` con la mejor escritura (conservando líneas; media cita no se toca).
+  Probado en copia (79 secciones, 90 versos; 2.ª pasada = 0). Para aplicarlo a la BD real: tener la 0.20.23, construir el
+  índice, copia de seguridad, app instalada con puerto de depuración, `--dry` y luego sin `--dry`.
+- Pendiente: mantener el índice al día solo (hoy a mano), recortar listas de comienzos de verso mezcladas.
 
 ### Novedades de la 0.20.22 (22-11-2026) — paso 4 de los versos: las charlas con sus versos bien escritos
 - Rust: **`set_section_text(docId, ordinal, text)`** (`store::set_section_text`): cambia el texto de UNA sección tal cual, sin
@@ -2166,6 +2184,7 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **22-11-2026 — v0.20.23**: índice de versos de toda la biblioteca (`verse_index.rs`) y tarjetas por verso en «Versos»; «También en la biblioteca»; paso 4B de los versos (scripts). 61 pruebas.
 - **22-11-2026 — v0.20.21**: «Convertor PDF» (Ajustes › Herramientas): PDF Balaram → IAST, añadir a la biblioteca o exportar .txt; arreglos de la 0.20.20 (búsqueda de pdftotext con respaldo, arrastre sin abrir «Importar», decodificación UTF-8/Latin-1).
 - **22-11-2026 — v0.20.20**: primera versión del Convertor PDF.
   Release: https://github.com/yogeshdasa-droid/Gaudiya-Vaisnavas-DB/releases/tag/v0.20.20

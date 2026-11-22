@@ -11007,3 +11007,17 @@ button.au-chip:hover {
 .verse-card .reader-body em:only-child {
   font-size: 0.85em;
 }
+.verse-where {
+  margin-top: 6px;
+}
+.verse-where summary {
+  cursor: pointer;
+}
+.verse-where .link-btn {
+  display: flex;
+  margin: 3px 0 0 12px;
+  text-align: left;
+}
+.verses-reindex {
+  margin-top: 22px;
+}

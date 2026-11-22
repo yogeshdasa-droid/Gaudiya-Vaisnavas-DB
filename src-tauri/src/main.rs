@@ -23,6 +23,7 @@ mod semantic;
 mod store;
 mod text;
 mod tiles;
+mod verse_index;
 
 use rusqlite::Connection;
 use serde::Serialize;
@@ -485,6 +486,24 @@ async fn default_sources() -> CmdResult<Vec<DefaultSource>> {
 async fn search(state: State<'_, AppState>, params: search::SearchParams) -> CmdResult<search::SearchResult> {
     let conn = state.conn.lock().unwrap();
     search::search(&conn, &params).map_err(err)
+}
+
+/// Verse index (derived): build it again from the whole library (a few seconds).
+#[tauri::command]
+async fn build_verse_index(state: State<'_, AppState>) -> CmdResult<verse_index::BuildInfo> {
+    let mut conn = state.conn.lock().unwrap();
+    verse_index::build(&mut conn).map_err(err)
+}
+
+/// how many verses the index has (0 = not built yet)
+#[tauri::command]
+async fn verse_index_status(state: State<'_, AppState>) -> CmdResult<i64> {
+    Ok(verse_index::status(&state.conn.lock().unwrap()))
+}
+
+#[tauri::command]
+async fn search_verse_index(state: State<'_, AppState>, query: String, limit: Option<usize>) -> CmdResult<Vec<verse_index::VerseHit>> {
+    verse_index::search(&state.conn.lock().unwrap(), &query, limit.unwrap_or(40).clamp(1, 200)).map_err(err)
 }
 
 #[tauri::command]
@@ -1647,6 +1666,9 @@ fn main() {
             library_index,
             library_search,
             audio_durations,
+            build_verse_index,
+            verse_index_status,
+            search_verse_index,
             library_open,
             library_attachments,
             open_external,

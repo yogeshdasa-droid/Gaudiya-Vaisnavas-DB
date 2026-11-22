@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BookOpen, Search, X } from "lucide-react";
-import { api, DocListItem, searchIn, SectionText } from "../api";
+import { api, DocListItem, Hit, searchIn, SectionText, VerseHit } from "../api";
 import { T } from "../i18n";
-import { renderMarkdown } from "../markdown";
+import { renderMarkdown, verseHtml } from "../markdown";
 import { foldName } from "./Sidebar";
 
 /** «Versos» (Whisper, 21-11-2026: «un buscador de versos»): the verses of Śrīla Prabhupāda's books (collection
@@ -41,6 +41,23 @@ export function Verses({ t, docs, onOpenDoc }: { t: T; docs: DocListItem[]; onOp
   const [q, setQ] = useState("");
   const [found, setFound] = useState<Found[] | null>(null);
   const [busy, setBusy] = useState(false);
+  // 22-11-2026: the same words in the WHOLE library (books, lectures, Anthology…), not only in the collection «Versos»
+  const [wide, setWide] = useState<Hit[]>([]);
+  // the verse index (derived, built from the whole library): one card per verse with the texts that have it
+  const [cards, setCards] = useState<VerseHit[]>([]);
+  const [indexing, setIndexing] = useState(false);
+  const [indexN, setIndexN] = useState<number | null>(null);
+  const buildIndex = async () => {
+    setIndexing(true);
+    try {
+      setIndexN((await api.buildVerseIndex()).verses);
+    } finally {
+      setIndexing(false);
+    }
+  };
+  useEffect(() => {
+    api.verseIndexStatus().then((n) => (n > 0 ? setIndexN(n) : buildIndex())).catch(() => setIndexN(0));
+  }, []);
   const input = useRef<HTMLInputElement>(null);
   const books = useMemo(() => docs.filter((d) => d.dir.split("/")[0] === VERSES_DIR), [docs]);
   // every heading of the verse books → where it is (for the references)
@@ -61,7 +78,11 @@ export function Verses({ t, docs, onOpenDoc }: { t: T; docs: DocListItem[]; onOp
 
   useEffect(() => {
     const words = q.trim();
-    if (words.length < 2) return setFound(null);
+    if (words.length < 2) {
+      setWide([]);
+      setCards([]);
+      return setFound(null);
+    }
     let alive = true;
     const h = window.setTimeout(async () => {
       setBusy(true);
@@ -87,6 +108,20 @@ export function Verses({ t, docs, onOpenDoc }: { t: T; docs: DocListItem[]; onOp
           const r = await searchIn(words, VERSES_DIR, 40);
           places = r.hits.map((x) => ({ docId: x.docId, ordinal: x.ordinal }));
         }
+        if (!key && alive && indexN) {
+          const c = await api.searchVerseIndex(words, 40).catch(() => []);
+          if (alive) setCards(c);
+        } else if (alive) setCards([]);
+        if (!key && alive) {
+          // the exact phrase first (the verse as typed), then the loose words; never the «Versos» collection again
+          const exact = await api.search({ query: '"' + words.replace(/"/g, "") + '"', titlesOnly: false, prefix: false, sort: "relevance", collections: [], dir: null, docId: null, personId: null, offset: 0, limit: 60 }).catch(() => null);
+          const loose = exact && exact.hits.length >= 8 ? null : await searchIn(words, "", 60).catch(() => null);
+          const seen = new Set<number>();
+          const all: Hit[] = [];
+          for (const h of [...(exact?.hits ?? []), ...(loose?.hits ?? [])])
+            if (h.dir.split("/")[0] !== VERSES_DIR && !seen.has(h.sectionId)) (seen.add(h.sectionId), all.push(h));
+          if (alive) setWide(all);
+        } else if (alive) setWide([]);
         const texts: Found[] = [];
         for (const p of places) {
           const [s]: SectionText[] = await api.getSections(p.docId, p.ordinal, p.ordinal);
@@ -101,7 +136,7 @@ export function Verses({ t, docs, onOpenDoc }: { t: T; docs: DocListItem[]; onOp
       alive = false;
       window.clearTimeout(h);
     };
-  }, [q, index]);
+  }, [q, index, indexN]);
 
   return (
     <div className="verses-page">
@@ -121,8 +156,23 @@ export function Verses({ t, docs, onOpenDoc }: { t: T; docs: DocListItem[]; onOp
           <p className="muted small">{t.versesBooks(books.length)}</p>
         </div>
       )}
-      {found && !found.length && !busy && <p className="muted">{t.versesNothing}</p>}
-      {found?.map((f) => (
+      {indexing && <p className="muted small">{t.versesIndexing}</p>}
+      {found && !found.length && !wide.length && !cards.length && !busy && <p className="muted">{t.versesNothing}</p>}
+      {cards.map((c) => (
+        <article key={`i${c.id}`} className="verse-card">
+          <div className="reader-body serif" dangerouslySetInnerHTML={{ __html: verseHtml(c.reference ?? "", c.best) }} />
+          <details className="verse-where">
+            <summary className="small muted">{t.versesIn(c.docs)}</summary>
+            {c.places.map((p) => (
+              <button key={`${p.doc_id}:${p.ordinal}`} className="link-btn small" onClick={() => onOpenDoc(p.doc_id, p.ordinal)}>
+                <BookOpen size={13} /> {p.title}
+                {p.heading ? " › " + p.heading : ""}
+              </button>
+            ))}
+          </details>
+        </article>
+      ))}
+      {found?.filter((f) => !cards.some((c) => c.places.some((p) => p.doc_id === f.docId && p.ordinal === f.ordinal))).map((f) => (
         <article key={`${f.docId}:${f.ordinal}`} className="verse-card">
           <div className="reader-body serif" dangerouslySetInnerHTML={{ __html: renderMarkdown(f.text) }} />
           <button className="link-btn small" onClick={() => onOpenDoc(f.docId, f.ordinal)}>
@@ -130,6 +180,25 @@ export function Verses({ t, docs, onOpenDoc }: { t: T; docs: DocListItem[]; onOp
           </button>
         </article>
       ))}
+      {!!indexN && !indexing && (
+        <p className="muted small verses-reindex">
+          {t.versesIndexed(indexN)} <button className="link-btn small" onClick={buildIndex}>{t.versesReindex}</button>
+        </p>
+      )}
+      {wide.length > 0 && (
+        <section className="verses-wide">
+          <h3 className="small muted">{t.versesWide(wide.length)}</h3>
+          {wide.map((h) => (
+            <article key={h.sectionId} className="verse-card">
+              <p className="snippet" dangerouslySetInnerHTML={{ __html: h.snippet }} />
+              <button className="link-btn small" onClick={() => onOpenDoc(h.docId, h.ordinal)}>
+                <BookOpen size={13} /> {h.title}
+                {h.heading ? " › " + h.heading : ""}
+              </button>
+            </article>
+          ))}
+        </section>
+      )}
     </div>
   );
 }
