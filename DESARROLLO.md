@@ -189,7 +189,21 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.24)
+## 5. Qué hace hoy (v0.20.25)
+
+### Novedades de la 0.20.25 (22-11-2026) — Convertor PDF y libros con tipografías propias
+- **Convertor PDF** (`finish_text` en main.rs; `convert_pdf(path, applyBalaram, force)`): quita siempre los guiones blandos (U+00AD) y,
+  si no detecta Balaram, ofrece la casilla «Es Balaram: convertir de todos modos» (`convertorForce`). 64 pruebas.
+- **Decodificador de tipografías propias** (`scripts/datos/narayana/`, solo scripts, nada en la app): un PDF con tipografía propia sale
+  de pdftotext como símbolos sueltos («K¨§ÃaÕs» = «Kṛṣṇa’s»). `rotos.mjs` (mide cada PDF con `convert_pdf` de la app),
+  `crudo.mjs` (pdftotext UTF-8 de los rotos), `vocab.mjs` (vocabulario de trozos con diacríticos desde la BD, solo lectura),
+  `decodifica.mjs` (aprende el mapa símbolo→letra por VOTACIÓN contra el vocabulario, 5 rondas; puntuación por patrón —apóstrofo antes
+  de s/t/d…, comillas en los bordes—; mayúsculas por contexto; en libros ingleses todo símbolo no ASCII es candidato),
+  `cargar.mjs --decodificados=<carpeta> --ids=…` (importa el texto decodificado con `put_book`). Criterio de importación: ≤ 2,7
+  símbolos sin resolver por mil letras y ≥ 84 % de trozos en el vocabulario. 21 de los 42 libros importados (#5934–#5954); los
+  21 restantes (bengalí/devanāgarī mezclados, muchas tipografías) se dejaron. Control independiente: los .md SIN diacríticos de
+  `E:\Gaudiya\Data Bases\Fetcher\Books\Gurudeva Books` (92–99 % de coincidencia en los ingleses).
+- Idea abierta: llevar la votación al Convertor en Rust para que lea tipografías propias solo.
 
 ### Novedades de la 0.20.24 (22-11-2026) — el índice de versos se mantiene al día
 - `verse_index::status` devuelve `{verses, stale, age_hours}`: la firma de la biblioteca (nº de textos, tamaño, última modificación)
@@ -2191,6 +2205,7 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **22-11-2026 — v0.20.25**: Convertor PDF (guiones blandos fuera, «Es Balaram: convertir de todos modos»); scripts del decodificador de tipografías propias; 21 libros de Nārāyaṇa Mahārāja decodificados e importados a la BD (datos, no código). 64 pruebas.
 - **22-11-2026 — v0.20.24**: el índice de versos se mantiene al día (se construye solo, se rehace si lleva > 24 h caducado, aviso «Ponerlo al día»); filtro de listas de términos. 63 pruebas.
 - **22-11-2026 — v0.20.23**: índice de versos de toda la biblioteca (`verse_index.rs`) y tarjetas por verso en «Versos»; «También en la biblioteca»; paso 4B de los versos (scripts). 61 pruebas.
 - **22-11-2026 — v0.20.21**: «Convertor PDF» (Ajustes › Herramientas): PDF Balaram → IAST, añadir a la biblioteca o exportar .txt; arreglos de la 0.20.20 (búsqueda de pdftotext con respaldo, arrastre sin abrir «Importar», decodificación UTF-8/Latin-1).

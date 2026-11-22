@@ -13,6 +13,8 @@ const args = process.argv.slice(2);
 const port = args.find((a) => /^\d{4,5}$/.test(a)) || "9334";
 const dry = args.includes("--dry");
 const solo = (args.find((a) => a.startsWith("--solo=")) || "").slice(7).toLowerCase();
+const decDir = (args.find((a) => a.startsWith("--decodificados=")) || "").slice(16);
+const ids = ((args.find((a) => a.startsWith("--ids=")) || "").slice(6)).split(",").filter(Boolean);
 const limit = Number((args.find((a) => a.startsWith("--limit=")) || "").slice(8)) || Infinity;
 const PAGES_PER_SECTION = 6;
 const DIR_EN = "Libros/Nārāyaṇa Mahārāja";
@@ -123,13 +125,20 @@ const report = { ok: [], sinTexto: [], rotos: [], error: [] };
 for (const b of books) {
   const t0 = Date.now();
   if (!b.pdf) { report.sinTexto.push(`${b.title} (${b.epub ? "solo EPUB" : "sin PDF"})`); console.log(`— ${b.title}: sin PDF`); continue; }
-  const r = await inv("convert_pdf", { path: b.pdf, applyBalaram: true });
+  // --decodificados=<carpeta>: el texto ya decodificado por decodifica.mjs (tipografías propias); solo esos libros (--ids=)
+  let r;
+  if (decDir) {
+    const f = `${decDir}/${b.id}.dec.txt`;
+    if (!ids.includes(b.id) || !fs.existsSync(f)) continue;
+    const text = fs.readFileSync(f, "utf8").replace(/\r\n/g, "\n");
+    r = { text, pages: text.trim().split("\x0c").length, is_balaram: false, decoded: true };
+  } else r = await inv("convert_pdf", { path: b.pdf, applyBalaram: true });
   if (!r || r.__err) { report.error.push(`${b.title}: ${r?.__err}`); console.log(`✗ ${b.title}: ${r?.__err}`); continue; }
   const letters = (r.text.match(/\p{L}/gu) || []).length;
   if (letters < 400 * Math.max(1, Math.min(r.pages, 5))) { report.sinTexto.push(`${b.title} (${r.pages} pp., ${letters} letras: escaneado)`); console.log(`— ${b.title}: sin texto (¿escaneado?)`); continue; }
   // letras con diacrítico mal leídas (tipografías sánscritas propias que la app aún no conoce): no se importa roto
   const bad = [...r.text].filter((c) => c.codePointAt(0) > 126 && !LEGIT.test(c));
-  if (bad.length / letters > MAX_BAD) {
+  if (!r.decoded && bad.length / letters > MAX_BAD) {
     const top = [...new Set(bad)].slice(0, 8).join("");
     report.rotos.push(`${b.title} (${(100 * bad.length / letters).toFixed(1)} % raros: ${top})`);
     console.log(`✗ ${b.title}: letras rotas ${(100 * bad.length / letters).toFixed(1)} % (${top}) — no se importa`);

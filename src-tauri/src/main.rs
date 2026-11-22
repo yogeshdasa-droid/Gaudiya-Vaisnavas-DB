@@ -1307,7 +1307,16 @@ fn run_pdftotext(path: &str, utf8: bool) -> Option<Vec<u8>> {
     (!out.stdout.is_empty()).then_some(out.stdout)
 }
 
-fn pdf_to_text(path: &str, apply_balaram: bool) -> CmdResult<PdfConvertResult> {
+/// the final touches of a converted PDF: Windows line ends and soft hyphens (U+00AD, invisible marks some PDFs put inside
+/// words) out, and Balaram → IAST when it is Balaram (or when the user forces it). Returns the text and whether it is Balaram.
+fn finish_text(text: &str, apply_balaram: bool, force: bool) -> (String, bool) {
+    let text = text.replace("\r\n", "\n").replace('\u{ad}', "");
+    let is_balaram = extract::is_balaram(&text);
+    let text = if apply_balaram && (is_balaram || force) { extract::balaram_to_iast(&text) } else { text };
+    (text, is_balaram)
+}
+
+fn pdf_to_text(path: &str, apply_balaram: bool, force: bool) -> CmdResult<PdfConvertResult> {
     let mut text: Option<String> = None;
     if let Some(bytes) = run_pdftotext(path, false) {
         // a Balaram font comes out as raw Latin-1 bytes, any other PDF as UTF-8
@@ -1333,17 +1342,15 @@ fn pdf_to_text(path: &str, apply_balaram: bool) -> CmdResult<PdfConvertResult> {
             pages.join("\x0c")
         }
     };
-    let text = text.replace("\r\n", "\n");
-    let is_balaram = extract::is_balaram(&text);
-    let text = if apply_balaram && is_balaram { extract::balaram_to_iast(&text) } else { text };
+    let (text, is_balaram) = finish_text(&text, apply_balaram, force);
     // pdftotext ends every page with \f: the last one does not start another page
     let pages = text.trim_end_matches(['\x0c', '\n']).matches('\x0c').count() + 1;
     Ok(PdfConvertResult { text, pages, is_balaram })
 }
 
 #[tauri::command]
-async fn convert_pdf(path: String, apply_balaram: bool) -> CmdResult<PdfConvertResult> {
-    tauri::async_runtime::spawn_blocking(move || pdf_to_text(&path, apply_balaram))
+async fn convert_pdf(path: String, apply_balaram: bool, force: Option<bool>) -> CmdResult<PdfConvertResult> {
+    tauri::async_runtime::spawn_blocking(move || pdf_to_text(&path, apply_balaram, force.unwrap_or(false)))
         .await
         .map_err(|e| e.to_string())?
 }
@@ -1694,4 +1701,27 @@ fn main() {
         ])
         .run(tauri::generate_context!())
         .expect("error while running Gaudiya Vaisnavas DB");
+}
+
+#[cfg(test)]
+mod convert_tests {
+    use super::finish_text;
+
+    #[test]
+    fn soft_hyphens_and_forced_balaram() {
+        // soft hyphen inside a word: gone; plain English is not Balaram
+        let (t, b) = finish_text("Kr\u{ad}ishna said\r\nhello", true, false);
+        assert_eq!(t, "Krishna said\nhello");
+        assert!(!b);
+        // a short text with a few Balaram letters is not detected…
+        let (t, b) = finish_text("Çré Kåñëa", true, false);
+        assert!(!b);
+        assert_eq!(t, "Çré Kåñëa");
+        // …unless the user forces it
+        let (t, _) = finish_text("Çré Kåñëa", true, true);
+        assert_eq!(t, "Śrī Kṛṣṇa");
+        // and never when conversion is switched off
+        let (t, _) = finish_text("Çré Kåñëa", false, true);
+        assert_eq!(t, "Çré Kåñëa");
+    }
 }

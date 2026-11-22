@@ -669,7 +669,7 @@ export const api = {
   semanticSearch: (params: SearchParams) => invoke<SearchResult>("semantic_search", { params }),
 
   /** Convert a PDF file to text with optional Balaram→IAST encoding */
-  convertPdf: (path: string, applyBalaram: boolean) => invoke<PdfConvertResult>("convert_pdf", { path, applyBalaram }),
+  convertPdf: (path: string, applyBalaram: boolean, force = false) => invoke<PdfConvertResult>("convert_pdf", { path, applyBalaram, force }),
   /** Write a UTF-8 text file to disk */
   writeTextFile: (path: string, text: string) => invoke<void>("write_text_file", { path, text }),
   /** Add a whole book (title + sections) to the library; replaces if same source */

@@ -1,7 +1,7 @@
 {
   "name": "gaudiya-vaisnavas-db",
   "private": true,
-  "version": "0.20.24",
+  "version": "0.20.25",
   "description": "Gaudiya Vaisnavas DB: biografias vaisnavas autosuficientes",
   "type": "module",
   "scripts": {

@@ -14,6 +14,9 @@ export function ConvertorPane({ t, onToast }: { t: T; onToast: (msg: string) => 
   const [result, setResult] = useState<PdfConvertResult | null>(null);
   const [applyBalaram, setApplyBalaram] = useState(true);
   const balaramRef = useRef(true);
+  // not detected as Balaram but the user says it is: convert anyway
+  const [force, setForce] = useState(false);
+  const forceRef = useRef(false);
   const [busy, setBusy] = useState(false);
   const [title, setTitle] = useState("");
   const [collection, setCollection] = useState("Libros");
@@ -24,7 +27,7 @@ export function ConvertorPane({ t, onToast }: { t: T; onToast: (msg: string) => 
   const loadPdf = async (p: string, fresh: boolean) => {
     setBusy(true);
     try {
-      const r = await api.convertPdf(p, balaramRef.current);
+      const r = await api.convertPdf(p, balaramRef.current, forceRef.current);
       setPath(p);
       setResult(r);
       if (fresh) setTitle(p.replace(/\\/g, "/").split("/").pop()?.replace(/\.pdf$/i, "") ?? "");
@@ -56,6 +59,12 @@ export function ConvertorPane({ t, onToast }: { t: T; onToast: (msg: string) => 
   const pickFile = async () => {
     const p = await open({ multiple: false, filters: [{ name: "PDF", extensions: ["pdf"] }] });
     if (typeof p === "string") loadPdf(p, true);
+  };
+
+  const toggleForce = (val: boolean) => {
+    setForce(val);
+    forceRef.current = val;
+    if (path) loadPdf(path, false);
   };
 
   const toggleBalaram = (val: boolean) => {
@@ -146,6 +155,12 @@ export function ConvertorPane({ t, onToast }: { t: T; onToast: (msg: string) => 
               {result.is_balaram ? t.convertorBalaram : t.convertorNotBalaram}
             </span>
             <span className="muted">{t.convertorPages(result.pages)}</span>
+            {!result.is_balaram && (
+              <label className="check">
+                <input type="checkbox" checked={force} onChange={(e) => toggleForce(e.target.checked)} />
+                {t.convertorForce}
+              </label>
+            )}
             {result.is_balaram && (
               <label className="check">
                 <input
