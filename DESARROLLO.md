@@ -191,6 +191,11 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ## 5. Qué hace hoy (v0.20.28)
 
+### Pendientes tras la 0.20.28 (23-11-2026)
+- Conversión WMV → MP4 en segundo plano (`scripts/datos/videos/convertir.mjs`, ~25 vídeos/hora): al acabar, migrar las claves de `audio_texts`/`audio_lists` a .mp4, reproducir MP4 en «Vídeos» y proponer borrar los WMV.
+- 141 PDF con letras rotas (`O:\CHECK PDFS\rotos`) a decodificar si Whisper los quiere; variante Harvard-Kyoto «S=ś» (~8 textos); fichas nuevas de Calibre por completar; mejorar el OCR con diacríticos.
+- Lección: `set_section_text` guarda una copia del documento entero por llamada (usar `put_book` por documento); en PowerShell, `-LiteralPath` con nombres que llevan «[n]».
+
 ### Novedades de la 0.20.28 (23-11-2026) — Library de las fichas con los libros de la app
 - **Library en toda ficha con libros** (`booksByPerson` en App.tsx: textos de `Libros/<nombre de la ficha>`; Nārāyaṇa Mahārāja → #1809): tarjetas con portada que abren el texto en el lector Kindle; en las fichas con carpeta del PC, sus PDF que ya son texto de la app (mismo título plegado, `textOf` en PersonLibrary.tsx) abren el texto (Ctrl/Mayús+clic = PDF). Los libros de la app que la carpeta no tiene salen en «Libros en la app (texto)».
 - **Portada genérica** (`.lib-cover-ph`: icono de libro + título) para los libros sin portada, y **comando `set_doc_cover(doc_id, path)`** (store.rs; reduce con `small_cover`) con un botón en la tarjeta («Poner o cambiar la portada…») para subir la buena algún día.
