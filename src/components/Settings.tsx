@@ -477,9 +477,9 @@ export function Settings(p: Props) {
                 </Row>
                 <Row label={t.readerFont} hint={t.readerFontHint}>
                   <div className="seg">
-                    {(["editor", "serif", "sans"] as ReaderStyle[]).map((st) => (
-                      <button key={st} className={`font-${st} ${p.readerStyle === st ? "on" : ""}`} onClick={() => p.onReaderStyle(st)}>
-                        {st === "editor" ? t.editorStyle : st === "serif" ? t.serif : t.sans} · Kṛṣṇa uvāca
+                    {(["editor", "serif", "sans", "kindle"] as ReaderStyle[]).map((st) => (
+                      <button key={st} className={`font-${st === "kindle" ? "serif" : st} ${p.readerStyle === st ? "on" : ""}`} onClick={() => p.onReaderStyle(st)}>
+                        {st === "editor" ? t.editorStyle : st === "serif" ? t.serif : st === "kindle" ? t.kindleStyle : t.sans} · Kṛṣṇa uvāca
                       </button>
                     ))}
                   </div>

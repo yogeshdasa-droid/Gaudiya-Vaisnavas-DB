@@ -123,6 +123,16 @@ function stored<T>(key: string, fallback: T): T {
     return fallback;
   }
 }
+// «Kindle» is the reading style by default (Whisper, 23-11-2026): once, whoever had another one saved moves to it
+// (it can be changed back in Settings, and the change is not undone again)
+try {
+  if (localStorage.getItem("bio.kindleDefault") === null) {
+    localStorage.setItem("bio.readerStyle", JSON.stringify("kindle"));
+    localStorage.setItem("bio.kindleDefault", "1");
+  }
+} catch {
+  /* storage unavailable */
+}
 function usePersisted<T>(key: string, fallback: T) {
   const [v, setV] = useState<T>(() => stored(key, fallback));
   useEffect(() => {
@@ -159,7 +169,7 @@ export default function App() {
   const [theme, setTheme] = usePersisted<Theme>("theme", "system");
   // 0.11.3: only the Windows 11 style is left (Whisper: "VS Code" and "Classic" out)
   const skin = "fluent";
-  const [readerStyle, setReaderStyle] = usePersisted<ReaderStyle>("readerStyle", "editor");
+  const [readerStyle, setReaderStyle] = usePersisted<ReaderStyle>("readerStyle", "kindle");
   const [fontSize, setFontSize] = usePersisted("fontSize", 18);
   // the lotus decorations in the corners (15-11-2026); Ajustes › General can turn them off
   const [lotus, setLotus] = usePersisted("lotus", true);
@@ -608,10 +618,34 @@ export default function App() {
   }, [setSideOpen]);
   useEffect(() => {
     // (a record's library, and a web page opened from it, are still the record)
-    if (main.kind !== "person" && main.kind !== "library" && main.kind !== "web" && sideAutoHid.current) {
+    if (main.kind !== "person" && main.kind !== "library" && main.kind !== "web" && main.kind !== "doc" && sideAutoHid.current) {
       sideAutoHid.current = false;
       setSideOpen(true);
     }
+  }, [main.kind]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Reading a book or text (Whisper, 23-11-2026: «el libro se ve en una cuarta parte»): the tree and the
+  // list of results fold away while a text is open and come back when it is left (unless the tree is pinned).
+  const docHid = useRef({ side: false, res: false });
+  const resultsOpenNow = useRef(resultsOpen);
+  resultsOpenNow.current = resultsOpen;
+  const wasDoc = useRef(false);
+  useEffect(() => {
+    const isDoc = main.kind === "doc";
+    if (isDoc && !wasDoc.current) {
+      if (sideOpenNow.current && !sidePinnedNow.current) {
+        docHid.current.side = true;
+        setSideOpen(false);
+      }
+      if (resultsOpenNow.current) {
+        docHid.current.res = true;
+        setResultsOpen(false);
+      }
+    } else if (!isDoc && wasDoc.current) {
+      if (docHid.current.side) setSideOpen(true);
+      if (docHid.current.res) setResultsOpen(true);
+      docHid.current = { side: false, res: false };
+    }
+    wasDoc.current = isDoc;
   }, [main.kind]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // «Recently opened» forgets the texts that are no longer there (merged, split, emptied

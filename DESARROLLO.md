@@ -189,7 +189,12 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.26)
+## 5. Qué hace hoy (v0.20.27)
+
+### Novedades de la 0.20.27 (23-11-2026) — lector «Kindle» y versos limpios
+- **Estilo de lectura «Kindle»** (cuarto en Ajustes; **por defecto**, con migración única `bio.kindleDefault`): `.kindle-device` (marco de e-reader) alrededor de `.reader-scroll`, pantalla que sigue el tema (papel claro / negro), texto justificado, cabecera con ornamento, capitular y el título del libro grabado abajo (`.kindle-brand`). El lápiz y el menú «…» siguen arriba. `Reader.tsx`, `styles.css` (final), `kindleStyle` en i18n.
+- **Leer un libro pliega el árbol y la lista de resultados** (vuelven al salir; no si el árbol está fijado): efecto en `App.tsx` (`docHid`).
+- **Versos de vedabase.io con basura** (pie de la web + JavaScript de Next.js dentro de la traducción, 1.803 versos): `scripts/datos/versos/limpia-basura.mjs` (reemplaza cada documento entero con `put_book`; NO usar `set_section_text` en bucle: cada llamada guarda una copia de todo el documento en `history` y reescribe sus 600 secciones) y `cargar.mjs` ya recorta ese pie. BD vaciada (VACUUM): 2.103 → 1.741 MB.
 
 ### Novedades de la 0.20.26 (23-11-2026) — Balaram con pocas marcas
 - `is_balaram` (extract.rs): el umbral baja de 1 marca por cada 400 letras a 1 por cada 2.500 (libros en inglés con pocas ä/ç, p. ej. `Art of Sadhana`, 740 «ä» en 455.000 letras). Casos más escasos (≈ 3 en 70.000, `Drops of Nectar 2`) → casilla «convertir de todos modos» del Convertor. 64 pruebas.
@@ -2209,6 +2214,7 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **23-11-2026 — v0.20.27**: lector Kindle por defecto, árbol/resultados plegados al leer, versos limpios, BD vaciada.
 - **23-11-2026 — v0.20.26**: umbral de Balaram 1/2.500; scripts de la biblioteca de Calibre. 64 pruebas.
 - **22-11-2026 — v0.20.25**: Convertor PDF (guiones blandos fuera, «Es Balaram: convertir de todos modos»); scripts del decodificador de tipografías propias; 21 libros de Nārāyaṇa Mahārāja decodificados e importados a la BD (datos, no código). 64 pruebas.
 - **22-11-2026 — v0.20.24**: el índice de versos se mantiene al día (se construye solo, se rehace si lleva > 24 h caducado, aviso «Ponerlo al día»); filtro de listas de términos. 63 pruebas.

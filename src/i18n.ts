@@ -296,6 +296,7 @@ const es = {
   editorStyle: "Editor (Markdown visible)",
   serif: "Literata",
   sans: "Inter",
+  kindleStyle: "Kindle",
   syntax: "Cómo buscar",
   syntaxRows: [
     ["narottama", "Sin diacríticos: encuentra Narottama, Narottamā…"],
@@ -1705,6 +1706,7 @@ const en: Dict = {
   editorStyle: "Editor (visible Markdown)",
   serif: "Literata",
   sans: "Inter",
+  kindleStyle: "Kindle",
   syntax: "How to search",
   syntaxRows: [
     ["narottama", "No diacritics needed: finds Narottama, Narottamā…"],

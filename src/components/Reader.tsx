@@ -26,7 +26,7 @@ import { CollectionChip } from "./ui";
 import { Mandala } from "./Mandala";
 
 /** "editor" shows the markdown as written (monospace, coloured signs). */
-export type ReaderStyle = "editor" | "serif" | "sans";
+export type ReaderStyle = "editor" | "serif" | "sans" | "kindle";
 
 export interface ReaderTarget {
   docId: number;
@@ -286,6 +286,8 @@ export function Reader(p: Props) {
   // a book kept as text whose big PDF stayed in its folder (the Anthology): open that PDF
   const outsidePdf = !doc.original && /.pdf$/i.test(doc.source ?? "") ? doc.source : null;
   const style: ReaderStyle = gano || scroll ? "serif" : readerStyle;
+  // «Kindle» style (Whisper, 23-11-2026): the text on an e-reader screen, the book's title where the brand goes
+  const kindle = style === "kindle";
   const isPdf = !!doc.original?.toLowerCase().endsWith(".pdf");
   const editSection = () => {
     const s = sections.find((x) => x.ordinal === currentOrd) ?? sections[0];
@@ -297,7 +299,7 @@ export function Reader(p: Props) {
   };
 
   return (
-    <div className={vraja ? "reader gano-view vraja-view" : gano ? "reader gano-view" : scroll ? "reader scroll-view" : "reader"}>
+    <div className={vraja ? "reader gano-view vraja-view" : gano ? "reader gano-view" : scroll ? "reader scroll-view" : kindle && view === "text" ? "reader kindle-view" : "reader"}>
       {gano && view === "text" && <Mandala className="gano-mandala" />}
       {view === "text" && <div className="read-progress" style={{ transform: `scaleX(${progress})` }} />}
       {/* the same «Back», always in sight at the bottom (Whisper, 16-11-2026: back to «Vaṁśa» after reading a verse) */}
@@ -450,6 +452,7 @@ export function Reader(p: Props) {
       {view === "original" ? (
         <iframe className="pdf-frame" src={fileUrl("original", doc.id)} title={doc.original ?? doc.title} />
       ) : (
+        <div className={kindle ? "kindle-device" : "kindle-off"}>
         <div className="reader-scroll" data-ctx="reader" ref={scrollRef} onScroll={onScroll}>
           {scroll && <div className="parchment-roll top" aria-hidden />}
           <div className={`reader-body ${style === "editor" ? "src-view" : style}${scroll ? " parchment" : ""}`} style={{ fontSize }} ref={bodyRef} onClick={onBodyClick}>
@@ -461,6 +464,12 @@ export function Reader(p: Props) {
             {hi < count - 1 && <div className="more-hint">• • •</div>}
           </div>
           {scroll && <div className="parchment-roll bottom" aria-hidden />}
+        </div>
+        {kindle && (
+          <div className="kindle-brand" title={doc.title}>
+            {doc.title}
+          </div>
+        )}
         </div>
       )}
 

@@ -19,7 +19,8 @@ const ORD = ["", "First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Sevent
 const books = new Map(); // key → { title, dir, source, sections: [] }
 const add = (key, title, dir, ref, v) => {
   if (!books.has(key)) books.set(key, { title, dir, source: `versos:${key}`, sections: [] });
-  const tr = (v.translation || "").trim();
+  // vedabase.io: if the translation block was not closed it dragged the page footer and the Next.js script (cleaned 23-11-2026)
+  const tr = (v.translation || "").replace(/(?:TEXT\s*\d+[\s ]*)*Donate\s*Thanks to[\s\S]*$/, "").trim();
   const syn = (v.synonyms || "").trim();
   books.get(key).sections.push({
     heading: ref,
