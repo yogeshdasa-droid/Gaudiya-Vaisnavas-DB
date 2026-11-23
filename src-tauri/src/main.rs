@@ -595,6 +595,12 @@ async fn set_person_photo(state: State<'_, AppState>, id: i64, path: String) -> 
 
 /// A picture pasted with Ctrl+V (copied in a browser) as the record's photo (15-11-2026): the bytes go
 /// through a file in the temporary folder, so that it is read like any chosen picture.
+/// The cover of a text (book): a picture of the PC, for the books that show a generic one.
+#[tauri::command]
+async fn set_doc_cover(state: State<'_, AppState>, doc_id: i64, path: String) -> CmdResult<()> {
+    store::set_doc_cover(&mut state.conn.lock().unwrap(), doc_id, std::path::Path::new(&path))
+}
+
 #[tauri::command]
 async fn set_person_photo_bytes(state: State<'_, AppState>, id: i64, data: Vec<u8>, ext: String) -> CmdResult<()> {
     let ext: String = ext.chars().filter(|c| c.is_ascii_alphanumeric()).take(5).collect();
@@ -1598,6 +1604,7 @@ fn main() {
             cut_text,
             set_person_photo,
             set_person_photo_bytes,
+            set_doc_cover,
             remove_person_photo,
             create_doc,
             put_book,

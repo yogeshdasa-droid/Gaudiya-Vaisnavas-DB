@@ -20,7 +20,12 @@ const port = args.find((a) => /^\d{4,5}$/.test(a)) || "9334";
 const dry = args.includes("--dry");
 const solo = val("solo").toLowerCase(), autorFiltro = val("autor").toLowerCase();
 const limit = Number(val("limit")) || Infinity;
+const ocrDir = val("ocr"); // carpeta con <id de Calibre>.txt (OCR de PDF escaneados): se importan SOLO esos libros
 const PAGES_PER_SECTION = 6;
+// Balaram → IAST (igual que extract.rs: 1 marca cada 2.500 letras)
+const BAL = { "ä": "ā", "Ä": "Ā", "é": "ī", "É": "Ī", "ü": "ū", "Ü": "Ū", "å": "ṛ", "Å": "Ṛ", "ì": "ṅ", "Ì": "Ṅ", "ï": "ñ", "Ï": "Ñ", "ö": "ṭ", "Ö": "Ṭ", "ò": "ḍ", "Ò": "Ḍ", "ë": "ṇ", "Ë": "Ṇ", "ç": "ś", "Ç": "Ś", "ñ": "ṣ", "Ñ": "Ṣ", "à": "ṁ", "À": "Ṁ", "ù": "ḥ", "Ù": "Ḥ", "è": "ṝ", "ÿ": "ḷ" };
+const isBalaram = (s) => { const m = (s.match(/[äåëöòùÄÅËÖÒ]/g) || []).length; return m >= 5 && m * 2500 >= (s.match(/\p{L}/gu) || []).length; };
+const balaram = (s) => s.replace(/[äÄéÉüÜåÅìÌïÏöÖòÒëËçÇñÑàÀùÙèÿ]/g, (c) => BAL[c]);
 
 const fold = (s) =>
   s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/&/g, " and ")
@@ -113,7 +118,7 @@ for (const r of rows) {
     cover: files.includes("cover.jpg") ? path.join(dir, "cover.jpg").replace(/\\/g, "/") : null, ...dest, dir: dirFinal, yaEsta });
 }
 libros = libros.filter((b) => !solo || b.title.toLowerCase().includes(solo)).filter((b) => !autorFiltro || (b.autor || "").toLowerCase().includes(autorFiltro));
-const nuevos = libros.filter((b) => !b.yaEsta);
+const nuevos = libros.filter((b) => !b.yaEsta).filter((b) => !ocrDir || fs.existsSync(`${ocrDir}/${b.id}.txt`));
 console.log(`${libros.length} libros en Calibre; ${libros.length - nuevos.length} ya están en la app; a importar: ${nuevos.length}`);
 const sinAutor = nuevos.filter((b) => b.error);
 if (sinAutor.length) console.log("SIN AUTOR ASIGNADO:", [...new Set(sinAutor.map((b) => b.autor))].join(" | "));
@@ -198,8 +203,14 @@ let k = 0;
 for (const b of nuevos.slice(0, limit)) {
   k++;
   const t0 = Date.now();
-  if (b.error || !b.pdf) { report.sinTexto.push(`${b.title} (${b.error || "sin PDF"})`); continue; }
-  const r = await inv("convert_pdf", { path: b.pdf, applyBalaram: true });
+  if (b.error || (!b.pdf && !ocrDir)) { report.sinTexto.push(`${b.title} (${b.error || "sin PDF"})`); continue; }
+  let r;
+  if (ocrDir) {
+    let text = fs.readFileSync(`${ocrDir}/${b.id}.txt`, "utf8").replace(/\r\n/g, "\n").replace(/\u00ad/g, "");
+    const bal = isBalaram(text);
+    if (bal) text = balaram(text);
+    r = { text, pages: text.split("\f").length, is_balaram: bal };
+  } else r = await inv("convert_pdf", { path: b.pdf, applyBalaram: true });
   if (!r || r.__err) { report.error.push(`${b.title}: ${r?.__err}`); console.log(`✗ ${b.title}: ${r?.__err}`); continue; }
   const letters = (r.text.match(/\p{L}/gu) || []).length;
   if (letters < 400 * Math.max(1, Math.min(r.pages, 5))) { report.sinTexto.push(`${b.title} (${r.pages} pp., ${letters} letras: escaneado)`); console.log(`— ${b.title}: sin texto`); continue; }

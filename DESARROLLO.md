@@ -189,7 +189,12 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.27)
+## 5. Qué hace hoy (v0.20.28)
+
+### Novedades de la 0.20.28 (23-11-2026) — Library de las fichas con los libros de la app
+- **Library en toda ficha con libros** (`booksByPerson` en App.tsx: textos de `Libros/<nombre de la ficha>`; Nārāyaṇa Mahārāja → #1809): tarjetas con portada que abren el texto en el lector Kindle; en las fichas con carpeta del PC, sus PDF que ya son texto de la app (mismo título plegado, `textOf` en PersonLibrary.tsx) abren el texto (Ctrl/Mayús+clic = PDF). Los libros de la app que la carpeta no tiene salen en «Libros en la app (texto)».
+- **Portada genérica** (`.lib-cover-ph`: icono de libro + título) para los libros sin portada, y **comando `set_doc_cover(doc_id, path)`** (store.rs; reduce con `small_cover`) con un botón en la tarjeta («Poner o cambiar la portada…») para subir la buena algún día.
+- Datos (sin código): 820 libros de Calibre + 40 escaneados con OCR de Windows (`scripts/datos/ocr/`, `calibre/cargar.mjs --ocr=`), 17 fichas nuevas, 31 portadas (`calibre/portadas.mjs`), versos de SB 10–12 limpios, codificación Harvard-Kyoto (`calibre/hk.mjs`), Maps & Diagrams como JPG en la Biblioteca.
 
 ### Novedades de la 0.20.27 (23-11-2026) — lector «Kindle» y versos limpios
 - **Estilo de lectura «Kindle»** (cuarto en Ajustes; **por defecto**, con migración única `bio.kindleDefault`): `.kindle-device` (marco de e-reader) alrededor de `.reader-scroll`, pantalla que sigue el tema (papel claro / negro), texto justificado, cabecera con ornamento, capitular y el título del libro grabado abajo (`.kindle-brand`). El lápiz y el menú «…» siguen arriba. `Reader.tsx`, `styles.css` (final), `kindleStyle` en i18n.
@@ -2214,6 +2219,7 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **23-11-2026 — v0.20.28**: Library de las fichas con los libros de la app, portada genérica y `set_doc_cover`. 64 pruebas.
 - **23-11-2026 — v0.20.27**: lector Kindle por defecto, árbol/resultados plegados al leer, versos limpios, BD vaciada.
 - **23-11-2026 — v0.20.26**: umbral de Balaram 1/2.500; scripts de la biblioteca de Calibre. 64 pruebas.
 - **22-11-2026 — v0.20.25**: Convertor PDF (guiones blandos fuera, «Es Balaram: convertir de todos modos»); scripts del decodificador de tipografías propias; 21 libros de Nārāyaṇa Mahārāja decodificados e importados a la BD (datos, no código). 64 pruebas.

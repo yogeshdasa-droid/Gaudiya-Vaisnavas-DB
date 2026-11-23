@@ -555,6 +555,8 @@ export const api = {
   setPersonPhoto: (id: number, path: string) => invoke<void>("set_person_photo", { id, path }),
   /** a picture pasted with Ctrl+V */
   setPersonPhotoBytes: (id: number, data: number[], ext: string) => invoke<void>("set_person_photo_bytes", { id, data, ext }),
+  /** the cover of a text (a book): a picture of the PC */
+  setDocCover: (docId: number, path: string) => invoke<void>("set_doc_cover", { docId, path }),
   removePersonPhoto: (id: number) => invoke<void>("remove_person_photo", { id }),
 
   createDoc: (personId: number | null, title: string, collection: string) =>

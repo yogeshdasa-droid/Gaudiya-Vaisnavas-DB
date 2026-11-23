@@ -323,11 +323,19 @@ export function PersonLibrary({
   onOpenWeb,
   readerStyle,
   fontSize,
+  docs,
+  onOpenDoc,
+  appBooks,
 }: {
   t: T;
   /** how the app's texts are read (Settings): the written lectures in .md are read the same way */
   readerStyle: ReaderStyle;
   fontSize: number;
+  /** the texts of the app: a book of this folder that is already one opens in the reader (Kindle style), not as a PDF */
+  docs: { id: number; dir: string; title: string }[];
+  onOpenDoc: (docId: number) => void;
+  /** the books of this record that the app has as texts (folder «Libros/<name>»): shown with their covers, read in the Kindle viewer */
+  appBooks: { id: number; title: string }[];
   /** a web link of the record, opened inside the window */
   onOpenWeb: (url: string, title: string) => void;
   id: number;
@@ -438,7 +446,25 @@ export function PersonLibrary({
     return out;
   }, [entries, section, flt]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const openEntry = (e: LibEntry, at?: number) => {
+  // a book of the folder that the app already has as a text (Libros/…): same title once folded
+  const textOf = useMemo(() => {
+    const key = (s: string) =>
+      s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/s·sd+$/, "").replace(/.(pdf|epub)$/i, "").replace(/&/g, " and ").replace(/[^a-z0-9]+/g, " ").replace(/(the|a|an|of|and)/g, " ").replace(/s+/g, " ").trim();
+    const byKey = new Map<string, { id: number; dir: string }[]>();
+    for (const d of docs) if (d.dir.startsWith("Libros")) (byKey.get(key(d.title)) ?? byKey.set(key(d.title), []).get(key(d.title))!).push(d);
+    const who = key(name);
+    const out = new Map<string, number>();
+    for (const e of entries) {
+      if (e.kind !== "book" || !/.pdf$/i.test(e.name)) continue;
+      const c = byKey.get(key(title(e).title)) ?? byKey.get(key(e.name));
+      if (c?.length) out.set(e.rel, (c.find((d) => key(d.dir).includes(who.split(" ")[0] ?? "")) ?? c[0]).id);
+    }
+    return out;
+  }, [entries, docs, name]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const openEntry = (e: LibEntry, at?: number, asPdf = false) => {
+    // the text of the app (Kindle style), unless Ctrl/Shift was held, or a page of the PDF is wanted (a search hit)
+    if (!asPdf && at === undefined && textOf.has(e.rel)) return onOpenDoc(textOf.get(e.rel)!);
     if (e.kind === "audio") {
       const list = entries.filter((x) => x.kind === "audio" && x.dir === e.dir);
       return onPlay(list, list.indexOf(e));
@@ -502,6 +528,56 @@ export function PersonLibrary({
     );
   }
 
+  // books of the app not already shown as a card of the folder (the folder's PDFs that match a text open it already)
+  const inFolder = new Set(textOf.values());
+  const appOnly = appBooks.filter((b) => !inFolder.has(b.id));
+  // books of the app without a cover show a generic one; a picture of the PC can be set as the real one
+  const [noCover, setNoCover] = useState<Set<number>>(() => new Set());
+  const [coverTick, setCoverTick] = useState(0);
+  const pickCover = async (b: { id: number; title: string }) => {
+    const p = await open({ title: t.lib.coverPick(b.title), filters: [{ name: "Images", extensions: ["jpg", "jpeg", "png", "webp"] }] });
+    if (typeof p !== "string") return;
+    try {
+      await api.setDocCover(b.id, p);
+      setNoCover((s) => (s.delete(b.id), new Set(s)));
+      setCoverTick((n) => n + 1);
+    } catch (e) {
+      onToast(String(e));
+    }
+  };
+  const appCards = appOnly.length > 0 && (
+    <section className="lib-group">
+      <h2 className="lib-dir">
+        {t.lib.inApp} <span className="muted small">({appOnly.length})</span>
+      </h2>
+      <div className="lib-items covers">
+        {appOnly.map((b) => (
+          <button key={b.id} className="lib-book" onClick={() => onOpenDoc(b.id)} title={b.title}>
+            <span className="lib-book-cover">
+              {noCover.has(b.id) ? (
+                <span className="lib-cover-ph" aria-hidden>
+                  <BookOpen size={34} strokeWidth={1.4} />
+                  <span>{b.title.replace(/\s·\s\d+$/, "")}</span>
+                </span>
+              ) : (
+                <img src={fileUrl("cover", b.id) + "?v=" + coverTick} alt="" loading="lazy" onError={() => setNoCover((s) => new Set(s).add(b.id))} />
+              )}
+              <span
+                role="button"
+                className="lib-cover-edit"
+                title={t.lib.coverChange}
+                onClick={(ev) => (ev.stopPropagation(), void pickCover(b))}
+              >
+                <ImageIcon size={14} />
+              </span>
+            </span>
+            <span className="lib-book-title">{b.title.replace(/\s·\s\d+$/, "")}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+
   return (
     <div className="reader">
       <div className="reader-scroll">
@@ -543,6 +619,16 @@ export function PersonLibrary({
           {!view ? (
             <p className="muted">{t.lib.reading}</p>
           ) : !view.folder ? (
+            appBooks.length > 0 ? (
+              <>
+                {appCards}
+                <p className="muted small">
+                  <button className="link-btn" onClick={link}>
+                    <FolderOpen size={13} /> {t.lib.link}
+                  </button>
+                </p>
+              </>
+            ) : (
             <div className="lib-empty">
               <p>{t.lib.none(name)}</p>
               <p className="muted small">{t.lib.noneHint}</p>
@@ -550,6 +636,7 @@ export function PersonLibrary({
                 <FolderOpen size={15} /> {t.lib.link}
               </button>
             </div>
+            )
           ) : view.missing ? (
             <div className="lib-empty">
               <p>{t.lib.missing}</p>
@@ -559,6 +646,7 @@ export function PersonLibrary({
             </div>
           ) : (
             <>
+              {appCards}
               <div className="lib-search">
                 <Search size={15} />
                 <input
@@ -644,7 +732,7 @@ export function PersonLibrary({
                       // a book with its cover (Calibre folders): a card with the cover
                       if (e.cover)
                         return (
-                          <button key={e.rel} className="lib-book" onClick={() => openEntry(e)} title={`${tt.title}\n${e.name}`}>
+                          <button key={e.rel} className="lib-book" onClick={(ev) => openEntry(e, undefined, ev.ctrlKey || ev.shiftKey)} title={`${tt.title}\n${e.name}${textOf.has(e.rel) ? "\n" + t.lib.openAsText : ""}`}>
                             <span className="lib-book-cover">
                               <img src={libUrl(id, e.cover)} alt="" loading="lazy" />
                             </span>
@@ -655,8 +743,7 @@ export function PersonLibrary({
                       // a PDF with no cover.jpg: its first page as the cover (16-11-2026)
                       if (isPdf(e))
                         return (
-                          <button key={e.rel} className="lib-book" onClick={() => openEntry(e)} title={`${tt.title}
-${e.name}`}>
+                          <button key={e.rel} className="lib-book" onClick={(ev) => openEntry(e, undefined, ev.ctrlKey || ev.shiftKey)} title={`${tt.title}\n${e.name}${textOf.has(e.rel) ? "\n" + t.lib.openAsText : ""}`}>
                             <span className="lib-book-cover">
                               <PdfThumb url={libUrl(id, e.rel)} cacheKey={`${id}|${e.rel}|${e.size}`} />
                             </span>

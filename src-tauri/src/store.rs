@@ -1619,6 +1619,25 @@ pub fn set_person_photo(conn: &Connection, id: i64, path: &std::path::Path) -> R
     Ok(())
 }
 
+/// A text's cover (a book without one shows a generic picture): the chosen image, replacing the one it had (23-11-2026).
+pub fn set_doc_cover(conn: &mut Connection, doc_id: i64, path: &std::path::Path) -> Res<()> {
+    let (name, mime, data) = read_image(path)?;
+    let data = small_cover(&data).filter(|_| mime != "image/gif").unwrap_or(data);
+    let tx = conn.transaction().map_err(e)?;
+    let exists: Option<i64> = tx.query_row("SELECT id FROM docs WHERE id = ?1 AND deleted IS NULL", [doc_id], |r| r.get(0)).optional().map_err(e)?;
+    if exists.is_none() {
+        return Err("Texto no encontrado".into());
+    }
+    tx.execute("DELETE FROM files WHERE doc_id = ?1 AND role = 'cover'", [doc_id]).map_err(e)?;
+    let name = std::path::Path::new(&name).file_name().map(|x| x.to_string_lossy().into_owned()).unwrap_or(name);
+    tx.execute(
+        "INSERT INTO files(doc_id, role, name, mime, data) VALUES(?1, 'cover', ?2, ?3, ?4)",
+        params![doc_id, name, if data.starts_with(&[0xFF, 0xD8]) { "image/jpeg" } else { mime }, data],
+    )
+    .map_err(e)?;
+    tx.commit().map_err(e)
+}
+
 pub fn remove_person_photo(conn: &Connection, id: i64) -> Res<()> {
     conn.execute("DELETE FROM person_photos WHERE person_id = ?1", [id]).map_err(e)?;
     conn.execute("UPDATE persons SET modified = datetime('now', 'localtime') WHERE id = ?1", [id]).map_err(e)?;

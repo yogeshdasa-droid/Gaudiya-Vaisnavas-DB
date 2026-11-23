@@ -231,6 +231,21 @@ export default function App() {
   const [toast, setToast] = useState<{ msg: string; id: number } | null>(null);
   // the records with a library (a folder of the PC), and the audio of one playing at the bottom
   const [libIds, setLibIds] = useState<number[]>([]);
+  // the books each record has in the app: the texts of «Libros/<its name>» (23-11-2026: a Library for every record with books,
+  // with or without a folder on the PC). Nārāyaṇa Mahārāja's two folders are kept under his record.
+  const booksByPerson = useMemo(() => {
+    const dirOf = new Map<string, number>();
+    for (const p of persons) dirOf.set("Libros/" + p.name, p.id);
+    dirOf.set("Libros/Nārāyaṇa Mahārāja", 1809);
+    dirOf.set("Libros/Nārāyaṇa Mahārāja · español", 1809);
+    const m = new Map<number, { id: number; title: string }[]>();
+    for (const d of docs) {
+      const pid = dirOf.get(d.dir);
+      if (pid !== undefined) (m.get(pid) ?? m.set(pid, []).get(pid)!).push({ id: d.id, title: d.title });
+    }
+    for (const l of m.values()) l.sort((x, y) => x.title.localeCompare(y.title));
+    return m;
+  }, [persons, docs]);
   useEffect(() => void api.libraryIds().then(setLibIds, () => {}), []);
   const [player, setPlayer] = useState<{ id: number; list: LibEntry[]; index: number } | null>(null);
   // «Audios» and a record's library do not play at the same time
@@ -1418,7 +1433,7 @@ export default function App() {
             names={nameIndex}
             places={places}
             onPlace={openPlace}
-            hasLibrary={libIds.includes(main.id)}
+            hasLibrary={libIds.includes(main.id) || booksByPerson.has(main.id)}
             onLibrary={(person) => setMain({ kind: "library", id: person.id })}
             onOpenWeb={openWeb}
           />
@@ -1490,6 +1505,9 @@ export default function App() {
               onOpenWeb={openWeb}
               readerStyle={readerStyle}
               fontSize={fontSize}
+              docs={docs}
+              onOpenDoc={(docId) => openDoc(docId)}
+              appBooks={booksByPerson.get(main.id) ?? []}
             />
           )}
           {main.kind === "web" && (
