@@ -189,7 +189,11 @@ Direcciones internas de archivos (las sirve `serve_file` en `main.rs`):
 
 ---
 
-## 5. Qué hace hoy (v0.20.25)
+## 5. Qué hace hoy (v0.20.26)
+
+### Novedades de la 0.20.26 (23-11-2026) — Balaram con pocas marcas
+- `is_balaram` (extract.rs): el umbral baja de 1 marca por cada 400 letras a 1 por cada 2.500 (libros en inglés con pocas ä/ç, p. ej. `Art of Sadhana`, 740 «ä» en 455.000 letras). Casos más escasos (≈ 3 en 70.000, `Drops of Nectar 2`) → casilla «convertir de todos modos» del Convertor. 64 pruebas.
+- **Biblioteca de Calibre** (solo scripts, `scripts/datos/calibre/`): `analiza.mjs` (informe, solo lectura), `autores.json` (autor de Calibre → ficha / nueva / carpeta temática), `cargar.mjs --db= [puerto] [--dry] [--autor=] [--limit=]` (libros a «Libros/<Autor>», origen `calibre:<id>`, fichas nuevas con `new_person`). Probado en copia: 820 libros, 141 con letras rotas (sobre todo ISKCON Media Vedic Library), 144 escaneados.
 
 ### Novedades de la 0.20.25 (22-11-2026) — Convertor PDF y libros con tipografías propias
 - **Convertor PDF** (`finish_text` en main.rs; `convert_pdf(path, applyBalaram, force)`): quita siempre los guiones blandos (U+00AD) y,
@@ -2205,6 +2209,7 @@ Whisper cierra y vuelve a abrir la app normalmente. Siempre ensayar antes en una
 
 ## 8. Historial
 
+- **23-11-2026 — v0.20.26**: umbral de Balaram 1/2.500; scripts de la biblioteca de Calibre. 64 pruebas.
 - **22-11-2026 — v0.20.25**: Convertor PDF (guiones blandos fuera, «Es Balaram: convertir de todos modos»); scripts del decodificador de tipografías propias; 21 libros de Nārāyaṇa Mahārāja decodificados e importados a la BD (datos, no código). 64 pruebas.
 - **22-11-2026 — v0.20.24**: el índice de versos se mantiene al día (se construye solo, se rehace si lleva > 24 h caducado, aviso «Ponerlo al día»); filtro de listas de términos. 63 pruebas.
 - **22-11-2026 — v0.20.23**: índice de versos de toda la biblioteca (`verse_index.rs`) y tarjetas por verso en «Versos»; «También en la biblioteca»; paso 4B de los versos (scripts). 61 pruebas.

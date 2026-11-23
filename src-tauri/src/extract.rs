@@ -54,7 +54,9 @@ pub fn read_document(path: &Path, bytes: &[u8]) -> Option<String> {
 /// so a text full of them is Balaram (and its ñ is ṣ, not the Spanish ñ).
 pub fn is_balaram(text: &str) -> bool {
     let marks = text.chars().filter(|c| "äåëöòùÄÅËÖÒ".contains(*c)).count();
-    marks >= 5 && marks * 400 >= text.chars().filter(|c| c.is_alphabetic()).count()
+    // 1 mark per 2,500 letters: books in English with few diacritics (a sadhana guide with 740 «ä» in
+    // 455,000 letters) are Balaram too; Spanish and English prose has none of these letters.
+    marks >= 5 && marks * 2500 >= text.chars().filter(|c| c.is_alphabetic()).count()
 }
 
 const BALARAM: &[(char, char)] = &[
@@ -379,6 +381,10 @@ mod tests {
             balaram_to_iast(b),
             "Ten Roots of Gauḍīya Vaiṣṇava Philosophy by Śrīla Bhaktivinoda Ṭhākura: āmnāyaḥ prāha tattvaṁ, Kṛṣṇa"
         );
+        // an English book with few marks: 6 per ~7,000 letters
+        let sparse = format!("{}{}", "the sädhu spoke of the path of bhakti. ".repeat(6), "a plain english sentence about devotion and service. ".repeat(130));
+        assert!(is_balaram(&sparse));
+        assert!(!is_balaram(&"a plain english sentence about devotion and service. ".repeat(500)));
         assert!(!is_balaram("El niño y la señora caminaron por la montaña; él sonrió, después habló con Kṛṣṇa."));
     }
 }
